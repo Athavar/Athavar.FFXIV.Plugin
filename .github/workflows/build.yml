@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - master
+    - main
 
 env:
   PUBLIC_NAME: Athavar's Tools
@@ -57,6 +57,7 @@ jobs:
     - uses: EndBug/add-and-commit@v7
       with:
         add: --all
+        branch: master
         author_name: GitHub Action
         author_email: github-actions[bot]@users.noreply.github.com
         message: Update ${{ env.INTERNAL_NAME }}
