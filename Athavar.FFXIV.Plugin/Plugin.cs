@@ -13,7 +13,6 @@ namespace Athavar.FFXIV.Plugin
 
         private const string CommandName = "/ath";
 
-        private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private PluginUI PluginUi { get; init; }
 
@@ -21,7 +20,6 @@ namespace Athavar.FFXIV.Plugin
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager)
         {
-            this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
             DalamudBinding.Initialize(pluginInterface);
             Modules.Initialize();

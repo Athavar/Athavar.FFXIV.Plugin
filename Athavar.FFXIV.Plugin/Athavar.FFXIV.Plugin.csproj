@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>athavar</Authors>
     <Company>-</Company>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Description>A sample plugin.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Athavar/Athavar.FFXIV.Plugin</PackageProjectUrl>
@@ -17,6 +17,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -47,9 +48,7 @@
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.2" />
     <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
-    <PackageReference Include="WindowsInput" Version="6.3.0">
-      <IncludeAssets>all</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="WindowsInput" Version="6.3.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
     <Reference Include="FFXIVClientStructs">
