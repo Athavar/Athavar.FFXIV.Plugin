@@ -1,10 +1,6 @@
 ﻿using ImGuiNET;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Athavar.FFXIV.Plugin
 {
@@ -19,7 +15,7 @@ namespace Athavar.FFXIV.Plugin
         public PluginUI(Plugin plugin)
         {
             this.plugin = plugin;
-            localizer = Modules.Localizer;
+            localizer = Modules.Instance.Localizer;
 
             DalamudBinding.PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_OnOpenConfigUi;
             DalamudBinding.PluginInterface.UiBuilder.Draw += UiBuilder_OnBuildUi_Config;
@@ -55,21 +51,9 @@ namespace Athavar.FFXIV.Plugin
 
             ImGui.BeginTabBar("##tabBar");
 
-            Modules.MacroModule.Draw();
-            Modules.YesModule.Draw();
-            Modules.InviterModule.Draw();
-
             UiBuilder_OnBuildUi_SettingTab();
 
-            ImGui.BeginTabItem("Test");
-
-            var addon = DalamudBinding.GameGui.GetAddonByName("JournalDetail", 1);
-            if (addon != IntPtr.Zero)
-            {
-                ImGui.Text("Ist da.");
-            }
-
-            ImGui.EndTabItem();
+            Modules.Instance.Draw();
 
             ImGui.EndTabBar();
             ImGui.End();
@@ -84,7 +68,7 @@ namespace Athavar.FFXIV.Plugin
                 return;
 
             var change = false;
-            var config = Modules.Configuration;
+            var config = Modules.Instance.Configuration;
 
             // ToolTip setting
             var value = config.ShowToolTips;
@@ -93,7 +77,7 @@ namespace Athavar.FFXIV.Plugin
             ImGui.SameLine();
             if (ImGui.Checkbox("##hideTooltipsOnOff", ref value))
             {
-                Modules.Configuration.ShowToolTips = value;
+                config.ShowToolTips = value;
                 change = true;
             }
 
@@ -108,6 +92,17 @@ namespace Athavar.FFXIV.Plugin
             {
                 localizer.Language = config.Language = (Language)selectedLanguage;
                 change = true;
+            }
+
+            ImGui.TextUnformatted(localizer.Localize("Modules:"));
+            foreach (var module in Modules.ModuleValues)
+            {
+                var val = config.ModuleEnabled.Contains(module);
+                if (ImGui.Checkbox(module.ToString(), ref val))
+                {
+                    Modules.Instance.Enable(module, val);
+                    change = true;
+                }
             }
 
             if (change)

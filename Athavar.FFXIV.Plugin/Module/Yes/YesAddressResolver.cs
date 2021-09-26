@@ -1,7 +1,5 @@
 ﻿using Dalamud.Game;
-using Dalamud.Game.Internal;
 using Dalamud.Logging;
-using Dalamud.Plugin;
 using System;
 
 namespace YesAlready

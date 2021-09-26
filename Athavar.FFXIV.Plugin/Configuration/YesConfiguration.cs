@@ -21,10 +21,6 @@ namespace Athavar.FFXIV.Plugin
         public bool GrandCompanySupplyReward = false;
         public bool ShopCardDialog = false;
 
-        internal void Upgrade()
-        {
-        }
-
         public IEnumerable<INode> GetAllNodes() => new INode[] { RootFolder }.Concat(GetAllNodes(RootFolder.Children));
 
         public IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)

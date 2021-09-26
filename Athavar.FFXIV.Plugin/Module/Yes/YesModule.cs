@@ -1,16 +1,9 @@
 ﻿using Athavar.FFXIV.Plugin;
 using ClickLib;
-using Dalamud.Data;
-using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Hooking;
-using Dalamud.IoC;
 using Dalamud.Logging;
-using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
@@ -22,7 +15,7 @@ using System.Text;
 
 namespace YesAlready
 {
-    internal sealed class YesModule
+    internal sealed class YesModule : IModule
     {
         public string Name => "Yes Already";
         public string Command => "/pyes";
@@ -46,14 +39,9 @@ namespace YesAlready
 
         internal readonly Dictionary<uint, string> TerritoryNames = new();
 
-        public YesModule(YesConfiguration configuration)
+        public YesModule(Modules modules)
         {
-            Configuration = configuration;
-            if (Configuration.Version < CURRENT_CONFIG_VERSION)
-            {
-                Configuration.Upgrade();
-                SaveConfiguration();
-            }
+            Configuration = modules.Configuration.Yes ??= new();
 
             Address = new YesAddressResolver();
             Address.Setup();
@@ -82,7 +70,7 @@ namespace YesAlready
             PluginUi.Dispose();
         }
 
-        internal void Draw() => PluginUi.UiBuilder_OnBuildUi_ConfigTab();
+        public void Draw() => PluginUi.UiBuilder_OnBuildUi_ConfigTab();
 
         private void LoadTerritories()
         {

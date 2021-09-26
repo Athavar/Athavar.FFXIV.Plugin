@@ -41,7 +41,7 @@ namespace Inviter
         {
             var change = false;
             var config = module.InviterConfig;
-            var toolTips = Modules.Configuration.ShowToolTips;
+            var toolTips = Modules.Instance.Configuration.ShowToolTips;
             if (ImGui.Checkbox(Localizer.Localize("Enable"), ref config.Enable))
             {
                 change = true;
@@ -95,12 +95,12 @@ namespace Inviter
             var config = module.InviterConfig;
             foreach (XivChatType chatType in Enum.GetValues<XivChatType>())
             {
-                if (config.HiddenChatType.IndexOf(chatType) != -1) continue;
+                if (config.HiddenChatType?.IndexOf(chatType) != -1) continue;
                 var chatTypeName = Enum.GetName(chatType);
-                bool checkboxClicked = config.FilteredChannels.IndexOf(chatType) == -1;
+                bool checkboxClicked = config.FilteredChannels?.IndexOf(chatType) == -1;
                 if (ImGui.Checkbox(Localizer.Localize(chatTypeName) + "##filter", ref checkboxClicked))
                 {
-                    config.FilteredChannels = config.FilteredChannels.Distinct().ToList();
+                    config.FilteredChannels = config.FilteredChannels?.Distinct().ToList() ?? new();
                     if (checkboxClicked)
                     {
                         if (config.FilteredChannels.IndexOf(chatType) != -1)

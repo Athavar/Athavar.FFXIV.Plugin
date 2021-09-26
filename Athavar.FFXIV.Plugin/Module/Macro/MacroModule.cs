@@ -1,33 +1,27 @@
 using Athavar.FFXIV.Plugin;
-using Dalamud.Data;
-using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.IoC;
-using Dalamud.Plugin;
+using Dalamud.Logging;
 using System;
 using System.IO;
 using System.Reflection;
 
 namespace SomethingNeedDoing
 {
-    internal sealed class MacroModule
+    internal sealed class MacroModule : IModule
     {
         public string Name => "Something Need Doing";
         public string Command => "/pcraft";
 
-        internal MacroConfiguration Configuration;
+        internal MacroConfiguration configuration;
         internal MacroAddressResolver Address;
         internal ChatManager ChatManager;
         internal MacroManager MacroManager;
 
         private readonly MacroUI PluginUi;
 
-        public MacroModule(MacroConfiguration configuration)
+        public MacroModule(Modules modules)
         {
-            Configuration = configuration;
+            this.configuration = modules.Configuration.Macro ??= new();
+            PluginLog.LogDebug($"Module 'Macro' init. {configuration}");
 
             Address = new MacroAddressResolver();
             Address.Setup();
@@ -44,9 +38,9 @@ namespace SomethingNeedDoing
             PluginUi.Dispose();
         }
 
-        internal void Draw() => PluginUi.UiBuilder_OnBuildUi();
+        public void Draw() => PluginUi.UiBuilder_OnBuildUi();
 
-        internal void SaveConfiguration() => DalamudBinding.PluginInterface.SavePluginConfig(Modules.Configuration);
+        internal void SaveConfiguration() => Configuration.Save();
 
         internal byte[] ReadResourceFile(params string[] filePathSegments)
         {

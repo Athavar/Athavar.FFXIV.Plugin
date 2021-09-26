@@ -66,12 +66,12 @@ namespace SomethingNeedDoing
                 fontConfig.MergeMode = true;
                 fontConfig.PixelSnapH = true;
 
-                MonoFont = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtr, fontData.Length, plugin.Configuration.CustomFontSize, fontConfig);
+                MonoFont = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtr, fontData.Length, plugin.configuration.CustomFontSize, fontConfig);
 
                 // Interface.GlyphRangesJapanese is internal, should be public
                 // Once it is, our file can be deleted
                 var japaneseRangeHandle = GCHandle.Alloc(GlyphRangesJapanese.GlyphRanges, GCHandleType.Pinned);
-                MonoFontJP = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtrJP, fontDataJP.Length, plugin.Configuration.CustomFontSize, fontConfig, japaneseRangeHandle.AddrOfPinnedObject());
+                MonoFontJP = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtrJP, fontDataJP.Length, plugin.configuration.CustomFontSize, fontConfig, japaneseRangeHandle.AddrOfPinnedObject());
                 japaneseRangeHandle.Free();
             }
         }
@@ -84,7 +84,7 @@ namespace SomethingNeedDoing
 
             ImGui.Columns(2);
 
-            DisplayNode(plugin.Configuration.RootFolder);
+            DisplayNode(plugin.configuration.RootFolder);
 
             ImGui.NextColumn();
 
@@ -128,7 +128,7 @@ namespace SomethingNeedDoing
 
         private void DisplayFolderNode(FolderNode node)
         {
-            if (node == plugin.Configuration.RootFolder)
+            if (node == plugin.configuration.RootFolder)
             {
                 ImGui.SetNextItemOpen(true, ImGuiCond.FirstUseEver);
             }
@@ -147,7 +147,7 @@ namespace SomethingNeedDoing
 
         private string GetUniqueNodeName(string name)
         {
-            var nodeNames = plugin.Configuration.GetAllNodes().Select(node => node.Name).ToList();
+            var nodeNames = plugin.configuration.GetAllNodes().Select(node => node.Name).ToList();
             while (nodeNames.Contains(name))
             {
                 Match match = INCREMENTAL_NAME.Match(name);
@@ -201,7 +201,7 @@ namespace SomethingNeedDoing
                     }
                 }
 
-                if (node != plugin.Configuration.RootFolder)
+                if (node != plugin.configuration.RootFolder)
                 {
                     ImGui.SameLine();
                     if (ImGuiEx.IconButton(FontAwesomeIcon.Copy, "Copy Name"))
@@ -212,7 +212,7 @@ namespace SomethingNeedDoing
                     ImGui.SameLine();
                     if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Delete"))
                     {
-                        if (plugin.Configuration.TryFindParent(node, out var parentNode) && parentNode is not null)
+                        if (plugin.configuration.TryFindParent(node, out var parentNode) && parentNode is not null)
                         {
                             RemoveNode.Add(new RemoveNodeOperation { Node = node, ParentNode = parentNode });
                         }
@@ -226,7 +226,7 @@ namespace SomethingNeedDoing
 
         private void NodeDragDrop(INode node)
         {
-            if (node != plugin.Configuration.RootFolder)
+            if (node != plugin.configuration.RootFolder)
             {
                 if (ImGui.BeginDragDropSource())
                 {
@@ -247,7 +247,7 @@ namespace SomethingNeedDoing
                 var targetNode = node;
                 if (!nullPtr && payload.IsDelivery() && DraggedNode != null)
                 {
-                    if (plugin.Configuration.TryFindParent(DraggedNode, out var draggedNodeParent) && draggedNodeParent is not null)
+                    if (plugin.configuration.TryFindParent(DraggedNode, out var draggedNodeParent) && draggedNodeParent is not null)
                     {
                         if (targetNode is FolderNode targetFolderNode)
                         {
@@ -256,7 +256,7 @@ namespace SomethingNeedDoing
                         }
                         else
                         {
-                            if (plugin.Configuration.TryFindParent(targetNode, out var targetNodeParent) && targetNodeParent is not null)
+                            if (plugin.configuration.TryFindParent(targetNode, out var targetNodeParent) && targetNodeParent is not null)
                             {
                                 var targetNodeIndex = targetNodeParent.Children.IndexOf(targetNode);
                                 if (targetNodeParent == draggedNodeParent)
@@ -387,10 +387,10 @@ namespace SomethingNeedDoing
             if (ImGui.BeginPopupContextItem("font-editor", ImGuiPopupFlags.None))
             {
                 ImGui.BeginPopup("font-editor");
-                var fontSize = (int)plugin.Configuration.CustomFontSize;
+                var fontSize = (int)plugin.configuration.CustomFontSize;
                 if (ImGui.SliderInt("Font Size", ref fontSize, 10, 30))
                 {
-                    plugin.Configuration.CustomFontSize = fontSize;
+                    plugin.configuration.CustomFontSize = fontSize;
                     DalamudBinding.PluginInterface.UiBuilder.RebuildFonts();
                     plugin.SaveConfiguration();
                 }

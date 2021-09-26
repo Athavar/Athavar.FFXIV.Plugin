@@ -1,7 +1,6 @@
 ﻿using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 

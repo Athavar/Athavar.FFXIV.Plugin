@@ -1,9 +1,6 @@
-﻿using Athavar.FFXIV.Plugin.UI;
-using Dalamud.Game.Command;
+﻿using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using System.IO;
-using System.Reflection;
 
 namespace Athavar.FFXIV.Plugin
 {
@@ -20,9 +17,10 @@ namespace Athavar.FFXIV.Plugin
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager)
         {
-            this.CommandManager = commandManager;
             DalamudBinding.Initialize(pluginInterface);
-            Modules.Initialize();
+            _ = Modules.Instance;
+
+            this.CommandManager = commandManager;
 
             this.PluginUi = new PluginUI(this);
 
@@ -34,7 +32,7 @@ namespace Athavar.FFXIV.Plugin
 
         public void Dispose()
         {
-            Modules.Dispose();
+            Modules.Instance.Dispose();
             this.PluginUi.Dispose();
             this.CommandManager.RemoveHandler(CommandName);
         }

@@ -9,26 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Dalamud.Hooking;
 using Dalamud.Logging;
 using Athavar.FFXIV.Plugin;
 using Dalamud.Game.Gui.Toast;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
-using Dalamud.Game.Network;
 
 namespace Inviter
 {
-    internal class InviterModule
+    internal class InviterModule : IModule
     {
         public string Name => "Inviter";
 
         private InviterUi InvoterUi;
-
-        public Localizer Localizer { get; private set; }
-
-        public Configuration Config { get; private set; }
-        public InviterConfiguration InviterConfig => Config.Inviter;
 
         private delegate IntPtr GetUIBaseDelegate();
         private delegate IntPtr GetUIModuleDelegate(IntPtr basePtr);
@@ -49,10 +42,10 @@ namespace Inviter
         internal InviterTimed timedRecruitment;
         internal Regex? invitePattern;
 
-        public InviterModule(Configuration configuration, Localizer localizer)
+        public InviterModule(Modules modules)
         {
-            this.Config = configuration;
-            this.Localizer = localizer;
+            this.Config = modules.Configuration;
+            this.Localizer = modules.Localizer;
             this.InvoterUi = new(this);
 
             name2CID = new Dictionary<string, long> { };
@@ -86,6 +79,11 @@ namespace Inviter
             DalamudBinding.ChatGui.ChatMessage += OnChatMessage;
             timedRecruitment = new InviterTimed(this);
         }
+
+        public Localizer Localizer { get; init; }
+
+        public Configuration Config { get; init; }
+        public InviterConfiguration InviterConfig => Config.Inviter!;
 
         public void Dispose()
         {

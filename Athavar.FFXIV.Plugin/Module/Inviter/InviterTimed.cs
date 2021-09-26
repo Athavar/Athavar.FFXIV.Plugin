@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin;
 using Dalamud.Game.Gui.Toast;
@@ -113,7 +112,7 @@ namespace Inviter
                         DalamudBinding.ToastGui.ShowError(Localizer.Localize("Time can not be negative"));
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // plugin.Interface.Framework.Gui.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
                     DalamudBinding.ToastGui.ShowError(Localizer.Localize("Please enter amount of time in minutes"));

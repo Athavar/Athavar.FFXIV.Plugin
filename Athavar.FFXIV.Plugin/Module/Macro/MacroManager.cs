@@ -1,6 +1,5 @@
 using Athavar.FFXIV.Plugin;
 using ClickLib;
-using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using Dalamud.Logging;
@@ -260,7 +259,7 @@ namespace SomethingNeedDoing
                 throw new InvalidMacroOperationException("Syntax error");
 
             var macroName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' });
-            var macroNode = plugin.Configuration.GetAllNodes().FirstOrDefault(macro => macro.Name == macroName) as MacroNode;
+            var macroNode = plugin.configuration.GetAllNodes().FirstOrDefault(macro => macro.Name == macroName) as MacroNode;
             if (macroNode == default(MacroNode))
                 throw new InvalidMacroOperationException("Unknown macro");
 

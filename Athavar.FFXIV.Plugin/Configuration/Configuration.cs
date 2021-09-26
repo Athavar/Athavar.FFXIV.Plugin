@@ -1,9 +1,9 @@
 ﻿using Dalamud.Configuration;
-using Inviter;
+using Dalamud.Logging;
 using Newtonsoft.Json;
-using SomethingNeedDoing;
+using System.Collections.Generic;
 using System.IO;
-using YesAlready;
+using static Athavar.FFXIV.Plugin.Modules;
 
 namespace Athavar.FFXIV.Plugin
 {
@@ -18,17 +18,20 @@ namespace Athavar.FFXIV.Plugin
                 config = new Configuration();
             else
                 config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(pluginConfigPath.FullName)) ?? new Configuration();
+
+            PluginLog.Debug("Load Configuration.");
             return config.Init();
         }
 
         public static void Save()
         {
-            DalamudBinding.PluginInterface.SavePluginConfig(Modules.Configuration);
+            DalamudBinding.PluginInterface.SavePluginConfig(Modules.Instance.Configuration);
         }
 
 
         private Configuration()
         {
+            Init();
         }
 
         private Configuration Init()
@@ -36,6 +39,7 @@ namespace Athavar.FFXIV.Plugin
             this.Yes ??= new();
             this.Macro ??= new();
             (this.Inviter ??= new()).Init();
+            this.ModuleEnabled ??= new();
             return this;
         }
 
@@ -50,5 +54,7 @@ namespace Athavar.FFXIV.Plugin
         public bool ShowToolTips { get; set; } = true;
 
         public Language Language { get; set; } = Language.EN;
+
+        public List<Module> ModuleEnabled { get; set; } = null!;
     }
 }
