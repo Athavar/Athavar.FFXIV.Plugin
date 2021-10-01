@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>athavar</Authors>
     <Company>-</Company>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Description>A sample plugin.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Athavar/Athavar.FFXIV.Plugin</PackageProjectUrl>
@@ -45,10 +45,13 @@
     <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.2" />
     <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
-    <PackageReference Include="WindowsInput" Version="6.3.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
     <Reference Include="FFXIVClientStructs">

@@ -9,7 +9,7 @@ namespace ClickLib.Clicks
 
         public unsafe ClickTalk() : base()
         {
-            AvailableClicks["talk"] = (addon) => SendClick(addon, EventType.INPUT, 0, ((AddonTalk*)addon)->AtkStage);
+            AvailableClicks["talk"] = (addon) => SendClick(addon, EventType.MOUSE_CLICK, 0, ((AddonTalk*)addon)->AtkStage);
         }
     }
 }

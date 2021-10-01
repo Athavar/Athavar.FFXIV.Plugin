@@ -1,5 +1,6 @@
 using Athavar.FFXIV.Plugin;
 using Dalamud.Interface;
+using Dalamud.Logging;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -52,27 +53,34 @@ namespace SomethingNeedDoing
 
         public void UiBuilder_OnBuildFonts()
         {
-            var fontData = plugin.ReadResourceFile("ProggyVectorRegular.ttf");
-            var fontPtr = Marshal.AllocHGlobal(fontData.Length);
-            Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-
-            var fontDataJP = plugin.ReadResourceFile("NotoSansMonoCJKjp-Regular.otf");
-            var fontPtrJP = Marshal.AllocHGlobal(fontDataJP.Length);
-            Marshal.Copy(fontDataJP, 0, fontPtrJP, fontDataJP.Length);
-
-            unsafe
+            try
             {
-                ImFontConfigPtr fontConfig = ImGuiNative.ImFontConfig_ImFontConfig();
-                fontConfig.MergeMode = true;
-                fontConfig.PixelSnapH = true;
+                var fontData = plugin.ReadResourceFile("ProggyVectorRegular.ttf");
+                var fontPtr = Marshal.AllocHGlobal(fontData.Length);
+                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
 
-                MonoFont = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtr, fontData.Length, plugin.configuration.CustomFontSize, fontConfig);
+                var fontDataJP = plugin.ReadResourceFile("NotoSansMonoCJKjp-Regular.otf");
+                var fontPtrJP = Marshal.AllocHGlobal(fontDataJP.Length);
+                Marshal.Copy(fontDataJP, 0, fontPtrJP, fontDataJP.Length);
 
-                // Interface.GlyphRangesJapanese is internal, should be public
-                // Once it is, our file can be deleted
-                var japaneseRangeHandle = GCHandle.Alloc(GlyphRangesJapanese.GlyphRanges, GCHandleType.Pinned);
-                MonoFontJP = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtrJP, fontDataJP.Length, plugin.configuration.CustomFontSize, fontConfig, japaneseRangeHandle.AddrOfPinnedObject());
-                japaneseRangeHandle.Free();
+                unsafe
+                {
+                    ImFontConfigPtr fontConfig = ImGuiNative.ImFontConfig_ImFontConfig();
+                    fontConfig.MergeMode = true;
+                    fontConfig.PixelSnapH = true;
+
+                    MonoFont = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtr, fontData.Length, plugin.configuration.CustomFontSize, fontConfig);
+
+                    // Interface.GlyphRangesJapanese is internal, should be public
+                    // Once it is, our file can be deleted
+                    var japaneseRangeHandle = GCHandle.Alloc(GlyphRangesJapanese.GlyphRanges, GCHandleType.Pinned);
+                    MonoFontJP = ImGui.GetIO().Fonts.AddFontFromMemoryTTF(fontPtrJP, fontDataJP.Length, plugin.configuration.CustomFontSize, fontConfig, japaneseRangeHandle.AddrOfPinnedObject());
+                    japaneseRangeHandle.Free();
+                }
+            }
+            catch (Exception e)
+            {
+                PluginLog.LogError("Error during rebuild of Fonts. {0}: {1}", e.Message, e.StackTrace ?? string.Empty);
             }
         }
 

@@ -12,6 +12,8 @@ namespace Athavar.FFXIV.Plugin
 
         private static readonly Lazy<Modules> instance = new(() => new Modules(), System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
 
+        private object lockobject = new();
+
         public Modules()
         {
             this.Configuration = Configuration.Load();
@@ -58,48 +60,61 @@ namespace Athavar.FFXIV.Plugin
 
         public void Enable(Module module, bool enable)
         {
-            PluginLog.Log("Change Module enable status. Module: {0} -> {1}", module, enable);
-            var index = Array.IndexOf(ModuleValues, module);
-
-            var mod = modules[index];
-
-            if (enable)
+            lock (lockobject)
             {
-                this.Configuration.ModuleEnabled.Add(module);
-                if (mod is null)
+                PluginLog.Log("Change Module enable status. Module: {0} -> {1}", module, enable);
+                var index = Array.IndexOf(ModuleValues, module);
+
+                var mod = modules[index];
+
+                if (enable)
                 {
-                    var type = GetModuleType(module);
-                    modules[index] = (IModule?)Activator.CreateInstance(type, this);
+                    if (!this.Configuration.ModuleEnabled.Contains(module))
+                    {
+                        this.Configuration.ModuleEnabled.Add(module);
+                    }
+
+                    if (mod is null)
+                    {
+                        var type = GetModuleType(module);
+                        modules[index] = (IModule?)Activator.CreateInstance(type, this);
+                    }
+
                 }
-
-            }
-            else
-            {
-               var ff = this.Configuration.ModuleEnabled.Remove(module);
-                PluginLog.Log(ff.ToString());
-
-                if (mod is not null)
+                else
                 {
+                    var ff = this.Configuration.ModuleEnabled.Remove(module);
+                    PluginLog.Log(ff.ToString());
 
-                    mod.Dispose();
-                    modules[index] = null;
+                    if (mod is not null)
+                    {
+
+                        mod.Dispose();
+                        modules[index] = null;
+                    }
                 }
             }
         }
 
         public IModule? GetModule(Module module)
         {
-            var index = Array.IndexOf(ModuleValues, module);
+            lock (lockobject)
+            {
+                var index = Array.IndexOf(ModuleValues, module);
 
-            return modules[index];
+                return modules[index];
+            }
         }
 
         public void Draw()
         {
 
-            foreach (var m in modules)
+            lock (lockobject)
             {
-                m?.Draw();
+                foreach (var m in modules)
+                {
+                    m?.Draw();
+                }
             }
         }
 

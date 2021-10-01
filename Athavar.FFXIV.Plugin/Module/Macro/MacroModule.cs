@@ -44,7 +44,7 @@ namespace SomethingNeedDoing
 
         internal byte[] ReadResourceFile(params string[] filePathSegments)
         {
-            var assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new DllNotFoundException();
+            var assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var resourceFilePath = Path.Combine(assemblyFolder, Path.Combine(filePathSegments));
             return File.ReadAllBytes(resourceFilePath);
         }

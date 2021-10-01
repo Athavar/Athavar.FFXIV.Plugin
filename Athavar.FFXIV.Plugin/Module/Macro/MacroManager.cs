@@ -6,14 +6,14 @@ using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using WindowsInput;
-using WindowsInput.Events;
+using static Athavar.FFXIV.Plugin.Native;
 
 namespace SomethingNeedDoing
 {
@@ -42,7 +42,7 @@ namespace SomethingNeedDoing
 
         public LoopState LoopState { get; private set; } = LoopState.Waiting;
 
-        private InvokeOptions invokeOptions = new();
+        private Process proc;
         private bool IsPaused = true;
         private bool IsLoggedIn = false;
 
@@ -53,7 +53,7 @@ namespace SomethingNeedDoing
             DalamudBinding.ClientState.Logout += ClientState_OnLogout;
 
             Click.Initialize();
-            invokeOptions.SendInput.BatchDelay = TimeSpan.FromMilliseconds(100);
+            proc = Process.GetCurrentProcess();
 
 
             PopulateCraftingActionNames();
@@ -75,6 +75,7 @@ namespace SomethingNeedDoing
             EventLoopTokenSource.Cancel();
             EventLoopTokenSource.Dispose();
             EventFrameworkHook.Dispose();
+            proc.Dispose();
         }
 
         private void OnEventFrameworkDetour(IntPtr dataPtr, byte dataSize)
@@ -393,15 +394,17 @@ namespace SomethingNeedDoing
             }
             else
             {
-                for(int i = 0; i < vkCodes.Length; i++)
+                var mWnd = proc.MainWindowHandle;
+
+                for (int i = 0; i < vkCodes.Length; i++)
                 {
-                    await Simulate.Events().Hold(vkCodes).Invoke(invokeOptions);
+                    Native.KeyDown(mWnd, vkCodes[i]);
                 }
                 await Task.Delay(15);
 
                 for (int i = 0; i < vkCodes.Length; i++)
                 {
-                    await Simulate.Events().Release(vkCodes).Invoke(invokeOptions);
+                    Native.KeyUp(mWnd,  vkCodes[i]);
                 }
                 // var result = await Simulate.Events().Click(vkCodes).Invoke(invokeOptions);
             }

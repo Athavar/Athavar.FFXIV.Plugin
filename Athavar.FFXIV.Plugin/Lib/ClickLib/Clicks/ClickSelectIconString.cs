@@ -25,8 +25,8 @@ namespace ClickLib.Clicks
         private unsafe void ClickItem(IntPtr addonPtr, int index)
         {
             var addon = (AddonSelectIconString*)addonPtr;
-            var eventThing = &addon->SelectIconStringThing;
-            var componentList = eventThing->AtkComponentList;
+            var eventThing = &addon->PopupMenu;
+            var componentList = eventThing->List;
 
             var arg5 = Marshal.AllocHGlobal(0x40);
             for (var i = 0; i < 0x40; i++)

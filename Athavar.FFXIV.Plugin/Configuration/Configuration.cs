@@ -31,7 +31,6 @@ namespace Athavar.FFXIV.Plugin
 
         private Configuration()
         {
-            Init();
         }
 
         private Configuration Init()
@@ -40,6 +39,7 @@ namespace Athavar.FFXIV.Plugin
             this.Macro ??= new();
             (this.Inviter ??= new()).Init();
             this.ModuleEnabled ??= new();
+
             return this;
         }
 
