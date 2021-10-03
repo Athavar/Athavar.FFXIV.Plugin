@@ -158,7 +158,7 @@ namespace SomethingNeedDoing
                 catch (Exception ex)
                 {
                     PluginLog.Error(ex, "Unhandled exception occurred");
-                    plugin.ChatManager.PrintError($"[SomethingNeedDoing] Peon has died unexpectedly.");
+                    plugin.ChatManager.PrintError($"[Athavar.Macro] Worker has died unexpectedly.");
                     RunningMacros.Clear();
                 }
             }
@@ -279,15 +279,23 @@ namespace SomethingNeedDoing
 
             if (IsCraftingAction(actionName))
             {
+                const int delayWait = 500;
                 DataAvailableWaiter.Reset();
 
                 plugin.ChatManager.SendChatBoxMessage(step);
 
-                await Task.Delay(wait, token);
+                await Task.Delay(Math.Max((int)wait.TotalMilliseconds - delayWait, 0), token);
                 wait = TimeSpan.Zero;
 
-                if (!unsafeAction && !DataAvailableWaiter.WaitOne(5000))
-                    throw new EventFrameworkTimeoutError("Did not receive a response from the game");
+                // if (!unsafeAction && !DataAvailableWaiter.WaitOne(5000))
+                //    throw new EventFrameworkTimeoutError("Did not receive a response from the game");
+
+                // wait for crafting condition flag to exit.
+                await Task.Delay(delayWait, token);
+                while (DalamudBinding.Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.Crafting40])
+                {
+                    await Task.Delay(10, token);
+                }
             }
             else
             {
