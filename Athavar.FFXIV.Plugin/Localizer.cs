@@ -6,7 +6,7 @@
 
         public Localizer(Language language = Language.EN)
         {
-            Language = language;
+            this.Language = language;
         }
 
         public string Localize(string? message)

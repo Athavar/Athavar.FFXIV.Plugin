@@ -1,15 +1,32 @@
-﻿using FFXIVClientStructs.FFXIV.Client.UI;
-
-namespace ClickLib.Clicks
+﻿namespace ClickLib.Clicks
 {
-    internal sealed class ClickTalk : ClickBase
+    using System;
+    using FFXIVClientStructs.FFXIV.Client.UI;
+
+    /// <summary>
+    /// Addon Talk.
+    /// </summary>
+    public sealed class ClickTalk : ClickBase<AddonTalk>
     {
-        protected override string Name => "Talk";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClickTalk"/> class.
+        /// </summary>
+        /// <param name="addon">Addon pointer.</param>
+        public ClickTalk(IntPtr addon = default)
+            : base(addon)
+        {
+        }
+
+        /// <inheritdoc/>
         protected override string AddonName => "Talk";
 
-        public unsafe ClickTalk() : base()
+        /// <summary>
+        /// Click the talk dialog.
+        /// </summary>
+        [ClickName("talk")]
+        public unsafe void Click()
         {
-            AvailableClicks["talk"] = (addon) => SendClick(addon, EventType.MOUSE_CLICK, 0, ((AddonTalk*)addon)->AtkStage);
+            ClickAddonStage(&this.Addon->AtkUnitBase, this.Addon->AtkStage, 0);
         }
     }
 }

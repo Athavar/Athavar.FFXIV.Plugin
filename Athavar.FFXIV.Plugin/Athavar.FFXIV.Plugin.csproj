@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>athavar</Authors>
     <Company>-</Company>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Description>A sample plugin.</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/Athavar/Athavar.FFXIV.Plugin</PackageProjectUrl>
@@ -31,11 +31,6 @@
   <ItemGroup>
     <Compile Remove="UI\NPCTabUI.cs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\Data\NotoSansMonoCJKjp-Regular.otf" Link="NotoSansMonoCJKjp-Regular.otf" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-    <Content Include="..\Data\ProggyVectorRegular.ttf" Link="ProggyVectorRegular.ttf" CopyToOutputDirectory="PreserveNewest" Visible="false" />
-  </ItemGroup>
   
   <ItemGroup>
     <Content Include="..\Data\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
@@ -50,14 +45,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.2" />
     <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />
     <PackageReference Include="System.Threading.Channels" Version="5.0.0" />
-    <Reference Include="FFXIVClientStructs">
+    <ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" />
+    <!-->Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
-    </Reference>
+    </Reference-->
     <Reference Include="Newtonsoft.Json">
       <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
       <Private>false</Private>
@@ -94,7 +98,8 @@
 
   <Target Name="CleanOutDir" AfterTargets="ILRepack">
     <ItemGroup>
-      <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
+      <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll" />
+      <DeleteAssemblies Include="$(TargetDir)*.pdb" Exclude="$(TargetDir)$(TargetName).pdb" />
     </ItemGroup>
     <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
     <Delete Files="@(DeleteAssemblies)" />

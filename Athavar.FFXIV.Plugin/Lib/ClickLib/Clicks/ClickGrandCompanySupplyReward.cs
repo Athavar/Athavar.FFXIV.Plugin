@@ -1,16 +1,41 @@
-﻿using FFXIVClientStructs.FFXIV.Client.UI;
-
-namespace ClickLib.Clicks
+﻿namespace ClickLib.Clicks
 {
-    internal sealed class ClickGrandCompanySupplyReward : ClickBase
+    using System;
+    using FFXIVClientStructs.FFXIV.Client.UI;
+
+    /// <summary>
+    /// Addon GrandCompanySupplyReward.
+    /// </summary>
+    public sealed unsafe class ClickGrandCompanySupplyReward : ClickBase<AddonGrandCompanySupplyReward>
     {
-        protected override string Name => "GrandCompanySupplyReward";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClickGrandCompanySupplyReward"/> class.
+        /// </summary>
+        /// <param name="addon">Addon pointer.</param>
+        public ClickGrandCompanySupplyReward(IntPtr addon = default)
+            : base(addon)
+        {
+        }
+
+        /// <inheritdoc/>
         protected override string AddonName => "GrandCompanySupplyReward";
 
-        public unsafe ClickGrandCompanySupplyReward() : base()
+        /// <summary>
+        /// Click the deliver button.
+        /// </summary>
+        [ClickName("grand_company_expert_delivery_deliver")]
+        public void Deliver()
         {
-            AvailableClicks["grand_company_expert_delivery_deliver"] = (addon) => SendClick(addon, EventType.CHANGE, 0, ((AddonGrandCompanySupplyReward*)addon)->DeliverButton->AtkComponentBase.OwnerNode);
-            AvailableClicks["grand_company_expert_delivery_cancel"] = (addon) => SendClick(addon, EventType.CHANGE, 1, ((AddonGrandCompanySupplyReward*)addon)->CancelButton->AtkComponentBase.OwnerNode);
+            ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->DeliverButton, 0);
+        }
+
+        /// <summary>
+        /// Click the cancel button.
+        /// </summary>
+        [ClickName("grand_company_expert_delivery_cancel")]
+        public void Cancel()
+        {
+            ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->CancelButton, 1);
         }
     }
 }

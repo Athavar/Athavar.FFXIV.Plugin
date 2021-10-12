@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>daemitus</Authors>
     <Company>-</Company>
-    <Version>1.0.1.1</Version>
+    <Version>1.1.1.0</Version>
     <Description></Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/daemitus/ClickLib</PackageProjectUrl>
@@ -11,11 +11,19 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64</Platforms>
+    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Documentation">
+    <DocumentationFile></DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,6 +31,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" />
+    <AdditionalFiles Include="..\stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <ProjectReference Include="..\..\..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" />
+    <Reference Include="Dalamud">
+      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 </Project>

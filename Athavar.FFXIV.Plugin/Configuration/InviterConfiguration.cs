@@ -1,16 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Dalamud.Game.Text;
-
-namespace Athavar.FFXIV.Plugin
+﻿namespace Athavar.FFXIV.Plugin
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Dalamud.Game.Text;
+
     internal class InviterConfiguration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InviterConfiguration"/> class.
+        /// </summary>
         public InviterConfiguration()
         {
         }
 
+        /// <summary>
+        /// Init the configuration with default values.
+        /// </summary>
         public void Init()
         {
             this.HiddenChatType ??= new List<XivChatType> {
@@ -35,9 +41,13 @@ namespace Athavar.FFXIV.Plugin
         public bool Enable = false;
 
         public string TextPattern = "inv";
+
         public bool RegexMatch = false;
+
         public bool PrintMessage = false;
+
         public bool PrintError = true;
+
         public int Delay = 200;
 
         public List<XivChatType>? HiddenChatType = null!;

@@ -1,17 +1,18 @@
-﻿using System;
-using System.Threading.Tasks;
-using Athavar.FFXIV.Plugin;
-using Dalamud.Game.Gui.Toast;
-
-namespace Inviter
+﻿namespace Inviter
 {
+    using System;
+    using System.Threading.Tasks;
+    using Athavar.FFXIV.Plugin;
+    using Dalamud.Game.Gui.Toast;
+
     internal class InviterTimed
     {
         internal InviterModule plugin;
         internal long runUntil = 0;
         internal long nextNotification = 0;
         internal bool isRunning = false;
-        internal Localizer Localizer => plugin.Localizer;
+
+        internal Localizer Localizer => this.plugin.Localizer;
 
         internal InviterTimed(InviterModule plugin)
         {
@@ -20,56 +21,56 @@ namespace Inviter
 
         internal async Task Run()
         {
-            isRunning = true;
-            nextNotification = DateTimeOffset.Now.ToUnixTimeSeconds() + (runUntil - DateTimeOffset.Now.ToUnixTimeSeconds())/2;
+            this.isRunning = true;
+            this.nextNotification = DateTimeOffset.Now.ToUnixTimeSeconds() + ((this.runUntil - DateTimeOffset.Now.ToUnixTimeSeconds()) / 2);
             try
             {
-                plugin.InviterConfig.Enable = true;
-                while (DateTimeOffset.Now.ToUnixTimeSeconds() < runUntil)
+                this.plugin.InviterConfig.Enable = true;
+                while (DateTimeOffset.Now.ToUnixTimeSeconds() < this.runUntil)
                 {
                     await Task.Delay(1000);
-                    if (!plugin.InviterConfig.Enable)
+                    if (!this.plugin.InviterConfig.Enable)
                     {
-                        runUntil = 0;
+                        this.runUntil = 0;
                         break;
                     }
 
-                    if(DateTimeOffset.Now.ToUnixTimeSeconds() >= nextNotification && DateTimeOffset.Now.ToUnixTimeSeconds() < runUntil)
+                    if(DateTimeOffset.Now.ToUnixTimeSeconds() >= this.nextNotification && DateTimeOffset.Now.ToUnixTimeSeconds() < this.runUntil)
                     {
                         DalamudBinding.ToastGui.ShowQuest(
-                            String.Format(Localizer.Localize("Automatic recruitment enabled, {0} minutes left"),
-                            Math.Ceiling((runUntil - DateTimeOffset.Now.ToUnixTimeSeconds()) / 60d))
-                            );
+                            string.Format(this.Localizer.Localize("Automatic recruitment enabled, {0} minutes left"),
+                            Math.Ceiling((this.runUntil - DateTimeOffset.Now.ToUnixTimeSeconds()) / 60d)));
 
-                        UpdateTimeNextNotification();
+                        this.UpdateTimeNextNotification();
                     }
                 }
-                DalamudBinding.ToastGui.ShowQuest(Localizer.Localize("Automatic recruitment finished"), new QuestToastOptions()
+
+                DalamudBinding.ToastGui.ShowQuest(this.Localizer.Localize("Automatic recruitment finished"), new QuestToastOptions()
                 {
                     DisplayCheckmark = true,
-                    PlaySound = true
+                    PlaySound = true,
                 });
-                plugin.InviterConfig.Enable = false;
+                this.plugin.InviterConfig.Enable = false;
             }
             catch (Exception e)
             {
                 DalamudBinding.ChatGui.Print("Error: " + e.Message + "\n" + e.StackTrace);
             }
-            isRunning = false;
+
+            this.isRunning = false;
         }
 
         internal void UpdateTimeNextNotification()
         {
-            nextNotification = DateTimeOffset.Now.ToUnixTimeSeconds() + Math.Max(60, (runUntil - DateTimeOffset.Now.ToUnixTimeSeconds()) / 2);
+            this.nextNotification = DateTimeOffset.Now.ToUnixTimeSeconds() + Math.Max(60, (this.runUntil - DateTimeOffset.Now.ToUnixTimeSeconds()) / 2);
         }
 
         internal void ProcessCommandTimedEnable(int timeInMinutes)
         {
-            if (plugin.InviterConfig.Enable && !isRunning)
+            if (this.plugin.InviterConfig.Enable && !this.isRunning)
             {
-                DalamudBinding.ToastGui.ShowError(Localizer.Localize(
-                        "Can't start timed recruitment because Inviter is turned on permanently"
-                    ));
+                DalamudBinding.ToastGui.ShowError(this.Localizer.Localize(
+                        "Can't start timed recruitment because Inviter is turned on permanently"));
             }
             else
             {
@@ -78,44 +79,45 @@ namespace Inviter
                     var time = timeInMinutes;
                     if (time > 0)
                     {
-                        runUntil = DateTimeOffset.Now.ToUnixTimeSeconds() + time * 60;
-                        if (isRunning) 
+                        this.runUntil = DateTimeOffset.Now.ToUnixTimeSeconds() + (time * 60);
+
+                        if (this.isRunning)
                         {
-                            UpdateTimeNextNotification();
+                            this.UpdateTimeNextNotification();
                         }
                         else
                         {
-                            Task.Run(Run);
+                            Task.Run(this.Run);
                         }
 
                         DalamudBinding.ToastGui.ShowQuest(
-                            String.Format(Localizer.Localize("Commenced automatic recruitment for {0} minutes"), time)
+                            string.Format(this.Localizer.Localize("Commenced automatic recruitment for {0} minutes"), time)
                             , new QuestToastOptions()
                             {
                                 DisplayCheckmark = true,
-                                PlaySound = true
+                                PlaySound = true,
                             });
                     }
                     else if (time == 0)
                     {
-                        if (isRunning)
+                        if (this.isRunning)
                         {
-                            runUntil = 0;
+                            this.runUntil = 0;
                         }
                         else
                         {
-                            DalamudBinding.ToastGui.ShowError(Localizer.Localize("Recruitment is not running, can not cancel"));
+                            DalamudBinding.ToastGui.ShowError(this.Localizer.Localize("Recruitment is not running, can not cancel"));
                         }
                     }
                     else
                     {
-                        DalamudBinding.ToastGui.ShowError(Localizer.Localize("Time can not be negative"));
+                        DalamudBinding.ToastGui.ShowError(this.Localizer.Localize("Time can not be negative"));
                     }
                 }
                 catch (Exception)
                 {
                     // plugin.Interface.Framework.Gui.Chat.Print("Error: " + e.Message + "\n" + e.StackTrace);
-                    DalamudBinding.ToastGui.ShowError(Localizer.Localize("Please enter amount of time in minutes"));
+                    DalamudBinding.ToastGui.ShowError(this.Localizer.Localize("Please enter amount of time in minutes"));
                 }
             }
         }

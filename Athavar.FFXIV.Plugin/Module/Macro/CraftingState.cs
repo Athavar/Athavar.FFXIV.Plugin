@@ -1,10 +1,10 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace SomethingNeedDoing
+﻿namespace SomethingNeedDoing
 {
+    using System;
+    using System.Runtime.InteropServices;
+
     [StructLayout(LayoutKind.Explicit, Size = 0x64)]
-    internal struct CraftingData
+    internal struct CraftingState
     {
         [FieldOffset(0x00)] public ActionCategory ActionCategory;
         // [FieldOffset(0x04)] public int Unk04;
@@ -35,11 +35,15 @@ namespace SomethingNeedDoing
         // [FieldOffset(0x5C)] public int Unk5C;
         // [FieldOffset(0x60)] public int Unk60;
 
-        public bool Flag0 => ResultFlags.HasFlag(ActionResultFlags.Unk0);
-        public bool Step1 => !ResultFlags.HasFlag(ActionResultFlags.NotStep1);
-        public bool CraftingSuccess => ResultFlags.HasFlag(ActionResultFlags.CraftingSuccess);
-        public bool CraftingFailure => ResultFlags.HasFlag(ActionResultFlags.CraftingFailure);
-        public bool ActionSuccess => ResultFlags.HasFlag(ActionResultFlags.ActionSuccess);
+        public bool Flag0 => this.ResultFlags.HasFlag(ActionResultFlags.Unk0);
+
+        public bool Step1 => !this.ResultFlags.HasFlag(ActionResultFlags.NotStep1);
+
+        public bool CraftingSuccess => this.ResultFlags.HasFlag(ActionResultFlags.CraftingSuccess);
+
+        public bool CraftingFailure => this.ResultFlags.HasFlag(ActionResultFlags.CraftingFailure);
+
+        public bool ActionSuccess => this.ResultFlags.HasFlag(ActionResultFlags.ActionSuccess);
     }
 
     /*
@@ -49,12 +53,18 @@ namespace SomethingNeedDoing
     failure state is only preset for a short time before the values are all reset to 0.
      */
 
-    public enum ActionCategory : int
+    /// <summary>
+    /// Ability/Action category types.
+    /// </summary>
+    internal enum ActionCategory : int
     {
         CraftAction = 9,
         Action = 10,
     }
 
+    /// <summary>
+    /// Crafting condition types.
+    /// </summary>
     internal enum CraftingCondition : int
     {
         NORMAL = 1,
@@ -68,6 +78,9 @@ namespace SomethingNeedDoing
         PRIMED = 9,
     }
 
+    /// <summary>
+    /// Event action result types.
+    /// </summary>
     [Flags]
     internal enum ActionResultFlags : ushort
     {
@@ -78,6 +91,9 @@ namespace SomethingNeedDoing
         ActionSuccess = 1 << 4,
     }
 
+    /// <summary>
+    /// Event action result types.
+    /// </summary>
     internal enum ActionResult : short
     {
         /*
@@ -88,7 +104,7 @@ namespace SomethingNeedDoing
          0 0 0 0   1 0 1 0   10
          0 0 0 1   0 0 0 0   16
          0 0 0 1   0 0 0 1   17
-         0 0 0 1   0 0 1 0   18   
+         0 0 0 1   0 0 1 0   18
          0 0 0 1   0 0 1 1   19
          0 0 0 1   0 1 1 0   22
          0 0 0 1   1 0 1 0   26

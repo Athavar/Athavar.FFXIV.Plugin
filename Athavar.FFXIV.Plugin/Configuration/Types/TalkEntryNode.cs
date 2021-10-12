@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Athavar.FFXIV.Plugin
+﻿namespace Athavar.FFXIV.Plugin
 {
+    using System.Collections.Generic;
+
     public class TalkEntryNode : INode
     {
         public bool Enabled { get; set; } = true;

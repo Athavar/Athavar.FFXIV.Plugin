@@ -1,51 +1,122 @@
-﻿using Dalamud.Game.Command;
-using Dalamud.IoC;
-using Dalamud.Plugin;
-
-namespace Athavar.FFXIV.Plugin
+﻿namespace Athavar.FFXIV.Plugin
 {
+    using ClickLib;
+    using Dalamud.Game.Command;
+    using Dalamud.Interface.Windowing;
+    using Dalamud.IoC;
+    using Dalamud.Plugin;
+    using System;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Main plugin implementation.
+    /// </summary>
     public sealed class Plugin : IDalamudPlugin
     {
-        public string Name => "Athavar's Tools";
-
         private const string CommandName = "/ath";
 
-        private CommandManager CommandManager { get; init; }
-        private PluginUI PluginUi { get; init; }
+        private readonly WindowSystem windowSystem;
+        private readonly PluginWindow pluginWindow;
 
+        /// <summary>
+        /// Lock object for <see cref="WindowSystem"/>.
+        /// </summary>
+        private readonly object wSLock = new();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Plugin"/> class.
+        /// </summary>
+        /// <param name="pluginInterface">Dalamud plugin interface.</param>
         public Plugin(
-            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager)
+            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
         {
             DalamudBinding.Initialize(pluginInterface);
-            _ = Modules.Instance;
+            Click.Initialize();
+            Modules.Init(this);
 
-            this.CommandManager = commandManager;
+            this.windowSystem = new("Athavar.FFXIV.Plugin");
 
-            this.PluginUi = new PluginUI(this);
+            this.pluginWindow = new PluginWindow(this);
+            this.windowSystem.AddWindow(this.pluginWindow);
 
-            this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+            DalamudBinding.PluginInterface.UiBuilder.Draw += this.DrawWindow;
+            DalamudBinding.PluginInterface.UiBuilder.OpenConfigUi += this.OnOpenConfigUi;
+
+            DalamudBinding.CommandManager.AddHandler(CommandName, new CommandInfo(this.OnCommand)
             {
-                HelpMessage = "Open the Configuration of Athavar's Tools."
+                HelpMessage = "Open the Configuration of Athavar's Tools.",
             });
         }
 
+        /// <inheritdoc/>
+        public string Name => "Athavar's Tools";
+
+        /// <summary>
+        /// Gets the dalamud windows system.
+        /// </summary>
+        internal PluginWindow PluginWindow => this.pluginWindow;
+
+        /// <inheritdoc/>
         public void Dispose()
         {
+            SaveConfiguration();
+
+            DalamudBinding.CommandManager.RemoveHandler(CommandName);
+            DalamudBinding.PluginInterface.UiBuilder.OpenConfigUi -= this.OnOpenConfigUi;
+            DalamudBinding.PluginInterface.UiBuilder.Draw -= this.DrawWindow;
+
+            Configuration.Dispose();
             Modules.Instance.Dispose();
-            this.PluginUi.Dispose();
-            this.CommandManager.RemoveHandler(CommandName);
+
+            // remove all remaining windows.
+            this.windowSystem.RemoveAllWindows();
         }
 
+        /// <summary>
+        /// Change something in the <see cref="WindowSystem"/>.
+        /// </summary>
+        /// <param name="action">The action that do the change.</param>
+        internal void ChangeWindowSystem(Action<WindowSystem> action)
+        {
+            Task.Run(() =>
+            {
+                lock (this.wSLock)
+                {
+                    try
+                    {
+                        action.Invoke(this.windowSystem);
+                    }
+                    catch (ArgumentException)
+                    {
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Save the plugin configuration.
+        /// </summary>
         internal static void SaveConfiguration()
         {
             Configuration.Save();
         }
 
+        private void DrawWindow()
+        {
+            lock (this.wSLock)
+            {
+                this.windowSystem.Draw();
+            }
+        }
+
+        private void OnOpenConfigUi()
+        {
+            this.pluginWindow.Toggle();
+        }
+
         private void OnCommand(string command, string args)
         {
-            // in response to the slash command, just display our main ui
-            this.PluginUi.OpenConfig();
+            this.pluginWindow.Toggle();
         }
     }
 }

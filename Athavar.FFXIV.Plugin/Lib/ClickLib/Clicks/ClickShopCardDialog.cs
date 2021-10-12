@@ -1,16 +1,33 @@
-﻿using FFXIVClientStructs.FFXIV.Client.UI;
-
-namespace ClickLib.Clicks
+﻿namespace ClickLib.Clicks
 {
-    internal sealed class ClickShopCardDialog : ClickBase
+    using System;
+    using FFXIVClientStructs.FFXIV.Client.UI;
+    using FFXIVClientStructs.FFXIV.Component.GUI;
+
+    /// <summary>
+    /// Addon ShopCardDialog.
+    /// </summary>
+    public sealed unsafe class ClickShopCardDialog : ClickBase<AddonShopCardDialog>
     {
-        protected override string Name => "ShopCardDialog";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClickShopCardDialog"/> class.
+        /// </summary>
+        /// <param name="addon">Addon pointer.</param>
+        public ClickShopCardDialog(IntPtr addon = default)
+            : base(addon)
+        {
+        }
+
+        /// <inheritdoc/>
         protected override string AddonName => "ShopCardDialog";
 
-        public unsafe ClickShopCardDialog() : base()
+        /// <summary>
+        /// Click the sell button.
+        /// </summary>
+        [ClickName("sell_triple_triad_card")]
+        public unsafe void Sell()
         {
-            // TODO: Set card quantity
-            AvailableClicks["sell_triple_triad_card"] = (addon) => SendClick(addon, EventType.CHANGE, 0, ((AddonShopCardDialog*)addon)->AtkUnitBase.UldManager.NodeList[3]);
+            ClickAddonButton(&this.Addon->AtkUnitBase, (AtkComponentButton*)this.Addon->AtkUnitBase.UldManager.NodeList[3], 0);
         }
     }
 }

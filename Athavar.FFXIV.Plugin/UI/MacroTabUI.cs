@@ -1,14 +1,15 @@
-﻿using Dalamud.Game.ClientState.Keys;
-using ImGuiNET;
-using System;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace Athavar.FFXIV.Plugin.UI
+﻿namespace Athavar.FFXIV.Plugin.UI
 {
+    using System;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Dalamud.Game.ClientState.Keys;
+    using ImGuiNET;
+
     public class MacroTabUI
     {
         private delegate ref int GetRefValueDelegate(int virtualKey);
+
         private GetRefValueDelegate? GetRefValue = null;
 
         private string? error;
@@ -24,7 +25,7 @@ namespace Athavar.FFXIV.Plugin.UI
             }
             catch (Exception e)
             {
-                error = e.ToString();
+                this.error = e.ToString();
             }
 
         }
@@ -35,11 +36,13 @@ namespace Athavar.FFXIV.Plugin.UI
         {
             using var raii = new ImGuiRaii();
             if (!raii.Begin(() => ImGui.BeginTabItem("Macro"), ImGui.EndTabItem))
-                return;
-
-            if (!string.IsNullOrEmpty(error))
             {
-                ImGui.Text(error);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(this.error))
+            {
+                ImGui.Text(this.error);
                 return;
             }
 
@@ -56,13 +59,13 @@ namespace Athavar.FFXIV.Plugin.UI
                 }
                 catch (Exception e)
                 {
-                    error = e.ToString();
+                    this.error = e.ToString();
                 }
             }
 
-            if (!string.IsNullOrEmpty(data))
+            if (!string.IsNullOrEmpty(this.data))
             {
-                ImGui.Text($"Data: {data}");
+                ImGui.Text($"Data: {this.data}");
             }
         }
 
@@ -70,22 +73,22 @@ namespace Athavar.FFXIV.Plugin.UI
         {
             foreach(var key in virtualKey)
             {
-                DownKey(key);
+                this.DownKey(key);
             }
 
             await Task.Delay(millisecondsDuration);
 
             foreach (var key in virtualKey)
             {
-                UpKey(key);
+                this.UpKey(key);
             }
         }
 
         private async Task PressKey(int millisecondsDuration, VirtualKey virtualKey)
         {
-            DownKey(virtualKey);
+            this.DownKey(virtualKey);
             await Task.Delay(millisecondsDuration);
-            UpKey(virtualKey);
+            this.UpKey(virtualKey);
         }
 
         private void DownKey(VirtualKey virtualKey) => this.SetKey(virtualKey, true);
@@ -94,12 +97,12 @@ namespace Athavar.FFXIV.Plugin.UI
 
         private unsafe void SetKey(VirtualKey virtualKey, bool value)
         {
-            if (GetRefValue is null)
+            if (this.GetRefValue is null)
             {
                 return;
             }
 
-            GetRefValue.Invoke((int)virtualKey) = value ? 1 : 0;
+            this.GetRefValue.Invoke((int)virtualKey) = value ? 1 : 0;
         }
 
     }

@@ -1,118 +1,238 @@
-﻿using Athavar.FFXIV.Plugin;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-namespace ClickLib
+﻿namespace ClickLib
 {
-    internal abstract class ClickBase
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
+    using FFXIVClientStructs.FFXIV.Client.UI;
+    using FFXIVClientStructs.FFXIV.Component.GUI;
+
+    /// <summary>
+    /// Searchable click base class.
+    /// </summary>
+    public abstract unsafe class ClickBase
     {
-        protected abstract string Name { get; }
-        protected abstract string AddonName { get; }
+        /// <summary>
+        /// AtkUnitBase receive event delegate.
+        /// </summary>
+        /// <param name="eventListener">Type receiving the event.</param>
+        /// <param name="evt">Event type.</param>
+        /// <param name="which">Internal routing number.</param>
+        /// <param name="eventData">Event data.</param>
+        /// <param name="inputData">Keyboard and mouse data.</param>
+        /// <returns>The addon address.</returns>
+        internal unsafe delegate IntPtr ReceiveEventDelegate(void* eventListener, EventType evt, uint which, void* eventData, void* inputData);
 
-        protected Dictionary<string, Action<IntPtr>> AvailableClicks { get; } = new Dictionary<string, Action<IntPtr>>();
-
-        protected delegate void ReceiveEventDelegate(IntPtr addon, EventType evt, uint a3, IntPtr a4, IntPtr a5);
-
-        internal ClickBase()
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonButton(AtkUnitBase* addonBase, AtkComponentButton* target, uint which, EventType type = EventType.CHANGE)
         {
+            ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
         }
 
-        internal bool Click(string name, IntPtr addon)
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonRadioButton(AtkUnitBase* addonBase, AtkComponentRadioButton* target, uint which, EventType type = EventType.CHANGE)
         {
-            if (AvailableClicks.TryGetValue(name, out Action<IntPtr>? clickDelegate))
+            ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
+        }
+
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonCheckBox(AtkUnitBase* addonBase, AtkComponentCheckBox* target, uint which, EventType type = EventType.CHANGE)
+        {
+            ClickAddonComponent(addonBase, target->AtkComponentButton.AtkComponentBase.OwnerNode, which, type);
+        }
+
+        // TODO
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonDragDrop(AtkUnitBase* addonBase, AtkComponentDragDrop* target, uint which, EventType type = EventType.ICON_TEXT_ROLL_OUT)
+        {
+            ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
+        }
+
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        /// <param name="eventData">Event data.</param>
+        /// <param name="inputData">Input data.</param>
+        protected static void ClickAddonComponent(AtkUnitBase* addonBase, AtkComponentNode* target, uint which, EventType type, EventData? eventData = null, InputData? inputData = null)
+        {
+            eventData ??= new EventData(target, addonBase);
+            inputData ??= new InputData();
+
+            InvokeReceiveEvent(&addonBase->AtkEventListener, which, type, eventData, inputData);
+
+            eventData.Dispose();
+            inputData.Dispose();
+        }
+
+        // TODO
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="addonBase">The click recipient.</param>
+        /// <param name="target">Target node.</param>
+        /// <param name="which">Internal game click routing.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonStage(AtkUnitBase* addonBase, AtkStage* target, uint which, EventType type = EventType.MOUSE_CLICK)
+        {
+            var eventData = new EventData(target, addonBase);
+            var inputData = new InputData();
+
+            InvokeReceiveEvent(&addonBase->AtkEventListener, which, type, eventData, inputData);
+
+            eventData.Dispose();
+            inputData.Dispose();
+        }
+
+        // TODO
+        /// <summary>
+        /// Send a click.
+        /// </summary>
+        /// <param name="index">List index.</param>
+        /// <param name="popupMenu">PopupMenu event listener.</param>
+        /// <param name="type">Event type.</param>
+        protected static void ClickAddonList(ushort index, PopupMenu* popupMenu, EventType type = EventType.LIST_INDEX_CHANGE)
+        {
+            var targetList = popupMenu->List;
+            if (index < 0 || index >= popupMenu->EntryCount)
             {
-                if (addon == default)
-                    addon = GetAddonByName(AddonName);
-
-                clickDelegate(addon);
-                return true;
+                throw new ArgumentOutOfRangeException(nameof(index), "List index is out of range");
             }
-            return false;
+
+            var eventData = new EventData(targetList->AtkComponentBase.OwnerNode, popupMenu);
+            var inputData = new InputData(popupMenu, index);
+
+            InvokeReceiveEvent(&popupMenu->AtkEventListener, 0, type, eventData, inputData);
+
+            eventData.Dispose();
+            inputData.Dispose();
         }
 
-        protected unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target) => SendClick(arg1, arg2, arg3, target, IntPtr.Zero);
-
-        protected unsafe void SendClick(IntPtr arg1, EventType arg2, uint arg3, void* target, IntPtr arg5)
+        private static void InvokeReceiveEvent(AtkEventListener* eventListener, uint which, EventType type, EventData eventData, InputData clickData)
         {
-            var receiveEvent = GetReceiveEventDelegate((AtkEventListener*)arg1);
+            var receiveEvent = GetReceiveEvent(eventListener);
+            receiveEvent(eventListener, type, which, eventData.Data, clickData.Data);
+        }
 
-            var arg4 = Marshal.AllocHGlobal(0x40);
-            for (var i = 0; i < 0x40; i++)
-                Marshal.WriteByte(arg4, i, 0);
+        private static ReceiveEventDelegate GetReceiveEvent(AtkEventListener* listener)
+        {
+            var receiveEventAddress = new IntPtr(listener->vfunc[2]);
+            return Marshal.GetDelegateForFunctionPointer<ReceiveEventDelegate>(receiveEventAddress)!;
+        }
 
-            Marshal.WriteIntPtr(arg4, 0x8, new IntPtr(target));
-            Marshal.WriteIntPtr(arg4, 0x10, arg1);
-
-            if (arg5 == IntPtr.Zero)
+        /// <summary>
+        /// Event data.
+        /// </summary>
+        public sealed class EventData : IDisposable
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="EventData"/> class.
+            /// </summary>
+            /// <param name="target">Target.</param>
+            /// <param name="listener">Event listener.</param>
+            public EventData(void* target, void* listener)
             {
-                arg5 = Marshal.AllocHGlobal(0x40);
-                for (var i = 0; i < 0x40; i++)
-                    Marshal.WriteByte(arg5, i, 0);
+                this.Data = (void**)Marshal.AllocHGlobal(0x18).ToPointer();
+                this.Data[0] = null;
+                this.Data[1] = target;
+                this.Data[2] = listener;
             }
 
-            receiveEvent(arg1, arg2, arg3, arg4, arg5);
+            /// <summary>
+            /// Gets the data pointer.
+            /// </summary>
+            public void** Data { get; }
 
-            Marshal.FreeHGlobal(arg4);
-            Marshal.FreeHGlobal(arg5);
-        }
-
-        protected IntPtr GetAddonByName(string name) => GetAddonByName(name, 1);
-
-        protected unsafe IntPtr GetAddonByName(string name, int index)
-        {
-            /*var atkStage = AtkStage.GetSingleton();
-            if (atkStage == null)
-                throw new InvalidClickException("Window is not available for that click");
-
-            var unitMgr = atkStage->RaptureAtkUnitManager; ;
-            if (unitMgr == null)
-                throw new InvalidClickException("Window is not available for that click");
-
-            var addon = unitMgr->GetAddonByName(name, index);
-            if (addon == null)
-                throw new InvalidClickException("Window is not available for that click");
-
-            return (IntPtr)addon;*/
-
-            return DalamudBinding.GameGui.GetAddonByName(name, index);
-        }
-
-        protected unsafe ReceiveEventDelegate GetReceiveEventDelegate(AtkEventListener* eventListener)
-        {
-            var receiveEventAddress = new IntPtr(eventListener->vfunc[2]);
-            return Marshal.GetDelegateForFunctionPointer<ReceiveEventDelegate>(receiveEventAddress);
-        }
-
-        protected unsafe (float, float) BacktrackNodePoint(AtkResNode* node)
-        {
-            if (node == null)
-                throw new Exception("Node does not exist");
-
-            float x = node->X + (node->Width / 2);
-            float y = node->Y + (node->Height / 2);
-
-            AtkResNode* parent = node;
-            while ((parent = parent->ParentNode) != null)
+            /// <inheritdoc/>
+            public void Dispose()
             {
-                x += parent->X;
-                y += parent->Y;
+                Task.Run(() =>
+                {
+                    Task.Delay(10000).Wait();
+                    Marshal.FreeHGlobal((IntPtr)this.Data);
+                });
             }
-            return (x, y);
         }
 
-        protected unsafe (float, float) ConvertToAbsolute(float x, float y)
+        /// <summary>
+        /// Input data.
+        /// </summary>
+        public sealed class InputData : IDisposable
         {
-            var ax = x * 0xffff / GetSystemMetrics(SM_CXSCREEN);
-            var ay = y * 0xffff / GetSystemMetrics(SM_CYSCREEN);
-            return (ax, ay);
+            /// <summary>
+            /// Initializes a new instance of the <see cref="InputData"/> class.
+            /// </summary>
+            public InputData()
+            {
+                this.Data = (void**)Marshal.AllocHGlobal(0x40).ToPointer();
+                this.Data[0] = (void*)0;
+                this.Data[1] = null;
+                this.Data[2] = null;
+                this.Data[3] = null;
+                this.Data[4] = null;
+                this.Data[5] = null;
+                this.Data[6] = (void*)1;
+                this.Data[7] = null;
+            }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="InputData"/> class.
+            /// </summary>
+            /// <param name="popupMenu">List popup menu.</param>
+            /// <param name="index">Selected index.</param>
+            public InputData(PopupMenu* popupMenu, ushort index)
+            {
+                this.Data = (void**)Marshal.AllocHGlobal(0x40).ToPointer();
+                this.Data[0] = popupMenu->List->ItemRendererList[index].AtkComponentListItemRenderer;
+                this.Data[1] = null;
+                this.Data[2] = (void*)(index | ((ulong)index << 48));
+                this.Data[3] = null;
+                this.Data[4] = null;
+                this.Data[5] = null;
+                this.Data[6] = null;
+                this.Data[7] = null;
+            }
+
+            /// <summary>
+            /// Gets the data pointer.
+            /// </summary>
+            public void** Data { get; }
+
+            /// <inheritdoc/>
+            public void Dispose()
+            {
+                Task.Run(() =>
+                {
+                    Task.Delay(10000).Wait();
+                    Marshal.FreeHGlobal((IntPtr)this.Data);
+                });
+            }
         }
-
-        private const int SM_CXSCREEN = 0x0;
-        private const int SM_CYSCREEN = 0x1;
-
-        [DllImport("user32.dll")]
-        private static extern int GetSystemMetrics(int smIndex);
     }
 }

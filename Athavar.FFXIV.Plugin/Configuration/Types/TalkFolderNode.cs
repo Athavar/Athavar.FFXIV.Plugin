@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-
-namespace Athavar.FFXIV.Plugin
+﻿namespace Athavar.FFXIV.Plugin
 {
+    using System.Collections.Generic;
+    using Newtonsoft.Json;
+
     public class TalkFolderNode : INode
     {
         public string Name { get; set; } = string.Empty;

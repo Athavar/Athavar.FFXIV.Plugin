@@ -1,17 +1,41 @@
-﻿using FFXIVClientStructs.FFXIV.Client.UI;
-
-namespace ClickLib.Clicks
+﻿namespace ClickLib.Clicks
 {
-    internal sealed class ClickRequest : ClickBase
+    using System;
+    using FFXIVClientStructs.FFXIV.Client.UI;
+
+    /// <summary>
+    /// Addon Request.
+    /// </summary>
+    public sealed unsafe class ClickRequest : ClickBase<AddonRequest>
     {
-        protected override string Name => "Request";
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClickRequest"/> class.
+        /// </summary>
+        /// <param name="addon">Addon pointer.</param>
+        public ClickRequest(IntPtr addon = default)
+            : base(addon)
+        {
+        }
+
+        /// <inheritdoc/>
         protected override string AddonName => "Request";
 
-        public unsafe ClickRequest() : base()
+        /// <summary>
+        /// Click the hand over button.
+        /// </summary>
+        [ClickName("request_hand_over")]
+        public void HandOver()
         {
-            AvailableClicks["request_hand_over"] = (addon) => SendClick(addon, EventType.CHANGE, 0, ((AddonRequest*)addon)->HandOverButton);
-            AvailableClicks["request_cancel"] = (addon) => SendClick(addon, EventType.CHANGE, 1, ((AddonRequest*)addon)->CancelButton);
-            AvailableClicks["request_select_first_item"] = (addon) => SendClick(addon, EventType.CHANGE, 6, ((AddonRequest*)addon)->AtkComponentDragDrop270);
+            ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->HandOverButton, 0);
+        }
+
+        /// <summary>
+        /// Click the cancel button.
+        /// </summary>
+        [ClickName("request_cancel")]
+        public void Cancel()
+        {
+            ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->CancelButton, 1);
         }
     }
 }

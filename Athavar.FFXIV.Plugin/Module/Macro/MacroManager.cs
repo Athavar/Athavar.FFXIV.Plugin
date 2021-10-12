@@ -1,81 +1,168 @@
-using Athavar.FFXIV.Plugin;
-using ClickLib;
-using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Hooking;
-using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using static Athavar.FFXIV.Plugin.Native;
-
 namespace SomethingNeedDoing
 {
-    internal enum LoopState
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Athavar.FFXIV.Plugin;
+    using ClickLib;
+    using Dalamud.Game.ClientState.Objects.Types;
+    using Dalamud.Hooking;
+    using Dalamud.Logging;
+    using FFXIVClientStructs.FFXIV.Component.GUI;
+    using static Athavar.FFXIV.Plugin.Native;
+
+    /// <summary>
+    /// Manager that handles running macros.
+    /// </summary>
+    internal partial class MacroManager : IDisposable
     {
-        NotLoggedIn,
-        Waiting,
-        Running,
-        Paused,
-        Stopped,
-    }
+        private static readonly Regex RunMacroCommand = new(@"^/runmacro\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ActionCommand = new(@"^/(ac|action)\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex WaitCommand = new(@"^/wait\s+(?<time>\d+(?:\.\d+)?)(?:-(?<maxtime>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex WaitAddonCommand = new(@"^/waitaddon\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex RequireCommand = new(@"^/require\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex SendCommand = new(@"^/send\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex TargetCommand = new(@"^/target\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ClickCommand = new(@"^/click\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex LoopCommand = new(@"^/loop(?: (?<count>\d+))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex WaitModifier = new(@"(?<modifier>\s*<wait\.(?<time>\d+(?:\.\d+)?)(?:-(?<maxtime>\d+(?:\.\d+)?))?>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex UnsafeModifier = new(@"(?<modifier>\s*<unsafe>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MaxWaitModifier = new(@"(?<modifier>\s*<maxwait\.(?<time>\d+(?:\.\d+)?)>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    internal class MacroManager : IDisposable
-    {
-        private readonly MacroModule plugin;
-        private readonly CancellationTokenSource EventLoopTokenSource = new();
-        private readonly List<ActiveMacro> RunningMacros = new();
+        private readonly CancellationTokenSource eventLoopTokenSource = new();
+        private readonly List<ActiveMacro> runningMacros = new();
+        private readonly ManualResetEvent dataAvailableWaiter = new(false);
+        private readonly List<string> craftingActionNames = new();
+        private readonly Hook<EventFrameworkDelegate> eventFrameworkHook;
+        private bool isPaused = true;
+        private bool isLoggedIn = false;
 
-        private readonly ManualResetEvent DataAvailableWaiter = new(false);
-        private readonly List<string> CraftingActionNames = new();
-        private CraftingData CraftingData = default;
-
-        private delegate IntPtr EventFrameworkDelegate(IntPtr a1, IntPtr a2, uint a3, ushort a4, IntPtr a5, IntPtr dataPtr, byte dataSize);
-
-        private readonly Hook<EventFrameworkDelegate> EventFrameworkHook;
-
-        public LoopState LoopState { get; private set; } = LoopState.Waiting;
+        private CraftingState craftingData = default;
 
         private Process proc;
-        private bool IsPaused = true;
-        private bool IsLoggedIn = false;
+        private MacroModule plugin;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MacroManager"/> class.
+        /// </summary>
+        /// <param name="plugin">.</param>
         public MacroManager(MacroModule plugin)
         {
             this.plugin = plugin;
-            DalamudBinding.ClientState.Login += ClientState_OnLogin;
-            DalamudBinding.ClientState.Logout += ClientState_OnLogout;
 
-            Click.Initialize();
-            proc = Process.GetCurrentProcess();
+            DalamudBinding.ClientState.Login += this.OnLogin;
+            DalamudBinding.ClientState.Logout += this.OnLogout;
 
+            this.proc = Process.GetCurrentProcess();
 
-            PopulateCraftingActionNames();
+            this.PopulateCraftingActionNames();
 
             if (DalamudBinding.ClientState.LocalPlayer != null)
-                IsLoggedIn = true;
+            {
+                this.isLoggedIn = true;
+            }
 
-            EventFrameworkHook = new Hook<EventFrameworkDelegate>(plugin.Address.EventFrameworkFunctionAddress, EventFrameworkDetour);
-            EventFrameworkHook.Enable();
+            this.eventFrameworkHook = new Hook<EventFrameworkDelegate>(plugin.Address.EventFrameworkFunctionAddress, this.EventFrameworkDetour);
+            this.eventFrameworkHook.Enable();
 
-            Task.Run(() => EventLoop(EventLoopTokenSource.Token));
+            Task.Run(() => this.EventLoop(this.eventLoopTokenSource.Token));
+
+            DalamudBinding.CommandManager.AddHandler("/runmacro", new Dalamud.Game.Command.CommandInfo(this.CommandHandler)
+            {
+                HelpMessage = "Start run a macro of the macro module.",
+                ShowInHelp = true,
+            });
         }
 
+        private delegate IntPtr EventFrameworkDelegate(IntPtr a1, IntPtr a2, uint a3, ushort a4, IntPtr a5, IntPtr dataPtr, byte dataSize);
+
+        /// <summary>
+        /// The state of the macro manager.
+        /// </summary>
+        internal enum LoopState
+        {
+            /// <summary>
+            /// Not logged in.
+            /// </summary>
+            NotLoggedIn,
+
+            /// <summary>
+            /// Waiting.
+            /// </summary>
+            Waiting,
+
+            /// <summary>
+            /// Running.
+            /// </summary>
+            Running,
+
+            /// <summary>
+            /// Cancel.
+            /// </summary>
+            Cancel,
+
+            /// <summary>
+            /// Paused.
+            /// </summary>
+            Paused,
+
+            /// <summary>
+            /// Stopped.
+            /// </summary>
+            Stopped,
+        }
+
+        /// <summary>
+        /// Gets the state of the macro manager.
+        /// </summary>
+        public LoopState State { get; private set; } = LoopState.Waiting;
+
+        /// <inheritdoc/>
         public void Dispose()
         {
-            DalamudBinding.ClientState.Login -= ClientState_OnLogin;
-            DalamudBinding.ClientState.Logout -= ClientState_OnLogout;
+            DalamudBinding.CommandManager.RemoveHandler("/runmacro");
 
-            EventLoopTokenSource.Cancel();
-            EventLoopTokenSource.Dispose();
-            EventFrameworkHook.Dispose();
-            proc.Dispose();
+            DalamudBinding.ClientState.Login -= this.OnLogin;
+            DalamudBinding.ClientState.Logout -= this.OnLogout;
+
+            this.eventLoopTokenSource.Cancel();
+            this.eventLoopTokenSource.Dispose();
+            this.eventFrameworkHook.Dispose();
+            this.proc.Dispose();
+        }
+
+        private void CommandHandler(string command, string arguments)
+        {
+            var args = arguments.Trim().Replace("\"", string.Empty);
+
+            switch (this.State)
+            {
+                case LoopState.Waiting:
+                    {
+                        var node = this.plugin.Configuration.GetAllNodes().FirstOrDefault(node => node.Name == args);
+
+                        if (node is MacroNode macro)
+                        {
+                            this.RunMacro(macro);
+                        }
+                        else
+                        {
+                            this.plugin.ChatManager.PrintError($"Fail to find macro with name: {args}");
+                        }
+
+                        break;
+                    }
+
+                default:
+                    this.plugin.ChatManager.PrintError($"Fail to run macro: {this.State}");
+                    break;
+            }
         }
 
         private void OnEventFrameworkDetour(IntPtr dataPtr, byte dataSize)
@@ -85,30 +172,36 @@ namespace SomethingNeedDoing
                 var dataType = (ActionCategory)Marshal.ReadInt32(dataPtr);
                 if (dataType == ActionCategory.Action || dataType == ActionCategory.CraftAction)
                 {
-                    CraftingData = Marshal.PtrToStructure<CraftingData>(dataPtr);
-                    DataAvailableWaiter.Set();
+                    this.craftingData = Marshal.PtrToStructure<CraftingState>(dataPtr);
+                    this.dataAvailableWaiter.Set();
                 }
             }
         }
 
         private IntPtr EventFrameworkDetour(IntPtr a1, IntPtr a2, uint a3, ushort a4, IntPtr a5, IntPtr dataPtr, byte dataSize)
         {
-            try { OnEventFrameworkDetour(dataPtr, dataSize); }
-            catch (Exception ex) { PluginLog.Error(ex, "Don't crash the game."); }
+            try
+            {
+                this.OnEventFrameworkDetour(dataPtr, dataSize);
+            }
+            catch (Exception ex)
+            {
+                PluginLog.Error(ex, "Don't crash the game.");
+            }
 
-            return EventFrameworkHook.Original(a1, a2, a3, a4, a5, dataPtr, dataSize);
+            return this.eventFrameworkHook.Original(a1, a2, a3, a4, a5, dataPtr, dataSize);
         }
 
-        private void ClientState_OnLogin(object? sender, EventArgs e)
+        private void OnLogin(object? sender, EventArgs e)
         {
-            IsLoggedIn = true;
-            LoopState = LoopState.Waiting;
+            this.isLoggedIn = true;
+            this.State = LoopState.Waiting;
         }
 
-        private void ClientState_OnLogout(object? sender, EventArgs e)
+        private void OnLogout(object? sender, EventArgs e)
         {
-            IsLoggedIn = false;
-            LoopState = LoopState.NotLoggedIn;
+            this.isLoggedIn = false;
+            this.State = LoopState.NotLoggedIn;
         }
 
         private async Task EventLoop(CancellationToken token)
@@ -117,49 +210,52 @@ namespace SomethingNeedDoing
             {
                 try
                 {
-                    while (!IsLoggedIn)
+                    while (!this.isLoggedIn)
                     {
-                        LoopState = LoopState.NotLoggedIn;
+                        this.State = LoopState.NotLoggedIn;
                         await Task.Delay(100, token);
                     }
 
-
-                    while (IsPaused)
+                    while (this.isPaused)
                     {
-                        LoopState = RunningMacros.Count == 0 ? LoopState.Waiting : LoopState.Paused;
+                        this.State = this.runningMacros.Count == 0 ? LoopState.Waiting : LoopState.Paused;
                         await Task.Delay(100, token);
                     }
 
-                    var macro = RunningMacros.FirstOrDefault();
+                    var macro = this.runningMacros.FirstOrDefault();
                     if (macro == default(ActiveMacro))
                     {
-                        IsPaused = true;
+                        this.isPaused = true;
                         continue;
                     }
 
-                    LoopState = LoopState.Running;
-                    if (await ProcessMacro(macro, token))
+                    if (this.State != LoopState.Cancel)
                     {
-                        RunningMacros.Remove(macro);
+                        this.State = LoopState.Running;
+                    }
+
+                    if (await this.ProcessMacro(macro, token))
+                    {
+                        this.runningMacros.Remove(macro);
                     }
                 }
                 catch (OperationCanceledException)
                 {
                     PluginLog.Verbose("Event loop has stopped");
-                    LoopState = LoopState.Stopped;
+                    this.State = LoopState.Stopped;
                     break;
                 }
                 catch (ObjectDisposedException)
                 {
                     PluginLog.Verbose($"Event loop has stopped");
-                    LoopState = LoopState.Stopped;
+                    this.State = LoopState.Stopped;
                     break;
                 }
                 catch (Exception ex)
                 {
                     PluginLog.Error(ex, "Unhandled exception occurred");
-                    plugin.ChatManager.PrintError($"[Athavar.Macro] Worker has died unexpectedly.");
-                    RunningMacros.Clear();
+                    this.plugin.ChatManager.PrintError($"[Athavar.Macro] Worker has died unexpectedly.");
+                    this.runningMacros.Clear();
                 }
             }
         }
@@ -169,9 +265,11 @@ namespace SomethingNeedDoing
             var step = macro.GetCurrentStep();
 
             if (step == null)
+            {
                 return true;
+            }
 
-            var wait = ExtractWait(ref step);
+            var wait = this.ExtractWait(ref step);
 
             try
             {
@@ -180,53 +278,53 @@ namespace SomethingNeedDoing
                 {
                     case "/ac":
                     case "/action":
-                        wait = await ProcessActionCommand(step, token, wait);
+                        wait = await this.ProcessActionCommand(step, token, wait);
                         break;
                     case "/require":
-                        await ProcessRequireCommand(step, token);
+                        await this.ProcessRequireCommand(step, token);
                         break;
                     case "/runmacro":
-                        ProcessRunMacroCommand(step);
+                        this.ProcessRunMacroCommand(step);
                         break;
                     case "/wait":
-                        await ProcessWaitCommand(step, token);
+                        await this.ProcessWaitCommand(step, token);
                         break;
                     case "/waitaddon":
-                        await ProcessWaitAddonCommand(step, token);
+                        await this.ProcessWaitAddonCommand(step, token);
                         break;
                     case "/send":
-                        await ProcessSendCommand(step);
+                        await this.ProcessSendCommand(step);
                         break;
                     case "/target":
-                        ProcessTargetCommand(step);
+                        this.ProcessTargetCommand(step);
                         break;
                     case "/click":
-                        ProcessClickCommand(step);
+                        this.ProcessClickCommand(step);
                         break;
                     case "/loop":
-                        ProcessLoopCommand(step, macro);
+                        this.ProcessLoopCommand(step, macro);
                         break;
                     default:
-                        plugin.ChatManager.SendChatBoxMessage(step);
+                        this.plugin.ChatManager.SendMessage(step);
                         break;
-                };
+                }
             }
             catch (EffectNotPresentError ex)
             {
-                plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
-                IsPaused = true;
+                this.plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+                this.isPaused = true;
                 return false;
             }
             catch (EventFrameworkTimeoutError ex)
             {
-                plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
-                IsPaused = true;
+                this.plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+                this.isPaused = true;
                 return false;
             }
             catch (InvalidMacroOperationException ex)
             {
-                plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
-                IsPaused = true;
+                this.plugin.ChatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+                this.isPaused = true;
                 return true;
             }
 
@@ -240,49 +338,42 @@ namespace SomethingNeedDoing
             return false;
         }
 
-        private readonly Regex RUNMACRO_COMMAND = new(@"^/runmacro\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex ACTION_COMMAND = new(@"^/(ac|action)\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex WAIT_COMMAND = new(@"^/wait\s+(?<time>\d+(?:\.\d+)?)(?:-(?<maxtime>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex WAITADDON_COMMAND = new(@"^/waitaddon\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex REQUIRE_COMMAND = new(@"^/require\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex SEND_COMMAND = new(@"^/send\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex TARGET_COMMAND = new(@"^/target\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex CLICK_COMMAND = new(@"^/click\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex LOOP_COMMAND = new(@"^/loop(?: (?<count>\d+))?$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex WAIT_MODIFIER = new(@"(?<modifier>\s*<wait\.(?<time>\d+(?:\.\d+)?)(?:-(?<maxtime>\d+(?:\.\d+)?))?>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex UNSAFE_MODIFIER = new(@"(?<modifier>\s*<unsafe>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private readonly Regex MAXWAIT_MODIFIER = new(@"(?<modifier>\s*<maxwait\.(?<time>\d+(?:\.\d+)?)>\s*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         private void ProcessRunMacroCommand(string step)
         {
-            var match = RUNMACRO_COMMAND.Match(step);
+            var match = RunMacroCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var macroName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' });
-            var macroNode = plugin.configuration.GetAllNodes().FirstOrDefault(macro => macro.Name == macroName) as MacroNode;
-            if (macroNode == default(MacroNode))
+            var macroNode = this.plugin.Configuration.GetAllNodes().FirstOrDefault(macro => macro.Name == macroName) as MacroNode;
+            if (macroNode == default)
+            {
                 throw new InvalidMacroOperationException("Unknown macro");
+            }
 
-            RunningMacros.Insert(0, new ActiveMacro(macroNode));
+            this.runningMacros.Insert(0, new ActiveMacro(macroNode));
         }
 
         private async Task<TimeSpan> ProcessActionCommand(string step, CancellationToken token, TimeSpan wait)
         {
-            var unsafeAction = ExtractUnsafe(ref step);
+            var unsafeAction = this.ExtractUnsafe(ref step);
 
-            var match = ACTION_COMMAND.Match(step);
+            var match = ActionCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var actionName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' }).ToLower();
 
-            if (IsCraftingAction(actionName))
+            if (this.IsCraftingAction(actionName))
             {
                 const int delayWait = 500;
-                DataAvailableWaiter.Reset();
+                this.dataAvailableWaiter.Reset();
 
-                plugin.ChatManager.SendChatBoxMessage(step);
+                this.plugin.ChatManager.SendMessage(step);
 
                 await Task.Delay(Math.Max((int)wait.TotalMilliseconds - delayWait, 0), token);
                 wait = TimeSpan.Zero;
@@ -299,7 +390,7 @@ namespace SomethingNeedDoing
             }
             else
             {
-                plugin.ChatManager.SendChatBoxMessage(step);
+                this.plugin.ChatManager.SendMessage(step);
             }
 
             return wait;
@@ -307,16 +398,18 @@ namespace SomethingNeedDoing
 
         private Task ProcessWaitCommand(string step, CancellationToken token)
         {
-            var match = WAIT_COMMAND.Match(step);
+            var match = WaitCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var waitTime = TimeSpan.Zero;
             var waitMatch = match.Groups["time"];
             if (waitMatch.Success && double.TryParse(waitMatch.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out double seconds))
             {
+                // PluginLog.Debug($"Wait is {waitTime.TotalMilliseconds}ms");
                 waitTime = TimeSpan.FromSeconds(seconds);
-                //PluginLog.Debug($"Wait is {waitTime.TotalMilliseconds}ms");
             }
 
             var maxWaitMatch = match.Groups["maxtime"];
@@ -327,8 +420,8 @@ namespace SomethingNeedDoing
                 var maxWaitTime = TimeSpan.FromSeconds(maxSeconds);
                 var diff = rand.Next((int)maxWaitTime.TotalMilliseconds - (int)waitTime.TotalMilliseconds);
 
+                // PluginLog.Debug($"Wait (variable) is now {waitTime.TotalMilliseconds}ms");
                 waitTime = TimeSpan.FromMilliseconds((int)waitTime.TotalMilliseconds + diff);
-                //PluginLog.Debug($"Wait (variable) is now {waitTime.TotalMilliseconds}ms");
             }
 
             return Task.Delay(waitTime, token);
@@ -336,16 +429,21 @@ namespace SomethingNeedDoing
 
         private async Task ProcessWaitAddonCommand(string step, CancellationToken token)
         {
-            var maxwait = ExtractMaxWait(ref step, 5000);
+            var maxwait = this.ExtractMaxWait(ref step, 5000);
 
-            var match = WAITADDON_COMMAND.Match(step);
+            var match = WaitAddonCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var addonPtr = IntPtr.Zero;
             var addonName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' });
 
-            var isVisible = await LinearWaitFor(500, Convert.ToInt32(maxwait.TotalMilliseconds), () =>
+            var isVisible = await this.LinearWaitFor(
+                500,
+                Convert.ToInt32(maxwait.TotalMilliseconds),
+                () =>
             {
                 addonPtr = DalamudBinding.GameGui.GetAddonByName(addonName, 1);
                 if (addonPtr != IntPtr.Zero)
@@ -356,42 +454,56 @@ namespace SomethingNeedDoing
                         return addon->IsVisible && addon->UldManager.LoadedState == 3;
                     }
                 }
+
                 return false;
-            }, token);
+            },
+                token);
 
             if (addonPtr == IntPtr.Zero)
+            {
                 throw new InvalidMacroOperationException("Could not find Addon");
+            }
 
             if (!isVisible)
+            {
                 throw new InvalidMacroOperationException("Addon not visible");
+            }
         }
 
         private async Task ProcessRequireCommand(string step, CancellationToken token)
         {
-            var maxwait = ExtractMaxWait(ref step, 1000);
+            var maxwait = this.ExtractMaxWait(ref step, 1000);
 
-            var match = REQUIRE_COMMAND.Match(step);
+            var match = RequireCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var effectName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' }).ToLower();
 
-            var sheet = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>() ?? throw new NotSupportedException("Status Sheet not found.");
+            var sheet = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Status>()!;
             var effectIDs = sheet.Where(row => row.Name.RawString.ToLower() == effectName).Select(row => row.RowId).ToList();
 
-            var hasEffect = await LinearWaitFor(250, Convert.ToInt32(maxwait.TotalMilliseconds),
+            var hasEffect = await this.LinearWaitFor(
+                250,
+                Convert.ToInt32(maxwait.TotalMilliseconds),
                 () => DalamudBinding.ClientState.LocalPlayer?.StatusList.Select(se => se.StatusId).ToList().Intersect(effectIDs).Any() ?? false,
                 token);
 
             if (!hasEffect)
+            {
                 throw new EffectNotPresentError("Effect not present");
+            }
         }
 
         private async Task ProcessSendCommand(string step)
         {
-            var match = SEND_COMMAND.Match(step);
+            var match = SendCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var vkNames = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' }).ToLower().Split(' ');
 
@@ -402,27 +514,29 @@ namespace SomethingNeedDoing
             }
             else
             {
-                var mWnd = proc.MainWindowHandle;
+                var mWnd = this.proc.MainWindowHandle;
 
                 for (int i = 0; i < vkCodes.Length; i++)
                 {
                     Native.KeyDown(mWnd, vkCodes[i]);
                 }
+
                 await Task.Delay(15);
 
                 for (int i = 0; i < vkCodes.Length; i++)
                 {
                     Native.KeyUp(mWnd,  vkCodes[i]);
                 }
-                // var result = await Simulate.Events().Click(vkCodes).Invoke(invokeOptions);
             }
         }
 
         private void ProcessTargetCommand(string step)
         {
-            var match = TARGET_COMMAND.Match(step);
+            var match = TargetCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var actorName = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' }).ToLower();
             GameObject? npc = null;
@@ -443,9 +557,11 @@ namespace SomethingNeedDoing
 
         private void ProcessClickCommand(string step)
         {
-            var match = CLICK_COMMAND.Match(step);
+            var match = ClickCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var name = match.Groups["name"].Value.Trim(new char[] { ' ', '"', '\'' }).ToLower();
 
@@ -462,9 +578,17 @@ namespace SomethingNeedDoing
 
         private void ProcessLoopCommand(string step, ActiveMacro macro)
         {
-            var match = LOOP_COMMAND.Match(step);
+            if (this.State == LoopState.Cancel)
+            {
+                // Skip loops in canceled state.
+                return;
+            }
+
+            var match = LoopCommand.Match(step);
             if (!match.Success)
+            {
                 throw new InvalidMacroOperationException("Syntax error");
+            }
 
             var countMatch = match.Groups["count"];
             if (!countMatch.Success)
@@ -488,11 +612,15 @@ namespace SomethingNeedDoing
             while (true)
             {
                 if (action())
+                {
                     return true;
+                }
 
                 totalWait += waitInterval;
                 if (totalWait > maxWait)
+                {
                     return false;
+                }
 
                 await Task.Delay(waitInterval, token);
             }
@@ -500,12 +628,14 @@ namespace SomethingNeedDoing
 
         private TimeSpan ExtractWait(ref string command)
         {
-            var match = WAIT_MODIFIER.Match(command);
+            var match = WaitModifier.Match(command);
 
             var waitTime = TimeSpan.Zero;
 
             if (!match.Success)
+            {
                 return waitTime;
+            }
 
             var modifier = match.Groups["modifier"].Value;
             command = command.Replace(modifier, " ").Trim();
@@ -532,19 +662,20 @@ namespace SomethingNeedDoing
 
         private bool ExtractUnsafe(ref string command)
         {
-            var match = UNSAFE_MODIFIER.Match(command);
+            var match = UnsafeModifier.Match(command);
             if (match.Success)
             {
                 var modifier = match.Groups["modifier"].Value;
                 command = command.Replace(modifier, " ").Trim();
                 return true;
             }
+
             return false;
         }
 
         private TimeSpan ExtractMaxWait(ref string command, float defaultMillis)
         {
-            var match = MAXWAIT_MODIFIER.Match(command);
+            var match = MaxWaitModifier.Match(command);
             if (match.Success)
             {
                 var modifier = match.Groups["modifier"].Value;
@@ -555,99 +686,56 @@ namespace SomethingNeedDoing
                     return TimeSpan.FromSeconds(seconds);
                 }
             }
+
             return TimeSpan.FromMilliseconds(defaultMillis);
         }
 
         private void PopulateCraftingActionNames()
         {
-            var actions = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>() ?? throw new NotSupportedException("Action Sheet not found.");
+            var actions = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.Action>()!;
             foreach (var row in actions)
             {
-                if (row is null)
-                {
-                    continue;
-                }
-
                 var job = row.ClassJob?.Value?.ClassJobCategory?.Value;
                 if (job != null && (job.CRP || job.BSM || job.ARM || job.GSM || job.LTW || job.WVR || job.ALC || job.CUL))
                 {
                     var name = row.Name.RawString.Trim(new char[] { ' ', '"', '\'' }).ToLower();
-                    if (!CraftingActionNames.Contains(name))
+                    if (!this.craftingActionNames.Contains(name))
                     {
-                        CraftingActionNames.Add(name);
+                        this.craftingActionNames.Add(name);
                     }
                 }
             }
-            var craftActions = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.CraftAction>() ?? throw new NotSupportedException("CraftAction Sheet not found.");
+
+            var craftActions = DalamudBinding.DataManager.GetExcelSheet<Lumina.Excel.GeneratedSheets.CraftAction>()!;
             foreach (var row in craftActions)
             {
                 var name = row.Name.RawString.Trim(new char[] { ' ', '"', '\'' }).ToLower();
-                if (name.Length > 0 && !CraftingActionNames.Contains(name))
+                if (name.Length > 0 && !this.craftingActionNames.Contains(name))
                 {
-                    CraftingActionNames.Add(name);
+                    this.craftingActionNames.Add(name);
                 }
             }
         }
 
-        private bool IsCraftingAction(string name) => CraftingActionNames.Contains(name.Trim(new char[] { ' ', '"', '\'' }).ToLower());
-
-        #region public api
-
-        public void RunMacro(MacroNode node)
-        {
-            RunningMacros.Add(new ActiveMacro(node));
-            IsPaused = false;
-        }
-
-        public void Pause()
-        {
-            IsPaused = true;
-        }
-
-        public void Resume()
-        {
-            IsPaused = false;
-        }
-
-        public void Clear()
-        {
-            RunningMacros.Clear();
-        }
-
-        public int MacroCount => RunningMacros.Count;
-
-        public (string, int)[] MacroStatus => RunningMacros.Select(macro => (macro.Node.Name, macro.StepIndex + 1)).ToArray();
-
-        public string[] CurrentMacroContent()
-        {
-            if (RunningMacros.Count == 0)
-                return Array.Empty<string>();
-            return (string[])RunningMacros.First().Steps.Clone();
-        }
-
-        public int CurrentMacroStep()
-        {
-            if (RunningMacros.Count == 0)
-                return 0;
-            return RunningMacros.First().StepIndex;
-        }
-
-        #endregion
+        private bool IsCraftingAction(string name) => this.craftingActionNames.Contains(name.Trim(new char[] { ' ', '"', '\'' }).ToLower());
 
         private class ActiveMacro
         {
-            public MacroNode Node { get; private set; }
-
-            public ActiveMacro? Parent { get; private set; }
-
-            public ActiveMacro(MacroNode node) : this(node, null) { }
+            public ActiveMacro(MacroNode node)
+                : this(node, null)
+            {
+            }
 
             public ActiveMacro(MacroNode node, ActiveMacro? parent)
             {
-                Node = node;
-                Parent = parent;
-                Steps = node.Contents.Split(new[] { "\n", "\r", "\n\r" }, StringSplitOptions.RemoveEmptyEntries).Where(line => !line.StartsWith("#")).ToArray();
+                this.Node = node;
+                this.Parent = parent;
+                this.Steps = node.Contents.Split(new[] { "\n", "\r", "\n\r" }, StringSplitOptions.RemoveEmptyEntries).Where(line => !line.StartsWith("#")).ToArray();
             }
+
+            public MacroNode Node { get; private set; }
+
+            public ActiveMacro? Parent { get; private set; }
 
             public string[] Steps { get; private set; }
 
@@ -657,11 +745,103 @@ namespace SomethingNeedDoing
 
             public string? GetCurrentStep()
             {
-                if (StepIndex >= Steps.Length)
+                if (this.StepIndex >= this.Steps.Length)
+                {
                     return null;
+                }
 
-                return Steps[StepIndex];
+                return this.Steps[this.StepIndex];
             }
+        }
+    }
+
+    /// <summary>
+    /// Public API.
+    /// </summary>
+    internal sealed partial class MacroManager
+    {
+        /// <summary>
+        /// Gets the amount of macros currently executing.
+        /// </summary>
+        public int MacroCount => this.runningMacros.Count;
+
+        /// <summary>
+        /// Gets the name and currently executing line of each active macro.
+        /// </summary>
+        public (string Name, int StepIndex)[] MacroStatus
+            => this.runningMacros.Select(macro => (macro.Node.Name, macro.StepIndex + 1)).ToArray();
+
+        /// <summary>
+        /// Run a macro.
+        /// </summary>
+        /// <param name="node">Macro to run.</param>
+        public void RunMacro(MacroNode node)
+        {
+            this.runningMacros.Add(new ActiveMacro(node));
+            this.isPaused = false;
+        }
+
+        /// <summary>
+        /// Pause macro execution.
+        /// </summary>
+        public void Pause()
+        {
+            this.isPaused = true;
+        }
+
+        /// <summary>
+        /// Resume macro execution.
+        /// </summary>
+        public void Resume()
+        {
+            this.isPaused = false;
+        }
+
+        /// <summary>
+        /// Cancel macro execution.
+        /// </summary>
+        public void Cancel()
+        {
+            if (this.State == LoopState.Running)
+            {
+                this.State = LoopState.Cancel;
+            }
+        }
+
+        /// <summary>
+        /// Clear the executing macro list.
+        /// </summary>
+        public void Clear()
+        {
+            this.runningMacros.Clear();
+        }
+
+        /// <summary>
+        /// Gets the contents of the current macro.
+        /// </summary>
+        /// <returns>Macro contents.</returns>
+        public string[] CurrentMacroContent()
+        {
+            if (this.runningMacros.Count == 0)
+            {
+                return Array.Empty<string>();
+            }
+
+            return this.runningMacros.First().Steps.ToArray();
+        }
+
+        /// <summary>
+        /// Gets the executing line number of the current macro.
+        /// </summary>
+        /// <returns>Macro line number.</returns>
+        public int CurrentMacroStep()
+        {
+            if (this.runningMacros.Count == 0)
+            {
+                return 0;
+            }
+
+            return this.runningMacros.First().StepIndex;
         }
     }
 }

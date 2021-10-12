@@ -1,15 +1,16 @@
-﻿using Dalamud.Game.ClientState.Keys;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace Athavar.FFXIV.Plugin.Utils
+﻿namespace Athavar.FFXIV.Plugin.Utils
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using Dalamud.Game.ClientState.Keys;
+
     internal class KeyStateExtended
     {
 
         private delegate ref int GetRefValueDelegate(int virtualKey);
+
         private GetRefValueDelegate? GetRefValue = null;
 
         private static KeyStateExtended? instance;
@@ -36,28 +37,28 @@ namespace Athavar.FFXIV.Plugin.Utils
         }
 
         internal Task PressKey(int millisecondsDuration, params VirtualKey[] virtualKey)
-            => PressKey(millisecondsDuration, (IEnumerable<VirtualKey>)virtualKey);
+            => this.PressKey(millisecondsDuration, (IEnumerable<VirtualKey>)virtualKey);
 
         internal async Task PressKey(int millisecondsDuration, IEnumerable<VirtualKey> virtualKeys)
         {
             foreach (var key in virtualKeys)
             {
-                DownKey(key);
+                this.DownKey(key);
             }
 
             await Task.Delay(millisecondsDuration);
 
             foreach (var key in virtualKeys)
             {
-                UpKey(key);
+                this.UpKey(key);
             }
         }
 
         internal async Task PressKey(int millisecondsDuration, VirtualKey virtualKey)
         {
-            DownKey(virtualKey);
+            this.DownKey(virtualKey);
             await Task.Delay(millisecondsDuration);
-            UpKey(virtualKey);
+            this.UpKey(virtualKey);
         }
 
         internal void DownKey(VirtualKey virtualKey) => this.SetKey(virtualKey, true);
@@ -66,12 +67,12 @@ namespace Athavar.FFXIV.Plugin.Utils
 
         private unsafe void SetKey(VirtualKey virtualKey, bool value)
         {
-            if (GetRefValue is null)
+            if (this.GetRefValue is null)
             {
                 return;
             }
 
-            GetRefValue.Invoke((int)virtualKey) = value ? 1 : 0;
+            this.GetRefValue.Invoke((int)virtualKey) = value ? 1 : 0;
         }
     }
 }

@@ -1,33 +1,64 @@
-﻿using Dalamud.Configuration;
-using Dalamud.Logging;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using static Athavar.FFXIV.Plugin.Modules;
-
-namespace Athavar.FFXIV.Plugin
+﻿namespace Athavar.FFXIV.Plugin
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Timers;
+    using Dalamud.Configuration;
+    using Dalamud.Logging;
+    using Newtonsoft.Json;
+    using static Athavar.FFXIV.Plugin.Modules;
+
     internal class Configuration : IPluginConfiguration
     {
+        private static Timer? saveTimer;
+
         public static Configuration Load()
         {
             var pluginConfigPath = DalamudBinding.PluginInterface.ConfigFile;
 
             Configuration config;
             if (!pluginConfigPath.Exists)
+            {
                 config = new Configuration();
+            }
             else
+            {
+                pluginConfigPath.CopyTo($"{pluginConfigPath.FullName}.bak", true);
                 config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(pluginConfigPath.FullName)) ?? new Configuration();
+            }
 
             PluginLog.Debug("Load Configuration.");
             return config.Init();
         }
 
-        public static void Save()
+        public static void Save(bool instant = false)
         {
-            DalamudBinding.PluginInterface.SavePluginConfig(Modules.Instance.Configuration);
+            if (saveTimer is null)
+            {
+                saveTimer = new();
+                saveTimer.Interval = 2500;
+                saveTimer.AutoReset = false;
+                saveTimer.Elapsed += (_, _) => Save(true);
+            }
+
+            if (instant)
+            {
+                saveTimer.Stop();
+                PluginLog.LogDebug("Save Configuration");
+                DalamudBinding.PluginInterface.SavePluginConfig(Modules.Instance.Configuration);
+            }
+            else if (!saveTimer.Enabled)
+            {
+                PluginLog.LogDebug("Start delayed configuration save.");
+                saveTimer.Start();
+            }
         }
 
+        public static void Dispose()
+        {
+            saveTimer?.Dispose();
+            saveTimer = null;
+        }
 
         private Configuration()
         {
@@ -49,12 +80,12 @@ namespace Athavar.FFXIV.Plugin
 
         public MacroConfiguration? Macro { get; set; } = null!;
 
-        public InviterConfiguration? Inviter { get; set; } = null!;     
+        public InviterConfiguration? Inviter { get; set; } = null!;
 
         public bool ShowToolTips { get; set; } = true;
 
         public Language Language { get; set; } = Language.EN;
 
-        public List<Module> ModuleEnabled { get; set; } = null!;
+        public List<Modules.Module> ModuleEnabled { get; set; } = null!;
     }
 }

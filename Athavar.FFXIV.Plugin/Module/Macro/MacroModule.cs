@@ -1,60 +1,71 @@
-using Athavar.FFXIV.Plugin;
-using Dalamud.Logging;
-using System;
-using System.IO;
-using System.Reflection;
-
 namespace SomethingNeedDoing
 {
+    using Athavar.FFXIV.Plugin;
+    using Dalamud.Logging;
+
+    /// <summary>
+    /// Implements the macro mmodule.
+    /// </summary>
     internal sealed class MacroModule : IModule
     {
-        public string Name => "Something Need Doing";
-        public string Command => "/pcraft";
+        private readonly MacroConfiguration configuration;
+        private readonly MacroAddressResolver address;
+        private readonly ChatManager chatManager;
+        private readonly MacroManager macroManager;
 
-        internal MacroConfiguration configuration;
-        internal MacroAddressResolver Address;
-        internal ChatManager ChatManager;
-        internal MacroManager MacroManager;
+        private readonly MacroConfigTab pluginUi;
 
-        private readonly MacroUI PluginUi;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MacroModule"/> class.
+        /// </summary>
+        /// <param name="modules">The other <see cref="Modules"/>.</param>
         public MacroModule(Modules modules)
         {
             this.configuration = modules.Configuration.Macro ??= new();
-            PluginLog.LogDebug($"Module 'Macro' init. {configuration}");
+            PluginLog.LogDebug($"Module 'Macro' init. {this.configuration}");
 
-            Address = new MacroAddressResolver();
-            Address.Setup();
+            this.address = new MacroAddressResolver();
+            this.address.Setup();
 
-            ChatManager = new ChatManager(this);
-            MacroManager = new MacroManager(this);
-            PluginUi = new MacroUI(this);
+            this.chatManager = new ChatManager(this);
+            this.macroManager = new MacroManager(this);
+            this.pluginUi = new MacroConfigTab(this);
         }
 
+        /// <summary>
+        /// Gets the Macro Address Resolver.
+        /// </summary>
+        internal MacroAddressResolver Address => this.address;
+
+        /// <summary>
+        /// Gets the Chat manager.
+        /// </summary>
+        internal ChatManager ChatManager => this.chatManager;
+
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        internal MacroConfiguration Configuration => this.configuration;
+
+        /// <summary>
+        /// Gets the Macro manager.
+        /// </summary>
+        internal MacroManager MacroManager => this.macroManager;
+
+        /// <inheritdoc/>
         public void Dispose()
         {
-            ChatManager.Dispose();
-            MacroManager.Dispose();
-            PluginUi.Dispose();
+            this.chatManager.Dispose();
+            this.macroManager.Dispose();
         }
 
-        public void Draw() => PluginUi.UiBuilder_OnBuildUi();
+        /// <inheritdoc/>
+        public void Draw() => this.pluginUi.DrawTab();
 
-        internal void SaveConfiguration() => Configuration.Save();
+        /// <summary>
+        /// Save the configuration.
+        /// </summary>
+        internal void SaveConfiguration() => Athavar.FFXIV.Plugin.Configuration.Save();
 
-        internal byte[] ReadResourceFile(params string[] filePathSegments)
-        {
-            var assemblyFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var resourceFilePath = Path.Combine(assemblyFolder, Path.Combine(filePathSegments));
-            return File.ReadAllBytes(resourceFilePath);
-        }
-
-        internal byte[] ReadEmbeddedResource(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly() ?? throw new DllNotFoundException(); ;
-            using Stream stream = assembly.GetManifestResourceStream(resourceName) ?? throw new FileNotFoundException(resourceName);
-            using BinaryReader reader = new(stream);
-            return reader.ReadBytes((int)stream.Length);
-        }
     }
 }
