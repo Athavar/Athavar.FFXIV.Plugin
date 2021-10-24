@@ -1,9 +1,17 @@
+// <copyright file="YesConfiguration.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using Dalamud.Configuration;
 
+    /// <summary>
+    /// Yes module configuration.
+    /// </summary>
     internal partial class YesConfiguration : IPluginConfiguration
     {
         /// <summary>
@@ -20,6 +28,16 @@ namespace Athavar.FFXIV.Plugin
         /// Gets the root folder.
         /// </summary>
         public TextFolderNode RootFolder { get; private set; } = new TextFolderNode { Name = "/" };
+
+        /// <summary>
+        /// Gets the list root folder.
+        /// </summary>
+        public TextFolderNode ListRootFolder { get; private set; } = new TextFolderNode { Name = "/" };
+
+        /// <summary>
+        /// Gets the talk root folder.
+        /// </summary>
+        public TextFolderNode TalkRootFolder { get; private set; } = new TextFolderNode { Name = "/" };
 
         /// <summary>
         /// Gets or sets a value indicating whether the desynth dialog setting is enabled.
@@ -47,6 +65,11 @@ namespace Athavar.FFXIV.Plugin
         public bool ItemInspectionResultEnabled { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets the item inspection result limit, where the inspection loop will pause after that many items.
+        /// </summary>
+        public int ItemInspectionResultRateLimiter { get; set; } = 0;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the retainer task ask dialog setting is enabled.
         /// </summary>
         public bool RetainerTaskAskEnabled { get; set; } = false;
@@ -67,6 +90,16 @@ namespace Athavar.FFXIV.Plugin
         public bool ShopCardDialog { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the journal result complete setting is enabled.
+        /// </summary>
+        public bool JournalResultCompleteEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the duty finder accept setting is enabled.
+        /// </summary>
+        public bool ContentsFinderConfirmEnabled { get; set; } = false;
+
+        /// <summary>
         /// Save the plugin configuration to disk.
         /// </summary>
         public void Save() => Configuration.Save();
@@ -75,7 +108,18 @@ namespace Athavar.FFXIV.Plugin
         /// Get all nodes in the tree.
         /// </summary>
         /// <returns>All the nodes.</returns>
-        public IEnumerable<INode> GetAllNodes() => new INode[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
+        public IEnumerable<INode> GetAllNodes()
+        {
+            return new INode[]
+            {
+                this.RootFolder,
+                this.ListRootFolder,
+                this.TalkRootFolder,
+            }
+            .Concat(this.GetAllNodes(this.RootFolder.Children))
+            .Concat(this.GetAllNodes(this.ListRootFolder.Children))
+            .Concat(this.GetAllNodes(this.TalkRootFolder.Children));
+        }
 
         /// <summary>
         /// Gets all the nodes in this subset of the tree.
@@ -87,10 +131,10 @@ namespace Athavar.FFXIV.Plugin
             foreach (var node in nodes)
             {
                 yield return node;
-                if (node is TextFolderNode textFolderNode)
+                if (node is TextFolderNode folder)
                 {
-                    var children = textFolderNode.Children;
-                    foreach (var childNode in this.GetAllNodes(children))
+                    var children = this.GetAllNodes(folder.Children);
+                    foreach (var childNode in children)
                     {
                         yield return childNode;
                     }

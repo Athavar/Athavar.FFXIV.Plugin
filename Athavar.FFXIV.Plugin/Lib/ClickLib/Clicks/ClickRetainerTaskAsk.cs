@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickRetainerTaskAsk.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon RetainerTaskAsk.
     /// </summary>
-    public sealed unsafe class ClickRetainerTaskAsk : ClickBase<AddonRetainerTaskAsk>
+    public sealed unsafe class ClickRetainerTaskAsk : ClickAddonBase<AddonRetainerTaskAsk>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickRetainerTaskAsk"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "RetainerTaskAsk";
+
+        public static implicit operator ClickRetainerTaskAsk(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickRetainerTaskAsk Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the assign button.

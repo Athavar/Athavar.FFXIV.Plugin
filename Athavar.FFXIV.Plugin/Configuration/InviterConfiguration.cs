@@ -1,8 +1,13 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="InviterConfiguration.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using Dalamud.Game.Text;
 
     internal class InviterConfiguration

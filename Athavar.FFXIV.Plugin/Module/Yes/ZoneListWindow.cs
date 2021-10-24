@@ -1,7 +1,12 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Yes
+﻿// <copyright file="ZoneListWindow.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Yes
 {
     using System.Linq;
     using System.Numerics;
+
     using Dalamud.Interface.Windowing;
     using ImGuiNET;
 
@@ -10,17 +15,15 @@
     /// </summary>
     internal class ZoneListWindow : Window
     {
-        private readonly YesModule module;
         private bool sortZoneByName = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ZoneListWindow"/> class.
         /// </summary>
         /// <param name="module">The <see cref="YesModule"/>.</param>
-        public ZoneListWindow(YesModule module)
+        public ZoneListWindow()
             : base("Yes Module Zone List")
         {
-            this.module = module;
             this.Size = new Vector2(525, 600);
             this.SizeCondition = ImGuiCond.FirstUseEver;
         }
@@ -54,7 +57,7 @@
 
             ImGui.Separator();
 
-            var names = this.module.TerritoryNames.AsEnumerable();
+            var names = YesService.Module!.TerritoryNames.AsEnumerable();
 
             if (this.sortZoneByName)
             {

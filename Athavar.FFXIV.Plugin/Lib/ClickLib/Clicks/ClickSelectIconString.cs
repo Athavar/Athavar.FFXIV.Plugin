@@ -1,13 +1,17 @@
-﻿namespace ClickLib.Clicks
+// <copyright file="ClickSelectIconString.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
-    using FFXIVClientStructs.FFXIV.Component.GUI;
 
     /// <summary>
     /// Addon SelectString.
     /// </summary>
-    public sealed unsafe class ClickSelectIconString : ClickBase<AddonSelectIconString>
+    public sealed unsafe class ClickSelectIconString : ClickAddonBase<AddonSelectIconString>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickSelectIconString"/> class.
@@ -21,13 +25,22 @@
         /// <inheritdoc/>
         protected override string AddonName => "SelectIconString";
 
+        public static implicit operator ClickSelectIconString(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickSelectIconString Using(IntPtr addon) => new(addon);
+
         /// <summary>
         /// Select the item at the given index.
         /// </summary>
         /// <param name="index">Index to select.</param>
         public void SelectItem(ushort index)
         {
-            ClickAddonList(index, &this.Addon->PopupMenu.PopupMenu);
+            ClickAddonList(&this.Addon->PopupMenu.PopupMenu, index);
         }
 
         /// <summary>

@@ -1,3 +1,7 @@
+// <copyright file="Click.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace ClickLib
 {
     using System;
@@ -45,8 +49,9 @@ namespace ClickLib
                 var ctor = clickType.GetConstructor(new[] { typeof(IntPtr) })!;
 
                 var param = Expression.Parameter(typeof(IntPtr), "addon");
-
-                var blockExpr = Expression.Block(Expression.Call(Expression.New(ctor, param), method));
+                var instantiate = Expression.New(ctor, param);
+                var invoke = Expression.Call(instantiate, method);
+                var blockExpr = Expression.Block(invoke);
                 var lambdaExpr = Expression.Lambda<PrecompiledDelegate>(blockExpr, param);
                 var compiled = lambdaExpr.Compile()!;
 

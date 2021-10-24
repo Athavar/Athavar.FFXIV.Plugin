@@ -1,7 +1,12 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="PluginWindow.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System;
     using System.Numerics;
+
     using Dalamud.Interface.Windowing;
     using ImGuiNET;
 

@@ -1,6 +1,11 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="TextEntryNode.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System.Text.RegularExpressions;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -8,19 +13,22 @@
     /// </summary>
     public class TextEntryNode : INode
     {
+
         /// <summary>
         /// Gets or sets a value indicating whether the node is enabled.
         /// </summary>
         public bool Enabled { get; set; } = true;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets or sets the name of the node.
+        /// </summary>
         [JsonIgnore]
         public string Name
         {
             get
             {
                 return !string.IsNullOrEmpty(this.ZoneText)
-                    ? $"{this.Text} ({this.ZoneText})"
+                    ? $"({this.ZoneText}) {this.Text}"
                     : this.Text;
             }
 
@@ -93,5 +101,10 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether yes should be pressed instead of no.
+        /// </summary>
+        public bool IsYes { get; set; } = true;
     }
 }

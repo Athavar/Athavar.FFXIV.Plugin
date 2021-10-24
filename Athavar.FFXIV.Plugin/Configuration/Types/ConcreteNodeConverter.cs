@@ -1,6 +1,11 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="ConcreteNodeConverter.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
@@ -27,6 +32,14 @@
             if (jType == this.SimpleName(typeof(TextEntryNode)))
             {
                 return this.CreateObject<TextEntryNode>(jObject, serializer);
+            }
+            else if (jType == this.SimpleName(typeof(ListEntryNode)))
+            {
+                return this.CreateObject<ListEntryNode>(jObject, serializer);
+            }
+            else if (jType == this.SimpleName(typeof(TalkEntryNode)))
+            {
+                return this.CreateObject<TalkEntryNode>(jObject, serializer);
             }
             else if (jType == this.SimpleName(typeof(TextFolderNode)))
             {

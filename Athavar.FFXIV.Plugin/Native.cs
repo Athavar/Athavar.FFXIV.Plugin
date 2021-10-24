@@ -1,9 +1,15 @@
-﻿
+﻿// <copyright file="Native.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin
 {
     using System;
     using System.Runtime.InteropServices;
 
+    /// <summary>
+    /// native system methods.
+    /// </summary>
     public static class Native
     {
         private static INative native;
@@ -15,21 +21,10 @@ namespace Athavar.FFXIV.Plugin
                 PlatformID.Win32NT => new Windows(),
                 _ => throw new PlatformNotSupportedException(),
             };
-
-        }
-
-        public static void KeyDown(IntPtr hWnd, KeyCode key)
-        {
-            native.KeyDown(hWnd, key);
-        }
-
-        public static void KeyUp(IntPtr hWnd, KeyCode key)
-        {
-            native.KeyUp(hWnd, key);
         }
 
         /// <summary>
-        /// The list of VirtualKeyCodes (see: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes)
+        /// The list of VirtualKeyCodes (see: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes).
         /// </summary>
 
         /// <summary>
@@ -708,41 +703,61 @@ namespace Athavar.FFXIV.Plugin
             /// The left SHIFT key.
             /// </summary>
             LShift = 0xA0,
+
+            /// <summary>
+            /// The left SHIFT key.
+            /// </summary>
             LShiftKey = Shift,
 
             /// <summary>
             /// The right SHIFT key.
             /// </summary>
             RShift = 0xA1,
+
+            /// <summary>
+            /// The right SHIFT key.
+            /// </summary>
             RShiftKey = Shift,
 
             /// <summary>
             /// The left CTRL key.
             /// </summary>
             LControl = 0xA2,
+
+            /// <summary>
+            /// The left CTRL key.
+            /// </summary>
             LControlKey = LControl,
 
             /// <summary>
             /// The right CTRL key.
             /// </summary>
             RControl = 0xA3,
+
+            /// <summary>
+            /// The right CTRL key.
+            /// </summary>
             RControlKey = RControl,
 
             /// <summary>
             /// The left ALT key.
             /// </summary>
             LAlt = 0xA4,
+
+            /// <summary>
+            /// The left ALT key.
+            /// </summary>
             LMenu = LAlt,
-
-
 
             /// <summary>
             /// The right ALT key.
             /// </summary>
             RMenu = RAlt,
+
+            /// <summary>
+            /// The right ALT key.
+            /// </summary>
             RAlt = 0xA5,
-
-
 
             /// <summary>
             /// The browser back key (Windows 2000 or later).
@@ -1000,18 +1015,35 @@ namespace Athavar.FFXIV.Plugin
         /// </summary>
         private interface INative
         {
+            /// <summary>
+            /// Do key press down.
+            /// </summary>
+            /// <param name="hWnd">Pointer to windows handler.</param>
+            /// <param name="keyCode">The key code.</param>
             void KeyDown(IntPtr hWnd, KeyCode keyCode);
 
+            /// <summary>
+            /// Do key press up.
+            /// </summary>
+            /// <param name="hWnd">Pointer to windows handler.</param>
+            /// <param name="keyCode">The key code.</param>
             void KeyUp(IntPtr hWnd, KeyCode keyCode);
+        }
+
+        public static void KeyDown(IntPtr hWnd, KeyCode key)
+        {
+            native.KeyDown(hWnd, key);
+        }
+
+        public static void KeyUp(IntPtr hWnd, KeyCode key)
+        {
+            native.KeyUp(hWnd, key);
         }
 
         private class Windows : INative
         {
             const uint WM_KEYUP = 0x101;
             const uint WM_KEYDOWN = 0x100;
-
-            [DllImport("user32.dll")]
-            private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
             public void KeyDown(IntPtr hWnd, KeyCode keyCode)
             {
@@ -1022,6 +1054,9 @@ namespace Athavar.FFXIV.Plugin
             {
                 SendMessage(hWnd, WM_KEYUP, (IntPtr)keyCode, (IntPtr)0);
             }
+
+            [DllImport("user32.dll")]
+            private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
         }
     }
 }

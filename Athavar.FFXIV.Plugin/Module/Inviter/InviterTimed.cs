@@ -1,7 +1,12 @@
-﻿namespace Inviter
+﻿// <copyright file="InviterTimed.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Inviter
 {
     using System;
     using System.Threading.Tasks;
+
     using Athavar.FFXIV.Plugin;
     using Dalamud.Game.Gui.Toast;
 
@@ -14,11 +19,19 @@
 
         internal Localizer Localizer => this.plugin.Localizer;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InviterTimed"/> class.
+        /// </summary>
+        /// <param name="plugin"></param>
         internal InviterTimed(InviterModule plugin)
         {
             this.plugin = plugin;
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         internal async Task Run()
         {
             this.isRunning = true;

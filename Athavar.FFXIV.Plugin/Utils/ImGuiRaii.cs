@@ -1,8 +1,13 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="ImGuiRaii.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System;
     using System.Collections.Generic;
     using System.Numerics;
+
     using ImGuiNET;
 
     public sealed class ImGuiRaii : IDisposable
@@ -141,6 +146,7 @@
             }
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             this.Unindent(this._indentation);

@@ -1,22 +1,22 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Yes
+﻿// <copyright file="YesModule.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Yes
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Text;
+
     using Athavar.FFXIV.Plugin;
-    using ClickLib;
+    using Dalamud.Game;
+    using Dalamud.Game.ClientState.Keys;
     using Dalamud.Game.Command;
     using Dalamud.Game.Text.SeStringHandling;
     using Dalamud.Game.Text.SeStringHandling.Payloads;
-    using Dalamud.Hooking;
-    using Dalamud.Logging;
     using Dalamud.Memory;
     using Dalamud.Utility;
-    using FFXIVClientStructs.FFXIV.Client.UI;
-    using FFXIVClientStructs.FFXIV.Component.GUI;
-    using Lumina.Excel.GeneratedSheets;
 
     /// <summary>
     /// Main module implementation.
@@ -26,19 +26,12 @@
         private const int CurrentConfigVersion = 2;
         private const string Command = "/pyes";
 
+        private static bool setup = false;
+
         private readonly YesConfigTab configtab;
         private readonly ZoneListWindow zoneListWindow;
 
-        private readonly List<Hook<OnSetupDelegate>> onSetupHooks = new();
-        private readonly Hook<OnSetupDelegate> addonSelectYesNoOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonSalvageDialogOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonMaterializeDialogOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonMateriaRetrieveDialogOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonItemInspectionResultOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonRetainerTaskAskOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonRetainerTaskResultOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonGrandCompanySupplyRewardOnSetupHook;
-        private readonly Hook<OnSetupDelegate> addonShopCardDialogOnSetupHook;
+        private readonly List<IBaseFeature> features = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="YesModule"/> class.
@@ -46,26 +39,37 @@
         /// <param name="modules">The other <see cref="Modules"/>.</param>
         public YesModule(Modules modules)
         {
-            this.Configuration = modules.Configuration.Yes ??= new();
+            YesService.Module = this;
 
-            this.Address = new YesAddressResolver();
-            this.Address.Setup();
+            if (!setup)
+            {
+                YesService.Configuration = modules.Configuration.Yes ??= new();
+                YesService.Address = new();
+                YesService.Address.Setup();
+                setup = true;
+            }
 
             this.LoadTerritories();
 
-            this.onSetupHooks.Add(this.addonSelectYesNoOnSetupHook = new(this.Address.AddonSelectYesNoOnSetupAddress, this.AddonSelectYesNoOnSetupDetour));
-            this.onSetupHooks.Add(this.addonSalvageDialogOnSetupHook = new(this.Address.AddonSalvageDialongOnSetupAddress, this.AddonSalvageDialogOnSetupDetour));
-            this.onSetupHooks.Add(this.addonMaterializeDialogOnSetupHook = new(this.Address.AddonMaterializeDialongOnSetupAddress, this.AddonMaterializeDialogOnSetupDetour));
-            this.onSetupHooks.Add(this.addonMateriaRetrieveDialogOnSetupHook = new(this.Address.AddonMateriaRetrieveDialongOnSetupAddress, this.AddonMateriaRetrieveDialogOnSetupDetour));
-            this.onSetupHooks.Add(this.addonItemInspectionResultOnSetupHook = new(this.Address.AddonItemInspectionResultOnSetupAddress, this.AddonItemInspectionResultOnSetupDetour));
-            this.onSetupHooks.Add(this.addonRetainerTaskAskOnSetupHook = new(this.Address.AddonRetainerTaskAskOnSetupAddress, this.AddonRetainerTaskAskOnSetupDetour));
-            this.onSetupHooks.Add(this.addonRetainerTaskResultOnSetupHook = new(this.Address.AddonRetainerTaskResultOnSetupAddress, this.AddonRetainerTaskResultOnSetupDetour));
-            this.onSetupHooks.Add(this.addonGrandCompanySupplyRewardOnSetupHook = new(this.Address.AddonGrandCompanySupplyRewardOnSetupAddress, this.AddonGrandCompanySupplyRewardOnSetupDetour));
-            this.onSetupHooks.Add(this.addonShopCardDialogOnSetupHook = new(this.Address.AddonShopCardDialogOnSetupAddress, this.AddonShopCardDialogOnSetupDetour));
-            this.onSetupHooks.ForEach(hook => hook.Enable());
+            DalamudBinding.Framework.Update += this.FrameworkUpdate;
 
-            this.configtab = new(this);
-            this.zoneListWindow = new(this);
+            this.features.Add(new AddonSelectYesNoFeature());
+            this.features.Add(new AddonSelectStringFeature());
+            this.features.Add(new AddonSelectIconStringFeature());
+            this.features.Add(new AddonSalvageDialogFeature());
+            this.features.Add(new AddonMaterializeDialogFeature());
+            this.features.Add(new AddonMateriaRetrieveDialogFeature());
+            this.features.Add(new AddonItemInspectionResultFeature());
+            this.features.Add(new AddonRetainerTaskAskFeature());
+            this.features.Add(new AddonRetainerTaskResultFeature());
+            this.features.Add(new AddonGrandCompanySupplyRewardFeature());
+            this.features.Add(new AddonShopCardDialogFeature());
+            this.features.Add(new AddonJournalResultFeature());
+            this.features.Add(new AddonContentsFinderConfirmFeature());
+            this.features.Add(new AddonTalkFeature());
+
+            this.configtab = new();
+            this.zoneListWindow = new();
 
             Modules.Base.ChangeWindowSystem(ws => ws.AddWindow(this.zoneListWindow));
 
@@ -82,16 +86,6 @@
         public string Name => "Athavar Yes Module";
 
         /// <summary>
-        /// Gets the configuration of the <see cref="YesModule"/>.
-        /// </summary>
-        internal YesConfiguration Configuration { get; private set; }
-
-        /// <summary>
-        /// Gets the <see cref="YesAddressResolver"/> of the <see cref="YesModule"/>.
-        /// </summary>
-        internal YesAddressResolver Address { get; private set; }
-
-        /// <summary>
         /// Gets a mapping of territory IDs to names.
         /// </summary>
         internal Dictionary<uint, string> TerritoryNames { get; } = new();
@@ -101,18 +95,89 @@
         /// </summary>
         internal string LastSeenDialogText { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the last selection of a list dialog.
+        /// </summary>
+        internal string LastSeenListSelection { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the target selected when a selection was last made in a list dialog.
+        /// </summary>
+        internal string LastSeenListTarget { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the target selected when a talk dialog was last updated.
+        /// </summary>
+        internal string LastSeenTalkTarget { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets the datetime when the escape button was last pressed.
+        /// </summary>
+        internal DateTime EscapeLastPressed { get; private set; } = DateTime.MinValue;
+
         /// <inheritdoc/>
         public void Dispose()
         {
             DalamudBinding.CommandManager.RemoveHandler(Command);
+            DalamudBinding.Framework.Update -= this.FrameworkUpdate;
 
             Modules.Base.ChangeWindowSystem(ws => ws.RemoveWindow(this.zoneListWindow));
 
-            this.onSetupHooks.ForEach(hook => hook.Dispose());
+            this.features.ForEach(feature => feature?.Dispose());
+
+            YesService.Module = null;
         }
 
         /// <inheritdoc/>
         public void Draw() => this.configtab.DrawTab();
+
+        #region SeString
+
+        /// <summary>
+        /// Read an SeString.
+        /// </summary>
+        /// <param name="textPtr">SeString address.</param>
+        /// <returns>The SeString.</returns>
+        internal static unsafe SeString GetSeString(byte* textPtr)
+            => GetSeString((IntPtr)textPtr);
+
+        /// <summary>
+        /// Read an SeString.
+        /// </summary>
+        /// <param name="textPtr">SeString address.</param>
+        /// <returns>The SeString.</returns>
+        internal static SeString GetSeString(IntPtr textPtr)
+            => MemoryHelper.ReadSeStringNullTerminated(textPtr);
+
+        /// <summary>
+        /// Read the text of an SeString.
+        /// </summary>
+        /// <param name="textPtr">SeString address.</param>
+        /// <returns>The SeString.</returns>
+        internal static unsafe string GetSeStringText(byte* textPtr)
+            => GetSeStringText(GetSeString(textPtr));
+
+        /// <summary>
+        /// Read the text of an SeString.
+        /// </summary>
+        /// <param name="textPtr">SeString address.</param>
+        /// <returns>The SeString.</returns>
+        internal static string GetSeStringText(IntPtr textPtr)
+            => GetSeStringText(GetSeString(textPtr));
+
+        /// <summary>
+        /// Read the text of an SeString.
+        /// </summary>
+        /// <param name="seString">An SeString.</param>
+        /// <returns>The seString.</returns>
+        internal static string GetSeStringText(SeString seString)
+        {
+            var pieces = seString.Payloads.OfType<TextPayload>().Select(t => t.Text);
+            var text = string.Join(string.Empty, pieces).Replace('\n', ' ').Trim();
+            return text;
+        }
+
+        #endregion
 
         /// <summary>
         /// Print a message to the chat window.
@@ -158,7 +223,7 @@
                     continue;
                 }
 
-                var text = this.GetSeStringText((SeString)zone.Name);
+                var text = GetSeStringText((SeString)zone.Name);
                 if (string.IsNullOrEmpty(text))
                 {
                     continue;
@@ -168,31 +233,13 @@
             }
         }
 
-        #region SeString
-
-        private unsafe SeString GetSeString(byte* textPtr)
+        private void FrameworkUpdate(Framework framework)
         {
-            return this.GetSeString((IntPtr)textPtr);
+            if (DalamudBinding.KeyState[VirtualKey.ESCAPE])
+            {
+                this.EscapeLastPressed = DateTime.Now;
+            }
         }
-
-        private SeString GetSeString(IntPtr textPtr)
-        {
-            return MemoryHelper.ReadSeStringNullTerminated(textPtr);
-        }
-
-        private SeString GetSeString(byte[] bytes)
-        {
-            return SeString.Parse(bytes);
-        }
-
-        private string GetSeStringText(SeString sestring)
-        {
-            var pieces = sestring.Payloads.OfType<TextPayload>().Select(t => t.Text);
-            var text = string.Join(string.Empty, pieces).Replace('\n', ' ').Trim();
-            return text;
-        }
-
-        #endregion
 
         #region Commands
 
@@ -209,11 +256,21 @@
                 case "help":
                     this.CommandHelpMenu();
                     break;
+                case "toggle":
+                    YesService.Configuration.Enabled ^= true;
+                    YesService.Configuration.Save();
+                    break;
                 case "last":
-                    this.CommandAddNode(this.LastSeenDialogText, false, this.Configuration.RootFolder);
+                    this.CommandAddNode(false);
                     break;
                 case "last zone":
-                    this.CommandAddNode(this.LastSeenDialogText, true, this.Configuration.RootFolder);
+                    this.CommandAddNode(true);
+                    break;
+                case "lastlist":
+                    this.CommandAddListNode();
+                    break;
+                case "lasttalk":
+                    this.CommandAddTalkNode();
                     break;
                 default:
                     this.PrintError("I didn't quite understand that.");
@@ -226,13 +283,18 @@
             var sb = new StringBuilder();
             sb.AppendLine("Help menu");
             sb.AppendLine($"{Command}           - Toggle the config window.");
+            sb.AppendLine($"{Command} toggle    - Toggle the plugin on/off.");
             sb.AppendLine($"{Command} last      - Add the last seen YesNo dialog.");
             sb.AppendLine($"{Command} last zone - Add the last seen YesNo dialog with the current zone name.");
+            sb.AppendLine($"{Command} lastlist  - Add the last selected list dialog with the target at the time.");
+            sb.AppendLine($"{Command} lastlist  - Add the last seen target during a Talk dialog.");
             this.PrintMessage(sb.ToString());
         }
 
-        private void CommandAddNode(string text, bool zoneRestricted, TextFolderNode parent)
+        private void CommandAddNode(bool zoneRestricted)
         {
+            var text = this.LastSeenDialogText;
+
             if (text.IsNullOrEmpty())
             {
                 if (this.LastSeenDialogText.IsNullOrEmpty())
@@ -259,261 +321,57 @@
                 newNode.ZoneText = zoneName;
             }
 
+            var parent = YesService.Configuration.RootFolder;
             parent.Children.Add(newNode);
-            this.Configuration.Save();
+            YesService.Configuration.Save();
 
             this.PrintMessage("Added a new text entry.");
         }
+
+        private void CommandAddListNode()
+        {
+            var text = this.LastSeenListSelection;
+            var target = this.LastSeenListTarget;
+
+            if (text.IsNullOrEmpty())
+            {
+                this.PrintError("No dialog has been selected.");
+                return;
+            }
+
+            var newNode = new ListEntryNode { Enabled = true, Text = text };
+
+            if (!target.IsNullOrEmpty())
+            {
+                newNode.TargetRestricted = true;
+                newNode.TargetText = target;
+            }
+
+            var parent = YesService.Configuration.ListRootFolder;
+            parent.Children.Add(newNode);
+            YesService.Configuration.Save();
+
+            this.PrintMessage("Added a new list entry.");
+        }
+
+        private void CommandAddTalkNode()
+        {
+            var target = this.LastSeenTalkTarget;
+
+            if (target.IsNullOrEmpty())
+            {
+                this.PrintError("No talk dialog has been seen.");
+                return;
+            }
+
+            var newNode = new TalkEntryNode { Enabled = true, TargetText = target };
+
+            var parent = YesService.Configuration.TalkRootFolder;
+            parent.Children.Add(newNode);
+            Configuration.Save();
+
+            this.PrintMessage("Added a new talk entry.");
+        }
         #endregion
-    }
-
-    /// <summary>
-    /// YesNo text matching features.
-    /// </summary>
-    internal sealed partial class YesModule
-    {
-        private bool EntryMatchesText(TextEntryNode node, string text)
-        {
-            return (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
-                  (!node.IsTextRegex && text.Contains(node.Text));
-        }
-
-        private bool EntryMatchesZoneName(TextEntryNode node, string zoneName)
-        {
-            return (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
-                  (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
-        }
-
-        private void AddonSelectYesNoExecute(IntPtr addon)
-        {
-            unsafe
-            {
-                var addonObj = (AddonSelectYesno*)addon;
-                var yesButton = addonObj->YesButton;
-                if (yesButton != null && !yesButton->IsEnabled)
-                {
-                    PluginLog.Debug($"AddonSelectYesNo: Enabling yes button");
-                    yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
-                }
-            }
-
-            PluginLog.Debug($"AddonSelectYesNo: Selecting yes");
-            Click.SendClick("select_yes", addon);
-        }
-
-        private IntPtr AddonSelectYesNoOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonSelectYesNo.OnSetup");
-            var result = this.addonSelectYesNoOnSetupHook.Original(addon, a2, dataPtr);
-
-            try
-            {
-                var data = Marshal.PtrToStructure<AddonSelectYesNoOnSetupData>(dataPtr);
-                var text = this.LastSeenDialogText = this.GetSeStringText(this.GetSeString(data.TextPtr));
-
-                PluginLog.Debug($"AddonSelectYesNo: text={text}");
-
-                if (this.Configuration.Enabled)
-                {
-                    var nodes = this.Configuration.GetAllNodes().OfType<TextEntryNode>();
-                    var zoneWarnOnce = true;
-                    foreach (var node in nodes)
-                    {
-                        if (node.Enabled && !string.IsNullOrEmpty(node.Text) && this.EntryMatchesText(node, text))
-                        {
-                            if (node.ZoneRestricted && !string.IsNullOrEmpty(node.ZoneText))
-                            {
-                                if (!this.TerritoryNames.TryGetValue(DalamudBinding.ClientState.TerritoryType, out var zoneName))
-                                {
-                                    if (zoneWarnOnce && !(zoneWarnOnce = false))
-                                    {
-                                        PluginLog.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
-                                        this.PrintMessage($"Unable to verify Zone Restricted entry, change zones to update value");
-                                    }
-
-                                    zoneName = string.Empty;
-                                }
-
-                                if (!string.IsNullOrEmpty(zoneName) && this.EntryMatchesZoneName(node, zoneName))
-                                {
-                                    PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
-                                    this.AddonSelectYesNoExecute(addon);
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text}");
-                                this.AddonSelectYesNoExecute(addon);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Error(ex, "Don't crash the game");
-            }
-
-            return result;
-        }
-
-        [StructLayout(LayoutKind.Explicit, Size = 0x10)]
-        private struct AddonSelectYesNoOnSetupData
-        {
-            [FieldOffset(0x8)]
-            public IntPtr TextPtr;
-        }
-    }
-
-    /// <summary>
-    /// Non text matching features.
-    /// </summary>
-    internal sealed partial class YesModule
-    {
-        private void SendClicks(bool enabled, params string[] clicks)
-        {
-            try
-            {
-                if (this.Configuration.Enabled && enabled)
-                {
-                    foreach (var click in clicks)
-                    {
-                        Click.SendClick(click);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Error(ex, "Don't crash the game");
-            }
-        }
-
-        private IntPtr AddonSalvageDialogOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonSalvageDialog.OnSetup");
-
-            var result = this.addonSalvageDialogOnSetupHook.Original(addon, a2, dataPtr);
-
-            try
-            {
-                if (this.Configuration.Enabled && this.Configuration.DesynthBulkDialogEnabled)
-                {
-                    unsafe
-                    {
-                        ((AddonSalvageDialog*)addon)->BulkDesynthEnabled = true;
-                    }
-                }
-
-                if (this.Configuration.Enabled && this.Configuration.DesynthDialogEnabled)
-                {
-                    Click.SendClick("desynthesize_checkbox");
-                    Click.SendClick("desynthesize");
-                }
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Error(ex, "Don't crash the game");
-            }
-
-            return result;
-        }
-
-        private IntPtr AddonMaterializeDialogOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonMaterializeDialog.OnSetupDetour");
-            var result = this.addonMaterializeDialogOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.MaterializeDialogEnabled, "materialize");
-            return result;
-        }
-
-        private IntPtr AddonMateriaRetrieveDialogOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug("AddonMateriaRetrieveDialog.OnSetupDetour");
-            var result = this.addonMateriaRetrieveDialogOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.MateriaRetrieveDialogEnabled, "retrieve_materia");
-            return result;
-        }
-
-        private int itemInspectionCount = 0;
-        private int itemInspectionLimit = 10;
-
-        private IntPtr AddonItemInspectionResultOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonItemInspectionResult.OnSetup");
-
-            var result = this.addonItemInspectionResultOnSetupHook.Original(addon, a2, dataPtr);
-
-            if (this.Configuration.ItemInspectionResultEnabled)
-            {
-                unsafe
-                {
-                    var addonPtr = (AddonItemInspectionResult*)addon;
-
-                    if (addonPtr->AtkUnitBase.UldManager.NodeListCount >= 64)
-                    {
-                        var nameNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[64];
-                        var descNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[55];
-                        if (nameNode->AtkResNode.IsVisible && descNode->AtkResNode.IsVisible)
-                        {
-                            var nameText = this.GetSeString(nameNode->NodeText.StringPtr);
-                            var descText = this.GetSeStringText(this.GetSeString(descNode->NodeText.StringPtr));
-                            // This is hackish, but works well enough (for now)
-                            // French doesn't have the widget
-                            if (descText.Contains("※") || descText.Contains("liées à Garde-la-Reine"))
-                            {
-                                nameText.Payloads.Insert(0, new TextPayload("Received: "));
-                                this.PrintMessage(nameText);
-                            }
-                        }
-                    }
-                }
-            }
-
-            this.itemInspectionCount++;
-            if (this.itemInspectionCount % this.itemInspectionLimit == 0)
-            {
-                this.PrintMessage("Sanity check, pausing item inspection loop.");
-            }
-            else
-            {
-                this.SendClicks(this.Configuration.ItemInspectionResultEnabled, "item_inspection_result_next");
-            }
-
-            return result;
-        }
-
-        private IntPtr AddonRetainerTaskAskOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonRetainerTaskAsk.OnSetup");
-            var result = this.addonRetainerTaskAskOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.RetainerTaskAskEnabled, "retainer_venture_ask_assign");
-            return result;
-        }
-
-        private IntPtr AddonRetainerTaskResultOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonRetainerTaskResult.OnSetup");
-            var result = this.addonRetainerTaskResultOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.RetainerTaskResultEnabled, "retainer_venture_result_reassign", "retainer_venture_result_reassign");
-            return result;
-        }
-
-        private IntPtr AddonGrandCompanySupplyRewardOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonGrandCompanySupplyReward.OnSetup");
-            var result = this.addonGrandCompanySupplyRewardOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.GrandCompanySupplyReward, "grand_company_expert_delivery_deliver");
-            return result;
-        }
-
-        private IntPtr AddonShopCardDialogOnSetupDetour(IntPtr addon, uint a2, IntPtr dataPtr)
-        {
-            PluginLog.Debug($"AddonShopCardDialog.OnSetup");
-            var result = this.addonShopCardDialogOnSetupHook.Original(addon, a2, dataPtr);
-            this.SendClicks(this.Configuration.ShopCardDialog, "sell_triple_triad_card");
-            return result;
-        }
     }
 }

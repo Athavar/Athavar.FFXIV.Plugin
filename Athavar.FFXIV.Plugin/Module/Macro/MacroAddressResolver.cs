@@ -1,6 +1,11 @@
-namespace SomethingNeedDoing
+// <copyright file="MacroAddressResolver.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro
 {
     using System;
+
     using Dalamud.Game;
     using Dalamud.Logging;
 

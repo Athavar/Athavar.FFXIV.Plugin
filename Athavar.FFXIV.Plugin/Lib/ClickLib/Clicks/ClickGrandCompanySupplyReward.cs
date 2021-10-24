@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickGrandCompanySupplyReward.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon GrandCompanySupplyReward.
     /// </summary>
-    public sealed unsafe class ClickGrandCompanySupplyReward : ClickBase<AddonGrandCompanySupplyReward>
+    public sealed unsafe class ClickGrandCompanySupplyReward : ClickAddonBase<AddonGrandCompanySupplyReward>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickGrandCompanySupplyReward"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "GrandCompanySupplyReward";
+
+        public static implicit operator ClickGrandCompanySupplyReward(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickGrandCompanySupplyReward Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the deliver button.

@@ -20,6 +20,11 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <PropertyGroup Label="Documentation">
+    <DocumentationFile></DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
@@ -40,17 +45,22 @@
     <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DefineConstants>TRACE</DefineConstants>
+  <PropertyGroup>
+    <AssemblySearchPaths>
+      $(AssemblySearchPaths);
+      $(DalamudLibPath);
+    </AssemblySearchPaths>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.2" />
+    <PackageReference Include="DalamudPackager" Version="2.1.4" />
     <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
+    <PackageReference Include="Reloaded.Memory" Version="4.1.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -62,46 +72,34 @@
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
     </Reference-->
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Dalamud">
-      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="ImGui.NET">
-      <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="ImGuiScene">
-      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Lumina">
-      <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Lumina.Excel">
-      <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <Reference Include="Newtonsoft.Json" Private="False" />
+    <Reference Include="Dalamud" Private="False" />
+    <Reference Include="ImGui.NET" Private="False" />
+    <Reference Include="ImGuiScene" Private="False" />
+    <Reference Include="Lumina" Private="False" />
+    <Reference Include="Lumina.Excel" Private="False" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Module\Yes\Features\" />
+    <Folder Include="Module\Yes\BaseFeatures\" />
   </ItemGroup>
 
   <Target Name="ILRepack" AfterTargets="Build">
-  <ItemGroup>
-    <InputAssemblies Include="$(TargetPath)" />
-    <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
-  </ItemGroup>
-  <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
+    <ItemGroup>
+      <InputAssemblies Include="$(TargetPath)" />
+      <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath)" />
+    </ItemGroup>
+    <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /log:$(TargetDir)ilrepack.log /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
   </Target>
 
   <Target Name="CleanOutDir" AfterTargets="ILRepack">
     <ItemGroup>
-      <DeleteAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll" />
-      <DeleteAssemblies Include="$(TargetDir)*.pdb" Exclude="$(TargetDir)$(TargetName).pdb" />
+      <DeleteFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll" />
+      <DeleteFiles Include="$(TargetDir)*.pdb" Exclude="$(TargetDir)$(TargetName).pdb" />
+      <DeleteFiles Include="$(TargetDir)*.xml" />
     </ItemGroup>
-    <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
-    <Delete Files="@(DeleteAssemblies)" />
+    <Message Text="Deleting @(DeleteFiles)" Importance="high" />
+    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>

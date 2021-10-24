@@ -1,4 +1,8 @@
-﻿namespace ClickLib
+﻿// <copyright file="EventType.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib
 {
     /// <summary>
     /// Various event types.

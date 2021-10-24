@@ -1,9 +1,14 @@
-namespace SomethingNeedDoing
+// <copyright file="ChatManager.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro
 {
     using System;
     using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading.Channels;
+
     using Athavar.FFXIV.Plugin;
     using Dalamud.Game;
     using FFXIVClientStructs.FFXIV.Client.UI;

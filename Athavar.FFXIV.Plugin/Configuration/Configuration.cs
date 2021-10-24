@@ -1,12 +1,16 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="Configuration.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Timers;
+
     using Dalamud.Configuration;
     using Dalamud.Logging;
     using Newtonsoft.Json;
-    using static Athavar.FFXIV.Plugin.Modules;
 
     internal class Configuration : IPluginConfiguration
     {
@@ -31,6 +35,10 @@
             return config.Init();
         }
 
+        /// <summary>
+        /// Save the configuration.
+        /// </summary>
+        /// <param name="instant">Indicate if the configuration should be saved instant.</param>
         public static void Save(bool instant = false)
         {
             if (saveTimer is null)
@@ -74,6 +82,7 @@
             return this;
         }
 
+        /// <inheritdoc/>
         public int Version { get; set; } = 1;
 
         public YesConfiguration? Yes { get; set; } = null!;

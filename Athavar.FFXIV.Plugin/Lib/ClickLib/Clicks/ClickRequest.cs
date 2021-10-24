@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickRequest.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon Request.
     /// </summary>
-    public sealed unsafe class ClickRequest : ClickBase<AddonRequest>
+    public sealed unsafe class ClickRequest : ClickAddonBase<AddonRequest>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickRequest"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "Request";
+
+        public static implicit operator ClickRequest(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickRequest Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the hand over button.

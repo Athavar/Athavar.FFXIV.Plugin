@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickJournalResult.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon JournalResult.
     /// </summary>
-    public sealed unsafe class ClickJournalResult : ClickBase<AddonJournalResult>
+    public sealed unsafe class ClickJournalResult : ClickAddonBase<AddonJournalResult>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickJournalResult"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "JournalResult";
+
+        public static implicit operator ClickJournalResult(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickJournalResult Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the complete button.

@@ -1,8 +1,13 @@
-﻿namespace Athavar.FFXIV.Plugin.UI
+﻿// <copyright file="MacroTabUI.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.UI
 {
     using System;
     using System.Reflection;
     using System.Threading.Tasks;
+
     using Dalamud.Game.ClientState.Keys;
     using ImGuiNET;
 
@@ -14,6 +19,9 @@
 
         private string? error;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MacroTabUI"/> class.
+        /// </summary>
         public MacroTabUI()
         {
             try

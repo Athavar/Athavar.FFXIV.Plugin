@@ -1,6 +1,11 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="TextFolderNode.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
     using System.Collections.Generic;
+
     using Newtonsoft.Json;
 
     /// <summary>

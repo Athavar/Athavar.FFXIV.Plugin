@@ -1,4 +1,8 @@
-﻿namespace Inviter
+﻿// <copyright file="InviterModule.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Inviter
 {
     using System;
     using System.Collections.Generic;
@@ -7,6 +11,7 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+
     using Athavar.FFXIV.Plugin;
     using Dalamud.Game.Command;
     using Dalamud.Game.Gui.Toast;
@@ -49,6 +54,10 @@
         internal InviterTimed timedRecruitment;
         internal Regex? invitePattern;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InviterModule"/> class.
+        /// </summary>
+        /// <param name="modules"></param>
         public InviterModule(Modules modules)
         {
             this.Config = modules.Configuration;
@@ -93,6 +102,7 @@
 
         public InviterConfiguration InviterConfig => this.Config.Inviter!;
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             if (this.timedRecruitment.isRunning)
@@ -106,6 +116,7 @@
             DalamudBinding.CommandManager.RemoveHandler("/xinvite");
         }
 
+        /// <inheritdoc/>
         public void Draw()
         {
             this.InvoterUi.DrawTab();

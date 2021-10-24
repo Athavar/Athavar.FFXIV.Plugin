@@ -1,16 +1,20 @@
-namespace SomethingNeedDoing
+// <copyright file="MacroConfigTab.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Numerics;
-    using System.Runtime.InteropServices;
     using System.Text.RegularExpressions;
+
     using Athavar.FFXIV.Plugin;
     using Dalamud.Interface;
-    using Dalamud.Logging;
     using ImGuiNET;
-    using static SomethingNeedDoing.MacroManager;
+
+    using static Athavar.FFXIV.Plugin.Module.Macro.MacroManager;
 
     /// <summary>
     /// UI Tab for macro execution.

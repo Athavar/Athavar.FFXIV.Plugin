@@ -1,12 +1,18 @@
-﻿namespace Athavar.FFXIV.Plugin
+﻿// <copyright file="Plugin.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin
 {
+    using System;
+    using System.Threading.Tasks;
+
     using ClickLib;
     using Dalamud.Game.Command;
     using Dalamud.Interface.Windowing;
     using Dalamud.IoC;
+    using Dalamud.Logging;
     using Dalamud.Plugin;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Main plugin implementation.
@@ -99,6 +105,22 @@
         internal static void SaveConfiguration()
         {
             Configuration.Save();
+        }
+
+        /// <summary>
+        /// Try to catch all exception.
+        /// </summary>
+        /// <param name="action">Action that can throw exception.</param>
+        internal static void CatchCrash(Action action)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception ex)
+            {
+                PluginLog.Error(ex, "Don't crash the game");
+            }
         }
 
         private void DrawWindow()

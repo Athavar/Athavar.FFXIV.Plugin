@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Utils
+﻿// <copyright file="ImGuiEx.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Utils
 {
     using Dalamud.Interface;
     using ImGuiNET;

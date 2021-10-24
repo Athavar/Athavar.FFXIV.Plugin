@@ -1,7 +1,12 @@
-﻿namespace Inviter
+﻿// <copyright file="InviterUi.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Inviter
 {
     using System;
     using System.Linq;
+
     using Athavar.FFXIV.Plugin;
     using Dalamud.Game.Text;
     using ImGuiNET;

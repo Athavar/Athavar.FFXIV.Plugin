@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickContextIconMenu.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon ContextIconMenu.
     /// </summary>
-    public sealed unsafe class ClickContextIconMenu : ClickBase<AddonContextIconMenu>
+    public sealed unsafe class ClickContextIconMenu : ClickAddonBase<AddonContextIconMenu>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickContextIconMenu"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "ContextIconMenu";
+
+        public static implicit operator ClickContextIconMenu(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickContextIconMenu Using(IntPtr addon) => new(addon);
 
         // /// <summary>
         // /// Select the item at the given index.

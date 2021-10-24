@@ -1,9 +1,14 @@
-﻿namespace Athavar.FFXIV.Plugin.Utils
+﻿// <copyright file="KeyStateExtended.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Utils
 {
     using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
+
     using Dalamud.Game.ClientState.Keys;
 
     internal class KeyStateExtended
@@ -15,6 +20,9 @@
 
         private static KeyStateExtended? instance;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyStateExtended"/> class.
+        /// </summary>
         public KeyStateExtended()
         {
             var getRefValue = typeof(KeyState).GetMethod("GetRefValue", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new NotImplementedException();
@@ -36,9 +44,21 @@
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="millisecondsDuration"></param>
+        /// <param name="virtualKey"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         internal Task PressKey(int millisecondsDuration, params VirtualKey[] virtualKey)
             => this.PressKey(millisecondsDuration, (IEnumerable<VirtualKey>)virtualKey);
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="millisecondsDuration"></param>
+        /// <param name="virtualKeys"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         internal async Task PressKey(int millisecondsDuration, IEnumerable<VirtualKey> virtualKeys)
         {
             foreach (var key in virtualKeys)
@@ -54,6 +74,12 @@
             }
         }
 
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="millisecondsDuration"></param>
+        /// <param name="virtualKey"></param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
         internal async Task PressKey(int millisecondsDuration, VirtualKey virtualKey)
         {
             this.DownKey(virtualKey);

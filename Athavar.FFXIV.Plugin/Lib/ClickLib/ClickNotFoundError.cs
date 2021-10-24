@@ -1,4 +1,8 @@
-﻿namespace ClickLib
+﻿// <copyright file="ClickNotFoundError.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib
 {
     using System;
 

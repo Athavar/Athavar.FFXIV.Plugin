@@ -1,13 +1,18 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickMateriaRetrieveDialog.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
     using FFXIVClientStructs.FFXIV.Component.GUI;
 
     /// <summary>
     /// Addon MateriaRetrieveDialog.
     /// </summary>
-    public sealed unsafe class ClickMateriaRetrieveDialog : ClickBase<AddonMateriaRetrieveDialog>
+    public sealed unsafe class ClickMateriaRetrieveDialog : ClickAddonBase<AddonMateriaRetrieveDialog>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickMateriaRetrieveDialog"/> class.
@@ -20,6 +25,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "MateriaRetrieveDialog";
+
+        public static implicit operator ClickMateriaRetrieveDialog(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickMateriaRetrieveDialog Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the begin button.

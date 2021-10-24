@@ -1,12 +1,17 @@
-﻿namespace ClickLib.Clicks
+﻿// <copyright file="ClickGuildLeve.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace ClickLib.Clicks
 {
     using System;
+
     using FFXIVClientStructs.FFXIV.Client.UI;
 
     /// <summary>
     /// Addon GuildLeve.
     /// </summary>
-    public sealed unsafe class ClickGuildLeve : ClickBase<AddonGuildLeve>
+    public sealed unsafe class ClickGuildLeve : ClickAddonBase<AddonGuildLeve>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClickGuildLeve"/> class.
@@ -19,6 +24,15 @@
 
         /// <inheritdoc/>
         protected override string AddonName => "GuildLeve";
+
+        public static implicit operator ClickGuildLeve(IntPtr addon) => new(addon);
+
+        /// <summary>
+        /// Instantiate this click using the given addon.
+        /// </summary>
+        /// <param name="addon">Addon to reference.</param>
+        /// <returns>A click instance.</returns>
+        public static ClickGuildLeve Using(IntPtr addon) => new(addon);
 
         /// <summary>
         /// Click the fieldcraft button.
