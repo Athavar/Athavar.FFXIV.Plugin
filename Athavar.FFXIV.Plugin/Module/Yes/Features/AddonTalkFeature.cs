@@ -2,90 +2,90 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using System.Linq;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.UI;
+
+/// <summary>
+///     AddonTalk feature.
+/// </summary>
+internal class AddonTalkFeature : UpdateFeature
 {
-    using System;
-    using System.Linq;
-    using ClickLib.Clicks;
-    using Dalamud.Logging;
-    using FFXIVClientStructs.FFXIV.Client.UI;
+    private readonly YesModule module;
 
     /// <summary>
-    /// AddonTalk feature.
+    ///     Initializes a new instance of the <see cref="AddonTalkFeature" /> class.
     /// </summary>
-    internal class AddonTalkFeature : UpdateFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonTalkFeature(YesModule module)
+        : base(module.AddressResolver.AddonTalkUpdateAddress, module.Configuration) =>
+        this.module = module;
+
+    /// <inheritdoc />
+    protected override string AddonName => "Talk";
+
+    /// <inheritdoc />
+    protected override unsafe void UpdateImpl(IntPtr addon, IntPtr a2, IntPtr a3)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonTalkFeature"/> class.
-        /// </summary>
-        public AddonTalkFeature()
-            : base(YesService.Address.AddonTalkUpdateAddress)
+        var addonPtr = (AddonTalk*)addon;
+        if (!addonPtr->AtkUnitBase.IsVisible)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "Talk";
+        var target = this.module.DalamudServices.TargetManager.Target;
+        var targetName = this.module.LastSeenTalkTarget = target != null
+            ? this.module.GetSeStringText(target.Name)
+            : string.Empty;
 
-        /// <inheritdoc/>
-        protected unsafe override void UpdateImpl(IntPtr addon, IntPtr a2, IntPtr a3)
+        var nodes = this.Configuration.GetAllNodes().OfType<TalkEntryNode>();
+        foreach (var node in nodes)
         {
-            var addonPtr = (AddonTalk*)addon;
-            if (!addonPtr->AtkUnitBase.IsVisible)
+            if (!node.Enabled || string.IsNullOrEmpty(node.TargetText))
             {
-                return;
+                continue;
             }
 
-            var target = DalamudBinding.TargetManager.Target;
-            var targetName = YesService.Module!.LastSeenTalkTarget = target != null
-                ? YesModule.GetSeStringText(target.Name)
-                : string.Empty;
-
-            var nodes = YesService.Configuration.GetAllNodes().OfType<TalkEntryNode>();
-            foreach (var node in nodes)
+            var matched = this.EntryMatchesTargetName(node, targetName);
+            if (!matched)
             {
-                if (!node.Enabled || string.IsNullOrEmpty(node.TargetText))
-                {
-                    continue;
-                }
-
-                var matched = this.EntryMatchesTargetName(node, targetName);
-                if (!matched)
-                {
-                    continue;
-                }
-
-                PluginLog.Debug("AddonTalk: Advancing");
-                ClickTalk.Using(addon).Click();
-                return;
+                continue;
             }
-        }
 
-        private unsafe void AddonSelectYesNoExecute(IntPtr addon, bool yes)
-        {
-            if (yes)
-            {
-                var addonPtr = (AddonSelectYesno*)addon;
-                var yesButton = addonPtr->YesButton;
-                if (yesButton != null && !yesButton->IsEnabled)
-                {
-                    PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
-                    yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
-                }
-
-                PluginLog.Debug("AddonSelectYesNo: Selecting yes");
-                ClickSelectYesNo.Using(addon).Yes();
-            }
-            else
-            {
-                PluginLog.Debug("AddonSelectYesNo: Selecting no");
-                ClickSelectYesNo.Using(addon).No();
-            }
-        }
-
-        private bool EntryMatchesTargetName(TalkEntryNode node, string targetName)
-        {
-            return (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
-                  (!node.TargetIsRegex && targetName.Contains(node.TargetText));
+            PluginLog.Debug("AddonTalk: Advancing");
+            ClickTalk.Using(addon).Click();
+            return;
         }
     }
+
+    private unsafe void AddonSelectYesNoExecute(IntPtr addon, bool yes)
+    {
+        if (yes)
+        {
+            var addonPtr = (AddonSelectYesno*)addon;
+            var yesButton = addonPtr->YesButton;
+            if (yesButton != null && !yesButton->IsEnabled)
+            {
+                PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
+                yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
+            }
+
+            PluginLog.Debug("AddonSelectYesNo: Selecting yes");
+            ClickSelectYesNo.Using(addon).Yes();
+        }
+        else
+        {
+            PluginLog.Debug("AddonSelectYesNo: Selecting no");
+            ClickSelectYesNo.Using(addon).No();
+        }
+    }
+
+    private bool EntryMatchesTargetName(TalkEntryNode node, string targetName) =>
+        (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
+        (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

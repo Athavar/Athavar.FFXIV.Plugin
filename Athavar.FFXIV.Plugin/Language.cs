@@ -2,11 +2,10 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
+namespace Athavar.FFXIV.Plugin;
+
+internal enum Language
 {
-    internal enum Language
-    {
-        EN,
-        DE,
-    }
+    En,
+    De,
 }

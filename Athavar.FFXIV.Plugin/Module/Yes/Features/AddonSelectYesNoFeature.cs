@@ -2,125 +2,123 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.UI;
+
+/// <summary>
+///     AddonSelectYesNo feature.
+/// </summary>
+internal class AddonSelectYesNoFeature : OnSetupFeature
 {
-    using System;
-    using System.Linq;
-    using System.Runtime.InteropServices;
-    using ClickLib.Clicks;
-    using Dalamud.Logging;
-    using FFXIVClientStructs.FFXIV.Client.UI;
+    private readonly YesModule module;
 
     /// <summary>
-    /// AddonSelectYesNo feature.
+    ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature" /> class.
     /// </summary>
-    internal class AddonSelectYesNoFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonSelectYesNoFeature(YesModule module)
+        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module.Configuration) =>
+        this.module = module;
+
+    /// <inheritdoc />
+    protected override string AddonName => "SelectYesNo";
+
+    /// <inheritdoc />
+    protected override unsafe void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonSelectYesNoFeature"/> class.
-        /// </summary>
-        public AddonSelectYesNoFeature()
-            : base(YesService.Address.AddonSelectYesNoOnSetupAddress)
+        var dataPtr = (AddonSelectYesNoOnSetupData*)data;
+        if (dataPtr == null)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "SelectYesNo";
+        var text = this.module.LastSeenDialogText = this.module.GetSeStringText(dataPtr->TextPtr);
+        PluginLog.Debug($"AddonSelectYesNo: text={text}");
 
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+        var zoneWarnOnce = true;
+        var nodes = this.Configuration.GetAllNodes().OfType<TextEntryNode>();
+        foreach (var node in nodes)
         {
-            var dataPtr = (AddonSelectYesNoOnSetupData*)data;
-            if (dataPtr == null)
+            if (!node.Enabled || string.IsNullOrEmpty(node.Text))
             {
-                return;
+                continue;
             }
 
-            var text = YesService.Module!.LastSeenDialogText = YesModule.GetSeStringText(dataPtr->TextPtr);
-            PluginLog.Debug($"AddonSelectYesNo: text={text}");
-
-            var zoneWarnOnce = true;
-            var nodes = YesService.Configuration.GetAllNodes().OfType<TextEntryNode>();
-            foreach (var node in nodes)
+            if (!this.EntryMatchesText(node, text))
             {
-                if (!node.Enabled || string.IsNullOrEmpty(node.Text))
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                if (!this.EntryMatchesText(node, text))
+            if (node.ZoneRestricted && !string.IsNullOrEmpty(node.ZoneText))
+            {
+                if (!this.module.TerritoryNames.TryGetValue(this.module.DalamudServices.ClientState.TerritoryType, out var zoneName))
                 {
-                    continue;
-                }
-
-                if (node.ZoneRestricted && !string.IsNullOrEmpty(node.ZoneText))
-                {
-                    if (!YesService.Module!.TerritoryNames.TryGetValue(DalamudBinding.ClientState.TerritoryType, out var zoneName))
+                    if (zoneWarnOnce && !(zoneWarnOnce = false))
                     {
-                        if (zoneWarnOnce && !(zoneWarnOnce = false))
-                        {
-                            PluginLog.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
-                            YesService.Module!.PrintMessage($"Unable to verify Zone Restricted entry, change zones to update value");
-                        }
-
-                        zoneName = string.Empty;
+                        PluginLog.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
+                        this.module.ChatManager.PrintMessage("Unable to verify Zone Restricted entry, change zones to update value");
                     }
 
-                    if (!string.IsNullOrEmpty(zoneName) && this.EntryMatchesZoneName(node, zoneName))
-                    {
-                        PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
-                        this.AddonSelectYesNoExecute(addon, node.IsYes);
-                        return;
-                    }
+                    zoneName = string.Empty;
                 }
-                else
+
+                if (!string.IsNullOrEmpty(zoneName) && this.EntryMatchesZoneName(node, zoneName))
                 {
-                    PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text}");
+                    PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
                     this.AddonSelectYesNoExecute(addon, node.IsYes);
                     return;
                 }
             }
-        }
-
-        private unsafe void AddonSelectYesNoExecute(IntPtr addon, bool yes)
-        {
-            if (yes)
-            {
-                var addonPtr = (AddonSelectYesno*)addon;
-                var yesButton = addonPtr->YesButton;
-                if (yesButton != null && !yesButton->IsEnabled)
-                {
-                    PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
-                    yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
-                }
-
-                PluginLog.Debug("AddonSelectYesNo: Selecting yes");
-                ClickSelectYesNo.Using(addon).Yes();
-            }
             else
             {
-                PluginLog.Debug("AddonSelectYesNo: Selecting no");
-                ClickSelectYesNo.Using(addon).No();
+                PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text}");
+                this.AddonSelectYesNoExecute(addon, node.IsYes);
+                return;
             }
         }
+    }
 
-        private bool EntryMatchesText(TextEntryNode node, string text)
+    private unsafe void AddonSelectYesNoExecute(IntPtr addon, bool yes)
+    {
+        if (yes)
         {
-            return (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
-                  (!node.IsTextRegex && text.Contains(node.Text));
-        }
+            var addonPtr = (AddonSelectYesno*)addon;
+            var yesButton = addonPtr->YesButton;
+            if (yesButton != null && !yesButton->IsEnabled)
+            {
+                PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
+                yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
+            }
 
-        private bool EntryMatchesZoneName(TextEntryNode node, string zoneName)
-        {
-            return (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
-                  (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
+            PluginLog.Debug("AddonSelectYesNo: Selecting yes");
+            ClickSelectYesNo.Using(addon).Yes();
         }
+        else
+        {
+            PluginLog.Debug("AddonSelectYesNo: Selecting no");
+            ClickSelectYesNo.Using(addon).No();
+        }
+    }
 
-        [StructLayout(LayoutKind.Explicit, Size = 0x10)]
-        private struct AddonSelectYesNoOnSetupData
-        {
-            [FieldOffset(0x8)]
-            public IntPtr TextPtr;
-        }
+    private bool EntryMatchesText(TextEntryNode node, string text) =>
+        (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+        (!node.IsTextRegex && text.Contains(node.Text));
+
+    private bool EntryMatchesZoneName(TextEntryNode node, string zoneName) =>
+        (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
+        (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
+
+    [StructLayout(LayoutKind.Explicit, Size = 0x10)]
+    private struct AddonSelectYesNoOnSetupData
+    {
+        [FieldOffset(0x8)]
+        public readonly IntPtr TextPtr;
     }
 }

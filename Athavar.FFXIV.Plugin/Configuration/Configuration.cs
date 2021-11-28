@@ -2,99 +2,76 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
+// ReSharper disable once CheckNamespace
+
+namespace Athavar.FFXIV.Plugin;
+
+using System.Timers;
+using Dalamud.Configuration;
+using Dalamud.Plugin;
+using Newtonsoft.Json;
+
+internal class Configuration : IPluginConfiguration
 {
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Timers;
+    [JsonIgnore]
+    private DalamudPluginInterface? pi;
 
-    using Dalamud.Configuration;
-    using Dalamud.Logging;
-    using Newtonsoft.Json;
+    [JsonIgnore]
+    private Timer? saveTimer;
 
-    internal class Configuration : IPluginConfiguration
+    /// <inheritdoc />
+    public int Version { get; set; } = 1;
+
+    public YesConfiguration? Yes { get; set; }
+
+    public MacroConfiguration? Macro { get; set; }
+
+    public bool ShowToolTips { get; set; } = true;
+
+    public Language Language { get; set; } = Language.En;
+
+    /// <summary>
+    ///     Save the configuration.
+    /// </summary>
+    /// <param name="instant">Indicate if the configuration should be saved instant.</param>
+    public void Save(bool instant = false)
     {
-        private static Timer? saveTimer;
-
-        public static Configuration Load()
+        if (this.saveTimer is null)
         {
-            var pluginConfigPath = DalamudBinding.PluginInterface.ConfigFile;
-
-            Configuration config;
-            if (!pluginConfigPath.Exists)
-            {
-                config = new Configuration();
-            }
-            else
-            {
-                pluginConfigPath.CopyTo($"{pluginConfigPath.FullName}.bak", true);
-                config = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText(pluginConfigPath.FullName)) ?? new Configuration();
-            }
-
-            PluginLog.Debug("Load Configuration.");
-            return config.Init();
+            this.saveTimer = new Timer();
+            this.saveTimer.Interval = 2500;
+            this.saveTimer.AutoReset = false;
+            this.saveTimer.Elapsed += (_, _) => this.Save(true);
         }
 
-        /// <summary>
-        /// Save the configuration.
-        /// </summary>
-        /// <param name="instant">Indicate if the configuration should be saved instant.</param>
-        public static void Save(bool instant = false)
+        if (instant)
         {
-            if (saveTimer is null)
-            {
-                saveTimer = new();
-                saveTimer.Interval = 2500;
-                saveTimer.AutoReset = false;
-                saveTimer.Elapsed += (_, _) => Save(true);
-            }
-
-            if (instant)
-            {
-                saveTimer.Stop();
-                PluginLog.LogDebug("Save Configuration");
-                DalamudBinding.PluginInterface.SavePluginConfig(Modules.Instance.Configuration);
-            }
-            else if (!saveTimer.Enabled)
-            {
-                PluginLog.LogDebug("Start delayed configuration save.");
-                saveTimer.Start();
-            }
+            this.saveTimer.Stop();
+            this.pi?.SavePluginConfig(this);
         }
-
-        public static void Dispose()
+        else if (!this.saveTimer.Enabled)
         {
-            saveTimer?.Dispose();
-            saveTimer = null;
+            this.saveTimer.Start();
         }
+    }
 
-        private Configuration()
-        {
-        }
+    public void Dispose()
+    {
+        this.saveTimer?.Dispose();
+        this.saveTimer = null;
+    }
 
-        private Configuration Init()
-        {
-            this.Yes ??= new();
-            this.Macro ??= new();
-            (this.Inviter ??= new()).Init();
-            this.ModuleEnabled ??= new();
+    /// <summary>
+    ///     Setup <see cref="DalamudPluginInterface" />.
+    /// </summary>
+    /// <param name="interface">The <see cref="DalamudPluginInterface" />.</param>
+    internal void Setup(DalamudPluginInterface @interface)
+    {
+        this.pi = @interface;
 
-            return this;
-        }
+        this.Yes ??= new YesConfiguration();
+        this.Macro ??= new MacroConfiguration();
 
-        /// <inheritdoc/>
-        public int Version { get; set; } = 1;
-
-        public YesConfiguration? Yes { get; set; } = null!;
-
-        public MacroConfiguration? Macro { get; set; } = null!;
-
-        public InviterConfiguration? Inviter { get; set; } = null!;
-
-        public bool ShowToolTips { get; set; } = true;
-
-        public Language Language { get; set; } = Language.EN;
-
-        public List<Modules.Module> ModuleEnabled { get; set; } = null!;
+        this.Yes.Setup(this);
     }
 }

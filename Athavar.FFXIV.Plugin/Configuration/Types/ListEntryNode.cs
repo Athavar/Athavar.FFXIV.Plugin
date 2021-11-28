@@ -2,103 +2,99 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
-{
-    using System.Text.RegularExpressions;
+// ReSharper disable once CheckNamespace
 
-    using Newtonsoft.Json;
+namespace Athavar.FFXIV.Plugin;
+
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+
+/// <summary>
+///     List entry node type.
+/// </summary>
+public class ListEntryNode : INode
+{
+    /// <summary>
+    ///     Gets a value indicating whether the matching text is a regex.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsTextRegex => this.Text.StartsWith("/") && this.Text.EndsWith("/");
 
     /// <summary>
-    /// List entry node type.
+    ///     Gets the matching text as a compiled regex.
     /// </summary>
-    public class ListEntryNode : INode
+    [JsonIgnore]
+    public Regex? TextRegex
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether the node is enabled.
-        /// </summary>
-        public bool Enabled { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets the name of the node.
-        /// </summary>
-        [JsonIgnore]
-        public string Name
+        get
         {
-            get
+            try
             {
-                return !string.IsNullOrEmpty(this.TargetText)
-                    ? $"({this.TargetText}) {this.Text}"
-                    : this.Text;
+                return new Regex(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
             }
-
-            set
+            catch
             {
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the matching text.
-        /// </summary>
-        public string Text { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets a value indicating whether the matching text is a regex.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsTextRegex => this.Text.StartsWith("/") && this.Text.EndsWith("/");
-
-        /// <summary>
-        /// Gets the matching text as a compiled regex.
-        /// </summary>
-        [JsonIgnore]
-        public Regex? TextRegex
-        {
-            get
-            {
-                try
-                {
-                    return new(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this entry should be target restricted.
-        /// </summary>
-        public bool TargetRestricted { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets the matching target name.
-        /// </summary>
-        public string TargetText { get; set; } = string.Empty;
-
-        /// <summary>
-        /// Gets a value indicating whether the matching target text is a regex.
-        /// </summary>
-        [JsonIgnore]
-        public bool TargetIsRegex => this.TargetText.StartsWith("/") && this.TargetText.EndsWith("/");
-
-        /// <summary>
-        /// Gets the matching target text as a compiled regex.
-        /// </summary>
-        [JsonIgnore]
-        public Regex? TargetRegex
-        {
-            get
-            {
-                try
-                {
-                    return new(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                }
-                catch
-                {
-                    return null;
-                }
+                return null;
             }
         }
     }
+
+    /// <summary>
+    ///     Gets a value indicating whether the matching target text is a regex.
+    /// </summary>
+    [JsonIgnore]
+    public bool TargetIsRegex => this.TargetText.StartsWith("/") && this.TargetText.EndsWith("/");
+
+    /// <summary>
+    ///     Gets the matching target text as a compiled regex.
+    /// </summary>
+    [JsonIgnore]
+    public Regex? TargetRegex
+    {
+        get
+        {
+            try
+            {
+                return new Regex(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the node is enabled.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the name of the node.
+    /// </summary>
+    [JsonIgnore]
+    public string Name
+    {
+        get =>
+            !string.IsNullOrEmpty(this.TargetText)
+                ? $"({this.TargetText}) {this.Text}"
+                : this.Text;
+
+        set { }
+    }
+
+    /// <summary>
+    ///     Gets or sets the matching text.
+    /// </summary>
+    public string Text { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether this entry should be target restricted.
+    /// </summary>
+    public bool TargetRestricted { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets the matching target name.
+    /// </summary>
+    public string TargetText { get; set; } = string.Empty;
 }

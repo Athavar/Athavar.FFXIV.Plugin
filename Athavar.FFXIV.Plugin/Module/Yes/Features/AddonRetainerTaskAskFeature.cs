@@ -2,36 +2,37 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+
+/// <summary>
+///     AddonRetainerTaskAsk feature.
+/// </summary>
+internal class AddonRetainerTaskAskFeature : OnSetupFeature
 {
-    using System;
-    using ClickLib.Clicks;
-
     /// <summary>
-    /// AddonRetainerTaskAsk feature.
+    ///     Initializes a new instance of the <see cref="AddonRetainerTaskAskFeature" /> class.
     /// </summary>
-    internal class AddonRetainerTaskAskFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonRetainerTaskAskFeature(YesModule module)
+        : base(module.AddressResolver.AddonRetainerTaskAskOnSetupAddress, module.Configuration)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonRetainerTaskAskFeature"/> class.
-        /// </summary>
-        public AddonRetainerTaskAskFeature()
-            : base(YesService.Address.AddonRetainerTaskAskOnSetupAddress)
+    }
+
+    /// <inheritdoc />
+    protected override string AddonName => "RetainerTaskAsk";
+
+    /// <inheritdoc />
+    protected override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    {
+        if (!this.Configuration.RetainerTaskAskEnabled)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "RetainerTaskAsk";
-
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
-        {
-            if (!YesService.Configuration.RetainerTaskAskEnabled)
-            {
-                return;
-            }
-
-            ClickRetainerTaskAsk.Using(addon).Assign();
-        }
+        ClickRetainerTaskAsk.Using(addon).Assign();
     }
 }

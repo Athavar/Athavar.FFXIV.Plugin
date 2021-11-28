@@ -2,19 +2,20 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
-{
-    /// <summary>
-    /// Macro node type.
-    /// </summary>
-    public class MacroNode : INode
-    {
-        /// <inheritdoc/>
-        public string Name { get; set; } = string.Empty;
+// ReSharper disable once CheckNamespace
 
-        /// <summary>
-        /// Gets or sets the contents of the macro.
-        /// </summary>
-        public string Contents { get; set; } = string.Empty;
-    }
+namespace Athavar.FFXIV.Plugin;
+
+/// <summary>
+///     Macro node type.
+/// </summary>
+public class MacroNode : INode
+{
+    /// <inheritdoc />
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Gets or sets the contents of the macro.
+    /// </summary>
+    public string Contents { get; set; } = string.Empty;
 }

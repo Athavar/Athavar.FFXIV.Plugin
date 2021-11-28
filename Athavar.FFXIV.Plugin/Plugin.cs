@@ -2,143 +2,146 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
-{
-    using System;
-    using System.Threading.Tasks;
+namespace Athavar.FFXIV.Plugin;
 
-    using ClickLib;
-    using Dalamud.Game.Command;
-    using Dalamud.Interface.Windowing;
-    using Dalamud.IoC;
-    using Dalamud.Logging;
-    using Dalamud.Plugin;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Athavar.FFXIV.Plugin.Lib.ClickLib;
+using Athavar.FFXIV.Plugin.Manager;
+using Athavar.FFXIV.Plugin.Manager.Interface;
+using Athavar.FFXIV.Plugin.Module;
+using Athavar.FFXIV.Plugin.Utils;
+using Dalamud.Interface.Windowing;
+using Dalamud.IoC;
+using Dalamud.Logging;
+using Dalamud.Plugin;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+/// <summary>
+///     Main plugin implementation.
+/// </summary>
+public sealed class Plugin : IDalamudPlugin
+{
+    /// <summary>
+    ///     prefix of the command.
+    /// </summary>
+    internal const string CommandName = "/ath";
 
     /// <summary>
-    /// Main plugin implementation.
+    ///     The Plugin name.
     /// </summary>
-    public sealed class Plugin : IDalamudPlugin
+    internal const string PluginName = "Athavar's Toolbox";
+
+    private readonly IHostLifetime hostLifetime;
+
+    private readonly DalamudPluginInterface pluginInterface;
+
+    private readonly IHost host;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="Plugin" /> class.
+    /// </summary>
+    /// <param name="pluginInterface">Dalamud plugin interface.</param>
+    public Plugin(
+        [RequiredVersion("1.0")]
+        DalamudPluginInterface pluginInterface)
     {
-        private const string CommandName = "/ath";
+        this.pluginInterface = pluginInterface;
+        this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
+                         .ConfigureServices(this.ConfigureServices)
+                         .Build();
 
-        private readonly WindowSystem windowSystem;
-        private readonly PluginWindow pluginWindow;
+        this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
 
-        /// <summary>
-        /// Lock object for <see cref="WindowSystem"/>.
-        /// </summary>
-        private readonly object wSLock = new();
+        Click.Initialize();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Plugin"/> class.
-        /// </summary>
-        /// <param name="pluginInterface">Dalamud plugin interface.</param>
-        public Plugin(
-            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
-        {
-            DalamudBinding.Initialize(pluginInterface);
-            Click.Initialize();
-            Modules.Init(this);
-
-            this.windowSystem = new("Athavar.FFXIV.Plugin");
-
-            this.pluginWindow = new PluginWindow(this);
-            this.windowSystem.AddWindow(this.pluginWindow);
-
-            DalamudBinding.PluginInterface.UiBuilder.Draw += this.DrawWindow;
-            DalamudBinding.PluginInterface.UiBuilder.OpenConfigUi += this.OnOpenConfigUi;
-
-            DalamudBinding.CommandManager.AddHandler(CommandName, new CommandInfo(this.OnCommand)
-            {
-                HelpMessage = "Open the Configuration of Athavar's Tools.",
-            });
-        }
-
-        /// <inheritdoc/>
-        public string Name => "Athavar's Tools";
-
-        /// <summary>
-        /// Gets the dalamud windows system.
-        /// </summary>
-        internal PluginWindow PluginWindow => this.pluginWindow;
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            SaveConfiguration();
-
-            DalamudBinding.CommandManager.RemoveHandler(CommandName);
-            DalamudBinding.PluginInterface.UiBuilder.OpenConfigUi -= this.OnOpenConfigUi;
-            DalamudBinding.PluginInterface.UiBuilder.Draw -= this.DrawWindow;
-
-            Configuration.Dispose();
-            Modules.Instance.Dispose();
-
-            // remove all remaining windows.
-            this.windowSystem.RemoveAllWindows();
-        }
-
-        /// <summary>
-        /// Change something in the <see cref="WindowSystem"/>.
-        /// </summary>
-        /// <param name="action">The action that do the change.</param>
-        internal void ChangeWindowSystem(Action<WindowSystem> action)
-        {
-            Task.Run(() =>
-            {
-                lock (this.wSLock)
-                {
-                    try
-                    {
-                        action.Invoke(this.windowSystem);
-                    }
-                    catch (ArgumentException)
-                    {
-                    }
-                }
-            });
-        }
-
-        /// <summary>
-        /// Save the plugin configuration.
-        /// </summary>
-        internal static void SaveConfiguration()
-        {
-            Configuration.Save();
-        }
-
-        /// <summary>
-        /// Try to catch all exception.
-        /// </summary>
-        /// <param name="action">Action that can throw exception.</param>
-        internal static void CatchCrash(Action action)
+        _ = Task.Run(async () =>
         {
             try
             {
-                action.Invoke();
+                await this.host.StartAsync();
             }
             catch (Exception ex)
             {
-                PluginLog.Error(ex, "Don't crash the game");
+                PluginLog.Error(ex, "Exception occured.");
             }
-        }
+        });
+    }
 
-        private void DrawWindow()
-        {
-            lock (this.wSLock)
-            {
-                this.windowSystem.Draw();
-            }
-        }
+    /// <inheritdoc />
+    public string Name => PluginName;
 
-        private void OnOpenConfigUi()
-        {
-            this.pluginWindow.Toggle();
-        }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        var task = this.hostLifetime.StopAsync(CancellationToken.None);
+        task.Wait();
 
-        private void OnCommand(string command, string args)
+        task = this.host.StopAsync(CancellationToken.None);
+        task.Wait();
+
+        this.host.Dispose();
+    }
+
+    /// <summary>
+    ///     Try to catch all exception.
+    /// </summary>
+    /// <param name="action">Action that can throw exception.</param>
+    internal static void CatchCrash(Action action)
+    {
+        try
         {
-            this.pluginWindow.Toggle();
+            action.Invoke();
         }
+        catch (Exception ex)
+        {
+            PluginLog.Error(ex, "Don't crash the game");
+        }
+    }
+
+    private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder builder)
+    {
+        builder.AddDalamudLogger();
+        builder.AddDebug();
+        builder.Configure(options =>
+        {
+            options.ActivityTrackingOptions =
+                ActivityTrackingOptions.SpanId |
+                ActivityTrackingOptions.TraceId |
+                ActivityTrackingOptions.ParentId;
+        });
+        builder.SetMinimumLevel(LogLevel.Debug);
+    }
+
+    private void ConfigureServices(HostBuilderContext context, IServiceCollection service)
+    {
+        service.AddSingleton(this.pluginInterface);
+        service.AddSingleton<IDalamudServices, DalamudServices>();
+        service.AddSingleton<IModuleManager, ModuleManager>();
+        service.AddSingleton<ILocalizerManager, LocalizerManager>();
+        service.AddSingleton<PluginWindow>();
+        service.AddSingleton(o =>
+        {
+            var pi = o.GetRequiredService<IDalamudServices>().PluginInterface;
+            var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
+            c.Setup(this.pluginInterface);
+            return c;
+        });
+        service.AddSingleton(o => new WindowSystem("Athavar's Toolbox"));
+        service.AddSingleton<PluginAddressResolver>();
+
+        service.AddSingleton<IChatManager, ChatManager>();
+        service.AddSingleton<EquipmentScanner>();
+        service.AddSingleton<KeyStateExtended>();
+        service.AddSingleton<AutoTranslateWindow>();
+
+        service.AddMacroModule();
+        service.AddYesModule();
+        service.AddHuntLinkModule();
+
+        service.AddHostedService<PluginService>();
     }
 }

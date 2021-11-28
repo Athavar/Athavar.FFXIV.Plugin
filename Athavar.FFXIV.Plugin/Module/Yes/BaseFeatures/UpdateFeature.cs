@@ -2,77 +2,83 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
-{
-    using System;
+namespace Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
 
-    using Dalamud.Hooking;
-    using Dalamud.Logging;
+using System;
+using Dalamud.Hooking;
+using Dalamud.Logging;
+
+/// <summary>
+///     An abstract that hooks Update to provide a feature.
+/// </summary>
+internal abstract class UpdateFeature : IBaseFeature
+{
+    protected readonly YesConfiguration Configuration;
+    private readonly Hook<UpdateDelegate> updateHook;
 
     /// <summary>
-    /// An abstract that hooks Update to provide a feature.
+    ///     Initializes a new instance of the <see cref="UpdateFeature" /> class.
     /// </summary>
-    internal abstract class UpdateFeature : IBaseFeature
+    /// <param name="updateAddress">Address to the Update method.</param>
+    /// <param name="configuration">The configuration of this module.</param>
+    public UpdateFeature(IntPtr updateAddress, YesConfiguration configuration)
     {
-        private readonly Hook<UpdateDelegate> updateHook;
+        this.Configuration = configuration;
+        this.updateHook = new Hook<UpdateDelegate>(updateAddress, this.UpdateDetour);
+        this.updateHook.Enable();
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateFeature"/> class.
-        /// </summary>
-        /// <param name="updateAddress">Address to the Update method.</param>
-        public UpdateFeature(IntPtr updateAddress)
+    /// <summary>
+    ///     A delegate matching AtkUnitBase.OnSetup.
+    /// </summary>
+    /// <param name="addon">Addon address.</param>
+    /// <param name="a2">Param2.</param>
+    /// <param name="a3">Param3.</param>
+    internal delegate void UpdateDelegate(IntPtr addon, IntPtr a2, IntPtr a3);
+
+    /// <summary>
+    ///     Gets the name of the addon being hooked.
+    /// </summary>
+    protected abstract string AddonName { get; }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        this.updateHook?.Disable();
+        this.updateHook?.Dispose();
+    }
+
+    /// <summary>
+    ///     A method that is run within the Update detour.
+    /// </summary>
+    /// <param name="addon">Addon address.</param>
+    /// <param name="a2">Unknown parameter 2.</param>
+    /// <param name="a3">Unknown parameter 3.</param>
+    protected abstract void UpdateImpl(IntPtr addon, IntPtr a2, IntPtr a3);
+
+    private void UpdateDetour(IntPtr addon, IntPtr a2, IntPtr a3)
+    {
+        // Update is noisy, dont echo here.
+        // PluginLog.Debug($"Addon{this.AddonName}.Update");
+        this.updateHook.Original(addon, a2, a3);
+
+        if (!this.Configuration.Enabled)
         {
-            this.updateHook = new Hook<UpdateDelegate>(updateAddress, this.UpdateDetour);
-            this.updateHook.Enable();
+            return;
         }
 
-        /// <summary>
-        /// A delegate matching AtkUnitBase.OnSetup.
-        /// </summary>
-        /// <param name="addon">Addon address.</param>
-        /// <param name="a2">Param2.</param>
-        /// <param name="a3">Param3.</param>
-        internal delegate void UpdateDelegate(IntPtr addon, IntPtr a2, IntPtr a3);
-
-        /// <summary>
-        /// Gets the name of the addon being hooked.
-        /// </summary>
-        protected abstract string AddonName { get; }
-
-        /// <inheritdoc/>
-        public void Dispose()
+        if (addon == IntPtr.Zero)
         {
-            this.updateHook?.Disable();
-            this.updateHook?.Dispose();
+            return;
         }
 
-        /// <summary>
-        /// A method that is run within the Update detour.
-        /// </summary>
-        /// <param name="addon">Addon address.</param>
-        /// <param name="a2">Unknown paramater 2.</param>
-        /// <param name="a3">Unknown parameter 3.</param>
-        protected abstract unsafe void UpdateImpl(IntPtr addon, IntPtr a2, IntPtr a3);
-
-        private void UpdateDetour(IntPtr addon, IntPtr a2, IntPtr a3)
+        try
         {
-            // Update is noisy, dont echo here.
-            // PluginLog.Debug($"Addon{this.AddonName}.Update");
-            this.updateHook.Original(addon, a2, a3);
-
-            if (!YesService.Configuration.Enabled)
-            {
-                return;
-            }
-
-            try
-            {
-                this.UpdateImpl(addon, a2, a3);
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Error(ex, "Don't crash the game");
-            }
+            this.UpdateImpl(addon, a2, a3);
+        }
+        catch (Exception ex)
+        {
+            PluginLog.Error(ex, "Don't crash the game");
         }
     }
 }

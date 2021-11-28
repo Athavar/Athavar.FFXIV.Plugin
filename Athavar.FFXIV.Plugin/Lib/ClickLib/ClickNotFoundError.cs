@@ -2,22 +2,21 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace ClickLib
-{
-    using System;
+namespace Athavar.FFXIV.Plugin.Lib.ClickLib;
 
+using System;
+
+/// <summary>
+///     An exception thrown when a click cannot be found.
+/// </summary>
+public class ClickNotFoundError : InvalidOperationException
+{
     /// <summary>
-    /// An exception thrown when a click cannot be found.
+    ///     Initializes a new instance of the <see cref="ClickNotFoundError" /> class.
     /// </summary>
-    public class ClickNotFoundError : InvalidOperationException
+    /// <param name="message">Error message.</param>
+    public ClickNotFoundError(string message)
+        : base(message)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClickNotFoundError"/> class.
-        /// </summary>
-        /// <param name="message">Error message.</param>
-        public ClickNotFoundError(string message)
-            : base(message)
-        {
-        }
     }
 }

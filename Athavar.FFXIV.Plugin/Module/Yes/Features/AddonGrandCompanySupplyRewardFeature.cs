@@ -2,36 +2,37 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+
+/// <summary>
+///     AddonGrandCompanySupplyReward feature.
+/// </summary>
+internal class AddonGrandCompanySupplyRewardFeature : OnSetupFeature
 {
-    using System;
-    using ClickLib.Clicks;
-
     /// <summary>
-    /// AddonGrandCompanySupplyReward feature.
+    ///     Initializes a new instance of the <see cref="AddonGrandCompanySupplyRewardFeature" /> class.
     /// </summary>
-    internal class AddonGrandCompanySupplyRewardFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonGrandCompanySupplyRewardFeature(YesModule module)
+        : base(module.AddressResolver.AddonGrandCompanySupplyRewardOnSetupAddress, module.Configuration)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonGrandCompanySupplyRewardFeature"/> class.
-        /// </summary>
-        public AddonGrandCompanySupplyRewardFeature()
-            : base(YesService.Address.AddonGrandCompanySupplyRewardOnSetupAddress)
+    }
+
+    /// <inheritdoc />
+    protected override string AddonName => "GrandCompanySupplyReward";
+
+    /// <inheritdoc />
+    protected override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    {
+        if (!this.Configuration.GrandCompanySupplyReward)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "GrandCompanySupplyReward";
-
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
-        {
-            if (!YesService.Configuration.GrandCompanySupplyReward)
-            {
-                return;
-            }
-
-            ClickGrandCompanySupplyReward.Using(addon).Deliver();
-        }
+        ClickGrandCompanySupplyReward.Using(addon).Deliver();
     }
 }

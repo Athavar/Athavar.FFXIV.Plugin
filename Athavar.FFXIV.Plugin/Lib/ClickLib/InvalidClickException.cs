@@ -2,32 +2,31 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace ClickLib
+namespace Athavar.FFXIV.Plugin.Lib.ClickLib;
+
+using System;
+
+/// <summary>
+///     Base exception for click errors.
+/// </summary>
+public class InvalidClickException : InvalidOperationException
 {
-    using System;
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InvalidClickException" /> class.
+    /// </summary>
+    /// <param name="message">Error message.</param>
+    public InvalidClickException(string message)
+        : base(message)
+    {
+    }
 
     /// <summary>
-    /// Base exception for click errors.
+    ///     Initializes a new instance of the <see cref="InvalidClickException" /> class.
     /// </summary>
-    public class InvalidClickException : InvalidOperationException
+    /// <param name="message">Error message.</param>
+    /// <param name="innerException">Causing exception.</param>
+    public InvalidClickException(string message, Exception innerException)
+        : base(message, innerException)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidClickException"/> class.
-        /// </summary>
-        /// <param name="message">Error message.</param>
-        public InvalidClickException(string message)
-            : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidClickException"/> class.
-        /// </summary>
-        /// <param name="message">Error message.</param>
-        /// <param name="innerException">Causing exception.</param>
-        public InvalidClickException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
     }
 }

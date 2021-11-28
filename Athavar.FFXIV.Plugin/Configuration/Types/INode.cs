@@ -2,16 +2,17 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
+// ReSharper disable once CheckNamespace
+
+namespace Athavar.FFXIV.Plugin;
+
+/// <summary>
+///     Base node interface type.
+/// </summary>
+public interface INode
 {
     /// <summary>
-    /// Base node interface type.
+    ///     Gets or sets the name of the node.
     /// </summary>
-    public interface INode
-    {
-        /// <summary>
-        /// Gets or sets the name of the node.
-        /// </summary>
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

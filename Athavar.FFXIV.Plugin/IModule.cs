@@ -2,12 +2,13 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
-{
-    using System;
+namespace Athavar.FFXIV.Plugin;
 
-    internal interface IModule : IDisposable
-    {
-        void Draw();
-    }
+internal interface IModule
+{
+    string Name { get; }
+
+    void Draw();
+
+    void Enable(bool state = true);
 }

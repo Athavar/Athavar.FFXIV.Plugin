@@ -2,36 +2,37 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+
+/// <summary>
+///     AddonMaterializeDialog feature.
+/// </summary>
+internal class AddonMaterializeDialogFeature : OnSetupFeature
 {
-    using System;
-    using ClickLib.Clicks;
-
     /// <summary>
-    /// AddonMaterializeDialog feature.
+    ///     Initializes a new instance of the <see cref="AddonMaterializeDialogFeature" /> class.
     /// </summary>
-    internal class AddonMaterializeDialogFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonMaterializeDialogFeature(YesModule module)
+        : base(module.AddressResolver.AddonMaterializeDialongOnSetupAddress, module.Configuration)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonMaterializeDialogFeature"/> class.
-        /// </summary>
-        public AddonMaterializeDialogFeature()
-            : base(YesService.Address.AddonMaterializeDialongOnSetupAddress)
+    }
+
+    /// <inheritdoc />
+    protected override string AddonName => "MaterializeDialog";
+
+    /// <inheritdoc />
+    protected override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    {
+        if (!this.Configuration.MaterializeDialogEnabled)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "MaterializeDialog";
-
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
-        {
-            if (!YesService.Configuration.MaterializeDialogEnabled)
-            {
-                return;
-            }
-
-            ClickMaterializeDialog.Using(addon).Materialize();
-        }
+        ClickMaterializeDialog.Using(addon).Materialize();
     }
 }

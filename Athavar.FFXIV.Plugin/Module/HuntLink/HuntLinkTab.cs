@@ -2,66 +2,59 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.HuntLink
+namespace Athavar.FFXIV.Plugin.Module.HuntLink;
+
+using Athavar.FFXIV.Plugin.Utils;
+using ImGuiNET;
+
+internal class HuntLinkTab
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    private readonly HuntLinkDatastore datastore;
 
-    using ImGuiNET;
-    using Lumina.Excel.GeneratedSheets;
+    public HuntLinkTab(HuntLinkDatastore datastore) => this.datastore = datastore;
 
-    internal class HuntLinkTab
+    public void DrawTab()
     {
-        // ImGui.PushStyleColor(ImGuiCol.Text, new Vector4(.5f, .5f, .5f, 1)
-
-        private List<World> worlds;
-        private string[] worldNames;
-        private List<Fate> fates;
-
-        private int selectWorld = 0;
-
-        public HuntLinkTab()
+        using var raii = new ImGuiRaii();
+        if (!raii.Begin(() => ImGui.BeginTabItem("HuntLink"), ImGui.EndTabItem))
         {
-            this.PopulateWorlds();
-            this.PopulateFates();
+            return;
         }
 
-        public void DrawTab()
+        ImGui.Columns(2);
+        if (ImGui.BeginCombo("World", this.datastore.SelectedWorld?.Name.RawString ?? "World..."))
         {
-            using var raii = new ImGuiRaii();
-            if (!raii.Begin(() => ImGui.BeginTabItem("HuntLink"), ImGui.EndTabItem))
+            foreach (var world in this.datastore.Worlds)
             {
-                return;
+                var selected = world.RowId == this.datastore.SelectedWorld?.RowId;
+                var text = world.Name.RawString;
+                if (ImGui.Selectable(text, ref selected))
+                {
+                    this.datastore.SelectedWorld = world;
+                }
             }
 
-            if (ImGui.ListBox("World", ref this.selectWorld, this.worldNames, this.worldNames.Length))
-            {
+            ImGui.EndCombo();
+        }
 
-            }
+        ImGui.NextColumn();
 
-            foreach (var fate in this.fates)
+        if (ImGui.BeginTable("Fates", 4))
+        {
+            foreach (var fate in this.datastore.Fates)
             {
                 fate.Location.ToString();
-                ImGui.Text($"{fate.RowId}: {fate.ClassJobLevel} - {fate.Name} - {fate.Location}");
-            }
-        }
-
-        private void PopulateWorlds()
-        {
-            var dc = DalamudBinding.ClientState.LocalPlayer?.HomeWorld.GameData.DataCenter.Row;
-
-            if (dc == null)
-            {
-                return;
+                ImGui.TableNextRow();
+                ImGui.Text(fate.RowId + string.Empty);
+                ImGui.TableNextColumn();
+                ImGui.Text(fate.ClassJobLevel + string.Empty);
+                ImGui.TableNextColumn();
+                ImGui.Text(fate.Name);
+                ImGui.TableNextColumn();
+                ImGui.Text(fate.Location + string.Empty);
             }
 
-            this.worlds = DalamudBinding.DataManager.GetExcelSheet<World>()!.Where(w => w.DataCenter.Row == dc).ToList();
-            this.worldNames = this.worlds.Select(w => w.Name.RawString).ToArray();
-        }
-
-        private void PopulateFates()
-        {
-            this.fates = DalamudBinding.DataManager.GetExcelSheet<Fate>()!.Where(w => w.Unknown24 == 1).ToList();
+            ImGui.EndTable();
         }
     }
 }

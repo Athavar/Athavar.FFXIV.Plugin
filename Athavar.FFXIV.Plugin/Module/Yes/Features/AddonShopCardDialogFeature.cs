@@ -2,43 +2,44 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+using FFXIVClientStructs.FFXIV.Client.UI;
+
+/// <summary>
+///     AddonShopCardDialog feature.
+/// </summary>
+internal class AddonShopCardDialogFeature : OnSetupFeature
 {
-    using System;
-    using ClickLib.Clicks;
-    using FFXIVClientStructs.FFXIV.Client.UI;
-
     /// <summary>
-    /// AddonShopCardDialog feature.
+    ///     Initializes a new instance of the <see cref="AddonShopCardDialogFeature" /> class.
     /// </summary>
-    internal class AddonShopCardDialogFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonShopCardDialogFeature(YesModule module)
+        : base(module.AddressResolver.AddonShopCardDialogOnSetupAddress, module.Configuration)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonShopCardDialogFeature"/> class.
-        /// </summary>
-        public AddonShopCardDialogFeature()
-            : base(YesService.Address.AddonShopCardDialogOnSetupAddress)
+    }
+
+    /// <inheritdoc />
+    protected override string AddonName => "ShopCardDialog";
+
+    /// <inheritdoc />
+    protected override unsafe void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    {
+        if (!this.Configuration.ShopCardDialog)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "ShopCardDialog";
-
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+        var addonPtr = (AddonShopCardDialog*)addon;
+        if (addonPtr->CardQuantityInput != null)
         {
-            if (!YesService.Configuration.ShopCardDialog)
-            {
-                return;
-            }
-
-            var addonPtr = (AddonShopCardDialog*)addon;
-            if (addonPtr->CardQuantityInput != null)
-            {
-                addonPtr->CardQuantityInput->SetValue(addonPtr->CardQuantityInput->Data.Max);
-            }
-
-            ClickShopCardDialog.Using(addon).Sell();
+            addonPtr->CardQuantityInput->SetValue(addonPtr->CardQuantityInput->Data.Max);
         }
+
+        ClickShopCardDialog.Using(addon).Sell();
     }
 }

@@ -2,75 +2,78 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin
+// ReSharper disable once CheckNamespace
+
+namespace Athavar.FFXIV.Plugin;
+
+using System.Collections.Generic;
+using System.Linq;
+
+/// <summary>
+///     Macro Module configuration.
+/// </summary>
+internal class MacroConfiguration
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    /// <summary>
+    ///     Gets the root folder.
+    /// </summary>
+    public FolderNode RootFolder { get; } = new() { Name = "/" };
 
     /// <summary>
-    /// Macro Module configuration.
+    ///     Gets or sets the configuration version.
     /// </summary>
-    internal class MacroConfiguration
+    public int Version { get; set; } = 1;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the plugin functionality is enabled.
+    /// </summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    ///     Get all nodes in the tree.
+    /// </summary>
+    /// <returns>All the nodes.</returns>
+    internal IEnumerable<INode> GetAllNodes() => new INode[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
+
+    /// <summary>
+    ///     Gets all the nodes in this subset of the tree.
+    /// </summary>
+    /// <param name="nodes">Nodes to search.</param>
+    /// <returns>The nodes in the tree.</returns>
+    internal IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)
     {
-        /// <summary>
-        /// Gets or sets the configuration version.
-        /// </summary>
-        public int Version { get; set; } = 1;
-
-        /// <summary>
-        /// Gets the root folder.
-        /// </summary>
-        public FolderNode RootFolder { get; private set; } = new FolderNode { Name = "/" };
-
-        /// <summary>
-        /// Get all nodes in the tree.
-        /// </summary>
-        /// <returns>All the nodes.</returns>
-        internal IEnumerable<INode> GetAllNodes()
+        foreach (var node in nodes)
         {
-            return new INode[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
-        }
-
-        /// <summary>
-        /// Gets all the nodes in this subset of the tree.
-        /// </summary>
-        /// <param name="nodes">Nodes to search.</param>
-        /// <returns>The nodes in the tree.</returns>
-        internal IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)
-        {
-            foreach (var node in nodes)
+            yield return node;
+            if (node is FolderNode folder)
             {
-                yield return node;
-                if (node is FolderNode folder)
+                var childNodes = this.GetAllNodes(folder.Children);
+                foreach (var childNode in childNodes)
                 {
-                    var childNodes = this.GetAllNodes(folder.Children);
-                    foreach (var childNode in childNodes)
-                    {
-                        yield return childNode;
-                    }
+                    yield return childNode;
                 }
             }
         }
+    }
 
-        /// <summary>
-        /// Tries to find the parent of a node.
-        /// </summary>
-        /// <param name="node">Node to check.</param>
-        /// <param name="parent">Parent of the node or null.</param>
-        /// <returns>A value indicating whether the parent was found.</returns>
-        internal bool TryFindParent(INode node, out FolderNode? parent)
+    /// <summary>
+    ///     Tries to find the parent of a node.
+    /// </summary>
+    /// <param name="node">Node to check.</param>
+    /// <param name="parent">Parent of the node or null.</param>
+    /// <returns>A value indicating whether the parent was found.</returns>
+    internal bool TryFindParent(INode node, out FolderNode? parent)
+    {
+        foreach (var candidate in this.GetAllNodes())
         {
-            foreach (var candidate in this.GetAllNodes())
+            if (candidate is FolderNode folder && folder.Children.Contains(node))
             {
-                if (candidate is FolderNode folder && folder.Children.Contains(node))
-                {
-                    parent = folder;
-                    return true;
-                }
+                parent = folder;
+                return true;
             }
-
-            parent = null;
-            return false;
         }
+
+        parent = null;
+        return false;
     }
 }

@@ -2,36 +2,37 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Yes
+namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
+
+using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
+using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+
+/// <summary>
+///     AddonRetainerTaskResult feature.
+/// </summary>
+internal class AddonRetainerTaskResultFeature : OnSetupFeature
 {
-    using System;
-    using ClickLib.Clicks;
-
     /// <summary>
-    /// AddonRetainerTaskResult feature.
+    ///     Initializes a new instance of the <see cref="AddonRetainerTaskResultFeature" /> class.
     /// </summary>
-    internal class AddonRetainerTaskResultFeature : OnSetupFeature
+    /// <param name="module"><see cref="YesModule" />.</param>
+    public AddonRetainerTaskResultFeature(YesModule module)
+        : base(module.AddressResolver.AddonRetainerTaskResultOnSetupAddress, module.Configuration)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AddonRetainerTaskResultFeature"/> class.
-        /// </summary>
-        public AddonRetainerTaskResultFeature()
-            : base(YesService.Address.AddonRetainerTaskResultOnSetupAddress)
+    }
+
+    /// <inheritdoc />
+    protected override string AddonName => "RetainerTaskResult";
+
+    /// <inheritdoc />
+    protected override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    {
+        if (!this.Configuration.RetainerTaskResultEnabled)
         {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override string AddonName => "RetainerTaskResult";
-
-        /// <inheritdoc/>
-        protected unsafe override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
-        {
-            if (!YesService.Configuration.RetainerTaskResultEnabled)
-            {
-                return;
-            }
-
-            ClickRetainerTaskResult.Using(addon).Reassign();
-        }
+        ClickRetainerTaskResult.Using(addon).Reassign();
     }
 }
