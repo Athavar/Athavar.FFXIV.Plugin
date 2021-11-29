@@ -20,15 +20,16 @@ using Dalamud.Logging;
 internal class ClickCommand : BaseCommand
 {
     private readonly Regex clickCommand = new(@"^/click\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private readonly IClick click;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickCommand" /> class.
     /// </summary>
     /// <param name="macroManager"><see cref="MacroManager" /> added by DI.</param>
-    public ClickCommand(MacroManager macroManager)
-        : base(macroManager)
-    {
-    }
+    /// <param name="click"><see cref="IClick" /> added by DI.</param>
+    public ClickCommand(MacroManager macroManager, IClick click)
+        : base(macroManager) =>
+        this.click = click;
 
     /// <inheritdoc />
     public override IEnumerable<string> CommandAliases => new[] { "click" };
@@ -46,7 +47,7 @@ internal class ClickCommand : BaseCommand
 
         try
         {
-            Click.SendClick(name);
+            this.click.SendClick(name);
         }
         catch (InvalidClickException ex)
         {

@@ -24,6 +24,7 @@ internal unsafe class EquipmentScanner : IDisposable
     public EquipmentScanner(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
+
         dalamudServices.ClientState.Login += this.ClientStateOnOnLogin;
         if (dalamudServices.ClientState.IsLoggedIn)
         {

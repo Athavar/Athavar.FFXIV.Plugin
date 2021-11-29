@@ -6,6 +6,13 @@ namespace Athavar.FFXIV.Plugin;
 
 internal enum Language
 {
+    /// <summary>
+    ///     English.
+    /// </summary>
     En,
+
+    /// <summary>
+    ///     German.
+    /// </summary>
     De,
 }

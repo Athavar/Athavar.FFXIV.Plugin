@@ -19,7 +19,6 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Memory;
 using Dalamud.Utility;
-using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
 /// <summary>

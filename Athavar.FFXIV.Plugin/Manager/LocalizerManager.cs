@@ -8,9 +8,9 @@ using Athavar.FFXIV.Plugin.Manager.Interface;
 
 internal class LocalizerManager : ILocalizerManager
 {
-    public Language Language = Language.En;
+    private Language language = Language.En;
 
-    public void ChangeLanguage(Language language) => this.Language = language;
+    public void ChangeLanguage(Language language) => this.language = language;
 
     public string Localize(string? message)
     {

@@ -16,6 +16,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using FFXIVClientStructs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -50,13 +51,14 @@ public sealed class Plugin : IDalamudPlugin
         DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
+
+        Resolver.Initialize();
+
         this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
-                         .ConfigureServices(this.ConfigureServices)
-                         .Build();
+                        .ConfigureServices(this.ConfigureServices)
+                        .Build();
 
         this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
-
-        Click.Initialize();
 
         _ = Task.Run(async () =>
         {
@@ -137,6 +139,7 @@ public sealed class Plugin : IDalamudPlugin
         service.AddSingleton<EquipmentScanner>();
         service.AddSingleton<KeyStateExtended>();
         service.AddSingleton<AutoTranslateWindow>();
+        service.AddSingleton<IClick, Click>();
 
         service.AddMacroModule();
         service.AddYesModule();

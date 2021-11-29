@@ -82,10 +82,10 @@ internal class PluginService : IHostedService
         this.windowSystem.AddWindow(this.pluginWindow);
 
         this.dalamudServices.CommandManager.AddHandler(Plugin.CommandName, new CommandInfo(this.OnCommand)
-                                                                            {
-                                                                                HelpMessage =
-                                                                                    "Open the Configuration of Athavar's ToolsBox.",
-                                                                            });
+                                                                           {
+                                                                               HelpMessage =
+                                                                                   "Open the Configuration of Athavar's ToolsBox.",
+                                                                           });
 
         var dal = this.dalamudServices as DalamudServices;
 

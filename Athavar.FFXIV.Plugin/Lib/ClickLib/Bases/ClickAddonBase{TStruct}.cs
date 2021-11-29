@@ -137,7 +137,7 @@ public abstract unsafe class ClickAddonBase<TStruct> : ClickBase
     protected static void ClickAddonList(PopupMenu* popupMenu, ushort index, EventType type = EventType.ListIndexChange)
     {
         var targetList = popupMenu->List;
-        if (index < 0 || index >= popupMenu->EntryCount)
+        if (index >= popupMenu->EntryCount)
         {
             throw new ArgumentOutOfRangeException(nameof(index), "List index is out of range");
         }

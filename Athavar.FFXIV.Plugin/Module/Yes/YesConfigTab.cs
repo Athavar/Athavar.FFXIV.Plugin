@@ -20,6 +20,7 @@ internal class YesConfigTab
 {
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
+    private readonly IClick click;
     private readonly YesConfiguration configuration;
     private readonly ZoneListWindow zoneListWindow;
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
@@ -28,10 +29,11 @@ internal class YesConfigTab
     private INode? draggedNode;
     private string debugClickName = string.Empty;
 
-    public YesConfigTab(IDalamudServices dalamudServices, IChatManager chatManager, Configuration configuration, ZoneListWindow zoneListWindow)
+    public YesConfigTab(IDalamudServices dalamudServices, IChatManager chatManager, IClick click, Configuration configuration, ZoneListWindow zoneListWindow)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
+        this.click = click;
         this.configuration = configuration.Yes!;
         this.zoneListWindow = zoneListWindow;
     }
@@ -91,7 +93,7 @@ internal class YesConfigTab
             try
             {
                 this.debugClickName ??= string.Empty;
-                Click.SendClick(this.debugClickName.Trim());
+                this.click.SendClick(this.debugClickName.Trim());
                 this.chatManager.PrintMessage($"Clicked {this.debugClickName} successfully.");
             }
             catch (ClickNotFoundError ex)

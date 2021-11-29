@@ -38,7 +38,11 @@ internal partial class MacroManager : IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroManager" /> class.
     /// </summary>
-    /// <param name="plugin">.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
+    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
+    /// <param name="addressResolver"><see cref="PluginAddressResolver" /> added by DI.</param>
+    /// <param name="serviceProvider"><see cref="IServiceProvider" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager, PluginAddressResolver addressResolver, IServiceProvider serviceProvider, Configuration configuration)
     {
         this.dalamudServices = dalamudServices;
@@ -61,10 +65,10 @@ internal partial class MacroManager : IDisposable
         Task.Run(() => this.EventLoop(this.eventLoopTokenSource.Token));
 
         this.dalamudServices.CommandManager.AddHandler("/runmacro", new CommandInfo(this.CommandHandler)
-                                                                     {
-                                                                         HelpMessage = "Start run a macro of the macro module.",
-                                                                         ShowInHelp = true,
-                                                                     });
+                                                                    {
+                                                                        HelpMessage = "Start run a macro of the macro module.",
+                                                                        ShowInHelp = true,
+                                                                    });
     }
 
     private delegate IntPtr EventFrameworkDelegate(IntPtr a1, IntPtr a2, uint a3, ushort a4, IntPtr a5, IntPtr dataPtr, byte dataSize);

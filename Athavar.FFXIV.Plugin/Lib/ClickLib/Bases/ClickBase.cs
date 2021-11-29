@@ -68,7 +68,7 @@ public abstract unsafe class ClickBase
             this.Data = (void**)Buffer.Add(new byte[0x18]);
             if (this.Data == null)
             {
-                throw new ArgumentNullException("EventData could not be created, null");
+                throw new ArgumentNullException(nameof(this.Data), "EventData could not be created, null");
             }
 
             this.Data[0] = null;
@@ -109,7 +109,7 @@ public abstract unsafe class ClickBase
             this.Data = (void**)Buffer.Add(new byte[0x40]);
             if (this.Data == null)
             {
-                throw new ArgumentNullException("InputData could not be created, null");
+                throw new ArgumentNullException(nameof(this.Data), "InputData could not be created, null");
             }
 
             this.Data[0] = null;

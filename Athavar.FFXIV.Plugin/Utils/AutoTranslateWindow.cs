@@ -22,7 +22,7 @@ internal class AutoTranslateWindow : Window
     private (ushort GroupId, string GroupName, uint KeyId, string Text)[]? translations;
 
     private int[] translationsFilter = Array.Empty<int>();
-    
+
     private string filterText = string.Empty;
 
     public AutoTranslateWindow(IDalamudServices dalamudServices, WindowSystem windowSystem)
@@ -80,11 +80,11 @@ internal class AutoTranslateWindow : Window
 
                 while (clipper.Step())
                 {
-                    for (int i = clipper.DisplayStart; i < Math.Min(clipper.DisplayEnd, this.translationsFilter.Length); i++)
+                    for (var i = clipper.DisplayStart; i < Math.Min(clipper.DisplayEnd, this.translationsFilter.Length); i++)
                     {
                         ImGui.TableNextRow();
                         ImGui.TableNextColumn();
-                        
+
                         var filterIndex = this.translationsFilter[i];
                         var (groupId, groupName, keyId, text) = this.translations[filterIndex];
 
@@ -164,7 +164,7 @@ internal class AutoTranslateWindow : Window
     {
         private static readonly Regex LookUpRegex = new("(?<Sheet>\\w+)(?:\\[(?:(?<Colume>col\\-.*?),?)*((?:(?<RangeStart>\\d+)-(?<RangeEnd>\\d+),?)+)\\])?", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-        private readonly IEnumerable<ExcelRow>? sheet = null;
+        private readonly IEnumerable<ExcelRow>? sheet;
         private readonly List<(uint Index, int Length)> ranges = new();
         private readonly uint[] rowIds;
 

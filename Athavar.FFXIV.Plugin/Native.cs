@@ -1029,9 +1029,9 @@ public static class Native
         void KeyUp(IntPtr hWnd, KeyCode keyCode);
     }
 
-    public static void KeyDown(IntPtr hWnd, KeyCode key) => KeyDown(hWnd, key);
+    public static void KeyDown(IntPtr hWnd, KeyCode key) => NativeInstance.KeyDown(hWnd, key);
 
-    public static void KeyUp(IntPtr hWnd, KeyCode key) => KeyUp(hWnd, key);
+    public static void KeyUp(IntPtr hWnd, KeyCode key) => NativeInstance.KeyUp(hWnd, key);
 
     private class Windows : INative
     {
