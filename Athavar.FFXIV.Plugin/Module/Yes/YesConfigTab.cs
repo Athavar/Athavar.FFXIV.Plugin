@@ -94,19 +94,19 @@ internal class YesConfigTab
             {
                 this.debugClickName ??= string.Empty;
                 this.click.SendClick(this.debugClickName.Trim());
-                this.chatManager.PrintMessage($"Clicked {this.debugClickName} successfully.");
+                this.chatManager.PrintInformationMessage($"Clicked {this.debugClickName} successfully.");
             }
             catch (ClickNotFoundError ex)
             {
-                this.chatManager.PrintError(ex.Message);
+                this.chatManager.PrintErrorMessage(ex.Message);
             }
             catch (InvalidClickException ex)
             {
-                this.chatManager.PrintError(ex.Message);
+                this.chatManager.PrintErrorMessage(ex.Message);
             }
             catch (Exception ex)
             {
-                this.chatManager.PrintError(ex.Message);
+                this.chatManager.PrintErrorMessage(ex.Message);
             }
         }
     }

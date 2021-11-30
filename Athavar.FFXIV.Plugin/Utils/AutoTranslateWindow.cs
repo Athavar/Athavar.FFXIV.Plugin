@@ -24,6 +24,7 @@ internal class AutoTranslateWindow : Window
     private int[] translationsFilter = Array.Empty<int>();
 
     private string filterText = string.Empty;
+    private string selectedId = string.Empty;
 
     public AutoTranslateWindow(IDalamudServices dalamudServices, WindowSystem windowSystem)
         : base("AutoTranslate")
@@ -82,17 +83,34 @@ internal class AutoTranslateWindow : Window
                 {
                     for (var i = clipper.DisplayStart; i < Math.Min(clipper.DisplayEnd, this.translationsFilter.Length); i++)
                     {
-                        ImGui.TableNextRow();
-                        ImGui.TableNextColumn();
-
                         var filterIndex = this.translationsFilter[i];
                         var (groupId, groupName, keyId, text) = this.translations[filterIndex];
+                        var id = $"{{t:{groupId}:{keyId}}}";
 
-                        ImGui.Text($"{groupName}[{groupId}]");
-                        ImGui.TableNextColumn();
-                        ImGui.Text($"{keyId}");
-                        ImGui.TableNextColumn();
-                        ImGui.Text(text);
+                        ImGui.TableNextRow();
+                        ImGui.TableSetColumnIndex(0);
+                        bool selected = this.selectedId.Equals(id);
+                        if (ImGui.Selectable($"{groupName}[{groupId}]", ref selected, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick))
+                        {
+                            if (selected)
+                            {
+                                ImGui.SetClipboardText(id);
+                            }
+                            else
+                            {
+                                this.selectedId = string.Empty;
+                            }
+                        }
+
+                        if (ImGui.TableSetColumnIndex(1))
+                        {
+                            ImGui.Text($"{keyId}");
+                        }
+
+                        if (ImGui.TableSetColumnIndex(2))
+                        {
+                            ImGui.Text(text);
+                        }
                     }
                 }
 
@@ -104,7 +122,6 @@ internal class AutoTranslateWindow : Window
 
         ImGui.EndChild();
     }
-
 
     private void Populate()
     {
@@ -131,7 +148,7 @@ internal class AutoTranslateWindow : Window
             }
             else
             {
-                tmpList.AddRange(from c in excelSheet where c.Group == groupId && c.Key != 0 select (groupId, groupName, (uint)c.Key, c.Text.RawString));
+                tmpList.AddRange(from c in excelSheet where c.Group == groupId && c.Key != 0 select (groupId, groupName, (uint)c.RowId, c.Text.RawString));
             }
         }
 

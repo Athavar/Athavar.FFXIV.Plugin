@@ -22,7 +22,9 @@ internal sealed class MacroModule : IModule
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroModule" /> class.
     /// </summary>
-    /// <param name="moduleManager">The other <see cref="Manager.ModuleManager" />.</param>
+    /// <param name="moduleManager"><see cref="Manager.ModuleManager" /> added by DI.</param>
+    /// <param name="configTab"><see cref="MacroConfigTab" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     public MacroModule(IModuleManager moduleManager, MacroConfigTab configTab, Configuration configuration)
     {
         this.configTab = configTab;

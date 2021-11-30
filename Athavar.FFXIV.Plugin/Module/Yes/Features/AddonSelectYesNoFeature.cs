@@ -63,7 +63,7 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
                     if (zoneWarnOnce && !(zoneWarnOnce = false))
                     {
                         PluginLog.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
-                        this.module.ChatManager.PrintMessage("Unable to verify Zone Restricted entry, change zones to update value");
+                        this.module.ChatManager.PrintInformationMessage("Unable to verify Zone Restricted entry, change zones to update value");
                     }
 
                     zoneName = string.Empty;

@@ -35,7 +35,6 @@ internal class ActionCommand : BaseCommand
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     public ActionCommand(MacroManager macroManager, IDalamudServices dalamudServices, IChatManager chatManager)
         : base(macroManager)
-
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;

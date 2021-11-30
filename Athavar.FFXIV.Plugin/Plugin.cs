@@ -143,7 +143,9 @@ public sealed class Plugin : IDalamudPlugin
 
         service.AddMacroModule();
         service.AddYesModule();
+#if DEBUG
         service.AddHuntLinkModule();
+#endif
 
         service.AddHostedService<PluginService>();
     }

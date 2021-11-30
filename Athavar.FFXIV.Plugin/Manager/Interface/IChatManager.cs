@@ -12,32 +12,34 @@ using Dalamud.Game.Text.SeStringHandling;
 internal interface IChatManager
 {
     /// <summary>
-    ///     Print a normal message.
+    ///     Print a information message to the chat window.
     /// </summary>
     /// <param name="message">The message to print.</param>
-    void PrintMessage(string message);
+    void PrintInformationMessage(string message);
 
     /// <summary>
-    ///     Print a message to the chat window.
+    ///     Print a information message to the chat window.
     /// </summary>
     /// <param name="message">Message to display.</param>
-    public void PrintMessage(SeString message);
+    void PrintInformationMessage(SeString message);
 
     /// <summary>
-    ///     Print an error message.
+    ///     Print an error message to the chat window.
     /// </summary>
     /// <param name="message">The message to print.</param>
-    void PrintError(string message);
+    void PrintErrorMessage(string message);
 
     /// <summary>
     ///     Print an error message to the chat window.
     /// </summary>
     /// <param name="message">Message to display.</param>
-    public void PrintError(SeString message);
+    public void PrintErrorMessage(SeString message);
 
     /// <summary>
     ///     Process a command through the chat box.
     /// </summary>
     /// <param name="message">Message to send.</param>
     void SendMessage(string message);
+
+    void SendMessage(SeString message);
 }

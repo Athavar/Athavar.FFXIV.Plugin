@@ -4,14 +4,18 @@
 
 namespace Athavar.FFXIV.Plugin.Module.HuntLink;
 
+using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
+using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 using ImGuiNET;
 
 internal class HuntLinkTab
 {
     private readonly HuntLinkDatastore datastore;
+    private readonly IChatManager chatManager;
 
-    public HuntLinkTab(HuntLinkDatastore datastore) => this.datastore = datastore;
+    public HuntLinkTab(HuntLinkDatastore datastore, IChatManager chatManager) => (this.datastore, this.chatManager) = (datastore, chatManager);
 
     public void DrawTab()
     {
@@ -55,6 +59,14 @@ internal class HuntLinkTab
             }
 
             ImGui.EndTable();
+        }
+
+        ImGui.Columns(1);
+        if (ImGui.Button("SendTest"))
+        {
+            var trans = new AutoTranslatePayload(1, 101);
+            var mes = new SeString().Append(trans);
+            this.chatManager.SendMessage(mes);
         }
     }
 }

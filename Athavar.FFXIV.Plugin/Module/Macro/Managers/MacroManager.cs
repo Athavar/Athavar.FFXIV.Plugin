@@ -123,14 +123,14 @@ internal partial class MacroManager : IDisposable
                 }
                 else
                 {
-                    this.chatManager.PrintError($"Fail to find macro with name: {args}");
+                    this.chatManager.PrintErrorMessage($"Fail to find macro with name: {args}");
                 }
 
                 break;
             }
 
             default:
-                this.chatManager.PrintError($"Fail to run macro: {this.State}");
+                this.chatManager.PrintErrorMessage($"Fail to run macro: {this.State}");
                 break;
         }
     }
@@ -223,7 +223,7 @@ internal partial class MacroManager : IDisposable
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Unhandled exception occurred");
-                this.chatManager.PrintError("[Athavar.Macro] Worker has died unexpectedly.");
+                this.chatManager.PrintErrorMessage("[Athavar.Macro] Worker has died unexpectedly.");
                 this.runningMacros.Clear();
             }
         }
@@ -260,19 +260,19 @@ internal partial class MacroManager : IDisposable
         }
         catch (Exception ex) when (ex is EffectNotPresentError || ex is ConditionNotFulfilledError)
         {
-            this.chatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+            this.chatManager.PrintErrorMessage($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
             this.isPaused = true;
             return false;
         }
         catch (EventFrameworkTimeoutError ex)
         {
-            this.chatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+            this.chatManager.PrintErrorMessage($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
             this.isPaused = true;
             return false;
         }
         catch (InvalidMacroOperationException ex)
         {
-            this.chatManager.PrintError($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
+            this.chatManager.PrintErrorMessage($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
             this.isPaused = true;
             return true;
         }

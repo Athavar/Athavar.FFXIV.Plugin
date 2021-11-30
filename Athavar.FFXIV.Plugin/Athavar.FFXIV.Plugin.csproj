@@ -26,11 +26,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="UI\NPCTabUI.cs"/>
+        <Compile Remove="UI\NPCTabUI.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\Data\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false"/>
+        <Content Include="..\Data\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
 
     <PropertyGroup>
@@ -45,30 +45,30 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\.editorconfig" Link=".editorconfig"/>
-        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json"/>
+        <None Include="..\.editorconfig" Link=".editorconfig" />
+        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.4"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0"/>
-        <PackageReference Include="Reloaded.Memory" Version="4.1.3"/>
+        <PackageReference Include="DalamudPackager" Version="2.1.4" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+        <PackageReference Include="Reloaded.Memory" Version="4.1.3" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0"/>
-        <PackageReference Include="System.Threading.Channels" Version="6.0.0"/>
-        <ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj"/>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
+        <ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" />
         <!-->Reference Include="FFXIVClientStructs">
           <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
           <Private>false</Private>
         </Reference-->
-        <Reference Include="Newtonsoft.Json" Private="False"/>
-        <Reference Include="Dalamud" Private="False"/>
-        <Reference Include="ImGui.NET" Private="False"/>
-        <Reference Include="ImGuiScene" Private="False"/>
-        <Reference Include="Lumina" Private="False"/>
-        <Reference Include="Lumina.Excel" Private="False"/>
+        <Reference Include="Newtonsoft.Json" Private="False" />
+        <Reference Include="Dalamud" Private="False" />
+        <Reference Include="ImGui.NET" Private="False" />
+        <Reference Include="ImGuiScene" Private="False" />
+        <Reference Include="Lumina" Private="False" />
+        <Reference Include="Lumina.Excel" Private="False" />
     </ItemGroup>
 </Project>

@@ -5,13 +5,17 @@
 namespace Athavar.FFXIV.Plugin.Manager;
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Channels;
 using Athavar.FFXIV.Plugin.Manager.Interface;
+using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Game;
+using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -19,7 +23,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 /// </summary>
 internal class ChatManager : IDisposable, IChatManager
 {
-    private readonly Channel<string> chatBoxMessages = Channel.CreateUnbounded<string>();
+    private readonly Channel<SeString> chatBoxMessages = Channel.CreateUnbounded<SeString>();
     private readonly IDalamudServices dalamud;
     private readonly ProcessChatBoxDelegate processChatBox;
 
@@ -36,6 +40,9 @@ internal class ChatManager : IDisposable, IChatManager
             Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(addressResolver.SendChatAddress);
 
         this.dalamud.Framework.Update += this.FrameworkUpdate;
+#if DEBUG
+        this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
+#endif
     }
 
     private unsafe delegate void ProcessChatBoxDelegate(UIModule* uiModule, IntPtr message, IntPtr unused, byte a4);
@@ -43,47 +50,38 @@ internal class ChatManager : IDisposable, IChatManager
     /// <inheritdoc />
     public void Dispose()
     {
+#if DEBUG
+        this.dalamud.ChatGui.ChatMessage -= this.OnChatMessageDebug;
+#endif
         this.dalamud.Framework.Update -= this.FrameworkUpdate;
         this.chatBoxMessages.Writer.Complete();
     }
 
-    /// <summary>
-    ///     Print a message to the chat window.
-    /// </summary>
-    /// <param name="message">The message to print.</param>
-    public void PrintMessage(string message) => this.dalamud.ChatGui.Print($"[{Plugin.PluginName}] {message}");
+    /// <inheritdoc/>
+    public void PrintInformationMessage(string message) => this.dalamud.ChatGui.Print($"[{Plugin.PluginName}] {message}");
 
-    /// <summary>
-    ///     Print a message to the chat window.
-    /// </summary>
-    /// <param name="message">Message to display.</param>
-    public void PrintMessage(SeString message)
+    /// <inheritdoc/>
+    public void PrintInformationMessage(SeString message)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
         this.dalamud.ChatGui.Print(message);
     }
 
-    /// <summary>
-    ///     Print an error message to the chat window.
-    /// </summary>
-    /// <param name="message">The message to print.</param>
-    public void PrintError(string message) => this.dalamud.ChatGui.PrintError($"[{Plugin.PluginName}] {message}");
+    /// <inheritdoc/>
+    public void PrintErrorMessage(string message) => this.dalamud.ChatGui.PrintError($"[{Plugin.PluginName}] {message}");
 
-    /// <summary>
-    ///     Print an error message to the chat window.
-    /// </summary>
-    /// <param name="message">Message to display.</param>
-    public void PrintError(SeString message)
+    /// <inheritdoc/>
+    public void PrintErrorMessage(SeString message)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
         this.dalamud.ChatGui.PrintError(message);
     }
 
-    /// <summary>
-    ///     Process a command through the chat box.
-    /// </summary>
-    /// <param name="message">Message to send.</param>
-    public async void SendMessage(string message) => await this.chatBoxMessages.Writer.WriteAsync(message);
+    /// <inheritdoc/>
+    public async void SendMessage(string message) => await this.chatBoxMessages.Writer.WriteAsync(SeStringHelper.Parse(message));
+
+    /// <inheritdoc/>
+    public async void SendMessage(SeString message) => await this.chatBoxMessages.Writer.WriteAsync(message);
 
     private void FrameworkUpdate(Framework framework)
     {
@@ -98,7 +96,7 @@ internal class ChatManager : IDisposable, IChatManager
         var framework = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance();
         var uiModule = framework->GetUiModule();
 
-        using var payload = new ChatPayload(message);
+        using var payload = new ChatPayload(Encoding.UTF8.GetBytes(message));
         var payloadPtr = Marshal.AllocHGlobal(400);
         Marshal.StructureToPtr(payload, payloadPtr, false);
 
@@ -106,6 +104,34 @@ internal class ChatManager : IDisposable, IChatManager
 
         Marshal.FreeHGlobal(payloadPtr);
     }
+
+    private unsafe void SendMessageInternal(SeString message)
+    {
+        var messagePayload = message.Encode();
+        if (messagePayload.Length > 500)
+        {
+            this.PrintErrorMessage($"Message exceeds byte size of 500({messagePayload.Length})");
+            return;
+        }
+
+        var framework = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance();
+        var uiModule = framework->GetUiModule();
+
+        using var chatPayload = new ChatPayload(messagePayload);
+        var chatPayloadPtr = Marshal.AllocHGlobal(Marshal.SizeOf<ChatPayload>());
+        Marshal.StructureToPtr(chatPayload, chatPayloadPtr, false);
+
+        this.processChatBox(uiModule, chatPayloadPtr, IntPtr.Zero, 0);
+
+        Marshal.FreeHGlobal(chatPayloadPtr);
+    }
+
+#if DEBUG
+    private void OnChatMessageDebug(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
+    {
+        PluginLog.Debug($"SenderId={senderId},Sender={sender.TextValue},Bytes={message.Encode().Length},MessagePayloads={string.Join(';', message.Payloads.Select(p => p.ToString()))}");
+    }
+#endif
 
     [StructLayout(LayoutKind.Explicit)]
     private readonly struct ChatPayload : IDisposable
@@ -125,15 +151,14 @@ internal class ChatManager : IDisposable, IChatManager
         [FieldOffset(24)]
         private readonly ulong unk2;
 
-        internal ChatPayload(string text)
+        internal ChatPayload(byte[] payload)
         {
-            var stringBytes = Encoding.UTF8.GetBytes(text);
-            this.textPtr = Marshal.AllocHGlobal(stringBytes.Length + 30);
+            this.textPtr = Marshal.AllocHGlobal(payload.Length + 30);
 
-            Marshal.Copy(stringBytes, 0, this.textPtr, stringBytes.Length);
-            Marshal.WriteByte(this.textPtr + stringBytes.Length, 0);
+            Marshal.Copy(payload, 0, this.textPtr, payload.Length);
+            Marshal.WriteByte(this.textPtr + payload.Length, 0);
 
-            this.textLen = (ulong)(stringBytes.Length + 1);
+            this.textLen = (ulong)(payload.Length + 1);
 
             this.unk1 = 64;
             this.unk2 = 0;

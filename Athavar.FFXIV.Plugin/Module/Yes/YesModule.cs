@@ -263,7 +263,7 @@ internal sealed class YesModule : IModule, IDisposable
                 this.CommandAddTalkNode();
                 break;
             default:
-                this.ChatManager.PrintError("I didn't quite understand that.");
+                this.ChatManager.PrintErrorMessage("I didn't quite understand that.");
                 return;
         }
     }
@@ -278,7 +278,7 @@ internal sealed class YesModule : IModule, IDisposable
         sb.AppendLine($"{Command} last zone - Add the last seen YesNo dialog with the current zone name.");
         sb.AppendLine($"{Command} lastlist  - Add the last selected list dialog with the target at the time.");
         sb.AppendLine($"{Command} lasttalk  - Add the last seen target during a Talk dialog.");
-        this.ChatManager.PrintMessage(sb.ToString());
+        this.ChatManager.PrintInformationMessage(sb.ToString());
     }
 
     private void CommandAddNode(bool zoneRestricted)
@@ -289,7 +289,7 @@ internal sealed class YesModule : IModule, IDisposable
         {
             if (this.LastSeenDialogText.IsNullOrEmpty())
             {
-                this.ChatManager.PrintError("No dialog has been seen.");
+                this.ChatManager.PrintErrorMessage("No dialog has been seen.");
                 return;
             }
 
@@ -303,7 +303,7 @@ internal sealed class YesModule : IModule, IDisposable
             var currentId = this.DalamudServices.ClientState.TerritoryType;
             if (!this.TerritoryNames.TryGetValue(currentId, out var zoneName))
             {
-                this.ChatManager.PrintError("Could not find zone name.");
+                this.ChatManager.PrintErrorMessage("Could not find zone name.");
                 return;
             }
 
@@ -315,7 +315,7 @@ internal sealed class YesModule : IModule, IDisposable
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
-        this.ChatManager.PrintMessage("Added a new text entry.");
+        this.ChatManager.PrintInformationMessage("Added a new text entry.");
     }
 
     private void CommandAddListNode()
@@ -325,7 +325,7 @@ internal sealed class YesModule : IModule, IDisposable
 
         if (text.IsNullOrEmpty())
         {
-            this.ChatManager.PrintError("No dialog has been selected.");
+            this.ChatManager.PrintErrorMessage("No dialog has been selected.");
             return;
         }
 
@@ -341,7 +341,7 @@ internal sealed class YesModule : IModule, IDisposable
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
-        this.ChatManager.PrintMessage("Added a new list entry.");
+        this.ChatManager.PrintInformationMessage("Added a new list entry.");
     }
 
     private void CommandAddTalkNode()
@@ -350,7 +350,7 @@ internal sealed class YesModule : IModule, IDisposable
 
         if (target.IsNullOrEmpty())
         {
-            this.ChatManager.PrintError("No talk dialog has been seen.");
+            this.ChatManager.PrintErrorMessage("No talk dialog has been seen.");
             return;
         }
 
@@ -360,6 +360,6 @@ internal sealed class YesModule : IModule, IDisposable
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
-        this.ChatManager.PrintMessage("Added a new talk entry.");
+        this.ChatManager.PrintInformationMessage("Added a new talk entry.");
     }
 }

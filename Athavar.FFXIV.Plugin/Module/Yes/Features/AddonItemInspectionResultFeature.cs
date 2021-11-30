@@ -59,7 +59,7 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
         if (descText.Contains("※") || descText.Contains("liées à Garde-la-Reine"))
         {
             nameText.Payloads.Insert(0, new TextPayload("Received: "));
-            this.module.ChatManager.PrintMessage(nameText);
+            this.module.ChatManager.PrintInformationMessage(nameText);
         }
 
         this.itemInspectionCount++;
@@ -67,7 +67,7 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
         if (rateLimiter != 0 && this.itemInspectionCount % rateLimiter == 0)
         {
             this.itemInspectionCount = 0;
-            this.module.ChatManager.PrintMessage("Rate limited, pausing item inspection loop.");
+            this.module.ChatManager.PrintInformationMessage("Rate limited, pausing item inspection loop.");
             return;
         }
 
