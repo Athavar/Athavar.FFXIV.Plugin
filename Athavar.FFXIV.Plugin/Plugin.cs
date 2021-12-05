@@ -36,11 +36,13 @@ public sealed class Plugin : IDalamudPlugin
     /// </summary>
     internal const string PluginName = "Athavar's Toolbox";
 
-    private readonly IHostLifetime hostLifetime;
+    private IHostLifetime? hostLifetime;
 
     private readonly DalamudPluginInterface pluginInterface;
 
-    private readonly IHost host;
+    private readonly CancellationTokenSource tokenSource;
+
+    private IHost? host;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Plugin" /> class.
@@ -51,26 +53,29 @@ public sealed class Plugin : IDalamudPlugin
         DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
+        this.tokenSource = new();
 
-        Resolver.Initialize();
-
-        this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
-                        .ConfigureServices(this.ConfigureServices)
-                        .Build();
-
-        this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
-
-        _ = Task.Run(async () =>
+        _ = Task.Run(
+            async () =>
         {
+            Resolver.Initialize();
+
+            this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
+                            .ConfigureServices(this.ConfigureServices)
+                            .Build();
+
+            this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
+
             try
             {
-                await this.host.StartAsync();
+                await this.host.StartAsync(this.tokenSource.Token);
             }
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Exception occured.");
             }
-        });
+        },
+            this.tokenSource.Token);
     }
 
     /// <inheritdoc />
@@ -79,13 +84,21 @@ public sealed class Plugin : IDalamudPlugin
     /// <inheritdoc />
     public void Dispose()
     {
-        var task = this.hostLifetime.StopAsync(CancellationToken.None);
-        task.Wait();
+        this.tokenSource.Cancel();
+        if (this.hostLifetime is not null)
+        {
+            var task = this.hostLifetime.StopAsync(CancellationToken.None);
+            task.Wait();
+        }
 
-        task = this.host.StopAsync(CancellationToken.None);
-        task.Wait();
+        if (this.host is not null)
+        {
+            var task = this.host.StopAsync(CancellationToken.None);
+            task.Wait();
+        }
 
-        this.host.Dispose();
+        this.host?.Dispose();
+        this.tokenSource.Dispose();
     }
 
     /// <summary>
