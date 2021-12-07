@@ -41,7 +41,7 @@ internal class ChatManager : IDisposable, IChatManager
 
         this.dalamud.Framework.Update += this.FrameworkUpdate;
 #if DEBUG
-        this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
+        // this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
 #endif
     }
 
@@ -51,7 +51,7 @@ internal class ChatManager : IDisposable, IChatManager
     public void Dispose()
     {
 #if DEBUG
-        this.dalamud.ChatGui.ChatMessage -= this.OnChatMessageDebug;
+        // this.dalamud.ChatGui.ChatMessage -= this.OnChatMessageDebug;
 #endif
         this.dalamud.Framework.Update -= this.FrameworkUpdate;
         this.chatBoxMessages.Writer.Complete();
@@ -129,7 +129,12 @@ internal class ChatManager : IDisposable, IChatManager
 #if DEBUG
     private void OnChatMessageDebug(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
-        PluginLog.Debug($"SenderId={senderId},Sender={sender.TextValue},Bytes={message.Encode().Length},MessagePayloads={string.Join(';', message.Payloads.Select(p => p.ToString()))}");
+        var sender2 = sender;
+        var message2 = message;
+        Plugin.CatchCrash(() =>
+        {
+            PluginLog.Debug($"SenderId={senderId},Sender={sender2.TextValue},Bytes={message2.Encode().Length},MessagePayloads={string.Join(';', message2.Payloads.Select(p => p.ToString()))}");
+        });
     }
 #endif
 

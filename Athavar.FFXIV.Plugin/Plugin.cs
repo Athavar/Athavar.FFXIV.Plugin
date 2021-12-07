@@ -155,9 +155,9 @@ public sealed class Plugin : IDalamudPlugin
         service.AddSingleton<IClick, Click>();
 
         service.AddMacroModule();
-        service.AddYesModule();
+        // service.AddYesModule();
 #if DEBUG
-        service.AddHuntLinkModule();
+        // service.AddHuntLinkModule();
 #endif
 
         service.AddHostedService<PluginService>();
