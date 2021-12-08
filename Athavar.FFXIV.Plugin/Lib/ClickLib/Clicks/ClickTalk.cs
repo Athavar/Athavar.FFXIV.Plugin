@@ -38,5 +38,5 @@ public sealed class ClickTalk : ClickAddonBase<AddonTalk>
     ///     Click the talk dialog.
     /// </summary>
     [ClickName("talk")]
-    public unsafe void Click() => ClickAddonStage(&this.Addon->AtkUnitBase, this.Addon->AtkStage, 0);
+    public unsafe void Click() => ClickAddonStage(&this.Addon->AtkUnitBase, this.Addon->AtkEventListenerUnk.AtkStage, 0);
 }

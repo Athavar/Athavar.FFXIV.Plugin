@@ -45,9 +45,15 @@ internal class YesConfiguration : IPluginConfiguration
     public bool ModuleEnabled { get; set; } = true;
 
     /// <summary>
-    ///     Gets or sets a value indicating whether the plugin functionality is enabled.
+    ///     Gets or sets a value indicating whether the module functionality is enabled.
     /// </summary>
-    public bool Enabled { get; set; } = true;
+    public bool FunctionEnabled { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the module is enabled with functionality.
+    /// </summary>
+    [JsonIgnore]
+    public bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
 
     /// <summary>
     ///     Gets or sets a value indicating whether the desynth dialog setting is enabled.

@@ -247,7 +247,7 @@ internal sealed class YesModule : IModule, IDisposable
                 this.CommandHelpMenu();
                 break;
             case "toggle":
-                this.Configuration.Enabled ^= true;
+                this.Configuration.FunctionEnabled ^= true;
                 this.Configuration.Save();
                 break;
             case "last":

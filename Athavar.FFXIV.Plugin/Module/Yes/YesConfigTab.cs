@@ -56,10 +56,10 @@ internal class YesConfigTab
         this.UiBuilder_TestButton();
 #endif
 
-        var enabled = this.configuration.Enabled;
+        var enabled = this.configuration.FunctionEnabled;
         if (ImGui.Checkbox("Enabled", ref enabled))
         {
-            this.configuration.Enabled = enabled;
+            this.configuration.FunctionEnabled = enabled;
             this.configuration.Save();
         }
 
