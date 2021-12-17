@@ -12,7 +12,7 @@ public static class ModuleDependencyInjection
     {
         services.AddSingleton<MacroModule>();
         services.AddSingleton<MacroConfigTab>();
-        services.AddSingleton<Condition>();
+        services.AddSingleton<ConditionCheck>();
         services.AddSingleton<MacroManager>();
 
         return services;

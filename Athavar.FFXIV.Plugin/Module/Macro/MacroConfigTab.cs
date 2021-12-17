@@ -8,9 +8,12 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Manager.Interface;
+using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Interface;
+using Dalamud.Logging;
 using ImGuiNET;
 
 /// <summary>
@@ -18,6 +21,7 @@ using ImGuiNET;
 /// </summary>
 internal class MacroConfigTab
 {
+    private readonly IChatManager chatManager;
     private readonly MacroManager macroManager;
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
 
@@ -27,10 +31,12 @@ internal class MacroConfigTab
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroConfigTab" /> class.
     /// </summary>
+    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     /// <param name="macroManager"><see cref="MacroModule" /> added by DI.</param>
     /// <param name="configuration">The <see cref="Configuration" /> added by DI.</param>
-    public MacroConfigTab(MacroManager macroManager, Configuration configuration)
+    public MacroConfigTab(IChatManager chatManager, MacroManager macroManager, Configuration configuration)
     {
+        this.chatManager = chatManager;
         this.macroManager = macroManager;
         this.BaseConfiguration = configuration;
     }
@@ -106,7 +112,7 @@ internal class MacroConfigTab
             ImGui.SetNextItemOpen(true, ImGuiCond.FirstUseEver);
         }
 
-        var expanded = ImGui.TreeNodeEx($"{node.Name}##{node.Name}-tree");
+        var expanded = ImGui.TreeNodeEx($"{node.Name}##tree");
 
         this.NodePopup(node);
         this.NodeDragDrop(node);
@@ -159,7 +165,7 @@ internal class MacroConfigTab
             {
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "Run"))
                 {
-                    this.macroManager.RunMacro(macroNode);
+                    this.RunMacro(macroNode);
                 }
             }
 
@@ -275,6 +281,24 @@ internal class MacroConfigTab
             ImGui.EndDragDropTarget();
         }
     }
+
+    private void RunMacro(MacroNode node)
+    {
+        try
+        {
+            this.macroManager.EnqueueMacro(node);
+        }
+        catch (MacroSyntaxError ex)
+        {
+            this.chatManager.PrintErrorMessage($"[Macro] {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            this.chatManager.PrintErrorMessage("[Macro] Unexpected error");
+            PluginLog.Error(ex, "Unexpected error");
+        }
+    }
+
 
     private void DisplayRunningMacros()
     {
@@ -400,7 +424,7 @@ internal class MacroConfigTab
 
         if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "Run"))
         {
-            this.macroManager.RunMacro(node);
+            this.RunMacro(node);
         }
 
         ImGui.SameLine();

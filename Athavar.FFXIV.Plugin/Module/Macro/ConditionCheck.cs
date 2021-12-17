@@ -13,13 +13,13 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     Contains condition checks.
 /// </summary>
-internal class Condition
+internal class ConditionCheck
 {
     private readonly IDalamudServices dalamudServices;
     private readonly EquipmentScanner equipmentScanner;
     private ExcelSheet<Status>? statusSheet;
 
-    public Condition(IDalamudServices dalamudServices, EquipmentScanner equipmentScanner)
+    public ConditionCheck(IDalamudServices dalamudServices, EquipmentScanner equipmentScanner)
     {
         this.dalamudServices = dalamudServices;
         this.equipmentScanner = equipmentScanner;
@@ -47,7 +47,7 @@ internal class Condition
     /// <param name="category">The category of the condition.</param>
     /// <param name="condition">The condition parameter.</param>
     /// <returns>Indicates if the condition is fulfilled or not.</returns>
-    public bool ConditionCheck(Category category, string condition)
+    public bool Check(Category category, string condition)
     {
         switch (category)
         {

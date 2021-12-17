@@ -1,7 +1,6 @@
 ﻿namespace Athavar.FFXIV.Plugin.Utils;
 
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Dalamud.Game.Text.SeStringHandling;

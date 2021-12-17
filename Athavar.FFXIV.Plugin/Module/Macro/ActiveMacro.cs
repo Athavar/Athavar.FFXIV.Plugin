@@ -4,8 +4,9 @@
 
 namespace Athavar.FFXIV.Plugin.Module.Macro;
 
-using System;
 using System.Linq;
+using Athavar.FFXIV.Plugin.Module.Macro.Commands;
+using Athavar.FFXIV.Plugin.Module.Macro.Grammar;
 
 /// <summary>
 ///     Reprecent a active running macro.
@@ -17,20 +18,9 @@ internal class ActiveMacro
     /// </summary>
     /// <param name="node">The node containing the macro code.</param>
     public ActiveMacro(MacroNode node)
-        : this(node, null)
-    {
-    }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="ActiveMacro" /> class.
-    /// </summary>
-    /// <param name="node">The node containing the macro code.</param>
-    /// <param name="parent">The parent macro.</param>
-    public ActiveMacro(MacroNode node, ActiveMacro? parent)
     {
         this.Node = node;
-        this.Parent = parent;
-        this.Steps = node.Contents.Split(new[] { "\n", "\r", "\n\r" }, StringSplitOptions.RemoveEmptyEntries).Where(line => !line.StartsWith("#")).ToArray();
+        this.Steps = MacroParser.Parse(node.Contents).ToArray();
     }
 
     /// <summary>
@@ -39,25 +29,32 @@ internal class ActiveMacro
     public MacroNode Node { get; }
 
     /// <summary>
-    ///     Gets the parent <see cref="MacroNode" />.
-    /// </summary>
-    public ActiveMacro? Parent { get; }
-
-    /// <summary>
     ///     Gets all steps of the <see cref="ActiveMacro" />.
     /// </summary>
-    public string[] Steps { get; }
+    public MacroCommand[] Steps { get; }
 
     /// <summary>
     ///     Gets or sets index of current executing step.
     /// </summary>
     public int StepIndex { get; set; }
 
-    public int LoopCount { get; set; }
+    /// <summary>
+    ///     Increase the step count.
+    /// </summary>
+    public void NextStep() => this.StepIndex++;
 
-    public string? GetCurrentStep()
+    /// <summary>
+    ///     Loop to the start of the macro.
+    /// </summary>
+    public void Loop() => this.StepIndex = -1;
+
+    /// <summary>
+    ///     Gets the current command step.
+    /// </summary>
+    /// <returns>returns the current command step.</returns>
+    public MacroCommand? GetCurrentStep()
     {
-        if (this.StepIndex >= this.Steps.Length)
+        if (this.StepIndex < 0 || this.StepIndex >= this.Steps.Length)
         {
             return null;
         }
