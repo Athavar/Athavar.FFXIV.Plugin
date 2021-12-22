@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using Athavar.FFXIV.Plugin.Module.Macro.Commands;
+using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 /// <summary>
 ///     A macro parser.
@@ -21,10 +21,8 @@ internal static class MacroParser
 
         while ((line = reader.ReadLine()) != null)
         {
-            line = line.Trim();
-
             // Empty
-            if (line.Length == 0)
+            if (line.Trim().Length == 0)
             {
                 continue;
             }

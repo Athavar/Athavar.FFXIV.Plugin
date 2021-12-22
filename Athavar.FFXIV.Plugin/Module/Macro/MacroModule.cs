@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Module.Macro;
 using System;
 using System.Linq;
 using Athavar.FFXIV.Plugin.Manager.Interface;
-using Athavar.FFXIV.Plugin.Module.Macro.Commands;
+using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Dalamud.Game.Command;
 using Dalamud.Logging;

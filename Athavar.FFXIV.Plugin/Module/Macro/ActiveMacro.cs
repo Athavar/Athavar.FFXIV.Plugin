@@ -5,8 +5,8 @@
 namespace Athavar.FFXIV.Plugin.Module.Macro;
 
 using System.Linq;
-using Athavar.FFXIV.Plugin.Module.Macro.Commands;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar;
+using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 /// <summary>
 ///     Reprecent a active running macro.

@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Module.Macro.Commands;
+namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
