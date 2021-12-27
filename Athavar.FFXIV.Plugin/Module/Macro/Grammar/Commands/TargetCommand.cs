@@ -56,14 +56,14 @@ internal class TargetCommand : MacroCommand
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
-        var target = dalamudServices.ObjectTable.FirstOrDefault(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName);
+        var target = DalamudServices.ObjectTable.FirstOrDefault(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName);
 
         if (target == default)
         {
             throw new MacroCommandError("Could not find target");
         }
 
-        dalamudServices.TargetManager.SetTarget(target);
+        DalamudServices.TargetManager.SetTarget(target);
 
         await this.PerformWait(token);
     }

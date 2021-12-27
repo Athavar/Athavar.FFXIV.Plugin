@@ -18,7 +18,7 @@ internal class AddonGrandCompanySupplyRewardFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonGrandCompanySupplyRewardFeature(YesModule module)
-        : base(module.AddressResolver.AddonGrandCompanySupplyRewardOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonGrandCompanySupplyRewardOnSetupAddress, module)
     {
     }
 

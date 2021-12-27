@@ -5,11 +5,13 @@
 namespace Athavar.FFXIV.Plugin.Module.Yes;
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
+using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface;
 using ImGuiNET;
 
@@ -24,6 +26,22 @@ internal class YesConfigTab
     private readonly YesConfiguration configuration;
     private readonly ZoneListWindow zoneListWindow;
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
+
+    private readonly string[] hotkeyChoices =
+    {
+        "None",
+        "Control",
+        "Alt",
+        "Shift",
+    };
+
+    private readonly VirtualKey[] hotkeyValues =
+    {
+        VirtualKey.NO_KEY,
+        VirtualKey.CONTROL,
+        VirtualKey.MENU,
+        VirtualKey.SHIFT,
+    };
 
     private YesModule module = null!;
     private INode? draggedNode;
@@ -175,11 +193,49 @@ internal class YesConfigTab
         {
             var indent = 27f * ImGuiHelpers.GlobalScale;
             ImGui.Indent(indent);
-            ImGui.TextColored(color, text);
+            ImGui.PushStyleColor(ImGuiCol.Text, color);
+            ImGui.TextWrapped(text);
+            ImGui.PopStyleColor();
             ImGui.Unindent(indent);
         }
 
         ImGui.PushID("BotherOptions");
+
+        // Disable hotkey
+        if (!this.hotkeyValues.Contains(this.configuration.DisableKey))
+        {
+            this.configuration.DisableKey = VirtualKey.NO_KEY;
+            this.configuration.Save();
+        }
+
+        var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.configuration.DisableKey);
+
+        ImGui.SetNextItemWidth(85);
+        if (ImGui.Combo("Disable Hotkey", ref disableHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
+        {
+            this.configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
+            this.configuration.Save();
+        }
+
+        IndentedTextColored(this.shadedColor, "While this key is held, the plugin is disabled.");
+
+        // Forced Yes hotkey
+        if (!this.hotkeyValues.Contains(this.configuration.ForcedYesKey))
+        {
+            this.configuration.ForcedYesKey = VirtualKey.NO_KEY;
+            this.configuration.Save();
+        }
+
+        var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.configuration.ForcedYesKey);
+
+        ImGui.SetNextItemWidth(85);
+        if (ImGui.Combo("Forced Yes Hotkey", ref forcedYesHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
+        {
+            this.configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
+            this.configuration.Save();
+        }
+
+        IndentedTextColored(this.shadedColor, "While this key is held, any Yes/No prompt will always default to yes. Be careful.");
 
         // SalvageDialog
         {
@@ -371,7 +427,8 @@ internal class YesConfigTab
         sb.AppendLine("For example: \"Teleport to \" for the teleport dialog.");
         sb.AppendLine();
         sb.AppendLine("Alternatively, wrap your text in forward slashes to use as a regex.");
-        sb.AppendLine("As such: \"/Teleport to .*? for \\d+ gil\\?/\"");
+        sb.AppendLine("As such: \"/Teleport to .*? for \\d+(,\\d+)? gil\\?/\"");
+        sb.AppendLine("Or simpler: \"/Teleport to .*?/\" (and hope it doesn't match something unexpected)");
         sb.AppendLine();
         sb.AppendLine("If it matches, the yes button (and checkbox if present) will be clicked.");
         sb.AppendLine();

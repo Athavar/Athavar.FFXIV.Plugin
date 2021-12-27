@@ -24,7 +24,7 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonSelectYesNoFeature(YesModule module)
-        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module.Configuration) =>
+        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module) =>
         this.module = module;
 
     /// <inheritdoc />
@@ -41,6 +41,13 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
 
         var text = this.module.LastSeenDialogText = this.module.GetSeStringText(dataPtr->TextPtr);
         PluginLog.Debug($"AddonSelectYesNo: text={text}");
+
+        if (this.module.ForcedYesKeyPressed)
+        {
+            PluginLog.Debug("AddonSelectYesNo: Forced yes hotkey pressed");
+            this.AddonSelectYesNoExecute(addon, true);
+            return;
+        }
 
         var zoneWarnOnce = true;
         var nodes = this.Configuration.GetAllNodes().OfType<TextEntryNode>();

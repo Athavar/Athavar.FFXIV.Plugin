@@ -37,7 +37,7 @@ internal class NativeCommand : MacroCommand
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
-        chatManager.SendMessage(this.Text);
+        ChatManager.SendMessage(this.Text);
 
         await this.PerformWait(token);
     }

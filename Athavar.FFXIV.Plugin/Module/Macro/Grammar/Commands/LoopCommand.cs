@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
-using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Dalamud.Logging;
 
 /// <summary>
@@ -18,8 +17,10 @@ using Dalamud.Logging;
 /// </summary>
 internal class LoopCommand : MacroCommand
 {
+    private const int MaxLoops = int.MaxValue;
     private static readonly Regex Regex = new(@"^/loop(?:\s+(?<count>\d+))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private readonly bool echo;
     private int loopsRemaining;
 
     /// <summary>
@@ -28,9 +29,13 @@ internal class LoopCommand : MacroCommand
     /// <param name="text">Original text.</param>
     /// <param name="loopCount">Loop count.</param>
     /// <param name="wait">Wait value.</param>
-    private LoopCommand(string text, int loopCount, WaitModifier wait)
-        : base(text, wait) =>
-        this.loopsRemaining = loopCount >= 0 ? loopCount : int.MaxValue;
+    /// <param name="echo">Echo value.</param>
+    private LoopCommand(string text, int loopCount, WaitModifier wait, EchoModifier echo)
+        : base(text, wait)
+    {
+        this.loopsRemaining = loopCount >= 0 ? loopCount : MaxLoops;
+        this.echo = echo.PerformEcho;
+    }
 
     /// <summary>
     ///     Parse the text as a command.
@@ -40,6 +45,7 @@ internal class LoopCommand : MacroCommand
     public static LoopCommand Parse(string text)
     {
         _ = WaitModifier.TryParse(ref text, out var waitModifier);
+        _ = EchoModifier.TryParse(ref text, out var echoModifier);
 
         var match = Regex.Match(text);
         if (!match.Success)
@@ -52,28 +58,32 @@ internal class LoopCommand : MacroCommand
             ? int.Parse(countGroup.Value, CultureInfo.InvariantCulture)
             : int.MaxValue;
 
-        return new LoopCommand(text, countValue, waitModifier);
+        return new LoopCommand(text, countValue, waitModifier, echoModifier);
     }
 
     /// <inheritdoc />
     public override async Task Execute(CancellationToken token)
     {
-        if (macroManager.State == LoopState.Cancel)
-        {
-            PluginLog.Debug("Skip loop because of cancel state");
-            return;
-        }
-
         PluginLog.Debug($"Executing: {this.Text}");
 
-        if (this.loopsRemaining == 0)
+        if (this.loopsRemaining != MaxLoops)
         {
-            return;
+            if (this.echo)
+            {
+                DalamudServices.ChatGui.Print($"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
+            }
+
+            this.loopsRemaining--;
+            if (this.loopsRemaining <= 0)
+            {
+                return;
+            }
         }
 
-        this.loopsRemaining--;
-        macroManager.Loop();
+        MacroManager.Loop();
 
         await this.PerformWait(token);
+
+        MacroManager.LoopCheckForPause();
     }
 }

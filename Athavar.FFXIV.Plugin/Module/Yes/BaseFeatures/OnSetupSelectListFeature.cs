@@ -26,7 +26,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     /// <param name="onSetupAddress">Address to the OnSetup method.</param>
     /// <param name="module"><see cref="YesModule" />.</param>
     protected OnSetupSelectListFeature(IntPtr onSetupAddress, YesModule module)
-        : base(onSetupAddress, module.Configuration)
+        : base(onSetupAddress, module)
     {
         this.dalamudServices = module.DalamudServices;
         this.module = module;

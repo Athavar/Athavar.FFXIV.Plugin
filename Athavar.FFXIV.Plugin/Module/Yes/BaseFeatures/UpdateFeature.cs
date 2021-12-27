@@ -13,17 +13,17 @@ using Dalamud.Logging;
 /// </summary>
 internal abstract class UpdateFeature : IBaseFeature
 {
-    protected readonly YesConfiguration Configuration;
+    private readonly YesModule module;
     private readonly Hook<UpdateDelegate> updateHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFeature" /> class.
     /// </summary>
     /// <param name="updateAddress">Address to the Update method.</param>
-    /// <param name="configuration">The configuration of this module.</param>
-    public UpdateFeature(IntPtr updateAddress, YesConfiguration configuration)
+    /// <param name="module">The module.</param>
+    public UpdateFeature(IntPtr updateAddress, YesModule module)
     {
-        this.Configuration = configuration;
+        this.module = module;
         this.updateHook = new Hook<UpdateDelegate>(updateAddress, this.UpdateDetour);
         this.updateHook.Enable();
     }
@@ -35,6 +35,11 @@ internal abstract class UpdateFeature : IBaseFeature
     /// <param name="a2">Param2.</param>
     /// <param name="a3">Param3.</param>
     internal delegate void UpdateDelegate(IntPtr addon, IntPtr a2, IntPtr a3);
+
+    /// <summary>
+    ///     Gets the <see cref="YesConfiguration" />.
+    /// </summary>
+    protected YesConfiguration Configuration => this.module.Configuration;
 
     /// <summary>
     ///     Gets the name of the addon being hooked.
@@ -62,7 +67,7 @@ internal abstract class UpdateFeature : IBaseFeature
         // PluginLog.Debug($"Addon{this.AddonName}.Update");
         this.updateHook.Original(addon, a2, a3);
 
-        if (!this.Configuration.Enabled)
+        if (!this.Configuration.Enabled || this.module.DisableKeyPressed)
         {
             return;
         }

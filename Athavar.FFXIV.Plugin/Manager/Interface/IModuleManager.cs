@@ -6,7 +6,6 @@ internal interface IModuleManager
 {
     bool Register(IModule module, bool enableState);
 
-
     public IEnumerable<string> GetModuleNames();
 
     public bool IsEnables(string moduleName);

@@ -19,7 +19,7 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonSalvageDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonSalvageDialongOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonSalvageDialogOnSetupAddress, module)
     {
     }
 

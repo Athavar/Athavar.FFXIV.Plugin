@@ -18,7 +18,7 @@ internal class AddonContentsFinderConfirmFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonContentsFinderConfirmFeature(YesModule module)
-        : base(module.AddressResolver.AddonContentsFinderConfirmOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonContentsFinderConfirmOnSetupAddress, module)
     {
     }
 

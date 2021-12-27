@@ -25,11 +25,6 @@ internal enum LoopState
     Running,
 
     /// <summary>
-    ///     Cancel.
-    /// </summary>
-    Cancel,
-
-    /// <summary>
     ///     Paused.
     /// </summary>
     Paused,

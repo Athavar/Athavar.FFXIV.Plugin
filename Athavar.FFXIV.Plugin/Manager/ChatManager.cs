@@ -57,30 +57,30 @@ internal class ChatManager : IDisposable, IChatManager
         this.chatBoxMessages.Writer.Complete();
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void PrintInformationMessage(string message) => this.dalamud.ChatGui.Print($"[{Plugin.PluginName}] {message}");
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void PrintInformationMessage(SeString message)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
         this.dalamud.ChatGui.Print(message);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void PrintErrorMessage(string message) => this.dalamud.ChatGui.PrintError($"[{Plugin.PluginName}] {message}");
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public void PrintErrorMessage(SeString message)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
         this.dalamud.ChatGui.PrintError(message);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public async void SendMessage(string message) => await this.chatBoxMessages.Writer.WriteAsync(SeStringHelper.Parse(message));
 
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public async void SendMessage(SeString message) => await this.chatBoxMessages.Writer.WriteAsync(message);
 
     private void FrameworkUpdate(Framework framework)
@@ -131,10 +131,7 @@ internal class ChatManager : IDisposable, IChatManager
     {
         var sender2 = sender;
         var message2 = message;
-        Plugin.CatchCrash(() =>
-        {
-            PluginLog.Debug($"SenderId={senderId},Sender={sender2.TextValue},Bytes={message2.Encode().Length},MessagePayloads={string.Join(';', message2.Payloads.Select(p => p.ToString()))}");
-        });
+        Plugin.CatchCrash(() => { PluginLog.Debug($"SenderId={senderId},Sender={sender2.TextValue},Bytes={message2.Encode().Length},MessagePayloads={string.Join(';', message2.Payloads.Select(p => p.ToString()))}"); });
     }
 #endif
 

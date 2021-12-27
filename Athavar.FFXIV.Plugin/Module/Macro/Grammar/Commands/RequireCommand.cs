@@ -38,7 +38,7 @@ internal class RequireCommand : MacroCommand
         : base(text, wait)
     {
         statusName = statusName.ToLowerInvariant();
-        var sheet = dalamudServices.DataManager.GetExcelSheet<Status>()!;
+        var sheet = DalamudServices.DataManager.GetExcelSheet<Status>()!;
         this.statusIDs = sheet
                         .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
                         .Select(row => row.RowId)
@@ -87,7 +87,7 @@ internal class RequireCommand : MacroCommand
 
     private (uint StatusID, bool HasStatus) IsStatusPresent()
     {
-        var statusId = dalamudServices.ClientState.LocalPlayer!.StatusList
+        var statusId = DalamudServices.ClientState.LocalPlayer!.StatusList
                                       .Select(se => se.StatusId)
                                       .ToList().Intersect(this.statusIDs)
                                       .FirstOrDefault();

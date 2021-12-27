@@ -12,6 +12,9 @@ using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
+/// <summary>
+/// The main <see cref="Window"/> of the plugin.
+/// </summary>
 internal class PluginWindow : Window
 {
     private readonly IModuleManager manager;
@@ -20,6 +23,12 @@ internal class PluginWindow : Window
     private readonly string[] languages = Enum.GetNames<Language>();
     private readonly Configuration configuration;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PluginWindow"/> class.
+    /// </summary>
+    /// <param name="localizerManager"><see cref="ILocalizerManager"/> added by DI.</param>
+    /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
     public PluginWindow(ILocalizerManager localizerManager, IModuleManager manager, Configuration configuration)
         : base($"{Plugin.PluginName} {Assembly.GetCallingAssembly().GetName().Version}")
     {

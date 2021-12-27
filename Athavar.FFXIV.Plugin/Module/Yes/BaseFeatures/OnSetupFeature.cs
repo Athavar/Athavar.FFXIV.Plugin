@@ -13,17 +13,17 @@ using Dalamud.Logging;
 /// </summary>
 internal abstract class OnSetupFeature : IBaseFeature
 {
-    protected readonly YesConfiguration Configuration;
+    private readonly YesModule module;
     private readonly Hook<OnSetupDelegate> onSetupHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupFeature" /> class.
     /// </summary>
     /// <param name="onSetupAddress">Address to the OnSetup method.</param>
-    /// <param name="configuration">The configuration of this module.</param>
-    public OnSetupFeature(IntPtr onSetupAddress, YesConfiguration configuration)
+    /// <param name="module">The module.</param>
+    public OnSetupFeature(IntPtr onSetupAddress, YesModule module)
     {
-        this.Configuration = configuration;
+        this.module = module;
         this.onSetupHook = new Hook<OnSetupDelegate>(onSetupAddress, this.OnSetupDetour);
         this.onSetupHook.Enable();
     }
@@ -36,6 +36,11 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <param name="data">Data address.</param>
     /// <returns>The addon address.</returns>
     internal delegate IntPtr OnSetupDelegate(IntPtr addon, uint a2, IntPtr data);
+
+    /// <summary>
+    ///     Gets the <see cref="YesConfiguration" />.
+    /// </summary>
+    protected YesConfiguration Configuration => this.module.Configuration;
 
     /// <summary>
     ///     Gets the name of the addon being hooked.
@@ -62,7 +67,7 @@ internal abstract class OnSetupFeature : IBaseFeature
         PluginLog.Debug($"Addon{this.AddonName}.OnSetup");
         var result = this.onSetupHook.Original(addon, a2, data);
 
-        if (!this.Configuration.Enabled)
+        if (!this.module.Configuration.Enabled || this.module.DisableKeyPressed)
         {
             return result;
         }

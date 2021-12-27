@@ -18,7 +18,7 @@ internal class AddonMateriaRetrieveDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonMateriaRetrieveDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonMateriaRetrieveDialongOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonMateriaRetrieveDialogOnSetupAddress, module)
     {
     }
 

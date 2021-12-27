@@ -19,7 +19,7 @@ internal class AddonShopCardDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonShopCardDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonShopCardDialogOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonShopCardDialogOnSetupAddress, module)
     {
     }
 

@@ -85,7 +85,7 @@ internal class WaitAddonCommand : MacroCommand
 
     private unsafe (IntPtr Addon, bool IsVisible) IsAddonVisible()
     {
-        var addonPtr = dalamudServices.GameGui.GetAddonByName(this.addonName, 1);
+        var addonPtr = DalamudServices.GameGui.GetAddonByName(this.addonName, 1);
         if (addonPtr == IntPtr.Zero)
         {
             return (addonPtr, false);

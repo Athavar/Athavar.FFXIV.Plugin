@@ -23,6 +23,7 @@ internal class MacroConfigTab
 {
     private readonly IChatManager chatManager;
     private readonly MacroManager macroManager;
+    private readonly MacroHelpWindow helpWindow;
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
 
     private INode? draggedNode;
@@ -33,11 +34,13 @@ internal class MacroConfigTab
     /// </summary>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     /// <param name="macroManager"><see cref="MacroModule" /> added by DI.</param>
+    /// <param name="helpWindow"><see cref="MacroHelpWindow" /> added by DI.</param>
     /// <param name="configuration">The <see cref="Configuration" /> added by DI.</param>
-    public MacroConfigTab(IChatManager chatManager, MacroManager macroManager, Configuration configuration)
+    public MacroConfigTab(IChatManager chatManager, MacroManager macroManager, MacroHelpWindow helpWindow, Configuration configuration)
     {
         this.chatManager = chatManager;
         this.macroManager = macroManager;
+        this.helpWindow = helpWindow;
         this.BaseConfiguration = configuration;
     }
 
@@ -47,6 +50,9 @@ internal class MacroConfigTab
 
     private FolderNode RootFolder => this.Configuration.RootFolder;
 
+    /// <summary>
+    ///     Draw this tab.
+    /// </summary>
     internal void DrawTab()
     {
         using var raii = new ImGuiRaii();
@@ -299,12 +305,18 @@ internal class MacroConfigTab
         }
     }
 
-
     private void DisplayRunningMacros()
     {
         ImGui.Text("Macro Queue");
 
-        var state = Enum.GetName(this.macroManager.State);
+        var state = this.macroManager.State;
+
+        var stateName = state switch
+                        {
+                            LoopState.NotLoggedIn => "Not Logged In",
+                            LoopState.Running when this.macroManager.PauseAtLoop => "Pausing Soon",
+                            _ => Enum.GetName(state),
+                        };
 
         Vector4 buttonCol;
         unsafe
@@ -314,9 +326,15 @@ internal class MacroConfigTab
 
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonCol);
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, buttonCol);
-        ImGui.Button($"{state}##LoopState", new Vector2(100, 0));
+        ImGui.Button($"{stateName}##LoopState", new Vector2(100, 0));
         ImGui.PopStyleColor();
         ImGui.PopStyleColor();
+
+        ImGui.SameLine();
+        if (ImGuiEx.IconButton(FontAwesomeIcon.QuestionCircle, "Help"))
+        {
+            this.helpWindow.Toggle();
+        }
 
         if (this.macroManager.State == LoopState.NotLoggedIn)
         {
@@ -344,18 +362,13 @@ internal class MacroConfigTab
                 this.macroManager.Clear();
             }
         }
-        else if (this.macroManager.State == LoopState.Running || this.macroManager.State == LoopState.Cancel)
+        else if (this.macroManager.State == LoopState.Running)
         {
             ImGui.SameLine();
-            if (ImGuiEx.IconButton(FontAwesomeIcon.Pause, "Pause"))
+            if (ImGuiEx.IconButton(FontAwesomeIcon.Pause, "Pause (hold control to pause at next /loop)"))
             {
-                this.macroManager.Pause();
-            }
-
-            ImGui.SameLine();
-            if (ImGuiEx.IconButton(FontAwesomeIcon.Stop, "Cancel"))
-            {
-                this.macroManager.Cancel();
+                var ctrlHeld = ImGui.GetIO().KeyCtrl;
+                this.macroManager.Pause(ctrlHeld);
             }
 
             ImGui.SameLine();

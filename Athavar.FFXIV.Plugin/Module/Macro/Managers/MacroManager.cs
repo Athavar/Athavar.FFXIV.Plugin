@@ -23,16 +23,16 @@ internal partial class MacroManager : IDisposable
     private readonly CancellationTokenSource eventLoopTokenSource = new();
     private readonly Stack<ActiveMacro> macroStack = new();
 
+    private readonly ManualResetEvent loggedInWaiter = new(false);
+    private readonly ManualResetEvent pausedWaiter = new(true);
     private CancellationTokenSource? stepTokenSource;
-    private bool isPaused = true;
-    private bool isLoggedIn;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroManager" /> class.
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    public MacroManager(IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
+    public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
@@ -42,7 +42,7 @@ internal partial class MacroManager : IDisposable
 
         if (this.dalamudServices.ClientState.LocalPlayer != null)
         {
-            this.isLoggedIn = true;
+            this.loggedInWaiter.Set();
         }
 
         // Start the loop.
@@ -56,6 +56,11 @@ internal partial class MacroManager : IDisposable
     /// </summary>
     public LoopState State { get; private set; } = LoopState.Waiting;
 
+    /// <summary>
+    ///     Gets a value indicating whether the manager should pause at the next /loop command.
+    /// </summary>
+    public bool PauseAtLoop { get; private set; }
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -64,17 +69,20 @@ internal partial class MacroManager : IDisposable
 
         this.eventLoopTokenSource.Cancel();
         this.eventLoopTokenSource.Dispose();
+
+        this.loggedInWaiter.Dispose();
+        this.pausedWaiter.Dispose();
     }
 
     private void OnLogin(object? sender, EventArgs e)
     {
-        this.isLoggedIn = true;
+        this.loggedInWaiter.Set();
         this.State = LoopState.Waiting;
     }
 
     private void OnLogout(object? sender, EventArgs e)
     {
-        this.isLoggedIn = false;
+        this.loggedInWaiter.Reset();
         this.State = LoopState.NotLoggedIn;
     }
 
@@ -86,30 +94,35 @@ internal partial class MacroManager : IDisposable
         {
             try
             {
-                while (!this.isLoggedIn)
+                // Check if the logged in waiter is set
+                if (!this.loggedInWaiter.WaitOne(0))
                 {
                     this.State = LoopState.NotLoggedIn;
-                    await Task.Delay(100, token);
                 }
 
-                while (this.isPaused)
+                // Wait to be logged in
+                this.loggedInWaiter.WaitOne();
+
+                // Check if the paused waiter has been set
+                if (!this.pausedWaiter.WaitOne(0))
                 {
-                    this.State = this.macroStack.Count == 0 ? LoopState.Waiting : LoopState.Paused;
-                    await Task.Delay(100, token);
+                    this.State = this.macroStack.Count == 0
+                        ? LoopState.Waiting
+                        : LoopState.Paused;
                 }
+
+                // Wait for the un-pause button
+                this.pausedWaiter.WaitOne();
 
                 if (!this.macroStack.TryPeek(out var macro))
                 {
-                    this.isPaused = true;
+                    this.pausedWaiter.Reset();
                     continue;
                 }
 
-                if (this.State != LoopState.Cancel)
-                {
-                    this.State = LoopState.Running;
-                }
+                this.State = LoopState.Running;
 
-                using var macroToken = CancellationTokenSource.CreateLinkedTokenSource(this.eventLoopTokenSource.Token);
+                using var macroToken = CancellationTokenSource.CreateLinkedTokenSource(token);
 
                 this.stepTokenSource = macroToken;
                 if (await this.ProcessMacro(macro, this.stepTokenSource.Token))
@@ -156,7 +169,11 @@ internal partial class MacroManager : IDisposable
         catch (MacroCommandError ex)
         {
             this.chatManager.PrintErrorMessage($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
-            this.isPaused = true;
+            this.pausedWaiter.Reset();
+            return false;
+        }
+        catch (OperationCanceledException)
+        {
             return false;
         }
 
@@ -189,19 +206,41 @@ internal sealed partial class MacroManager
     public void EnqueueMacro(MacroNode node)
     {
         this.macroStack.Push(new ActiveMacro(node));
-
-        this.isPaused = false;
+        this.pausedWaiter.Set();
     }
 
     /// <summary>
     ///     Pause macro execution.
     /// </summary>
-    public void Pause() => this.isPaused = true;
+    /// <param name="pauseAtLoop">Pause at the next loop instead.</param>
+    public void Pause(bool pauseAtLoop = false)
+    {
+        if (pauseAtLoop)
+        {
+            this.PauseAtLoop ^= pauseAtLoop;
+        }
+        else
+        {
+            this.pausedWaiter.Reset();
+        }
+    }
+
+    /// <summary>
+    ///     Pause at the next /loop.
+    /// </summary>
+    public void LoopCheckForPause()
+    {
+        if (this.PauseAtLoop)
+        {
+            this.PauseAtLoop = false;
+            this.pausedWaiter.Reset();
+        }
+    }
 
     /// <summary>
     ///     Resume macro execution.
     /// </summary>
-    public void Resume() => this.isPaused = false;
+    public void Resume() => this.pausedWaiter.Set();
 
     /// <summary>
     ///     Loop the currently executing macro.
@@ -209,25 +248,15 @@ internal sealed partial class MacroManager
     public void Loop() => this.macroStack.Peek().Loop();
 
     /// <summary>
-    ///     Cancel macro execution.
-    /// </summary>
-    public void Cancel()
-    {
-        if (this.State == LoopState.Running)
-        {
-            this.State = LoopState.Cancel;
-        }
-    }
-
-    /// <summary>
     ///     Clear the executing macro list.
     /// </summary>
     public void Clear()
     {
         this.macroStack.Clear();
+        this.pausedWaiter.Set();
         if (!this.stepTokenSource?.IsCancellationRequested ?? false)
         {
-            this.stepTokenSource?.Cancel();
+            Task.Run(() => this.stepTokenSource?.Cancel());
         }
     }
 
@@ -242,7 +271,7 @@ internal sealed partial class MacroManager
             return Array.Empty<string>();
         }
 
-        return this.macroStack.Peek().Steps.Select(s => s.Text).ToArray();
+        return this.macroStack.Peek().Steps.Select(s => s.ToString()).ToArray();
     }
 
     /// <summary>

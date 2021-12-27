@@ -18,7 +18,7 @@ internal class AddonRetainerTaskAskFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonRetainerTaskAskFeature(YesModule module)
-        : base(module.AddressResolver.AddonRetainerTaskAskOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonRetainerTaskAskOnSetupAddress, module)
     {
     }
 

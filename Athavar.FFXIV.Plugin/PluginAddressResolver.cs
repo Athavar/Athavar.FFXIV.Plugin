@@ -1,8 +1,15 @@
-﻿namespace Athavar.FFXIV.Plugin;
+﻿// <copyright file="PluginAddressResolver.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin;
 
 using System;
 using Dalamud.Game;
 
+/// <summary>
+/// Resolver of in-game address.
+/// </summary>
 public class PluginAddressResolver : BaseAddressResolver
 {
     private const string AddonSelectYesNoOnSetupSignature = // Client::UI::AddonSelectYesno.OnSetup
@@ -71,17 +78,17 @@ public class PluginAddressResolver : BaseAddressResolver
     /// <summary>
     ///     Gets the address of the SalvageDialog addon's OnSetup method.
     /// </summary>
-    public IntPtr AddonSalvageDialongOnSetupAddress { get; private set; }
+    public IntPtr AddonSalvageDialogOnSetupAddress { get; private set; }
 
     /// <summary>
     ///     Gets the address of the MaterializeDialog addon's OnSetup method.
     /// </summary>
-    public IntPtr AddonMaterializeDialongOnSetupAddress { get; private set; }
+    public IntPtr AddonMaterializeDialogOnSetupAddress { get; private set; }
 
     /// <summary>
     ///     Gets the address of the MateriaRetrieveDialog addon's OnSetup method.
     /// </summary>
-    public IntPtr AddonMateriaRetrieveDialongOnSetupAddress { get; private set; }
+    public IntPtr AddonMateriaRetrieveDialogOnSetupAddress { get; private set; }
 
     /// <summary>
     ///     Gets the address of the ItemInspectionResult addon's OnSetup method.
@@ -144,9 +151,9 @@ public class PluginAddressResolver : BaseAddressResolver
         this.AddonSelectYesNoOnSetupAddress = scanner.ScanText(AddonSelectYesNoOnSetupSignature);
         this.AddonSelectStringOnSetupAddress = scanner.ScanText(AddonSelectStringOnSetupSignature);
         this.AddonSelectIconStringOnSetupAddress = scanner.ScanText(AddonSelectIconStringOnSetupSignature);
-        this.AddonSalvageDialongOnSetupAddress = scanner.ScanText(AddonSalvageDialogOnSetupSignature);
-        this.AddonMaterializeDialongOnSetupAddress = scanner.ScanText(AddonMaterializeDialogOnSetupSignature);
-        this.AddonMateriaRetrieveDialongOnSetupAddress = scanner.ScanText(AddonMateriaRetrieveDialogOnSetupSignature);
+        this.AddonSalvageDialogOnSetupAddress = scanner.ScanText(AddonSalvageDialogOnSetupSignature);
+        this.AddonMaterializeDialogOnSetupAddress = scanner.ScanText(AddonMaterializeDialogOnSetupSignature);
+        this.AddonMateriaRetrieveDialogOnSetupAddress = scanner.ScanText(AddonMateriaRetrieveDialogOnSetupSignature);
         this.AddonItemInspectionResultOnSetupAddress = scanner.ScanText(AddonItemInspectionResultOnSetupSignature);
         this.AddonRetainerTaskAskOnSetupAddress = scanner.ScanText(AddonRetainerTaskAskOnSetupSignature);
         this.AddonRetainerTaskResultOnSetupAddress = scanner.ScanText(AddonRetainerTaskResultOnSetupSignature);

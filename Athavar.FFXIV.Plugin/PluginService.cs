@@ -67,7 +67,7 @@ internal class PluginService : IHostedService
 
         var address = provider.GetRequiredService<PluginAddressResolver>();
         address.Setup(this.dalamudServices.SigScanner);
-        _ = provider.GetRequiredService<MacroModule>(); 
+        _ = provider.GetRequiredService<MacroModule>();
         _ = provider.GetRequiredService<YesModule>();
 #if DEBUG
         _ = provider.GetRequiredService<HuntLinkModule>();

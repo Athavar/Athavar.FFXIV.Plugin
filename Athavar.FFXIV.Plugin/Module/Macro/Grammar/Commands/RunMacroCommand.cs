@@ -72,7 +72,7 @@ internal class RunMacroCommand : MacroCommand
             throw new MacroCommandError("No macro with that name");
         }
 
-        macroManager.EnqueueMacro(macroNode);
+        MacroManager.EnqueueMacro(macroNode);
 
         await this.PerformWait(token);
     }

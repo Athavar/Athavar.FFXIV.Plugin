@@ -143,6 +143,16 @@ internal sealed class YesModule : IModule, IDisposable
     /// </summary>
     internal DateTime EscapeLastPressed { get; private set; } = DateTime.MinValue;
 
+    /// <summary>
+    ///     Gets a value indicating whether the disable hotkey is pressed.
+    /// </summary>
+    internal bool DisableKeyPressed { get; private set; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the forced yes hotkey is pressed.
+    /// </summary>
+    internal bool ForcedYesKeyPressed { get; private set; }
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -227,6 +237,10 @@ internal sealed class YesModule : IModule, IDisposable
 
     private void FrameworkUpdate(Framework framework)
     {
+        this.DisableKeyPressed = this.Configuration.DisableKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.Configuration.DisableKey];
+
+        this.ForcedYesKeyPressed = this.Configuration.ForcedYesKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.Configuration.ForcedYesKey];
+
         if (this.DalamudServices.KeyState[VirtualKey.ESCAPE])
         {
             this.EscapeLastPressed = DateTime.Now;
@@ -272,12 +286,12 @@ internal sealed class YesModule : IModule, IDisposable
     {
         var sb = new StringBuilder();
         sb.AppendLine("Help menu");
-        sb.AppendLine($"{Command}           - Toggle the config window.");
-        sb.AppendLine($"{Command} toggle    - Toggle the plugin on/off.");
-        sb.AppendLine($"{Command} last      - Add the last seen YesNo dialog.");
+        sb.AppendLine($"{Command} - Toggle the config window.");
+        sb.AppendLine($"{Command} toggle - Toggle the plugin on/off.");
+        sb.AppendLine($"{Command} last - Add the last seen YesNo dialog.");
         sb.AppendLine($"{Command} last zone - Add the last seen YesNo dialog with the current zone name.");
-        sb.AppendLine($"{Command} lastlist  - Add the last selected list dialog with the target at the time.");
-        sb.AppendLine($"{Command} lasttalk  - Add the last seen target during a Talk dialog.");
+        sb.AppendLine($"{Command} lastlist - Add the last selected list dialog with the target at the time.");
+        sb.AppendLine($"{Command} lasttalk - Add the last seen target during a Talk dialog.");
         this.ChatManager.PrintInformationMessage(sb.ToString());
     }
 

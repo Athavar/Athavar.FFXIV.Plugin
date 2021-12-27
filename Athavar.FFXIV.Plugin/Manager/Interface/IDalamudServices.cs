@@ -28,7 +28,6 @@ internal interface IDalamudServices
 
     Condition Condition { get; }
 
-
     DataManager DataManager { get; }
 
     Framework Framework { get; }

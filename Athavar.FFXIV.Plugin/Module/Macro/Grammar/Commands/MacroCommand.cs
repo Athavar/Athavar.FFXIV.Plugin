@@ -19,12 +19,11 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 internal abstract class MacroCommand
 {
-    protected static IDalamudServices dalamudServices = null!;
-    protected static IChatManager chatManager = null!;
-    protected static MacroManager macroManager = null!;
-
     private static readonly Random Rand = new();
-    private static IServiceProvider? _serviceProvider;
+    private static IServiceProvider? serviceProvider;
+    private static IDalamudServices? dalamudServices;
+    private static IChatManager? chatManager;
+    private static MacroManager? macroManager;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroCommand" /> class.
@@ -62,7 +61,22 @@ internal abstract class MacroCommand
     /// <summary>
     ///     Gets the <see cref="IServiceProvider" />.
     /// </summary>
-    protected static IServiceProvider ServiceProvider => _serviceProvider ?? throw new NullReferenceException("ServiceProvider is not set");
+    protected static IServiceProvider ServiceProvider => serviceProvider ?? throw new NullReferenceException("ServiceProvider is not set");
+
+    /// <summary>
+    ///     Gets the <see cref="IDalamudServices" />.
+    /// </summary>
+    protected static IDalamudServices DalamudServices => dalamudServices ?? throw new NullReferenceException("DalamudServices is not set");
+
+    /// <summary>
+    ///     Gets the <see cref="IChatManager" />.
+    /// </summary>
+    protected static IChatManager ChatManager => chatManager ?? throw new NullReferenceException("ChatManager is not set");
+
+    /// <summary>
+    ///     Gets the <see cref="MacroManager" />.
+    /// </summary>
+    protected static MacroManager MacroManager => macroManager ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
     ///     Gets the WaitModifier "wait" value.
@@ -87,10 +101,10 @@ internal abstract class MacroCommand
     /// <summary>
     ///     Setup the <see cref="IServiceProvider" /> for all commands.
     /// </summary>
-    /// <param name="serviceProvider">The <see cref="IServiceProvider" />.</param>
-    internal static void SetServiceProvider(IServiceProvider serviceProvider)
+    /// <param name="sp">The <see cref="IServiceProvider" />.</param>
+    internal static void SetServiceProvider(IServiceProvider sp)
     {
-        _serviceProvider = serviceProvider;
+        serviceProvider = sp;
         dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
         chatManager = serviceProvider.GetRequiredService<IChatManager>();
         macroManager = serviceProvider.GetRequiredService<MacroManager>();

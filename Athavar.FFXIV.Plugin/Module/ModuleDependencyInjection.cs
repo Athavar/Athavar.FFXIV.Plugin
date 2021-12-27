@@ -14,6 +14,7 @@ public static class ModuleDependencyInjection
         services.AddSingleton<MacroConfigTab>();
         services.AddSingleton<ConditionCheck>();
         services.AddSingleton<MacroManager>();
+        services.AddSingleton<MacroHelpWindow>();
 
         return services;
     }

@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
 using System;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     AddonRetainerTaskResult feature.
@@ -18,7 +19,7 @@ internal class AddonRetainerTaskResultFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonRetainerTaskResultFeature(YesModule module)
-        : base(module.AddressResolver.AddonRetainerTaskResultOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonRetainerTaskResultOnSetupAddress, module)
     {
     }
 
@@ -26,9 +27,16 @@ internal class AddonRetainerTaskResultFeature : OnSetupFeature
     protected override string AddonName => "RetainerTaskResult";
 
     /// <inheritdoc />
-    protected override void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
+    protected override unsafe void OnSetupImpl(IntPtr addon, uint a2, IntPtr data)
     {
         if (!this.Configuration.RetainerTaskResultEnabled)
+        {
+            return;
+        }
+
+        var addonPtr = (AddonRetainerTaskResult*)addon;
+        var buttonText = addonPtr->ReassignButton->ButtonTextNode->NodeText.ToString();
+        if (buttonText is "Recall" or "中断する" or "Zurückrufen" or "Interrompre")
         {
             return;
         }

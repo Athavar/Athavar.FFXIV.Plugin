@@ -73,6 +73,7 @@ internal class ClickCommand : MacroCommand
         }
         catch (Exception ex)
         {
+            PluginLog.Error(ex, "Unexpected click error");
             throw new MacroCommandError("Unexpected click error", ex);
         }
 

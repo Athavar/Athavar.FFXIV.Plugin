@@ -18,7 +18,7 @@ internal class AddonMaterializeDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonMaterializeDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonMaterializeDialongOnSetupAddress, module.Configuration)
+        : base(module.AddressResolver.AddonMaterializeDialogOnSetupAddress, module)
     {
     }
 

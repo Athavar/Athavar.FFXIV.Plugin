@@ -23,7 +23,7 @@ internal class AddonTalkFeature : UpdateFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonTalkFeature(YesModule module)
-        : base(module.AddressResolver.AddonTalkUpdateAddress, module.Configuration) =>
+        : base(module.AddressResolver.AddonTalkUpdateAddress, module) =>
         this.module = module;
 
     /// <inheritdoc />

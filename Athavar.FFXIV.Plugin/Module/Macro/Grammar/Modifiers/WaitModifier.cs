@@ -36,7 +36,9 @@ internal class WaitModifier : MacroModifier
     public static bool TryParse(ref string text, out WaitModifier command)
     {
         var match = Regex.Match(text);
-        if (!match.Success)
+        var success = match.Success;
+
+        if (!success)
         {
             command = new WaitModifier(0, 0);
             return false;
@@ -55,7 +57,7 @@ internal class WaitModifier : MacroModifier
 
         if (wait > until && until > 0)
         {
-            throw new ArgumentException("Wait value cannot be lower than the until value");
+            throw new ArgumentException("Until value cannot be lower than the wait value");
         }
 
         command = new WaitModifier(wait, until);

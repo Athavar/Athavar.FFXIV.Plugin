@@ -17,7 +17,6 @@ internal class HuntLinkDatastore : IDisposable
     private readonly IDalamudServices dalamudServices;
     // private readonly List<(int, MapLinkPayload)> Fates = new();
 
-
     public HuntLinkDatastore(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;

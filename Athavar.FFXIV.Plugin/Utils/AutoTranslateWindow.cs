@@ -89,7 +89,7 @@ internal class AutoTranslateWindow : Window
 
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
-                        bool selected = this.selectedId.Equals(id);
+                        var selected = this.selectedId.Equals(id);
                         if (ImGui.Selectable($"{groupName}[{groupId}]", ref selected, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick))
                         {
                             if (selected)
@@ -148,7 +148,7 @@ internal class AutoTranslateWindow : Window
             }
             else
             {
-                tmpList.AddRange(from c in excelSheet where c.Group == groupId && c.Key != 0 select (groupId, groupName, (uint)c.RowId, c.Text.RawString));
+                tmpList.AddRange(from c in excelSheet where c.Group == groupId && c.Key != 0 select (groupId, groupName, c.RowId, c.Text.RawString));
             }
         }
 

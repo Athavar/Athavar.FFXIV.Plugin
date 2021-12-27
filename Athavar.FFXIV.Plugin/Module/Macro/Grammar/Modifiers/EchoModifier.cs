@@ -3,18 +3,18 @@
 using System.Text.RegularExpressions;
 
 /// <summary>
-///     The &lt;unsafe&gt; modifier.
+///     The &lt;echo&gt; modifier.
 /// </summary>
-internal class UnsafeModifier : MacroModifier
+internal class EchoModifier : MacroModifier
 {
-    private static readonly Regex Regex = new(@"(?<modifier><unsafe>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex Regex = new(@"(?<modifier><echo>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private UnsafeModifier(bool isUnsafe) => this.IsUnsafe = isUnsafe;
+    private EchoModifier(bool echo) => this.PerformEcho = echo;
 
     /// <summary>
-    ///     Gets a value indicating whether the modifier was present.
+    ///     Gets a value indicating whether to perform an echo.
     /// </summary>
-    public bool IsUnsafe { get; }
+    public bool PerformEcho { get; }
 
     /// <summary>
     ///     Parse the text as a modifier.
@@ -22,7 +22,7 @@ internal class UnsafeModifier : MacroModifier
     /// <param name="text">Text to parse.</param>
     /// <param name="command">A parsed modifier.</param>
     /// <returns>A value indicating whether the modifier matched.</returns>
-    public static bool TryParse(ref string text, out UnsafeModifier command)
+    public static bool TryParse(ref string text, out EchoModifier command)
     {
         var match = Regex.Match(text);
         var success = match.Success;
@@ -33,7 +33,7 @@ internal class UnsafeModifier : MacroModifier
             text = text.Remove(group.Index, group.Length);
         }
 
-        command = new UnsafeModifier(success);
+        command = new EchoModifier(success);
         return success;
     }
 }

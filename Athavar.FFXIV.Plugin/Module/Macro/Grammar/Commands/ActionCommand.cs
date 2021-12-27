@@ -4,6 +4,7 @@
 
 namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,8 +14,10 @@ using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
+using Action = Lumina.Excel.GeneratedSheets.Action;
 
 /// <summary>
 ///     The /action command.
@@ -28,6 +31,7 @@ internal class ActionCommand : MacroCommand
 
     private readonly string actionName;
     private readonly bool safely;
+    private readonly string condition;
 
     static ActionCommand() => PopulateCraftingNames();
 
@@ -38,11 +42,13 @@ internal class ActionCommand : MacroCommand
     /// <param name="actionName">Action name.</param>
     /// <param name="wait">Wait value.</param>
     /// <param name="safely">Perform the action safely.</param>
-    private ActionCommand(string text, string actionName, WaitModifier wait, bool safely)
+    /// <param name="condition">Required crafting condition.</param>
+    private ActionCommand(string text, string actionName, WaitModifier wait, bool safely, string condition)
         : base(text, wait.Wait, wait.Until)
     {
         this.actionName = actionName.ToLowerInvariant();
         this.safely = safely;
+        this.condition = condition.ToLowerInvariant();
     }
 
     /// <summary>
@@ -54,6 +60,8 @@ internal class ActionCommand : MacroCommand
     {
         _ = WaitModifier.TryParse(ref text, out var waitModifier);
         var hasUnsafe = UnsafeModifier.TryParse(ref text, out var _);
+        _ = UnsafeModifier.TryParse(ref text, out var unsafeModifier);
+        _ = ConditionModifier.TryParse(ref text, out var conditionModifier);
 
         var match = Regex.Match(text);
         if (!match.Success)
@@ -63,7 +71,7 @@ internal class ActionCommand : MacroCommand
 
         var nameValue = ExtractAndUnquote(match, "name");
 
-        return new ActionCommand(text, nameValue, waitModifier, !hasUnsafe);
+        return new ActionCommand(text, nameValue, waitModifier, !unsafeModifier.IsUnsafe, conditionModifier.Condition);
     }
 
     /// <inheritdoc />
@@ -73,22 +81,28 @@ internal class ActionCommand : MacroCommand
 
         if (IsCraftingAction(this.actionName))
         {
+            if (!HasCondition(this.condition))
+            {
+                PluginLog.Debug($"Condition skip: {this.Text}");
+                return;
+            }
+
             const int delayWait = 500;
 
-            chatManager.SendMessage(this.Text);
+            ChatManager.SendMessage(this.Text);
 
             await this.PerformWait(token);
 
             // wait for crafting condition flag to exit.
             await Task.Delay(delayWait, token);
-            while (dalamudServices.Condition[ConditionFlag.Crafting40])
+            while (DalamudServices.Condition[ConditionFlag.Crafting40])
             {
                 await Task.Delay(10, token);
             }
         }
         else
         {
-            chatManager.SendMessage(this.Text);
+            ChatManager.SendMessage(this.Text);
 
             await this.PerformWait(token);
         }
@@ -96,6 +110,27 @@ internal class ActionCommand : MacroCommand
 
     private static bool IsCraftingAction(string name)
         => CraftingActionNames.Contains(name);
+
+    private static unsafe bool HasCondition(string condition)
+    {
+        if (condition == string.Empty)
+        {
+            return true;
+        }
+
+        var addon = DalamudServices.GameGui.GetAddonByName("Synthesis", 1);
+        if (addon == IntPtr.Zero)
+        {
+            throw new MacroCommandError("Could not find Synthesis addon");
+        }
+
+        var textPtrPtr = addon + 0x260;
+        var textPtr = *(AtkTextNode**)textPtrPtr;
+
+        var text = textPtr->NodeText.ToString().ToLowerInvariant();
+
+        return text == condition;
+    }
 
     private static void PopulateCraftingNames()
     {

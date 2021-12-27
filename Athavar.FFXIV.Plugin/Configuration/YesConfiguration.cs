@@ -3,12 +3,12 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
-
 namespace Athavar.FFXIV.Plugin;
 
 using System.Collections.Generic;
 using System.Linq;
 using Dalamud.Configuration;
+using Dalamud.Game.ClientState.Keys;
 using Newtonsoft.Json;
 
 /// <summary>
@@ -35,6 +35,22 @@ internal class YesConfiguration : IPluginConfiguration
     public TextFolderNode TalkRootFolder { get; } = new() { Name = "/" };
 
     /// <summary>
+    ///     Gets a value indicating whether the module is enabled with functionality.
+    /// </summary>
+    [JsonIgnore]
+    public bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
+
+    /// <summary>
+    ///     Gets or sets the hotkey to always click yes.
+    /// </summary>
+    public VirtualKey ForcedYesKey { get; set; } = VirtualKey.NO_KEY;
+
+    /// <summary>
+    ///     Gets or sets the hotkey to disable all functionality.
+    /// </summary>
+    public VirtualKey DisableKey { get; set; } = VirtualKey.NO_KEY;
+
+    /// <summary>
     ///     Gets or sets the configuration version.
     /// </summary>
     public int Version { get; set; } = 1;
@@ -48,12 +64,6 @@ internal class YesConfiguration : IPluginConfiguration
     ///     Gets or sets a value indicating whether the module functionality is enabled.
     /// </summary>
     public bool FunctionEnabled { get; set; } = false;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the module is enabled with functionality.
-    /// </summary>
-    [JsonIgnore]
-    public bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
 
     /// <summary>
     ///     Gets or sets a value indicating whether the desynth dialog setting is enabled.

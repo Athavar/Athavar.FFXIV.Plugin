@@ -36,11 +36,11 @@ public sealed class Plugin : IDalamudPlugin
     /// </summary>
     internal const string PluginName = "Athavar's Toolbox";
 
-    private IHostLifetime? hostLifetime;
-
     private readonly DalamudPluginInterface pluginInterface;
 
     private readonly CancellationTokenSource tokenSource;
+
+    private IHostLifetime? hostLifetime;
 
     private IHost? host;
 
@@ -53,28 +53,28 @@ public sealed class Plugin : IDalamudPlugin
         DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
-        this.tokenSource = new();
+        this.tokenSource = new CancellationTokenSource();
 
         _ = Task.Run(
             async () =>
-        {
-            Resolver.Initialize();
-
-            this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
-                            .ConfigureServices(this.ConfigureServices)
-                            .Build();
-
-            this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
-
-            try
             {
-                await this.host.StartAsync(this.tokenSource.Token);
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Error(ex, "Exception occured.");
-            }
-        },
+                Resolver.Initialize();
+
+                this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
+                                .ConfigureServices(this.ConfigureServices)
+                                .Build();
+
+                this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
+
+                try
+                {
+                    await this.host.StartAsync(this.tokenSource.Token);
+                }
+                catch (Exception ex)
+                {
+                    PluginLog.Error(ex, "Exception occured.");
+                }
+            },
             this.tokenSource.Token);
     }
 
@@ -145,7 +145,7 @@ public sealed class Plugin : IDalamudPlugin
             c.Setup(this.pluginInterface);
             return c;
         });
-        service.AddSingleton(o => new WindowSystem("Athavar's Toolbox"));
+        service.AddSingleton(() => new WindowSystem("Athavar's Toolbox"));
         service.AddSingleton<PluginAddressResolver>();
 
         service.AddSingleton<IChatManager, ChatManager>();
