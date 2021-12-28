@@ -70,11 +70,11 @@ internal class LoopCommand : MacroCommand
         {
             if (this.echo)
             {
-                DalamudServices.ChatGui.Print($"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
+                DalamudServices.ChatGui.Print(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
             }
 
             this.loopsRemaining--;
-            if (this.loopsRemaining <= 0)
+            if (this.loopsRemaining < 0)
             {
                 return;
             }
@@ -85,5 +85,6 @@ internal class LoopCommand : MacroCommand
         await this.PerformWait(token);
 
         MacroManager.LoopCheckForPause();
+        MacroManager.LoopCheckForStop();
     }
 }

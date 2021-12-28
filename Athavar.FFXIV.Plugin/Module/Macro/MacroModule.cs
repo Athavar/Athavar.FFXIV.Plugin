@@ -84,7 +84,29 @@ internal sealed class MacroModule : IModule, IDisposable
         }
         else if (arguments.StartsWith("run "))
         {
-            var macroName = arguments[9..].Trim().Trim('"');
+            arguments = arguments[4..].Trim();
+
+            var loopCount = 0u;
+            if (arguments.StartsWith("loop "))
+            {
+                arguments = arguments[5..].Trim();
+                var nextSpace = arguments.IndexOf(' ');
+                if (nextSpace == -1)
+                {
+                    this.chatManager.PrintErrorMessage("Could not determine loop count");
+                    return;
+                }
+
+                if (!uint.TryParse(arguments[..nextSpace], out loopCount))
+                {
+                    this.chatManager.PrintErrorMessage("Could not parse loop count");
+                    return;
+                }
+
+                arguments = arguments[(nextSpace + 1)..].Trim();
+            }
+
+            var macroName = arguments.Trim('"');
             var nodes = this.Configuration.GetAllNodes()
                             .OfType<MacroNode>()
                             .Where(node => node.Name.Trim() == macroName)
@@ -93,36 +115,78 @@ internal sealed class MacroModule : IModule, IDisposable
             if (nodes.Length == 0)
             {
                 this.chatManager.PrintErrorMessage("No macros match that name");
+                return;
             }
             else if (nodes.Length > 1)
             {
                 this.chatManager.PrintErrorMessage("More than one macro matches that name");
+                return;
+            }
+
+            var node = nodes[0];
+
+            if (loopCount > 0)
+            {
+                // Clone a new node so the modification doesn't save.
+                node = new MacroNode()
+                       {
+                           Name = node.Name,
+                           Contents = node.Contents,
+                       };
+
+                var lines = node.Contents.Split('\r', '\n');
+                for (var i = lines.Length - 1; i >= 0; i--)
+                {
+                    var line = lines[i].Trim();
+                    if (line.StartsWith("/loop"))
+                    {
+                        var parts = line.Split()
+                                        .Where(s => !string.IsNullOrEmpty(s))
+                                        .ToArray();
+
+                        var echo = line.Contains("<echo>") ? "<echo>" : string.Empty;
+                        lines[i] = $"/loop {loopCount} {echo}";
+                        node.Contents = string.Join('\n', lines);
+                        this.chatManager.PrintInformationMessage($"Running macro \"{macroName}\" {loopCount} times");
+                        break;
+                    }
+                }
             }
             else
             {
-                var node = nodes[0];
                 this.chatManager.PrintInformationMessage($"Running macro \"{macroName}\"");
-                this.macroManager.EnqueueMacro(node);
             }
+
+            this.macroManager.EnqueueMacro(node);
         }
-        else if (arguments.StartsWith("pause"))
+        else
         {
-            this.chatManager.PrintInformationMessage("Pausing");
-            this.macroManager.Pause();
-        }
-        else if (arguments.StartsWith("resume"))
-        {
-            this.chatManager.PrintInformationMessage("Resuming");
-            this.macroManager.Resume();
-        }
-        else if (arguments.StartsWith("stop"))
-        {
-            this.chatManager.PrintInformationMessage("Stopping");
-            this.macroManager.Clear();
-        }
-        else if (arguments.StartsWith("help"))
-        {
-            this.helpWindow.Toggle();
+            switch (arguments)
+            {
+                case "pause":
+                    this.chatManager.PrintInformationMessage("Pausing");
+                    this.macroManager.Pause();
+                    break;
+                case "pause loop":
+                    this.chatManager.PrintInformationMessage("Pausing at next /loop");
+                    this.macroManager.Pause(true);
+                    return;
+                case "resume":
+                    this.chatManager.PrintInformationMessage("Resuming");
+                    this.macroManager.Resume();
+                    break;
+                case "stop":
+                    this.chatManager.PrintInformationMessage("Stopping");
+                    this.macroManager.Stop();
+                    break;
+                case "stop loop":
+                    this.chatManager.PrintInformationMessage("Stopping at next /loop");
+                    this.macroManager.Stop(true);
+                    return;
+                case "help":
+                    this.helpWindow.Toggle();
+                    break;
+            }
         }
     }
 }

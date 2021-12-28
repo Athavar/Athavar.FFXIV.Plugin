@@ -32,6 +32,7 @@ internal class ActionCommand : MacroCommand
     private readonly string actionName;
     private readonly bool safely;
     private readonly string condition;
+    private readonly bool conditionNegated;
 
     static ActionCommand() => PopulateCraftingNames();
 
@@ -43,12 +44,14 @@ internal class ActionCommand : MacroCommand
     /// <param name="wait">Wait value.</param>
     /// <param name="safely">Perform the action safely.</param>
     /// <param name="condition">Required crafting condition.</param>
-    private ActionCommand(string text, string actionName, WaitModifier wait, bool safely, string condition)
+    /// <param name="conditionNegated">Negate the condition check.</param>
+    private ActionCommand(string text, string actionName, WaitModifier wait, bool safely, string condition, bool conditionNegated)
         : base(text, wait.Wait, wait.Until)
     {
         this.actionName = actionName.ToLowerInvariant();
         this.safely = safely;
         this.condition = condition.ToLowerInvariant();
+        this.conditionNegated = conditionNegated;
     }
 
     /// <summary>
@@ -71,7 +74,7 @@ internal class ActionCommand : MacroCommand
 
         var nameValue = ExtractAndUnquote(match, "name");
 
-        return new ActionCommand(text, nameValue, waitModifier, !unsafeModifier.IsUnsafe, conditionModifier.Condition);
+        return new ActionCommand(text, nameValue, waitModifier, !unsafeModifier.IsUnsafe, conditionModifier.Condition, conditionModifier.Negated);
     }
 
     /// <inheritdoc />
@@ -81,7 +84,7 @@ internal class ActionCommand : MacroCommand
 
         if (IsCraftingAction(this.actionName))
         {
-            if (!HasCondition(this.condition))
+            if (!HasCondition(this.condition, this.conditionNegated))
             {
                 PluginLog.Debug($"Condition skip: {this.Text}");
                 return;
@@ -111,7 +114,7 @@ internal class ActionCommand : MacroCommand
     private static bool IsCraftingAction(string name)
         => CraftingActionNames.Contains(name);
 
-    private static unsafe bool HasCondition(string condition)
+    private static unsafe bool HasCondition(string condition, bool negated)
     {
         if (condition == string.Empty)
         {
@@ -129,7 +132,9 @@ internal class ActionCommand : MacroCommand
 
         var text = textPtr->NodeText.ToString().ToLowerInvariant();
 
-        return text == condition;
+        return negated
+            ? text != condition
+            : text == condition;
     }
 
     private static void PopulateCraftingNames()

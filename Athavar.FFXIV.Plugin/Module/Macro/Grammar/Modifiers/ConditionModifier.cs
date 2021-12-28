@@ -7,14 +7,19 @@ using System.Text.RegularExpressions;
 /// </summary>
 internal class ConditionModifier : MacroModifier
 {
-    private static readonly Regex Regex = new(@"(?<modifier><condition\.(?<name>[a-zA-Z]+)>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex Regex = new(@"(?<modifier><condition\.(?<not>(not\.|\!))?(?<name>[a-zA-Z]+)>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private ConditionModifier(string condition) => this.Condition = condition;
+    private ConditionModifier(string condition, bool negated) => (this.Condition, this.Negated) = (condition, negated);
 
     /// <summary>
     ///     Gets the required condition name.
     /// </summary>
     public string Condition { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the condition check should be negated.
+    /// </summary>
+    public bool Negated { get; }
 
     /// <summary>
     ///     Parse the text as a modifier.
@@ -33,11 +38,13 @@ internal class ConditionModifier : MacroModifier
             text = text.Remove(group.Index, group.Length);
 
             var conditionName = match.Groups["name"].Value.ToLowerInvariant();
-            command = new ConditionModifier(conditionName);
+            var negated = match.Groups["not"].Success;
+
+            command = new ConditionModifier(conditionName, negated);
             return true;
         }
 
-        command = new ConditionModifier(string.Empty);
+        command = new ConditionModifier(string.Empty, false);
         return false;
     }
 }

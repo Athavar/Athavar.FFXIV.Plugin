@@ -61,6 +61,11 @@ internal partial class MacroManager : IDisposable
     /// </summary>
     public bool PauseAtLoop { get; private set; }
 
+    /// <summary>
+    /// Gets a value indicating whether the manager should stop at the next loop.
+    /// </summary>
+    public bool StopAtLoop { get; private set; } = false;
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -218,6 +223,7 @@ internal sealed partial class MacroManager
         if (pauseAtLoop)
         {
             this.PauseAtLoop ^= pauseAtLoop;
+            this.StopAtLoop = false;
         }
         else
         {
@@ -233,7 +239,7 @@ internal sealed partial class MacroManager
         if (this.PauseAtLoop)
         {
             this.PauseAtLoop = false;
-            this.pausedWaiter.Reset();
+            this.Pause(false);
         }
     }
 
@@ -241,6 +247,34 @@ internal sealed partial class MacroManager
     ///     Resume macro execution.
     /// </summary>
     public void Resume() => this.pausedWaiter.Set();
+    /// <summary>
+    /// Stop macro execution.
+    /// </summary>
+    /// <param name="stopAtLoop">Stop at the next loop instead.</param>
+    public void Stop(bool stopAtLoop = false)
+    {
+        if (stopAtLoop)
+        {
+            this.PauseAtLoop = false;
+            this.StopAtLoop ^= stopAtLoop;
+        }
+        else
+        {
+            this.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Stop at the next /loop.
+    /// </summary>
+    public void LoopCheckForStop()
+    {
+        if (this.StopAtLoop)
+        {
+            this.StopAtLoop = false;
+            this.Stop(false);
+        }
+    }
 
     /// <summary>
     ///     Loop the currently executing macro.

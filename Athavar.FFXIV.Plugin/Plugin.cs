@@ -145,7 +145,7 @@ public sealed class Plugin : IDalamudPlugin
             c.Setup(this.pluginInterface);
             return c;
         });
-        service.AddSingleton(() => new WindowSystem("Athavar's Toolbox"));
+        service.AddSingleton(_ => new WindowSystem("Athavar's Toolbox"));
         service.AddSingleton<PluginAddressResolver>();
 
         service.AddSingleton<IChatManager, ChatManager>();

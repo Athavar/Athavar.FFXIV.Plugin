@@ -315,6 +315,7 @@ internal class MacroConfigTab
                         {
                             LoopState.NotLoggedIn => "Not Logged In",
                             LoopState.Running when this.macroManager.PauseAtLoop => "Pausing Soon",
+                            LoopState.Running when this.macroManager.StopAtLoop => "Stopping Soon",
                             _ => Enum.GetName(state),
                         };
 
@@ -372,9 +373,10 @@ internal class MacroConfigTab
             }
 
             ImGui.SameLine();
-            if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Clear"))
+            if (ImGuiEx.IconButton(FontAwesomeIcon.Stop, "Stop (hold control to stop at next /loop)"))
             {
-                this.macroManager.Clear();
+                var ctrlHeld = ImGui.GetIO().KeyCtrl;
+                this.macroManager.Stop(ctrlHeld);
             }
         }
 
