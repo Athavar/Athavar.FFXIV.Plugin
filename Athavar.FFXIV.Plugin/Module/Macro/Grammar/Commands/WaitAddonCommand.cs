@@ -31,10 +31,10 @@ internal class WaitAddonCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="addonName">Addon name.</param>
-    /// <param name="wait">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="maxWait">MaxWait value.</param>
-    private WaitAddonCommand(string text, string addonName, WaitModifier wait, MaxWaitModifier maxWait)
-        : base(text, wait)
+    private WaitAddonCommand(string text, string addonName, WaitModifier waitMod, MaxWaitModifier maxWait)
+        : base(text, waitMod)
     {
         this.addonName = addonName;
         this.maxWait = maxWait.Wait == 0

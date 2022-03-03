@@ -7,16 +7,41 @@ namespace Athavar.FFXIV.Plugin;
 
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 /// <summary>
 ///     Macro Module configuration.
 /// </summary>
 internal class MacroConfiguration
 {
+    [JsonIgnore]
+    private Configuration? configuration;
+
     /// <summary>
     ///     Gets the root folder.
     /// </summary>
     public FolderNode RootFolder { get; } = new() { Name = "/" };
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to skip craft actions when not crafting.
+    /// </summary>
+    public bool CraftSkip { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
+    /// </summary>
+    public bool QualitySkip { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to count the /loop number as the total iterations, rather than the amount
+    ///     to loop.
+    /// </summary>
+    public bool LoopTotal { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to always echo /loop commands.
+    /// </summary>
+    public bool LoopEcho { get; set; } = false;
 
     /// <summary>
     ///     Gets or sets the configuration version.
@@ -27,6 +52,17 @@ internal class MacroConfiguration
     ///     Gets or sets a value indicating whether the plugin functionality is enabled.
     /// </summary>
     public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    ///     Save the configuration.
+    /// </summary>
+    public void Save() => this.configuration?.Save();
+
+    /// <summary>
+    ///     Setup <see cref="YesConfiguration" />.
+    /// </summary>
+    /// <param name="configuration">The <see cref="Configuration" />.</param>
+    internal void Setup(Configuration configuration) => this.configuration = configuration;
 
     /// <summary>
     ///     Get all nodes in the tree.

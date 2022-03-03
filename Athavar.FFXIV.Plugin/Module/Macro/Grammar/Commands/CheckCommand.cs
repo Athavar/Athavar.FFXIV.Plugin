@@ -35,10 +35,10 @@ internal class CheckCommand : MacroCommand
     /// <param name="text">Original text.</param>
     /// <param name="category">Condition category.</param>
     /// <param name="condition">Condition value.</param>
-    /// <param name="wait">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="maxWait">MaxWait value.</param>
-    private CheckCommand(string text, ConditionCheck.Category category, string condition, WaitModifier wait, MaxWaitModifier maxWait)
-        : base(text, wait)
+    private CheckCommand(string text, ConditionCheck.Category category, string condition, WaitModifier waitMod, MaxWaitModifier maxWait)
+        : base(text, waitMod)
     {
         this.category = category;
         this.condition = condition;

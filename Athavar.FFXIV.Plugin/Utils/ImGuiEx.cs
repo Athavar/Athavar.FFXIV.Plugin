@@ -16,13 +16,6 @@ internal static class ImGuiEx
     ///     Create an icon button.
     /// </summary>
     /// <param name="icon">Icon to display.</param>
-    /// <returns>A value indicating whether the button has been pressed.</returns>
-    public static bool IconButton(FontAwesomeIcon icon) => IconButton(icon);
-
-    /// <summary>
-    ///     Create an icon button.
-    /// </summary>
-    /// <param name="icon">Icon to display.</param>
     /// <param name="tooltip">Tooltip to display.</param>
     /// <param name="width">Width of the button.</param>
     /// <returns>A value indicating whether the button has been pressed.</returns>

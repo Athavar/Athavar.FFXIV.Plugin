@@ -29,9 +29,9 @@ internal class RunMacroCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="macroName">Macro name.</param>
-    /// <param name="wait">Wait value.</param>
-    private RunMacroCommand(string text, string macroName, WaitModifier wait)
-        : base(text, wait)
+    /// <param name="waitMod">Wait value.</param>
+    private RunMacroCommand(string text, string macroName, WaitModifier waitMod)
+        : base(text, waitMod)
     {
         this.macroName = macroName;
 

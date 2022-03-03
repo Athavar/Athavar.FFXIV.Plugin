@@ -4,6 +4,7 @@
 
 namespace Athavar.FFXIV.Plugin.Manager.Interface;
 
+using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 
 /// <summary>
@@ -15,13 +16,15 @@ internal interface IChatManager
     ///     Print a information message to the chat window.
     /// </summary>
     /// <param name="message">The message to print.</param>
-    void PrintInformationMessage(string message);
+    /// <param name="type">The chat type.</param>
+    void PrintChat(string message, XivChatType? type = null);
 
     /// <summary>
     ///     Print a information message to the chat window.
     /// </summary>
     /// <param name="message">Message to display.</param>
-    void PrintInformationMessage(SeString message);
+    /// <param name="type">The chat type.</param>
+    void PrintChat(SeString message, XivChatType? type = null);
 
     /// <summary>
     ///     Print an error message to the chat window.
@@ -42,4 +45,9 @@ internal interface IChatManager
     void SendMessage(string message);
 
     void SendMessage(SeString message);
+
+    /// <summary>
+    ///     Clear the queue of messages to send to the chat box.
+    /// </summary>
+    public void Clear();
 }

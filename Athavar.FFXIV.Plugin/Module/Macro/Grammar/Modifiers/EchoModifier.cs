@@ -34,6 +34,7 @@ internal class EchoModifier : MacroModifier
         }
 
         command = new EchoModifier(success);
+
         return success;
     }
 }

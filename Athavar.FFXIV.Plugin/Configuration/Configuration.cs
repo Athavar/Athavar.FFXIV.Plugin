@@ -72,5 +72,6 @@ internal class Configuration : IPluginConfiguration
         this.Macro ??= new MacroConfiguration();
 
         this.Yes.Setup(this);
+        this.Macro.Setup(this);
     }
 }

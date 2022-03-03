@@ -11,10 +11,10 @@ internal class WaitModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><wait\.(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private WaitModifier(int wait, int until)
+    private WaitModifier(int wait, int waitUntil)
     {
         this.Wait = wait;
-        this.Until = until;
+        this.WaitUntil = waitUntil;
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ internal class WaitModifier : MacroModifier
     /// <summary>
     ///     Gets the milliseconds to wait until.
     /// </summary>
-    public int Until { get; }
+    public int WaitUntil { get; }
 
     /// <summary>
     ///     Parse the text as a modifier.

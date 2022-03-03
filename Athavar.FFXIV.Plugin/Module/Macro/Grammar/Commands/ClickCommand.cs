@@ -30,9 +30,9 @@ internal class ClickCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="clickName">Click name.</param>
-    /// <param name="wait">Wait value.</param>
-    private ClickCommand(string text, string clickName, WaitModifier wait)
-        : base(text, wait)
+    /// <param name="waitMod">Wait value.</param>
+    private ClickCommand(string text, string clickName, WaitModifier waitMod)
+        : base(text, waitMod)
     {
         this.clickName = clickName;
         this.click = ServiceProvider.GetRequiredService<IClick>();

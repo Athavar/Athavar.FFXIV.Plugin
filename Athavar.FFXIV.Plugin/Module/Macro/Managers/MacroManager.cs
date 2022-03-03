@@ -103,6 +103,11 @@ internal partial class MacroManager : IDisposable
                 if (!this.loggedInWaiter.WaitOne(0))
                 {
                     this.State = LoopState.NotLoggedIn;
+
+                    if (this.macroStack.Any())
+                    {
+                        this.macroStack.Clear();
+                    }
                 }
 
                 // Wait to be logged in
@@ -139,13 +144,13 @@ internal partial class MacroManager : IDisposable
             }
             catch (OperationCanceledException)
             {
-                PluginLog.Verbose("Event loop has stopped");
+                PluginLog.Verbose("Event loop has been cancelled");
                 this.State = LoopState.Stopped;
                 break;
             }
             catch (ObjectDisposedException)
             {
-                PluginLog.Verbose("Event loop has stopped");
+                PluginLog.Verbose("Event loop has been disposed");
                 this.State = LoopState.Stopped;
                 break;
             }
@@ -222,12 +227,15 @@ internal sealed partial class MacroManager
     {
         if (pauseAtLoop)
         {
-            this.PauseAtLoop ^= pauseAtLoop;
+            this.PauseAtLoop ^= true;
             this.StopAtLoop = false;
         }
         else
         {
+            this.PauseAtLoop = false;
+            this.StopAtLoop = false;
             this.pausedWaiter.Reset();
+            this.chatManager.Clear();
         }
     }
 
@@ -238,7 +246,6 @@ internal sealed partial class MacroManager
     {
         if (this.PauseAtLoop)
         {
-            this.PauseAtLoop = false;
             this.Pause(false);
         }
     }
@@ -256,11 +263,15 @@ internal sealed partial class MacroManager
         if (stopAtLoop)
         {
             this.PauseAtLoop = false;
-            this.StopAtLoop ^= stopAtLoop;
+            this.StopAtLoop ^= true;
         }
         else
         {
-            this.Clear();
+            this.PauseAtLoop = false;
+            this.StopAtLoop = false;
+            this.pausedWaiter.Set();
+            this.macroStack.Clear();
+            this.chatManager.Clear();
         }
     }
 
@@ -279,18 +290,26 @@ internal sealed partial class MacroManager
     /// <summary>
     ///     Loop the currently executing macro.
     /// </summary>
-    public void Loop() => this.macroStack.Peek().Loop();
+    public void Loop()
+    {
+        if (this.macroStack.TryPeek(out var macro))
+        {
+            // While there should always be a macro present, the
+            // stack can be empty if it is cleared during a loop.
+            macro.Loop();
+        }
+    }
 
     /// <summary>
-    ///     Clear the executing macro list.
+    ///     Proceed to the next step.
     /// </summary>
-    public void Clear()
+    public void NextStep()
     {
-        this.macroStack.Clear();
-        this.pausedWaiter.Set();
-        if (!this.stepTokenSource?.IsCancellationRequested ?? false)
+        if (this.macroStack.TryPeek(out var macro))
         {
-            Task.Run(() => this.stepTokenSource?.Cancel());
+            // While there should always be a macro present, the
+            // stack can be empty if it is cleared during a loop.
+            macro.NextStep();
         }
     }
 

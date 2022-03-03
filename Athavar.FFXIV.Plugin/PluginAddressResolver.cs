@@ -6,6 +6,7 @@ namespace Athavar.FFXIV.Plugin;
 
 using System;
 using Dalamud.Game;
+using Dalamud.Logging;
 
 /// <summary>
 /// Resolver of in-game address.
@@ -166,5 +167,9 @@ public class PluginAddressResolver : BaseAddressResolver
         this.EventFrameworkAddress = scanner.GetStaticAddressFromSig(EventFrameworkSignature) + 1;
         this.EventFrameworkFunctionAddress = scanner.ScanText(EventFrameworkFunctionSignature);
         this.SendChatAddress = scanner.ScanText(SendChatSignature);
+
+        PluginLog.Verbose($"{nameof(this.SendChatAddress)} {this.SendChatAddress:X}");
+        PluginLog.Verbose($"{nameof(this.EventFrameworkAddress)} {this.EventFrameworkAddress:X}");
+        PluginLog.Verbose($"{nameof(this.EventFrameworkFunctionAddress)} {this.EventFrameworkFunctionAddress:X}");
     }
 }

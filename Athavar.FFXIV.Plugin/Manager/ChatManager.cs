@@ -58,13 +58,24 @@ internal class ChatManager : IDisposable, IChatManager
     }
 
     /// <inheritdoc />
-    public void PrintInformationMessage(string message) => this.dalamud.ChatGui.Print($"[{Plugin.PluginName}] {message}");
+    public void PrintChat(string message, XivChatType? type = null) => this.PrintChat((SeString)message, type);
 
     /// <inheritdoc />
-    public void PrintInformationMessage(SeString message)
+    public void PrintChat(SeString message, XivChatType? type = null)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
-        this.dalamud.ChatGui.Print(message);
+        if (type is not null)
+        {
+            this.dalamud.ChatGui.PrintChat(new XivChatEntry
+                                           {
+                                               Message = message,
+                                               Type = type.Value,
+                                           });
+        }
+        else
+        {
+            this.dalamud.ChatGui.Print(message);
+        }
     }
 
     /// <inheritdoc />
@@ -82,6 +93,15 @@ internal class ChatManager : IDisposable, IChatManager
 
     /// <inheritdoc />
     public async void SendMessage(SeString message) => await this.chatBoxMessages.Writer.WriteAsync(message);
+
+    /// <inheritdoc />
+    public void Clear()
+    {
+        var reader = this.chatBoxMessages.Reader;
+        while (reader.Count > 0 && reader.TryRead(out var _))
+        {
+        }
+    }
 
     private void FrameworkUpdate(Framework framework)
     {

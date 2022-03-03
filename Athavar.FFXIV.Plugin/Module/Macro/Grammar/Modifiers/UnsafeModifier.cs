@@ -34,6 +34,7 @@ internal class UnsafeModifier : MacroModifier
         }
 
         command = new UnsafeModifier(success);
+
         return success;
     }
 }

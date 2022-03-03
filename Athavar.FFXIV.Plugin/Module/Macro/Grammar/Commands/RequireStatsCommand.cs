@@ -31,10 +31,10 @@ internal class RequireStatsCommand : MacroCommand
     /// <param name="craftsmanship">Craftsmanship value.</param>
     /// <param name="control">Control value.</param>
     /// <param name="cp">Cp value.</param>
-    /// <param name="wait">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="maxWait">MaxWait value.</param>
-    private RequireStatsCommand(string text, uint craftsmanship, uint control, uint cp, WaitModifier wait, MaxWaitModifier maxWait)
-        : base(text, wait)
+    private RequireStatsCommand(string text, uint craftsmanship, uint control, uint cp, WaitModifier waitMod, MaxWaitModifier maxWait)
+        : base(text, waitMod)
     {
         this.requiredCraftsmanship = craftsmanship;
         this.requiredControl = control;

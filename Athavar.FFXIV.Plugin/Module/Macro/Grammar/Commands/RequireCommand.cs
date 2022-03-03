@@ -32,10 +32,10 @@ internal class RequireCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="statusName">Status name.</param>
-    /// <param name="wait">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="maxWait">MaxWait value.</param>
-    private RequireCommand(string text, string statusName, WaitModifier wait, MaxWaitModifier maxWait)
-        : base(text, wait)
+    private RequireCommand(string text, string statusName, WaitModifier waitMod, MaxWaitModifier maxWait)
+        : base(text, waitMod)
     {
         statusName = statusName.ToLowerInvariant();
         var sheet = DalamudServices.DataManager.GetExcelSheet<Status>()!;

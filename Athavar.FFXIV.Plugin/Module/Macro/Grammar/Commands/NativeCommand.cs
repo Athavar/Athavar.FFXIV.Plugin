@@ -14,9 +14,9 @@ internal class NativeCommand : MacroCommand
     ///     Initializes a new instance of the <see cref="NativeCommand" /> class.
     /// </summary>
     /// <param name="text">Original text.</param>
-    /// <param name="wait">Wait value.</param>
-    private NativeCommand(string text, WaitModifier wait)
-        : base(text, wait)
+    /// <param name="waitMod">Wait value.</param>
+    private NativeCommand(string text, WaitModifier waitMod)
+        : base(text, waitMod)
     {
     }
 

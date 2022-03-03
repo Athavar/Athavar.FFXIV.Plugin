@@ -5,7 +5,9 @@
 namespace Athavar.FFXIV.Plugin.Module.Macro;
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using Athavar.FFXIV.Plugin.Lib.ClickLib;
 using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
@@ -71,7 +73,7 @@ internal class MacroHelpWindow : Window
             }),
         (
             "send", null,
-            "Send an arbitrary keystroke. You can discover the valid names by using the \"KeyState\" view inside the \"/xldata\" window.",
+            "Send an arbitrary keystroke.",
             new[] { "wait" },
             new[]
             {
@@ -162,19 +164,26 @@ internal class MacroHelpWindow : Window
         ("stop loop", "Clear the currently executing macro list at the next /loop.", null),
     };
 
+    private readonly IList<string> clickNames;
+    private readonly MacroConfiguration configuration;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroHelpWindow" /> class.
     /// </summary>
     /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
-    public MacroHelpWindow(WindowSystem windowSystem)
+    /// <param name="click"><see cref="IClick" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    public MacroHelpWindow(WindowSystem windowSystem, IClick click, Configuration configuration)
         : base($"{Plugin.PluginName} Macro Help")
     {
+        this.configuration = configuration.Macro!;
         this.Flags |= ImGuiWindowFlags.NoScrollbar;
 
         this.Size = new Vector2(400, 600);
         this.SizeCondition = ImGuiCond.FirstUseEver;
         this.RespectCloseHotkey = false;
 
+        this.clickNames = click.GetClickNames();
         windowSystem.AddWindow(this);
     }
 
@@ -183,43 +192,89 @@ internal class MacroHelpWindow : Window
     {
         if (ImGui.BeginTabBar("HelpTab"))
         {
-            if (ImGui.BeginTabItem("Commands"))
+            var tabs = new (string Title, Action Dele)[]
+                       {
+                           ("Options", this.DrawOptions),
+                           ("Commands", this.DrawCommands),
+                           ("Modifiers", this.DrawModifiers),
+                           ("CLI", this.DrawCli),
+                           ("Clicks", this.DrawClicks),
+                           ("Sends", this.DrawVirtualKeys),
+                       };
+
+            foreach (var (title, dele) in tabs)
             {
-                ImGui.BeginChild("scrolling", new Vector2(0, -1), false);
-
-                this.DrawCommands();
-
-                ImGui.EndChild();
-
-                ImGui.EndTabItem();
-            }
-
-            if (ImGui.BeginTabItem("Modifiers"))
-            {
-                ImGui.BeginChild("scrolling", new Vector2(0, -1), false);
-
-                this.DrawModifiers();
-
-                ImGui.EndChild();
-
-                ImGui.EndTabItem();
-            }
-
-            if (ImGui.BeginTabItem("CLI"))
-            {
-                ImGui.BeginChild("scrolling", new Vector2(0, -1), false);
-
-                this.DrawCli();
-
-                ImGui.EndChild();
-
-                ImGui.EndTabItem();
+                if (ImGui.BeginTabItem(title))
+                {
+                    ImGui.BeginChild("scrolling", new Vector2(0, -1), false);
+                    dele();
+                    ImGui.EndChild();
+                    ImGui.EndTabItem();
+                }
             }
 
             ImGui.EndTabBar();
         }
 
         ImGui.EndChild();
+    }
+
+    private void DrawOptions()
+    {
+        ImGui.PushFont(UiBuilder.MonoFont);
+        {
+            var craftSkip = this.configuration.CraftSkip;
+            if (ImGui.Checkbox("Craft Skip", ref craftSkip))
+            {
+                this.configuration.CraftSkip = craftSkip;
+                this.configuration.Save();
+            }
+
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+            ImGui.TextWrapped("- Skip craft actions when not crafting.");
+            ImGui.PopStyleColor();
+        }
+
+        {
+            var qualitySkip = this.configuration.QualitySkip;
+            if (ImGui.Checkbox("Quality Skip", ref qualitySkip))
+            {
+                this.configuration.QualitySkip = qualitySkip;
+                this.configuration.Save();
+            }
+
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+            ImGui.TextWrapped("- Skip quality increasing actions when the HQ chance is at 100%. If you depend on durability increases from Manipulation towards the end of your macro, you will likely want to disable this.");
+            ImGui.PopStyleColor();
+        }
+
+        {
+            var loopTotal = this.configuration.LoopTotal;
+            if (ImGui.Checkbox("Loop Total", ref loopTotal))
+            {
+                this.configuration.LoopTotal = loopTotal;
+                this.configuration.Save();
+            }
+
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+            ImGui.TextWrapped("- The numeric option provided to /loop will be considered as the total number of iterations, rather than the amount of times to loop. Internally, this will just subtract 1 from your /loop <amount> command.");
+            ImGui.PopStyleColor();
+        }
+
+        {
+            var loopEcho = this.configuration.LoopEcho;
+            if (ImGui.Checkbox("Loop Echo", ref loopEcho))
+            {
+                this.configuration.LoopEcho = loopEcho;
+                this.configuration.Save();
+            }
+
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+            ImGui.TextWrapped("- Loop commands will always have an <echo> tag applied.");
+            ImGui.PopStyleColor();
+        }
+
+        ImGui.PopFont();
     }
 
     private void DrawCommands()
@@ -254,6 +309,34 @@ internal class MacroHelpWindow : Window
             ImGui.PopStyleColor();
 
             ImGui.Separator();
+        }
+
+        ImGui.PopFont();
+    }
+
+    private void DrawClicks()
+    {
+        ImGui.PushFont(UiBuilder.MonoFont);
+
+        foreach (var name in this.clickNames)
+        {
+            ImGui.Text($"/click {name}");
+        }
+
+        ImGui.PopFont();
+    }
+
+    private void DrawVirtualKeys()
+    {
+        ImGui.PushFont(UiBuilder.MonoFont);
+
+        var names = Enum.GetNames<Native.KeyCode>();
+
+        for (var i = 0; i < names.Length; i++)
+        {
+            var name = names[i];
+
+            ImGui.Text($"/send {name}");
         }
 
         ImGui.PopFont();

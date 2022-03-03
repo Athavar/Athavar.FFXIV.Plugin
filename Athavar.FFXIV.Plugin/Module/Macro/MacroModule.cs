@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
+using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Dalamud.Game.Command;
 using Dalamud.Logging;
@@ -40,6 +41,7 @@ internal sealed class MacroModule : IModule, IDisposable
     public MacroModule(IModuleManager moduleManager, IServiceProvider provider)
     {
         MacroCommand.SetServiceProvider(provider);
+        MacroModifier.SetServiceProvider(provider);
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
         this.macroManager = provider.GetRequiredService<MacroManager>();
@@ -147,14 +149,14 @@ internal sealed class MacroModule : IModule, IDisposable
                         var echo = line.Contains("<echo>") ? "<echo>" : string.Empty;
                         lines[i] = $"/loop {loopCount} {echo}";
                         node.Contents = string.Join('\n', lines);
-                        this.chatManager.PrintInformationMessage($"Running macro \"{macroName}\" {loopCount} times");
+                        this.chatManager.PrintChat($"Running macro \"{macroName}\" {loopCount} times");
                         break;
                     }
                 }
             }
             else
             {
-                this.chatManager.PrintInformationMessage($"Running macro \"{macroName}\"");
+                this.chatManager.PrintChat($"Running macro \"{macroName}\"");
             }
 
             this.macroManager.EnqueueMacro(node);
@@ -164,23 +166,23 @@ internal sealed class MacroModule : IModule, IDisposable
             switch (arguments)
             {
                 case "pause":
-                    this.chatManager.PrintInformationMessage("Pausing");
+                    this.chatManager.PrintChat("Pausing");
                     this.macroManager.Pause();
                     break;
                 case "pause loop":
-                    this.chatManager.PrintInformationMessage("Pausing at next /loop");
+                    this.chatManager.PrintChat("Pausing at next /loop");
                     this.macroManager.Pause(true);
                     return;
                 case "resume":
-                    this.chatManager.PrintInformationMessage("Resuming");
+                    this.chatManager.PrintChat("Resuming");
                     this.macroManager.Resume();
                     break;
                 case "stop":
-                    this.chatManager.PrintInformationMessage("Stopping");
+                    this.chatManager.PrintChat("Stopping");
                     this.macroManager.Stop();
                     break;
                 case "stop loop":
-                    this.chatManager.PrintInformationMessage("Stopping at next /loop");
+                    this.chatManager.PrintChat("Stopping at next /loop");
                     this.macroManager.Stop(true);
                     return;
                 case "help":

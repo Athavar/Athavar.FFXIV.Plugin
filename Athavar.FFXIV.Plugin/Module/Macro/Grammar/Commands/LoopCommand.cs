@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
+using Dalamud.Game.Text;
 using Dalamud.Logging;
 
 /// <summary>
@@ -20,7 +21,8 @@ internal class LoopCommand : MacroCommand
     private const int MaxLoops = int.MaxValue;
     private static readonly Regex Regex = new(@"^/loop(?:\s+(?<count>\d+))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private readonly bool echo;
+    private readonly EchoModifier echoMod;
+    private readonly int startingLoops;
     private int loopsRemaining;
 
     /// <summary>
@@ -28,13 +30,20 @@ internal class LoopCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="loopCount">Loop count.</param>
-    /// <param name="wait">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="echo">Echo value.</param>
-    private LoopCommand(string text, int loopCount, WaitModifier wait, EchoModifier echo)
-        : base(text, wait)
+    private LoopCommand(string text, int loopCount, WaitModifier waitMod, EchoModifier echo)
+        : base(text, waitMod)
     {
         this.loopsRemaining = loopCount >= 0 ? loopCount : MaxLoops;
-        this.echo = echo.PerformEcho;
+        this.startingLoops = this.loopsRemaining;
+
+        if (Configuration.LoopTotal && this.loopsRemaining != 0 && this.loopsRemaining != MaxLoops)
+        {
+            this.loopsRemaining -= 1;
+        }
+
+        this.echoMod = echo;
     }
 
     /// <summary>
@@ -68,14 +77,16 @@ internal class LoopCommand : MacroCommand
 
         if (this.loopsRemaining != MaxLoops)
         {
-            if (this.echo)
+            if (this.echoMod.PerformEcho || Configuration.LoopEcho)
             {
-                DalamudServices.ChatGui.Print(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
+                ChatManager.PrintChat(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining", XivChatType.Echo);
             }
 
             this.loopsRemaining--;
+
             if (this.loopsRemaining < 0)
             {
+                this.loopsRemaining = this.startingLoops;
                 return;
             }
         }

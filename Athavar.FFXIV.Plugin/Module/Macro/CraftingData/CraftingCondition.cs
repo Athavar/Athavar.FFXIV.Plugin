@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Module.Macro.CraftingData;
 /// <summary>
 ///     Crafting condition types.
 /// </summary>
-internal enum CraftingCondition
+internal enum CraftingCondition : uint
 {
     /// <summary>
     ///     Normal condition.

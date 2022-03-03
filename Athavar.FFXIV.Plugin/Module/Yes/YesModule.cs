@@ -353,7 +353,7 @@ internal sealed class YesModule : IModule, IDisposable
         sb.AppendLine($"{Command} lasttalk - Add the last seen target during a Talk dialog.");
         sb.AppendLine($"{Command} dutyconfirm - Toggle duty confirm.");
         sb.AppendLine($"{Command} onetimeconfirm - Toggles duty confirm as well as one-time confirm.");
-        this.ChatManager.PrintInformationMessage(sb.ToString());
+        this.ChatManager.PrintChat(sb.ToString());
     }
 
     private void CommandAddNode(bool zoneRestricted, bool createFolder, bool selectNo)
@@ -369,7 +369,7 @@ internal sealed class YesModule : IModule, IDisposable
         this.CreateTextNode(this.Configuration.RootFolder, zoneRestricted, createFolder, selectNo);
         this.Configuration.Save();
 
-        this.ChatManager.PrintInformationMessage("Added a new text entry.");
+        this.ChatManager.PrintChat("Added a new text entry.");
     }
 
     private void CommandAddListNode()
@@ -395,7 +395,7 @@ internal sealed class YesModule : IModule, IDisposable
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
-        this.ChatManager.PrintInformationMessage("Added a new list entry.");
+        this.ChatManager.PrintChat("Added a new list entry.");
     }
 
     private void CommandAddTalkNode()
@@ -414,7 +414,7 @@ internal sealed class YesModule : IModule, IDisposable
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
-        this.ChatManager.PrintInformationMessage("Added a new talk entry.");
+        this.ChatManager.PrintChat("Added a new talk entry.");
     }
 
     private void ToggleDutyConfirm()
@@ -424,7 +424,7 @@ internal sealed class YesModule : IModule, IDisposable
         this.Configuration.Save();
 
         var state = this.Configuration.ContentsFinderConfirmEnabled ? "enabled" : "disabled";
-        this.ChatManager.PrintInformationMessage($"Duty Confirm {state}.");
+        this.ChatManager.PrintChat($"Duty Confirm {state}.");
     }
 
     private void ToggleOneTimeConfirm()
@@ -434,6 +434,6 @@ internal sealed class YesModule : IModule, IDisposable
         this.Configuration.Save();
 
         var state = this.Configuration.ContentsFinderOneTimeConfirmEnabled ? "enabled" : "disabled";
-        this.ChatManager.PrintInformationMessage($"Duty Confirm and One Time Confirm {state}.");
+        this.ChatManager.PrintChat($"Duty Confirm and One Time Confirm {state}.");
     }
 }

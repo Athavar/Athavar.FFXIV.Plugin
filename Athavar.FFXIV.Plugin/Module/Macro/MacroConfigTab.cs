@@ -358,9 +358,15 @@ internal class MacroConfigTab
             }
 
             ImGui.SameLine();
+            if (ImGuiEx.IconButton(FontAwesomeIcon.StepForward, "Step"))
+            {
+                this.macroManager.NextStep();
+            }
+
+            ImGui.SameLine();
             if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Clear"))
             {
-                this.macroManager.Clear();
+                this.macroManager.Stop();
             }
         }
         else if (this.macroManager.State == LoopState.Running)
@@ -368,14 +374,18 @@ internal class MacroConfigTab
             ImGui.SameLine();
             if (ImGuiEx.IconButton(FontAwesomeIcon.Pause, "Pause (hold control to pause at next /loop)"))
             {
-                var ctrlHeld = ImGui.GetIO().KeyCtrl;
+                var io = ImGui.GetIO();
+                var ctrlHeld = io.KeyCtrl;
+
                 this.macroManager.Pause(ctrlHeld);
             }
 
             ImGui.SameLine();
             if (ImGuiEx.IconButton(FontAwesomeIcon.Stop, "Stop (hold control to stop at next /loop)"))
             {
-                var ctrlHeld = ImGui.GetIO().KeyCtrl;
+                var io = ImGui.GetIO();
+                var ctrlHeld = io.KeyCtrl;
+
                 this.macroManager.Stop(ctrlHeld);
             }
         }

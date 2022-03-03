@@ -24,14 +24,15 @@ internal abstract class MacroCommand
     private static IDalamudServices? dalamudServices;
     private static IChatManager? chatManager;
     private static MacroManager? macroManager;
+    private static MacroConfiguration? configuration;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroCommand" /> class.
     /// </summary>
     /// <param name="text">Original line text.</param>
-    /// <param name="wait">Wait value.</param>
-    protected MacroCommand(string text, WaitModifier wait)
-        : this(text, wait.Wait, wait.Until)
+    /// <param name="waitMod">Wait value.</param>
+    protected MacroCommand(string text, WaitModifier waitMod)
+        : this(text, waitMod.Wait, waitMod.WaitUntil)
     {
     }
 
@@ -46,11 +47,6 @@ internal abstract class MacroCommand
         this.Text = text;
         this.Wait = wait;
         this.WaitUntil = until;
-
-        if (this.WaitUntil > 0 && this.WaitUntil < this.Wait)
-        {
-            throw new ArgumentException("WaitUntil must not be larger than the Wait value");
-        }
     }
 
     /// <summary>
@@ -79,12 +75,17 @@ internal abstract class MacroCommand
     protected static MacroManager MacroManager => macroManager ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
-    ///     Gets the WaitModifier "wait" value.
+    ///     Gets the <see cref="MacroManager" />.
+    /// </summary>
+    protected static MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
+
+    /// <summary>
+    ///     Gets the milliseconds to wait.
     /// </summary>
     protected int Wait { get; }
 
     /// <summary>
-    ///     Gets the WaitModifier "waitUntil" value.
+    ///     Gets the milliseconds to wait until.
     /// </summary>
     protected int WaitUntil { get; }
 
@@ -108,6 +109,7 @@ internal abstract class MacroCommand
         dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
         chatManager = serviceProvider.GetRequiredService<IChatManager>();
         macroManager = serviceProvider.GetRequiredService<MacroManager>();
+        configuration = serviceProvider.GetRequiredService<Configuration>().Macro!;
     }
 
     /// <summary>
@@ -136,42 +138,23 @@ internal abstract class MacroCommand
     /// <param name="token">Cancellation token.</param>
     /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
     protected async Task PerformWait(CancellationToken token)
-        => await this.PerformWait(this.Wait, this.WaitUntil, token);
-
-    /// <summary>
-    ///     Perform a wait.
-    /// </summary>
-    /// <param name="wait">Seconds to wait.</param>
-    /// <param name="token">Cancellation token.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
-    protected async Task PerformWait(int wait, CancellationToken token)
-        => await this.PerformWait(wait, 0, token);
-
-    /// <summary>
-    ///     Perform a wait.
-    /// </summary>
-    /// <param name="wait">Seconds to wait.</param>
-    /// <param name="until">Max seconds to wait.</param>
-    /// <param name="token">Cancellation token.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
-    protected async Task PerformWait(int wait, int until, CancellationToken token)
     {
-        if (wait == 0 && until == 0)
+        if (this.Wait == 0 && this.WaitUntil == 0)
         {
             return;
         }
 
         TimeSpan sleep;
-        if (until == 0)
+        if (this.WaitUntil == 0)
         {
-            sleep = TimeSpan.FromMilliseconds(wait);
+            sleep = TimeSpan.FromMilliseconds(this.Wait);
             PluginLog.Debug($"Sleeping for {sleep.TotalMilliseconds} millis");
         }
         else
         {
-            var value = Rand.Next(wait, until);
+            var value = Rand.Next(this.Wait, this.WaitUntil);
             sleep = TimeSpan.FromMilliseconds(value);
-            PluginLog.Debug($"Sleeping for {sleep.TotalMilliseconds} millis ({wait} to {until})");
+            PluginLog.Debug($"Sleeping for {sleep.TotalMilliseconds} millis ({this.Wait} to {this.WaitUntil})");
         }
 
         await Task.Delay(sleep, token);
@@ -202,6 +185,37 @@ internal abstract class MacroCommand
             if (totalWait > until)
             {
                 return (result, false);
+            }
+
+            await Task.Delay(interval, token);
+        }
+    }
+
+    /// <summary>
+    ///     Perform an action every <paramref name="interval" /> seconds until either the action succeeds or
+    ///     <paramref name="until" /> seconds elapse.
+    /// </summary>
+    /// <param name="interval">Action execution interval.</param>
+    /// <param name="until">Maximum time to wait.</param>
+    /// <param name="action">Action to execute.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>A value indicating whether the action succeeded.</returns>
+    /// <typeparam name="T">Result type.</typeparam>
+    protected async Task<bool> LinearWait<T>(int interval, int until, Func<bool> action, CancellationToken token)
+    {
+        var totalWait = 0;
+        while (true)
+        {
+            var success = action();
+            if (success)
+            {
+                return true;
+            }
+
+            totalWait += interval;
+            if (totalWait > until)
+            {
+                return false;
             }
 
             await Task.Delay(interval, token);

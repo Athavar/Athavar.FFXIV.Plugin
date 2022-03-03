@@ -112,7 +112,7 @@ internal class YesConfigTab
             {
                 this.debugClickName ??= string.Empty;
                 this.click.SendClick(this.debugClickName.Trim());
-                this.chatManager.PrintInformationMessage($"Clicked {this.debugClickName} successfully.");
+                this.chatManager.PrintChat($"Clicked {this.debugClickName} successfully.");
             }
             catch (ClickNotFoundError ex)
             {
