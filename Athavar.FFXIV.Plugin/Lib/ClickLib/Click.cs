@@ -56,6 +56,9 @@ internal class Click : IClick
         }
     }
 
+    /// <inheritdoc />
+    public IList<string> GetClickNames() => this.availableClicks.Keys.ToList();
+
     /// <summary>
     ///     Load the mapping of click names.
     /// </summary>

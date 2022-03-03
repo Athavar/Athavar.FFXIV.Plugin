@@ -1,6 +1,7 @@
 ﻿namespace Athavar.FFXIV.Plugin.Lib.ClickLib;
 
 using System;
+using System.Collections.Generic;
 
 /// <summary>
 ///     Defines methods to send clicks to FFXIV UI elements.
@@ -21,4 +22,10 @@ public interface IClick
     /// <param name="addon">Pointer to an existing addon.</param>
     /// <returns>A value indicating whether the delegate was successfully called.</returns>
     bool TrySendClick(string name, IntPtr addon = default);
+
+    /// <summary>
+    ///     Get a list of available click strings that can be used with SendClick.
+    /// </summary>
+    /// <returns>A list of click names.</returns>
+    public IList<string> GetClickNames();
 }

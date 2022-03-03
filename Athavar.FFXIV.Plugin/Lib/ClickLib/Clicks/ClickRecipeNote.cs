@@ -41,6 +41,12 @@ public sealed unsafe class ClickRecipeNote : ClickAddonBase<AddonRecipeNote>
     public void Synthesize() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->SynthesizeButton, 13);
 
     /// <summary>
+    ///     Click the quick synthesis button.
+    /// </summary>
+    [ClickName("quick_synthesis")]
+    public void QuickSynthesis() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->QuickSynthesisButton, 14);
+
+    /// <summary>
     ///     Click the trial synthesis button.
     /// </summary>
     [ClickName("trial_synthesis")]
