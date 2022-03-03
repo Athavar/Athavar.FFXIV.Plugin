@@ -168,39 +168,76 @@ internal sealed class YesModule : IModule, IDisposable
     public void Enable(bool state = true) => this.Configuration.ModuleEnabled = state;
 
     /// <summary>
-    ///     Read an SeString.
+    ///     Create a new node with various options.
     /// </summary>
-    /// <param name="textPtr">SeString address.</param>
-    /// <returns>The SeString.</returns>
-    internal unsafe SeString GetSeString(byte* textPtr)
-        =>
-            this.GetSeString((IntPtr)textPtr);
+    /// <param name="folder">Folder to place the node in.</param>
+    /// <param name="zoneRestricted">Create the node restricted to the current zone.</param>
+    /// <param name="createFolder">Create a zone named subfolder.</param>
+    /// <param name="selectNo">Select no instead.</param>
+    public void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
+    {
+        var newNode = new TextEntryNode { Enabled = true, Text = this.LastSeenDialogText };
+        var chosenFolder = folder;
+
+        if (zoneRestricted || createFolder)
+        {
+            var currentId = this.DalamudServices.ClientState.TerritoryType;
+            if (!this.TerritoryNames.TryGetValue(currentId, out var zoneName))
+            {
+                return;
+            }
+
+            newNode.ZoneRestricted = true;
+            newNode.ZoneText = zoneName;
+        }
+
+        if (createFolder)
+        {
+            var zoneName = newNode.ZoneText;
+
+            chosenFolder = folder.Children.OfType<TextFolderNode>().FirstOrDefault(node => node.Name == zoneName);
+            if (chosenFolder == default)
+            {
+                chosenFolder = new TextFolderNode { Name = zoneName };
+                folder.Children.Add(chosenFolder);
+            }
+        }
+
+        if (selectNo)
+        {
+            newNode.IsYes = false;
+        }
+
+        chosenFolder.Children.Add(newNode);
+    }
 
     /// <summary>
     ///     Read an SeString.
     /// </summary>
     /// <param name="textPtr">SeString address.</param>
     /// <returns>The SeString.</returns>
-    internal SeString GetSeString(IntPtr textPtr)
-        => MemoryHelper.ReadSeStringNullTerminated(textPtr);
+    internal unsafe SeString GetSeString(byte* textPtr) => this.GetSeString((IntPtr)textPtr);
+
+    /// <summary>
+    ///     Read an SeString.
+    /// </summary>
+    /// <param name="textPtr">SeString address.</param>
+    /// <returns>The SeString.</returns>
+    internal SeString GetSeString(IntPtr textPtr) => MemoryHelper.ReadSeStringNullTerminated(textPtr);
 
     /// <summary>
     ///     Read the text of an SeString.
     /// </summary>
     /// <param name="textPtr">SeString address.</param>
     /// <returns>The SeString.</returns>
-    internal unsafe string GetSeStringText(byte* textPtr)
-        =>
-            this.GetSeStringText(this.GetSeString(textPtr));
+    internal unsafe string GetSeStringText(byte* textPtr) => this.GetSeStringText(this.GetSeString(textPtr));
 
     /// <summary>
     ///     Read the text of an SeString.
     /// </summary>
     /// <param name="textPtr">SeString address.</param>
     /// <returns>The SeString.</returns>
-    internal string GetSeStringText(IntPtr textPtr)
-        =>
-            this.GetSeStringText(this.GetSeString(textPtr));
+    internal string GetSeStringText(IntPtr textPtr) => this.GetSeStringText(this.GetSeString(textPtr));
 
     /// <summary>
     ///     Read the text of an SeString.
@@ -265,16 +302,34 @@ internal sealed class YesModule : IModule, IDisposable
                 this.Configuration.Save();
                 break;
             case "last":
-                this.CommandAddNode(false);
+                this.CommandAddNode(false, false, false);
+                break;
+            case "last no":
+                this.CommandAddNode(false, false, true);
                 break;
             case "last zone":
-                this.CommandAddNode(true);
+                this.CommandAddNode(true, false, false);
+                break;
+            case "last zone no":
+                this.CommandAddNode(true, false, true);
+                break;
+            case "last zone folder":
+                this.CommandAddNode(true, true, false);
+                break;
+            case "last zone folder no":
+                this.CommandAddNode(true, true, true);
                 break;
             case "lastlist":
                 this.CommandAddListNode();
                 break;
             case "lasttalk":
                 this.CommandAddTalkNode();
+                break;
+            case "dutyconfirm":
+                this.ToggleDutyConfirm();
+                break;
+            case "onetimeconfirm":
+                this.ToggleOneTimeConfirm();
                 break;
             default:
                 this.ChatManager.PrintErrorMessage("I didn't quite understand that.");
@@ -289,44 +344,29 @@ internal sealed class YesModule : IModule, IDisposable
         sb.AppendLine($"{Command} - Toggle the config window.");
         sb.AppendLine($"{Command} toggle - Toggle the plugin on/off.");
         sb.AppendLine($"{Command} last - Add the last seen YesNo dialog.");
+        sb.AppendLine($"{Command} last no - Add the last seen YesNo dialog as a no.");
         sb.AppendLine($"{Command} last zone - Add the last seen YesNo dialog with the current zone name.");
+        sb.AppendLine($"{Command} last zone no - Add the last seen YesNo dialog with the current zone name as a no.");
+        sb.AppendLine($"{Command} last zone folder - Add the last seen YesNo dialog with the current zone name in a folder with the current zone name.");
+        sb.AppendLine($"{Command} last zone folder no - Add the last seen YesNo dialog with the current zone name in a folder with the current zone name as a no.");
         sb.AppendLine($"{Command} lastlist - Add the last selected list dialog with the target at the time.");
         sb.AppendLine($"{Command} lasttalk - Add the last seen target during a Talk dialog.");
+        sb.AppendLine($"{Command} dutyconfirm - Toggle duty confirm.");
+        sb.AppendLine($"{Command} onetimeconfirm - Toggles duty confirm as well as one-time confirm.");
         this.ChatManager.PrintInformationMessage(sb.ToString());
     }
 
-    private void CommandAddNode(bool zoneRestricted)
+    private void CommandAddNode(bool zoneRestricted, bool createFolder, bool selectNo)
     {
         var text = this.LastSeenDialogText;
 
         if (text.IsNullOrEmpty())
         {
-            if (this.LastSeenDialogText.IsNullOrEmpty())
-            {
-                this.ChatManager.PrintErrorMessage("No dialog has been seen.");
-                return;
-            }
-
-            text = this.LastSeenDialogText;
+            this.ChatManager.PrintErrorMessage("No dialog has been seen.");
+            return;
         }
 
-        var newNode = new TextEntryNode { Enabled = true, Text = text };
-
-        if (zoneRestricted)
-        {
-            var currentId = this.DalamudServices.ClientState.TerritoryType;
-            if (!this.TerritoryNames.TryGetValue(currentId, out var zoneName))
-            {
-                this.ChatManager.PrintErrorMessage("Could not find zone name.");
-                return;
-            }
-
-            newNode.ZoneRestricted = true;
-            newNode.ZoneText = zoneName;
-        }
-
-        var parent = this.Configuration.RootFolder;
-        parent.Children.Add(newNode);
+        this.CreateTextNode(this.Configuration.RootFolder, zoneRestricted, createFolder, selectNo);
         this.Configuration.Save();
 
         this.ChatManager.PrintInformationMessage("Added a new text entry.");
@@ -375,5 +415,25 @@ internal sealed class YesModule : IModule, IDisposable
         this.Configuration.Save();
 
         this.ChatManager.PrintInformationMessage("Added a new talk entry.");
+    }
+
+    private void ToggleDutyConfirm()
+    {
+        this.Configuration.ContentsFinderConfirmEnabled ^= true;
+        this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
+        this.Configuration.Save();
+
+        var state = this.Configuration.ContentsFinderConfirmEnabled ? "enabled" : "disabled";
+        this.ChatManager.PrintInformationMessage($"Duty Confirm {state}.");
+    }
+
+    private void ToggleOneTimeConfirm()
+    {
+        this.Configuration.ContentsFinderOneTimeConfirmEnabled ^= true;
+        this.Configuration.ContentsFinderConfirmEnabled = this.Configuration.ContentsFinderOneTimeConfirmEnabled;
+        this.Configuration.Save();
+
+        var state = this.Configuration.ContentsFinderOneTimeConfirmEnabled ? "enabled" : "disabled";
+        this.ChatManager.PrintInformationMessage($"Duty Confirm and One Time Confirm {state}.");
     }
 }

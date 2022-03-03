@@ -381,10 +381,34 @@ internal class YesConfigTab
             if (ImGui.Checkbox("ContentsFinderConfirm", ref contentsFinderConfirm))
             {
                 this.configuration.ContentsFinderConfirmEnabled = contentsFinderConfirm;
+
+                if (!contentsFinderConfirm)
+                {
+                    this.configuration.ContentsFinderOneTimeConfirmEnabled = false;
+                }
+
                 this.configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically commence duties when ready.");
+        }
+
+        // ContentFinderOneTimeConfirm
+        {
+            var contentsFinderOneTimeConfirm = this.configuration.ContentsFinderOneTimeConfirmEnabled;
+            if (ImGui.Checkbox("ContentsFinderOneTimeConfirm", ref contentsFinderOneTimeConfirm))
+            {
+                this.configuration.ContentsFinderOneTimeConfirmEnabled = contentsFinderOneTimeConfirm;
+
+                if (contentsFinderOneTimeConfirm)
+                {
+                    this.configuration.ContentsFinderConfirmEnabled = true;
+                }
+
+                this.configuration.Save();
+            }
+
+            IndentedTextColored(this.shadedColor, "Automatically commence duties when ready, but only once.\nRequires Contents Finder Confirm, and disables both after activation.");
         }
 
         ImGui.PopID();
@@ -409,8 +433,12 @@ internal class YesConfigTab
         ImGui.SameLine();
         if (ImGuiEx.IconButton(FontAwesomeIcon.SearchPlus, "Add last seen as new entry"))
         {
-            var newNode = new TextEntryNode { Enabled = true, Text = this.module.LastSeenDialogText };
-            this.RootFolder.Children.Add(newNode);
+            var io = ImGui.GetIO();
+            var zoneRestricted = io.KeyCtrl;
+            var createFolder = io.KeyShift;
+            var selectNo = io.KeyAlt;
+
+            this.module.CreateTextNode(this.RootFolder, zoneRestricted, createFolder, selectNo);
             this.configuration.Save();
         }
 
@@ -435,6 +463,12 @@ internal class YesConfigTab
         sb.AppendLine("Right click a line to view options.");
         sb.AppendLine("Double click an entry for quick enable/disable.");
         sb.AppendLine("Ctrl-Shift right click a line to delete it and any children.");
+        sb.AppendLine();
+        sb.AppendLine("\"Add last seen as new entry\" button modifiers:");
+        sb.AppendLine("   Shift-Click to add to a new or first existing folder with the current zone name, restricted to that zone.");
+        sb.AppendLine("   Ctrl-Click to create a entry restricted to the current zone, without a named folder.");
+        sb.AppendLine("   Alt-Click to create a \"Select No\" entry instead of \"Select Yes\"");
+        sb.AppendLine("   Alt-Click can be combined with Shift/Ctrl-Click.");
         sb.AppendLine();
         sb.AppendLine("Currently supported text addons:");
         sb.AppendLine("  - SelectYesNo");
@@ -575,6 +609,8 @@ internal class YesConfigTab
         sb.AppendLine();
         sb.AppendLine("Alternatively, wrap your text in forward slashes to use as a regex.");
         sb.AppendLine("As such: \"/(Moyce|Eirikur)/\"");
+        sb.AppendLine();
+        sb.AppendLine("To skip your retainers, add the summoning bell.");
         sb.AppendLine();
         sb.AppendLine("Right click a line to view options.");
         sb.AppendLine("Double click an entry for quick enable/disable.");
@@ -1099,6 +1135,12 @@ internal class YesConfigTab
                 {
                     if (root == this.RootFolder)
                     {
+                        var io = ImGui.GetIO();
+                        var zoneRestricted = io.KeyCtrl;
+                        var createFolder = io.KeyShift;
+                        var selectNo = io.KeyAlt;
+
+                        this.module.CreateTextNode(folderNode, zoneRestricted, createFolder, selectNo);
                         var newNode = new TextEntryNode { Enabled = true, Text = this.module.LastSeenDialogText };
                         folderNode.Children.Add(newNode);
                         this.configuration.Save();

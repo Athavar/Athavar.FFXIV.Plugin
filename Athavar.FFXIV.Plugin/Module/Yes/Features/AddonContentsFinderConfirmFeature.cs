@@ -34,5 +34,12 @@ internal class AddonContentsFinderConfirmFeature : OnSetupFeature
         }
 
         ClickContentsFinderConfirm.Using(addon).Commence();
+
+        if (this.Configuration.ContentsFinderOneTimeConfirmEnabled)
+        {
+            this.Configuration.ContentsFinderConfirmEnabled = false;
+            this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
+            this.Configuration.Save();
+        }
     }
 }

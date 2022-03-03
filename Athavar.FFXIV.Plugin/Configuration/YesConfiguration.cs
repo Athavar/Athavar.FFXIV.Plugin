@@ -126,6 +126,11 @@ internal class YesConfiguration : IPluginConfiguration
     public bool ContentsFinderConfirmEnabled { get; set; } = false;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether the duty finder one-time accept setting is enabled.
+    /// </summary>
+    public bool ContentsFinderOneTimeConfirmEnabled { get; set; } = false;
+
+    /// <summary>
     ///     Save the configuration.
     /// </summary>
     public void Save() => this.configuration?.Save();
