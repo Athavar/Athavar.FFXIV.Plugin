@@ -236,6 +236,19 @@ internal class MacroHelpWindow : Window
         }
 
         {
+            var craftWaitSkip = this.configuration.CraftWaitSkip;
+            if (ImGui.Checkbox("Craft Wait Skip", ref craftWaitSkip))
+            {
+                this.configuration.CraftWaitSkip = craftWaitSkip;
+                this.configuration.Save();
+            }
+
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+            ImGui.TextWrapped("- Ignore <wait> in craft commands and execute next line as soon as possible.");
+            ImGui.PopStyleColor();
+        }
+
+        {
             var qualitySkip = this.configuration.QualitySkip;
             if (ImGui.Checkbox("Quality Skip", ref qualitySkip))
             {

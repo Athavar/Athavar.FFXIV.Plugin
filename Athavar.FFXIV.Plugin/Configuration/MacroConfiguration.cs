@@ -28,6 +28,11 @@ internal class MacroConfiguration
     public bool CraftSkip { get; set; } = true;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to skip craft actions when not crafting.
+    /// </summary>
+    public bool CraftWaitSkip { get; set; } = true;
+
+    /// <summary>
     ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
     /// </summary>
     public bool QualitySkip { get; set; } = false;

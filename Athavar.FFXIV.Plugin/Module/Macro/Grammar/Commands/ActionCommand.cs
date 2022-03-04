@@ -92,12 +92,14 @@ internal class ActionCommand : MacroCommand
                 if (IsNotCrafting())
                 {
                     PluginLog.Debug($"Not crafting skip: {this.Text}");
+                    await Task.Delay(10, token);
                     return;
                 }
 
                 if (HasMaxProgress())
                 {
                     PluginLog.Debug($"Max progress skip: {this.Text}");
+                    await Task.Delay(10, token);
                     return;
                 }
             }
@@ -118,7 +120,10 @@ internal class ActionCommand : MacroCommand
 
             ChatManager.SendMessage(this.Text);
 
-            await this.PerformWait(token);
+            if (!Configuration.CraftWaitSkip)
+            {
+                await this.PerformWait(token);
+            }
 
             // wait for crafting condition flag to exit.
             await Task.Delay(delayWait, token);
@@ -135,7 +140,7 @@ internal class ActionCommand : MacroCommand
         }
     }
 
-    private static bool IsCrafting() => DalamudServices.Condition[ConditionFlag.Crafting];
+    private static bool IsCrafting() => DalamudServices.Condition[ConditionFlag.Crafting] && !DalamudServices.Condition[ConditionFlag.PreparingToCraft];
 
     private static bool IsNotCrafting() => !IsCrafting();
 
@@ -153,6 +158,12 @@ internal class ActionCommand : MacroCommand
         }
 
         var addonPtr = (AddonSynthesis*)addon;
+
+        if (addonPtr->CurrentProgress is null || addonPtr->MaxProgress is null)
+        {
+            return false;
+        }
+
         var progressText = addonPtr->CurrentProgress->NodeText.ToString().ToLowerInvariant();
         var maxProgressText = addonPtr->MaxProgress->NodeText.ToString().ToLowerInvariant();
 
