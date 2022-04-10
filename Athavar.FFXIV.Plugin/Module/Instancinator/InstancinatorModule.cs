@@ -127,7 +127,6 @@ internal class InstancinatorModule : IModule, IDisposable
     /// <param name="instance">the instance number.</param>
     public void EnableInstance(int instance)
     {
-        this.chatManager.PrintChat($"Instancinator set {instance}");
         this.DisableAllAndCreateIfNotExists();
         this.SelectedInstance = instance;
 

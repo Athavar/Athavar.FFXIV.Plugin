@@ -10,7 +10,7 @@ internal class ItemInspectorModule : IModule
     private readonly ItemInspectorTab tab;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="HuntLinkModule" /> class.
+    ///     Initializes a new instance of the <see cref="ItemInspectorModule" /> class.
     /// </summary>
     /// <param name="moduleManager"><see cref="ModuleManager" /> added by DI.</param>
     /// <param name="huntLinkTab"><see cref="HuntLinkTab" /> added by DI.</param>
@@ -20,9 +20,12 @@ internal class ItemInspectorModule : IModule
         moduleManager.Register(this, false);
     }
 
+    /// <inheritdoc />
     public string Name => ModuleName;
 
+    /// <inheritdoc />
     public void Draw() => this.tab.DrawTab();
 
+    /// <inheritdoc />
     public void Enable(bool state = true) => _ = state;
 }
