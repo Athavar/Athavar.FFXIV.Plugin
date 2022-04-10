@@ -67,7 +67,7 @@ internal class InstancinatorModule : IModule, IDisposable
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
                                                                          {
-                                                                             HelpMessage = "Commands of the macro module.",
+                                                                             HelpMessage = "Commands of the instancinator module.",
                                                                              ShowInHelp = true,
                                                                          });
         this.dalamudServices.Framework.Update += this.Tick;
