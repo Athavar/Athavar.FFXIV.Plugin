@@ -1,5 +1,6 @@
 namespace Athavar.FFXIV.Plugin.Module.Instancinator;
 
+using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
@@ -49,6 +50,12 @@ internal class InstancinatorWindow : Window
         }
     }
 
+    /// <summary>
+    ///     Setup the <see cref="InstancinatorWindow" />.
+    /// </summary>
+    /// <param name="m">The <see cref="InstancinatorModule" />.</param>
+    internal void Setup(InstancinatorModule m) => this.module = m;
+
     private bool ImGuiColoredButton(FontAwesomeIcon icon, bool colored)
     {
         if (colored)
@@ -70,14 +77,8 @@ internal class InstancinatorWindow : Window
     private bool ImGuiIconButton(FontAwesomeIcon icon)
     {
         ImGui.PushFont(UiBuilder.IconFont);
-        var result = ImGui.Button($"{icon.ToIconString()}##{icon.ToIconString()}Inst");
+        var result = ImGui.Button($"{icon.ToIconString()}##{icon.ToIconString()}Inst", new Vector2(45f));
         ImGui.PopFont();
         return result;
     }
-
-    /// <summary>
-    ///     Setup the <see cref="InstancinatorWindow" />.
-    /// </summary>
-    /// <param name="m">The <see cref="InstancinatorModule" />.</param>
-    internal void Setup(InstancinatorModule m) => this.module = m;
 }

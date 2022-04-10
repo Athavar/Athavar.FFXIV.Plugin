@@ -52,25 +52,26 @@ internal class InstancinatorModule : IModule, IDisposable
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     public InstancinatorModule(IModuleManager moduleManager, IDalamudServices dalamudServices, Configuration configuration, InstancinatorWindow window)
     {
-        moduleManager.Register(this, false);
         this.dalamudServices = dalamudServices;
         this.configuration = configuration;
         this.window = window;
-        window.Setup(this);
 
         this.Configuration = configuration.Instancinator!;
+
+        window.Setup(this);
 
         var aetheryteSheet = this.GetSubSheet<AetheryteString>("transport/Aetheryte") ?? throw new Exception("Sheet Aetheryte missing");
         var text = aetheryteSheet.GetRow(10)!.String.RawString;
         this.travelToInstancedArea = text[6..];
-        this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<PlaceName>()!.GetRow(1230)!.Name;
+        this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
                                                                          {
                                                                              HelpMessage = "Commands of the instancinator module.",
-                                                                             ShowInHelp = true,
+                                                                             ShowInHelp = false,
                                                                          });
         this.dalamudServices.Framework.Update += this.Tick;
+        moduleManager.Register(this, this.Configuration.Enabled);
     }
 
     /// <inheritdoc />
