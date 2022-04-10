@@ -74,8 +74,8 @@ public class ListEntryNode : INode
     [JsonIgnore]
     public string Name
     {
-        get =>
-            !string.IsNullOrEmpty(this.TargetText)
+        get
+            => !string.IsNullOrEmpty(this.TargetText)
                 ? $"({this.TargetText}) {this.Text}"
                 : this.Text;
 

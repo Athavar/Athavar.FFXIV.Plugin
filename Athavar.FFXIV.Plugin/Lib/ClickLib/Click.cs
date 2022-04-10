@@ -73,11 +73,11 @@ internal class Click : IClick
 
         // Get all parameterless methods, of types that inherit from ClickBase
         var clicks = typeof(ClickBase).Assembly.GetTypes()
-                                      .Where(type => type.IsSubclassOf(typeof(ClickBase)) && !type.IsGenericType)
-                                      .SelectMany(cls => cls.GetMethods())
-                                      .Where(method => method.GetParameters().Length == 0)
-                                      .Select(method => (method, method.GetCustomAttribute<ClickNameAttribute>()?.Name))
-                                      .Where(tpl => tpl.Name != null);
+           .Where(type => type.IsSubclassOf(typeof(ClickBase)) && !type.IsGenericType)
+           .SelectMany(cls => cls.GetMethods())
+           .Where(method => method.GetParameters().Length == 0)
+           .Select(method => (method, method.GetCustomAttribute<ClickNameAttribute>()?.Name))
+           .Where(tpl => tpl.Name != null);
 
         foreach (var click in clicks)
         {

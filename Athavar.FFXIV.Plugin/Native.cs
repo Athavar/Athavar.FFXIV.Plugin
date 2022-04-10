@@ -14,12 +14,12 @@ public static class Native
 {
     private static readonly INative NativeInstance;
 
-    static Native() =>
-        NativeInstance = Environment.OSVersion.Platform switch
-                         {
-                             PlatformID.Win32NT => new Windows(),
-                             _ => throw new PlatformNotSupportedException(),
-                         };
+    static Native()
+        => NativeInstance = Environment.OSVersion.Platform switch
+                            {
+                                PlatformID.Win32NT => new Windows(),
+                                _ => throw new PlatformNotSupportedException(),
+                            };
 
     /// <summary>
     ///     Specifies key codes and modifiers.

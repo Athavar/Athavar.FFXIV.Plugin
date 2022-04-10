@@ -24,8 +24,8 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonSelectYesNoFeature(YesModule module)
-        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module) =>
-        this.module = module;
+        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module)
+        => this.module = module;
 
     /// <inheritdoc />
     protected override string AddonName => "SelectYesNo";
@@ -114,13 +114,13 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
         }
     }
 
-    private bool EntryMatchesText(TextEntryNode node, string text) =>
-        (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
-        (!node.IsTextRegex && text.Contains(node.Text));
+    private bool EntryMatchesText(TextEntryNode node, string text)
+        => (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+           (!node.IsTextRegex && text.Contains(node.Text));
 
-    private bool EntryMatchesZoneName(TextEntryNode node, string zoneName) =>
-        (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
-        (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
+    private bool EntryMatchesZoneName(TextEntryNode node, string zoneName)
+        => (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
+           (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
 
     [StructLayout(LayoutKind.Explicit, Size = 0x10)]
     private struct AddonSelectYesNoOnSetupData

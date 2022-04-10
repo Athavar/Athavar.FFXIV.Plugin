@@ -62,9 +62,9 @@ internal partial class MacroManager : IDisposable
     public bool PauseAtLoop { get; private set; }
 
     /// <summary>
-    /// Gets a value indicating whether the manager should stop at the next loop.
+    ///     Gets a value indicating whether the manager should stop at the next loop.
     /// </summary>
-    public bool StopAtLoop { get; private set; } = false;
+    public bool StopAtLoop { get; private set; }
 
     /// <inheritdoc />
     public void Dispose()
@@ -206,8 +206,7 @@ internal sealed partial class MacroManager
     /// <summary>
     ///     Gets the name and currently executing line of each active macro.
     /// </summary>
-    public (string Name, int StepIndex)[] MacroStatus
-        => this.macroStack.Select(macro => (macro.Node.Name, macro.StepIndex + 1)).ToArray();
+    public (string Name, int StepIndex)[] MacroStatus => this.macroStack.Select(macro => (macro.Node.Name, macro.StepIndex + 1)).ToArray();
 
     /// <summary>
     ///     Run a macro.
@@ -246,7 +245,7 @@ internal sealed partial class MacroManager
     {
         if (this.PauseAtLoop)
         {
-            this.Pause(false);
+            this.Pause();
         }
     }
 
@@ -254,8 +253,9 @@ internal sealed partial class MacroManager
     ///     Resume macro execution.
     /// </summary>
     public void Resume() => this.pausedWaiter.Set();
+
     /// <summary>
-    /// Stop macro execution.
+    ///     Stop macro execution.
     /// </summary>
     /// <param name="stopAtLoop">Stop at the next loop instead.</param>
     public void Stop(bool stopAtLoop = false)
@@ -276,14 +276,14 @@ internal sealed partial class MacroManager
     }
 
     /// <summary>
-    /// Stop at the next /loop.
+    ///     Stop at the next /loop.
     /// </summary>
     public void LoopCheckForStop()
     {
         if (this.StopAtLoop)
         {
             this.StopAtLoop = false;
-            this.Stop(false);
+            this.Stop();
         }
     }
 

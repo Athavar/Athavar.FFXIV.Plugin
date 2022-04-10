@@ -139,13 +139,13 @@ internal class YesConfiguration : IPluginConfiguration
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>
-    public IEnumerable<INode> GetAllNodes() =>
-        new INode[]
-            {
-                this.RootFolder,
-                this.ListRootFolder,
-                this.TalkRootFolder,
-            }
+    public IEnumerable<INode> GetAllNodes()
+        => new INode[]
+           {
+               this.RootFolder,
+               this.ListRootFolder,
+               this.TalkRootFolder,
+           }
            .Concat(this.GetAllNodes(this.RootFolder.Children))
            .Concat(this.GetAllNodes(this.ListRootFolder.Children))
            .Concat(this.GetAllNodes(this.TalkRootFolder.Children));

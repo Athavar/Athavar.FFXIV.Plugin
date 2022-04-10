@@ -24,8 +24,8 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonItemInspectionResultFeature(YesModule module)
-        : base(module.AddressResolver.AddonItemInspectionResultOnSetupAddress, module) =>
-        this.module = module;
+        : base(module.AddressResolver.AddonItemInspectionResultOnSetupAddress, module)
+        => this.module = module;
 
     /// <inheritdoc />
     protected override string AddonName => "ItemInspectionResult";

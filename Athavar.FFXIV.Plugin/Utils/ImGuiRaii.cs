@@ -18,17 +18,13 @@ public sealed class ImGuiRaii : IDisposable
 
     private Stack<Action>? onDispose;
 
-    public static ImGuiRaii NewGroup()
-        => new ImGuiRaii().Group();
+    public static ImGuiRaii NewGroup() => new ImGuiRaii().Group();
 
-    public static ImGuiRaii NewTooltip()
-        => new ImGuiRaii().Tooltip();
+    public static ImGuiRaii NewTooltip() => new ImGuiRaii().Tooltip();
 
-    public ImGuiRaii Group()
-        => this.Begin(ImGui.BeginGroup, ImGui.EndGroup);
+    public ImGuiRaii Group() => this.Begin(ImGui.BeginGroup, ImGui.EndGroup);
 
-    public ImGuiRaii Tooltip()
-        => this.Begin(ImGui.BeginTooltip, ImGui.EndTooltip);
+    public ImGuiRaii Tooltip() => this.Begin(ImGui.BeginTooltip, ImGui.EndTooltip);
 
     public ImGuiRaii PushColor(ImGuiCol which, uint color)
     {
@@ -113,8 +109,7 @@ public sealed class ImGuiRaii : IDisposable
         return this;
     }
 
-    public ImGuiRaii Unindent(float width)
-        => this.Indent(-width);
+    public ImGuiRaii Unindent(float width) => this.Indent(-width);
 
     public bool Begin(Func<bool> begin, Action end)
     {

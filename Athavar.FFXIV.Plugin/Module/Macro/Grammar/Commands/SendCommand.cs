@@ -32,8 +32,7 @@ internal class SendCommand : MacroCommand
     /// <param name="waitMod">Wait value.</param>
     private SendCommand(string text, KeyCode[] vkCodes, WaitModifier waitMod)
         : base(text, waitMod)
-        =>
-        this.vkCodes = vkCodes;
+        => this.vkCodes = vkCodes;
 
     /// <summary>
     ///     Parse the text as a command.

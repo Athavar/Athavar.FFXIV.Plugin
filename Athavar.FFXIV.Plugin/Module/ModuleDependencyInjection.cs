@@ -1,6 +1,8 @@
 ﻿namespace Athavar.FFXIV.Plugin.Module;
 
 using Athavar.FFXIV.Plugin.Module.HuntLink;
+using Athavar.FFXIV.Plugin.Module.Instancinator;
+using Athavar.FFXIV.Plugin.Module.ItemInspector;
 using Athavar.FFXIV.Plugin.Module.Macro;
 using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Athavar.FFXIV.Plugin.Module.Yes;
@@ -33,6 +35,22 @@ public static class ModuleDependencyInjection
         services.AddSingleton<HuntLinkModule>();
         services.AddSingleton<HuntLinkDatastore>();
         services.AddSingleton<HuntLinkTab>();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddItemInspectorModule(this IServiceCollection services)
+    {
+        services.AddSingleton<ItemInspectorModule>();
+        services.AddSingleton<ItemInspectorTab>();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddInstancinatorModule(this IServiceCollection services)
+    {
+        services.AddSingleton<InstancinatorModule>();
+        services.AddSingleton<InstancinatorWindow>();
 
         return services;
     }

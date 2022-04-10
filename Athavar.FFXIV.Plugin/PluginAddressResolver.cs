@@ -6,10 +6,9 @@ namespace Athavar.FFXIV.Plugin;
 
 using System;
 using Dalamud.Game;
-using Dalamud.Logging;
 
 /// <summary>
-/// Resolver of in-game address.
+///     Resolver of in-game address.
 /// </summary>
 public class PluginAddressResolver : BaseAddressResolver
 {
@@ -131,21 +130,6 @@ public class PluginAddressResolver : BaseAddressResolver
     /// </summary>
     public IntPtr AddonTalkUpdateAddress { get; private set; }
 
-    /// <summary>
-    ///     Gets the address of the event framework.
-    /// </summary>
-    public IntPtr EventFrameworkAddress { get; private set; }
-
-    /// <summary>
-    ///     Gets the address of the event framework function.
-    /// </summary>
-    public IntPtr EventFrameworkFunctionAddress { get; private set; }
-
-    /// <summary>
-    ///     Gets the address of the SendChat method.
-    /// </summary>
-    public IntPtr SendChatAddress { get; private set; }
-
     /// <inheritdoc />
     protected override void Setup64Bit(SigScanner scanner)
     {
@@ -163,13 +147,5 @@ public class PluginAddressResolver : BaseAddressResolver
         this.AddonJournalResultOnSetupAddress = scanner.ScanText(AddonJournalResultOnSetupSignature);
         this.AddonContentsFinderConfirmOnSetupAddress = scanner.ScanText(AddonContentsFinderConfirmOnSetupSignature);
         this.AddonTalkUpdateAddress = scanner.ScanText(AddonTalkUpdateSignature);
-
-        this.EventFrameworkAddress = scanner.GetStaticAddressFromSig(EventFrameworkSignature) + 1;
-        this.EventFrameworkFunctionAddress = scanner.ScanText(EventFrameworkFunctionSignature);
-        this.SendChatAddress = scanner.ScanText(SendChatSignature);
-
-        PluginLog.Verbose($"{nameof(this.SendChatAddress)} {this.SendChatAddress:X}");
-        PluginLog.Verbose($"{nameof(this.EventFrameworkAddress)} {this.EventFrameworkAddress:X}");
-        PluginLog.Verbose($"{nameof(this.EventFrameworkFunctionAddress)} {this.EventFrameworkFunctionAddress:X}");
     }
 }

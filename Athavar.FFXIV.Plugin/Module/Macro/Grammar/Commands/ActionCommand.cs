@@ -47,7 +47,7 @@ internal class ActionCommand : MacroCommand
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="actionName">Action name.</param>
-    /// /// <param name="waitMod">Wait value.</param>
+    /// <param name="waitMod">Wait value.</param>
     /// <param name="unsafeMod">Perform the action safely.</param>
     /// <param name="conditionMod">Required crafting condition.</param>
     private ActionCommand(string text, string actionName, WaitModifier waitMod, UnsafeModifier unsafeMod, ConditionModifier conditionMod)

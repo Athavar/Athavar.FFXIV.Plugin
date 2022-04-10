@@ -29,8 +29,7 @@ internal class TargetCommand : MacroCommand
     /// <param name="waitMod">Wait value.</param>
     private TargetCommand(string text, string targetName, WaitModifier waitMod)
         : base(text, waitMod)
-        =>
-        this.targetName = targetName.ToLowerInvariant();
+        => this.targetName = targetName.ToLowerInvariant();
 
     /// <summary>
     ///     Parse the text as a command.

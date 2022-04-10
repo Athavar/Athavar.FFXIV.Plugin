@@ -52,6 +52,18 @@ internal unsafe class EquipmentScanner : IDisposable
         return lowestValue;
     }
 
+    public InventoryItem[] GetEquippedItems()
+    {
+        var items = new InventoryItem[EquipmentContainerSize];
+        var inventoryItem = this.equipmentInventoryItem;
+        for (var i = 0; i < EquipmentContainerSize; i++, inventoryItem++)
+        {
+            items[i] = *inventoryItem;
+        }
+
+        return items;
+    }
+
     /// <inheritdoc />
     public void Dispose() => this.dalamudServices.ClientState.Login -= this.ClientStateOnOnLogin;
 

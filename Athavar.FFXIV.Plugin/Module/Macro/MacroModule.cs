@@ -110,16 +110,17 @@ internal sealed class MacroModule : IModule, IDisposable
 
             var macroName = arguments.Trim('"');
             var nodes = this.Configuration.GetAllNodes()
-                            .OfType<MacroNode>()
-                            .Where(node => node.Name.Trim() == macroName)
-                            .ToArray();
+               .OfType<MacroNode>()
+               .Where(node => node.Name.Trim() == macroName)
+               .ToArray();
 
             if (nodes.Length == 0)
             {
                 this.chatManager.PrintErrorMessage("No macros match that name");
                 return;
             }
-            else if (nodes.Length > 1)
+
+            if (nodes.Length > 1)
             {
                 this.chatManager.PrintErrorMessage("More than one macro matches that name");
                 return;
@@ -130,7 +131,7 @@ internal sealed class MacroModule : IModule, IDisposable
             if (loopCount > 0)
             {
                 // Clone a new node so the modification doesn't save.
-                node = new MacroNode()
+                node = new MacroNode
                        {
                            Name = node.Name,
                            Contents = node.Contents,
@@ -143,8 +144,8 @@ internal sealed class MacroModule : IModule, IDisposable
                     if (line.StartsWith("/loop"))
                     {
                         var parts = line.Split()
-                                        .Where(s => !string.IsNullOrEmpty(s))
-                                        .ToArray();
+                           .Where(s => !string.IsNullOrEmpty(s))
+                           .ToArray();
 
                         var echo = line.Contains("<echo>") ? "<echo>" : string.Empty;
                         lines[i] = $"/loop {loopCount} {echo}";

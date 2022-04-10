@@ -23,8 +23,8 @@ internal class AddonTalkFeature : UpdateFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonTalkFeature(YesModule module)
-        : base(module.AddressResolver.AddonTalkUpdateAddress, module) =>
-        this.module = module;
+        : base(module.AddressResolver.AddonTalkUpdateAddress, module)
+        => this.module = module;
 
     /// <inheritdoc />
     protected override string AddonName => "Talk";
@@ -85,7 +85,7 @@ internal class AddonTalkFeature : UpdateFeature
         }
     }
 
-    private bool EntryMatchesTargetName(TalkEntryNode node, string targetName) =>
-        (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
-        (!node.TargetIsRegex && targetName.Contains(node.TargetText));
+    private bool EntryMatchesTargetName(TalkEntryNode node, string targetName)
+        => (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
+           (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

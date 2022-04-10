@@ -74,8 +74,8 @@ public class TextEntryNode : INode
     [JsonIgnore]
     public string Name
     {
-        get =>
-            !string.IsNullOrEmpty(this.ZoneText)
+        get
+            => !string.IsNullOrEmpty(this.ZoneText)
                 ? $"({this.ZoneText}) {this.Text}"
                 : this.Text;
 

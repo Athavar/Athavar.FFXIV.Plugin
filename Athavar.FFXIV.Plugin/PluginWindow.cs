@@ -6,14 +6,13 @@ namespace Athavar.FFXIV.Plugin;
 
 using System;
 using System.Numerics;
-using System.Reflection;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
 /// <summary>
-/// The main <see cref="Window"/> of the plugin.
+///     The main <see cref="Window" /> of the plugin.
 /// </summary>
 internal class PluginWindow : Window
 {
@@ -24,13 +23,13 @@ internal class PluginWindow : Window
     private readonly Configuration configuration;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginWindow"/> class.
+    ///     Initializes a new instance of the <see cref="PluginWindow" /> class.
     /// </summary>
-    /// <param name="localizerManager"><see cref="ILocalizerManager"/> added by DI.</param>
-    /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
+    /// <param name="localizerManager"><see cref="ILocalizerManager" /> added by DI.</param>
+    /// <param name="manager"><see cref="IModuleManager" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     public PluginWindow(ILocalizerManager localizerManager, IModuleManager manager, Configuration configuration)
-        : base($"{Plugin.PluginName} {Assembly.GetCallingAssembly().GetName().Version}")
+        : base($"{Plugin.PluginName}")
     {
         this.manager = manager;
         this.localizerManager = localizerManager;

@@ -64,8 +64,8 @@ internal class RunMacroCommand : MacroCommand
         PluginLog.Debug($"Executing: {this.Text}");
 
         var macroNode = this.configuration
-                            .GetAllNodes().OfType<MacroNode>()
-                            .FirstOrDefault(macro => macro.Name == this.macroName);
+           .GetAllNodes().OfType<MacroNode>()
+           .FirstOrDefault(macro => macro.Name == this.macroName);
 
         if (macroNode == default)
         {

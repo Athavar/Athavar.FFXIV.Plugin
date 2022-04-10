@@ -33,8 +33,7 @@ internal class KeyStateExtended
     /// <param name="millisecondsDuration"></param>
     /// <param name="virtualKey"></param>
     /// <returns>A <see cref="Task" /> representing the result of the asynchronous operation.</returns>
-    internal Task PressKey(int millisecondsDuration, params VirtualKey[] virtualKey)
-        => this.PressKey(millisecondsDuration, (IEnumerable<VirtualKey>)virtualKey);
+    internal Task PressKey(int millisecondsDuration, params VirtualKey[] virtualKey) => this.PressKey(millisecondsDuration, (IEnumerable<VirtualKey>)virtualKey);
 
     /// <summary>
     /// </summary>

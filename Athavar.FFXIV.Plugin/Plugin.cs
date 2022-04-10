@@ -61,8 +61,8 @@ public sealed class Plugin : IDalamudPlugin
                 Resolver.Initialize();
 
                 this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
-                                .ConfigureServices(this.ConfigureServices)
-                                .Build();
+                   .ConfigureServices(this.ConfigureServices)
+                   .Build();
 
                 this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
 
@@ -158,6 +158,8 @@ public sealed class Plugin : IDalamudPlugin
         service.AddYesModule();
 #if DEBUG
         service.AddHuntLinkModule();
+        service.AddItemInspectorModule();
+        service.AddInstancinatorModule();
 #endif
 
         service.AddHostedService<PluginService>();

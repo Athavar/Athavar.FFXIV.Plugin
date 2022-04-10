@@ -63,8 +63,7 @@ public abstract unsafe class ClickAddonBase<TStruct> : ClickBase
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected static void ClickAddonButton(AtkUnitBase* addonBase, AtkComponentButton* target, uint which, EventType type = EventType.Change)
-        => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
+    protected static void ClickAddonButton(AtkUnitBase* addonBase, AtkComponentButton* target, uint which, EventType type = EventType.Change) => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.
@@ -73,8 +72,7 @@ public abstract unsafe class ClickAddonBase<TStruct> : ClickBase
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected static void ClickAddonRadioButton(AtkUnitBase* addonBase, AtkComponentRadioButton* target, uint which, EventType type = EventType.Change)
-        => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
+    protected static void ClickAddonRadioButton(AtkUnitBase* addonBase, AtkComponentRadioButton* target, uint which, EventType type = EventType.Change) => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.
@@ -83,8 +81,7 @@ public abstract unsafe class ClickAddonBase<TStruct> : ClickBase
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected static void ClickAddonCheckBox(AtkUnitBase* addonBase, AtkComponentCheckBox* target, uint which, EventType type = EventType.Change)
-        => ClickAddonComponent(addonBase, target->AtkComponentButton.AtkComponentBase.OwnerNode, which, type);
+    protected static void ClickAddonCheckBox(AtkUnitBase* addonBase, AtkComponentCheckBox* target, uint which, EventType type = EventType.Change) => ClickAddonComponent(addonBase, target->AtkComponentButton.AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.
@@ -93,8 +90,7 @@ public abstract unsafe class ClickAddonBase<TStruct> : ClickBase
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected static void ClickAddonDragDrop(AtkUnitBase* addonBase, AtkComponentDragDrop* target, uint which, EventType type = EventType.IconTextRollOut)
-        => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
+    protected static void ClickAddonDragDrop(AtkUnitBase* addonBase, AtkComponentDragDrop* target, uint which, EventType type = EventType.IconTextRollOut) => ClickAddonComponent(addonBase, target->AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.

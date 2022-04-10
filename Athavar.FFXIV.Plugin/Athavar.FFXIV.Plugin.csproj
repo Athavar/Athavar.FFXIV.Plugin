@@ -35,6 +35,7 @@
 
     <PropertyGroup>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+        <DalamudLibPath>/home/athavar/Games/.shared/ffxiv/XIVLauncher/addon/Hooks/dev</DalamudLibPath>
     </PropertyGroup>
 
     <PropertyGroup>

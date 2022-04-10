@@ -25,6 +25,8 @@ internal class Configuration : IPluginConfiguration
 
     public MacroConfiguration? Macro { get; set; }
 
+    public InstancinatorConfiguration? Instancinator { get; set; }
+
     public bool ShowToolTips { get; set; } = true;
 
     public Language Language { get; set; } = Language.En;
@@ -70,8 +72,10 @@ internal class Configuration : IPluginConfiguration
 
         this.Yes ??= new YesConfiguration();
         this.Macro ??= new MacroConfiguration();
+        this.Instancinator ??= new InstancinatorConfiguration();
 
         this.Yes.Setup(this);
         this.Macro.Setup(this);
+        this.Instancinator.Setup(this);
     }
 }

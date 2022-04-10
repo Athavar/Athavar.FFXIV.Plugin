@@ -40,9 +40,9 @@ internal class RequireCommand : MacroCommand
         statusName = statusName.ToLowerInvariant();
         var sheet = DalamudServices.DataManager.GetExcelSheet<Status>()!;
         this.statusIDs = sheet
-                        .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
-                        .Select(row => row.RowId)
-                        .ToList()!;
+           .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
+           .Select(row => row.RowId)
+           .ToList()!;
 
         this.maxWait = maxWait.Wait == 0
             ? StatusCheckMaxWait
@@ -88,9 +88,9 @@ internal class RequireCommand : MacroCommand
     private (uint StatusID, bool HasStatus) IsStatusPresent()
     {
         var statusId = DalamudServices.ClientState.LocalPlayer!.StatusList
-                                      .Select(se => se.StatusId)
-                                      .ToList().Intersect(this.statusIDs)
-                                      .FirstOrDefault();
+           .Select(se => se.StatusId)
+           .ToList().Intersect(this.statusIDs)
+           .FirstOrDefault();
 
         if (statusId == default)
         {

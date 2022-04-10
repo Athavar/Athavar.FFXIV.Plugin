@@ -193,11 +193,11 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         return (false, -1);
     }
 
-    private bool EntryMatchesText(ListEntryNode node, string text) =>
-        (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
-        (!node.IsTextRegex && text.Contains(node.Text));
+    private bool EntryMatchesText(ListEntryNode node, string text)
+        => (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+           (!node.IsTextRegex && text.Contains(node.Text));
 
-    private bool EntryMatchesTargetName(ListEntryNode node, string targetName) =>
-        (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
-        (!node.TargetIsRegex && targetName.Contains(node.TargetText));
+    private bool EntryMatchesTargetName(ListEntryNode node, string targetName)
+        => (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
+           (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

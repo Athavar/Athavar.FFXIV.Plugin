@@ -16,6 +16,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Logging;
+using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -25,19 +26,20 @@ internal class ChatManager : IDisposable, IChatManager
 {
     private readonly Channel<SeString> chatBoxMessages = Channel.CreateUnbounded<SeString>();
     private readonly IDalamudServices dalamud;
-    private readonly ProcessChatBoxDelegate processChatBox;
+
+    [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
+    private readonly ProcessChatBoxDelegate processChatBox = null!;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatManager" /> class.
     /// </summary>
     /// <param name="dalamud"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="addressResolver"><see cref="PluginAddressResolver" /> added by DI.</param>
-    public ChatManager(IDalamudServices dalamud, PluginAddressResolver addressResolver)
+    public ChatManager(IDalamudServices dalamud)
     {
         this.dalamud = dalamud;
 
-        this.processChatBox =
-            Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(addressResolver.SendChatAddress);
+        // init processChatBox
+        SignatureHelper.Initialise(this);
 
         this.dalamud.Framework.Update += this.FrameworkUpdate;
 #if DEBUG

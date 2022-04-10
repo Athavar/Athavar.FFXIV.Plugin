@@ -46,8 +46,7 @@ public abstract unsafe class ClickBase
     }
 
     /// <inheritdoc cref="InvokeReceiveEvent(AtkEventListener*, EventType, uint, EventData, InputData)" />
-    protected static void InvokeReceiveEvent(AtkComponentBase* eventListener, EventType type, uint which, EventData eventData, InputData inputData)
-        => InvokeReceiveEvent(&eventListener->AtkEventListener, type, which, eventData, inputData);
+    protected static void InvokeReceiveEvent(AtkComponentBase* eventListener, EventType type, uint which, EventData eventData, InputData inputData) => InvokeReceiveEvent(&eventListener->AtkEventListener, type, which, eventData, inputData);
 
     private static ReceiveEventDelegate GetReceiveEvent(AtkEventListener* listener)
     {

@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.HuntLink;
+using Athavar.FFXIV.Plugin.Module.Instancinator;
+using Athavar.FFXIV.Plugin.Module.ItemInspector;
 using Athavar.FFXIV.Plugin.Module.Macro;
 using Athavar.FFXIV.Plugin.Module.Yes;
 using Athavar.FFXIV.Plugin.Utils;
@@ -71,6 +73,8 @@ internal class PluginService : IHostedService
         _ = provider.GetRequiredService<YesModule>();
 #if DEBUG
         _ = provider.GetRequiredService<HuntLinkModule>();
+        _ = provider.GetRequiredService<ItemInspectorModule>();
+        _ = provider.GetRequiredService<InstancinatorModule>();
 #endif
     }
 
