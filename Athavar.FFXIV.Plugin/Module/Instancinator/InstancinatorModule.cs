@@ -23,6 +23,9 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
 
+/// <summary>
+///     Implements the instancinator module.
+/// </summary>
 internal class InstancinatorModule : IModule, IDisposable
 {
     private const string ModuleName = "Instancinator";
