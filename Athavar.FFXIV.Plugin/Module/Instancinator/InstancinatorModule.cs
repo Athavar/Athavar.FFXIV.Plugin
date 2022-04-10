@@ -37,7 +37,6 @@ internal class InstancinatorModule : IModule, IDisposable
     private static readonly ushort[] Territories = { 957, 958, 959, 960, 961, 956 };
 
     private readonly IDalamudServices dalamudServices;
-    private readonly IChatManager chatManager;
     private readonly Configuration configuration;
     private readonly InstancinatorWindow window;
     private readonly string travelToInstancedArea;
@@ -50,13 +49,11 @@ internal class InstancinatorModule : IModule, IDisposable
     /// </summary>
     /// <param name="moduleManager"><see cref="ModuleManager" /> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public InstancinatorModule(IModuleManager moduleManager, IDalamudServices dalamudServices, IChatManager chatManager, Configuration configuration, InstancinatorWindow window)
+    public InstancinatorModule(IModuleManager moduleManager, IDalamudServices dalamudServices, Configuration configuration, InstancinatorWindow window)
     {
         moduleManager.Register(this, false);
         this.dalamudServices = dalamudServices;
-        this.chatManager = chatManager;
         this.configuration = configuration;
         this.window = window;
         window.Setup(this);
@@ -328,11 +325,20 @@ internal class InstancinatorModule : IModule, IDisposable
         return false;
     }
 
+    /// <summary>
+    ///     Row of transport/Aetheryte Table.
+    /// </summary>
     [Sheet("Aetheryte")]
-    public class AetheryteString : ExcelRow
+    internal class AetheryteString : ExcelRow
     {
+        /// <summary>
+        ///     Gets or sets the key.
+        /// </summary>
         public SeString Identifier { get; set; } = null!;
 
+        /// <summary>
+        ///     Gets or sets the string value.
+        /// </summary>
         public SeString String { get; set; } = null!;
 
         /// <inheritdoc />
