@@ -156,10 +156,10 @@ public sealed class Plugin : IDalamudPlugin
 
         service.AddMacroModule();
         service.AddYesModule();
+        service.AddInstancinatorModule();
 #if DEBUG
         service.AddHuntLinkModule();
         service.AddItemInspectorModule();
-        service.AddInstancinatorModule();
 #endif
 
         service.AddHostedService<PluginService>();
