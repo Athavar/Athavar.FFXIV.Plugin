@@ -34,7 +34,7 @@ internal class InstancinatorModule : IModule, IDisposable
     private const string Signature = "Your destination is currently congested";
 
     private static readonly string[] Instances = { "//", "//", "//" };
-    private static readonly ushort[] Territories = { 957, 958, 959, 960, 961, 956 };
+    private static readonly ushort[] Territories = { 957 /* Thavnair */ };
 
     private readonly IDalamudServices dalamudServices;
     private readonly Configuration configuration;
