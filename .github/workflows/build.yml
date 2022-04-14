@@ -20,11 +20,11 @@ jobs:
     runs-on: windows-2022
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           submodules: recursive
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v1.1
       - name: Download Dalamud
         run: |
           Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile latest.zip
@@ -35,7 +35,7 @@ jobs:
           dotnet build --configuration Release -v n
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: PluginRepoZip
           path: ${{ env.RELEASE_DIR }}
@@ -46,7 +46,7 @@ jobs:
     if: "contains(toJSON(github.event.commits.*.message), '[PUSH]')"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: ${{ env.PERSONAL_PLUGIN_REPO }}
           token: ${{ secrets.PAT }}
@@ -54,7 +54,7 @@ jobs:
         with:
           name: PluginRepoZip
           path: plugins/${{ env.INTERNAL_NAME }}
-      - uses: EndBug/add-and-commit@v7
+      - uses: EndBug/add-and-commit@v9
         with:
           add: --all
           branch: master
