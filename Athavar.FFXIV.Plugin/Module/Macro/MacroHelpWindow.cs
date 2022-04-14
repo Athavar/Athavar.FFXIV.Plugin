@@ -221,6 +221,18 @@ internal class MacroHelpWindow : Window
 
     private void DrawOptions()
     {
+        void DisplayOption(params string[] lines)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
+
+            foreach (var line in lines)
+            {
+                ImGui.TextWrapped(line);
+            }
+
+            ImGui.PopStyleColor();
+        }
+
         ImGui.PushFont(UiBuilder.MonoFont);
         {
             var craftSkip = this.configuration.CraftSkip;
@@ -230,9 +242,7 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
-            ImGui.TextWrapped("- Skip craft actions when not crafting.");
-            ImGui.PopStyleColor();
+            DisplayOption("- Skip craft actions when not crafting.");
         }
 
         {
@@ -243,9 +253,7 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
-            ImGui.TextWrapped("- Ignore <wait> in craft commands and execute next line as soon as possible.");
-            ImGui.PopStyleColor();
+            DisplayOption("- Ignore <wait> in craft commands and execute next line as soon as possible.");
         }
 
         {
@@ -256,9 +264,7 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
-            ImGui.TextWrapped("- Skip quality increasing actions when the HQ chance is at 100%. If you depend on durability increases from Manipulation towards the end of your macro, you will likely want to disable this.");
-            ImGui.PopStyleColor();
+            DisplayOption("- Skip quality increasing actions when the HQ chance is at 100%. If you depend on durability increases from Manipulation towards the end of your macro, you will likely want to disable this.");
         }
 
         {
@@ -269,9 +275,7 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
-            ImGui.TextWrapped("- The numeric option provided to /loop will be considered as the total number of iterations, rather than the amount of times to loop. Internally, this will just subtract 1 from your /loop <amount> command.");
-            ImGui.PopStyleColor();
+            DisplayOption("- The numeric option provided to /loop will be considered as the total number of iterations, rather than the amount of times to loop. Internally, this will just subtract 1 from your /loop <amount> command.");
         }
 
         {
@@ -282,9 +286,57 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            ImGui.PushStyleColor(ImGuiCol.Text, this.shadedColor);
-            ImGui.TextWrapped("- Loop commands will always have an <echo> tag applied.");
-            ImGui.PopStyleColor();
+            DisplayOption("- Loop commands will always have an <echo> tag applied.");
+        }
+
+        {
+            var disableMonospaced = this.configuration.DisableMonospaced;
+            if (ImGui.Checkbox("Disable Monospaced fonts", ref disableMonospaced))
+            {
+                this.configuration.DisableMonospaced = disableMonospaced;
+                this.configuration.Save();
+            }
+
+            DisplayOption("- Use the regular font instead of monospaced in the macro window. This may be handy for JP users so as to prevent missing unicode errors.");
+        }
+
+        // Crafting Loop
+        {
+            var craftLoopFromRecipeNote = this.configuration.CraftLoopFromRecipeNote;
+            if (ImGui.Checkbox("CraftLoop starts in the Crafting Log", ref craftLoopFromRecipeNote))
+            {
+                this.configuration.CraftLoopFromRecipeNote = craftLoopFromRecipeNote;
+                this.configuration.Save();
+            }
+
+            DisplayOption("- When enabled the CraftLoop option will expect the Crafting Log to be visible, otherwise the Synthesis window must be visible.");
+
+            var craftLoopEcho = this.configuration.CraftLoopEcho;
+            if (ImGui.Checkbox("CraftLoop echo", ref craftLoopEcho))
+            {
+                this.configuration.CraftLoopEcho = craftLoopEcho;
+                this.configuration.Save();
+            }
+
+            DisplayOption("- When enabled the /loop commands supplied by CraftLoop option will an echo modifier.");
+
+            var craftLoopMaxWait = this.configuration.CraftLoopMaxWait;
+            ImGui.SetNextItemWidth(50);
+            if (ImGui.InputInt("CraftLoop maxwait", ref craftLoopMaxWait, 0))
+            {
+                if (craftLoopMaxWait < 0)
+                {
+                    craftLoopMaxWait = 0;
+                }
+
+                if (craftLoopMaxWait != this.configuration.CraftLoopMaxWait)
+                {
+                    this.configuration.CraftLoopMaxWait = craftLoopMaxWait;
+                    this.configuration.Save();
+                }
+            }
+
+            DisplayOption("- The CraftLoop /waitaddon \"...\" <maxwait> modifiers have their maximum wait set to this value.");
         }
 
         ImGui.PopFont();

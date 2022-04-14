@@ -20,6 +20,7 @@ internal partial class MacroManager : IDisposable
 {
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
+    private readonly MacroConfiguration configuration;
     private readonly CancellationTokenSource eventLoopTokenSource = new();
     private readonly Stack<ActiveMacro> macroStack = new();
 
@@ -32,10 +33,12 @@ internal partial class MacroManager : IDisposable
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager)
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager, Configuration configuration)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
+        this.configuration = configuration.Macro!;
 
         this.dalamudServices.ClientState.Login += this.OnLogin;
         this.dalamudServices.ClientState.Logout += this.OnLogout;
@@ -57,7 +60,7 @@ internal partial class MacroManager : IDisposable
     public LoopState State { get; private set; } = LoopState.Waiting;
 
     /// <summary>
-    ///     Gets a value indicating whether the manager should pause at the next /loop command.
+    ///     Gets a value indicating whether the manager should pause at the next loop.
     /// </summary>
     public bool PauseAtLoop { get; private set; }
 
@@ -104,10 +107,7 @@ internal partial class MacroManager : IDisposable
                 {
                     this.State = LoopState.NotLoggedIn;
 
-                    if (this.macroStack.Any())
-                    {
-                        this.macroStack.Clear();
-                    }
+                    this.macroStack.Clear();
                 }
 
                 // Wait to be logged in
@@ -214,7 +214,7 @@ internal sealed partial class MacroManager
     /// <param name="node">Macro to run.</param>
     public void EnqueueMacro(MacroNode node)
     {
-        this.macroStack.Push(new ActiveMacro(node));
+        this.macroStack.Push(new ActiveMacro(node, this.configuration));
         this.pausedWaiter.Set();
     }
 

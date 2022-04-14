@@ -49,6 +49,26 @@ internal class MacroConfiguration
     public bool LoopEcho { get; set; } = false;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether the mono front should be disabled.
+    /// </summary>
+    public bool DisableMonospaced { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to start crafting loops from the recipe note window.
+    /// </summary>
+    public bool CraftLoopFromRecipeNote { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets the maximum wait value for the "CraftLoop" maxwait modifier.
+    /// </summary>
+    public int CraftLoopMaxWait { get; set; } = 5;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the "CraftLoop" loop should have an echo modifier.
+    /// </summary>
+    public bool CraftLoopEcho { get; set; } = false;
+
+    /// <summary>
     ///     Gets or sets the configuration version.
     /// </summary>
     public int Version { get; set; } = 1;

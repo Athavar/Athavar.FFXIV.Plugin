@@ -7,12 +7,14 @@ namespace Athavar.FFXIV.Plugin.Module.Macro;
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Logging;
 using ImGuiNET;
 
@@ -455,7 +457,17 @@ internal class MacroConfigTab
         ImGui.SameLine();
         if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport, "Import from clipboard"))
         {
-            var text = ImGui.GetClipboardText();
+            string text;
+            try
+            {
+                text = ImGui.GetClipboardText();
+            }
+            catch (NullReferenceException ex)
+            {
+                text = string.Empty;
+                this.chatManager.PrintErrorMessage("[Macro] Could not import from clipboard.");
+                PluginLog.Error(ex, "Clipboard import error");
+            }
 
             // Replace \r with \r\n, usually from copy/pasting from the in-game macro window
             var rex = new Regex("\r(?!\n)", RegexOptions.Compiled);
@@ -478,8 +490,97 @@ internal class MacroConfigTab
             this.activeMacroNode = null;
         }
 
+        var sb = new StringBuilder();
+        sb.AppendLine("Toggle CraftLoop (0=disabled, -1=infinite)");
+        sb.AppendLine("When enabled, your macro is modified as follows:");
+
+        var maxwaitValue = this.Configuration.CraftLoopMaxWait;
+        var maxwait = maxwaitValue > 0 ? $" <maxwait.{maxwaitValue}>" : string.Empty;
+        var echo = this.Configuration.CraftLoopEcho ? " <echo>" : string.Empty;
+        var loopCommand
+            = node.CraftLoopCount == -1 ? $"/loop{echo}"
+            : node.CraftLoopCount > 0 ? $"/loop {node.CraftLoopCount}{echo}"
+            : string.Empty;
+
+        if (this.Configuration.CraftLoopFromRecipeNote)
+        {
+            sb.AppendLine($@"- /waitaddon ""RecipeNote""{maxwait}");
+            sb.AppendLine(@"- /click ""synthesize""");
+            sb.AppendLine($@"- /waitaddon ""Synthesis""{maxwait}");
+            sb.AppendLine(@"- [Your Macro]");
+            if (loopCommand != string.Empty)
+            {
+                sb.AppendLine($@"- {loopCommand}");
+            }
+        }
+        else
+        {
+            sb.AppendLine(@"- [Your Macro]");
+            if (node.CraftLoopCount != 0)
+            {
+                sb.AppendLine($@"- /waitaddon ""RecipeNote""{maxwait}");
+                sb.AppendLine(@"- /click ""synthesize""");
+                sb.AppendLine($@"- /waitaddon ""Synthesis""{maxwait}");
+                if (loopCommand != string.Empty)
+                {
+                    sb.AppendLine($@"- {loopCommand}");
+                }
+            }
+        }
+
+        ImGui.SameLine();
+
+        var enabled = node.CraftingLoop;
+
+        if (enabled)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.HealerGreen);
+        }
+
+        if (ImGuiEx.IconButton(FontAwesomeIcon.Sync, sb.ToString()))
+        {
+            node.CraftingLoop ^= true;
+            this.Configuration.Save();
+        }
+
+        if (enabled)
+        {
+            ImGui.PopStyleColor();
+        }
+
+        if (node.CraftingLoop)
+        {
+            ImGui.SameLine();
+            ImGui.PushItemWidth(50);
+
+            var v_min = -1;
+            var v_max = 999;
+            var loops = node.CraftLoopCount;
+            if (ImGui.InputInt("##CraftLoopCount", ref loops, 0) || this.MouseWheelInput(ref loops))
+            {
+                if (loops < v_min)
+                {
+                    loops = v_min;
+                }
+
+                if (loops > v_max)
+                {
+                    loops = v_max;
+                }
+
+                node.CraftLoopCount = loops;
+                this.Configuration.Save();
+            }
+
+            ImGui.PopItemWidth();
+        }
+
         ImGui.PushItemWidth(-1);
-        ImGui.PushFont(UiBuilder.MonoFont);
+        var useMono = !this.Configuration.DisableMonospaced;
+        if (useMono)
+        {
+            ImGui.PushFont(UiBuilder.MonoFont);
+        }
 
         var contents = node.Contents;
         if (ImGui.InputTextMultiline($"##{node.Name}-editor", ref contents, 100_000, new Vector2(-1, -1)))
@@ -488,7 +589,26 @@ internal class MacroConfigTab
             this.BaseConfiguration.Save();
         }
 
-        ImGui.PopFont();
+        if (useMono)
+        {
+            ImGui.PopFont();
+        }
+
         ImGui.PopItemWidth();
+    }
+
+    private bool MouseWheelInput(ref int iv)
+    {
+        if (ImGui.IsItemHovered())
+        {
+            var mouseDelta = (int)ImGui.GetIO().MouseWheel; // -1, 0, 1
+            if (mouseDelta != 0)
+            {
+                iv += mouseDelta;
+                return true;
+            }
+        }
+
+        return false;
     }
 }
