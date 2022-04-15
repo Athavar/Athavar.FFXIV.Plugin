@@ -15,6 +15,7 @@ using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
 using Action = Lumina.Excel.GeneratedSheets.Action;
@@ -158,26 +159,9 @@ internal class ActionCommand : MacroCommand
         }
 
         var addonPtr = (AddonSynthesis*)addon;
-
-        if (addonPtr->CurrentProgress is null || addonPtr->MaxProgress is null)
-        {
-            return false;
-        }
-
-        var progressText = addonPtr->CurrentProgress->NodeText.ToString().ToLowerInvariant();
-        var maxProgressText = addonPtr->MaxProgress->NodeText.ToString().ToLowerInvariant();
-
-        if (!int.TryParse(progressText, out var progress))
-        {
-            throw new MacroCommandError("Could not parse progress number in the Synthesis addon");
-        }
-
-        if (!int.TryParse(maxProgressText, out var maxProgress))
-        {
-            throw new MacroCommandError("Could not parse max progress number in the Synthesis addon");
-        }
-
-        return progress == maxProgress;
+        var curProgress = GetNodeTextAsInt(addonPtr->CurrentProgress, "Could not parse progress number in the Synthesis addon");
+        var maxProgress = GetNodeTextAsInt(addonPtr->MaxProgress, "Could not parse max progress number in the Synthesis addon");
+        return curProgress == maxProgress;
     }
 
     private static unsafe bool HasMaxQuality()
@@ -190,41 +174,23 @@ internal class ActionCommand : MacroCommand
         }
 
         var addonPtr = (AddonSynthesis*)addon;
-        var stepText = addonPtr->StepNumber->NodeText.ToString().ToLowerInvariant();
-        if (!int.TryParse(stepText, out var step))
-        {
-            throw new MacroCommandError("Could not parse step number in the Synthesis addon");
-        }
+
+        var step = GetNodeTextAsInt(addonPtr->StepNumber, "Could not parse step number in the Synthesis addon");
 
         if (step <= 1)
         {
             return false;
         }
 
-        var isCollectable = addonPtr->AtkUnitBase.UldManager.NodeList[33]->IsVisible;
+        var isCollectable = addonPtr->AtkUnitBase.UldManager.NodeList[34]->IsVisible;
         if (isCollectable)
         {
-            var curQualityText = addonPtr->CurrentQuality->NodeText.ToString().ToLowerInvariant();
-            if (!int.TryParse(curQualityText, out var curQuality))
-            {
-                throw new MacroCommandError("Could not parse current quality number in the Synthesis addon");
-            }
-
-            var maxQualityText = addonPtr->MaxQuality->NodeText.ToString().ToLowerInvariant();
-            if (!int.TryParse(maxQualityText, out var maxQuality))
-            {
-                throw new MacroCommandError("Could not parse max quality number number in the Synthesis addon");
-            }
-
+            var curQuality = GetNodeTextAsInt(addonPtr->CurrentQuality, "Could not parse current quality number in the Synthesis addon");
+            var maxQuality = GetNodeTextAsInt(addonPtr->MaxQuality, "Could not parse max quality number number in the Synthesis addon");
             return curQuality == maxQuality;
         }
 
-        var percentHqText = addonPtr->HQPercentage->NodeText.ToString().ToLowerInvariant();
-        if (!int.TryParse(percentHqText, out var percentHq))
-        {
-            throw new MacroCommandError("Could not parse percent hq number in the Synthesis addon");
-        }
-
+        var percentHq = GetNodeTextAsInt(addonPtr->HQPercentage, "Could not parse percent hq number in the Synthesis addon");
         return percentHq == 100;
     }
 
@@ -263,6 +229,24 @@ internal class ActionCommand : MacroCommand
 
             CraftingActionNames.Add(name);
         }
+    }
+
+    private static unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
+    {
+        if (node == null)
+        {
+            throw new NullReferenceException("Node is null");
+        }
+
+        var text = node->NodeText.ToString().ToLowerInvariant();
+        PluginLog.Debug($"Text value: {text}");
+
+        if (!int.TryParse(text, out var value))
+        {
+            throw new MacroCommandError(error);
+        }
+
+        return value;
     }
 
     private static void PopulateCraftingQualityActionNames()
