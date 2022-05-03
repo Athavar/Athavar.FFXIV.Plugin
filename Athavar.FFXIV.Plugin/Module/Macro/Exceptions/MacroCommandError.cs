@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
+﻿// <copyright file="MacroCommandError.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 
 using System;
 

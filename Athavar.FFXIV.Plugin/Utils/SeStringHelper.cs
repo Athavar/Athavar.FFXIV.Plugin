@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Utils;
+﻿// <copyright file="SeStringHelper.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Utils;
 
 using System.Collections.Generic;
 using System.Text;

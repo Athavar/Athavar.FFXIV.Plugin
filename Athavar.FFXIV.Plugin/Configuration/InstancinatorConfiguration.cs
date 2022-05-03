@@ -1,3 +1,8 @@
+// <copyright file="InstancinatorConfiguration.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+// ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
 using Newtonsoft.Json;

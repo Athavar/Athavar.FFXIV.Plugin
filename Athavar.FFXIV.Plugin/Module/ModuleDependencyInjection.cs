@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module;
+﻿// <copyright file="ModuleDependencyInjection.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module;
 
 using Athavar.FFXIV.Plugin.Module.HuntLink;
 using Athavar.FFXIV.Plugin.Module.Instancinator;

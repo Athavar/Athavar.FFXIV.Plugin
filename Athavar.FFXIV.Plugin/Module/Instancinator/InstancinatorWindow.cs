@@ -1,3 +1,7 @@
+// <copyright file="InstancinatorWindow.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin.Module.Instancinator;
 
 using System.Numerics;

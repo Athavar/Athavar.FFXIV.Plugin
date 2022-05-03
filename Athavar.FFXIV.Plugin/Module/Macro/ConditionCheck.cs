@@ -1,4 +1,4 @@
-﻿// <copyright file="Condition.cs" company="Athavar">
+﻿// <copyright file="ConditionCheck.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 

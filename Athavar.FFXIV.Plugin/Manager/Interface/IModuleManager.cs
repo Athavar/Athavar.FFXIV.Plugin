@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Manager.Interface;
+﻿// <copyright file="IModuleManager.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Manager.Interface;
 
 using System.Collections.Generic;
 

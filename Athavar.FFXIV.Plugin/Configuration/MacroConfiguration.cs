@@ -69,6 +69,11 @@ internal class MacroConfiguration
     public bool CraftLoopEcho { get; set; } = false;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether errors should be audible.
+    /// </summary>
+    public bool NoisyErrors { get; set; } = false;
+
+    /// <summary>
     ///     Gets or sets the configuration version.
     /// </summary>
     public int Version { get; set; } = 1;

@@ -239,10 +239,10 @@ internal class ActionCommand : MacroCommand
         }
 
         var text = node->NodeText.ToString().ToLowerInvariant();
-        PluginLog.Debug($"Text value: {text}");
 
         if (!int.TryParse(text, out var value))
         {
+            PluginLog.Debug($"Bad text value: {text}");
             throw new MacroCommandError(error);
         }
 

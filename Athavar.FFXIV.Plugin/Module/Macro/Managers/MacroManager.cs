@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Module.Macro.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Manager.Interface;
@@ -157,8 +158,9 @@ internal partial class MacroManager : IDisposable
             catch (Exception ex)
             {
                 PluginLog.Error(ex, "Unhandled exception occurred");
-                this.chatManager.PrintErrorMessage("[Athavar.Macro] Worker has died unexpectedly.");
+                this.chatManager.PrintErrorMessage("[Athavar.Macro] Worker has encountered an accident.");
                 this.macroStack.Clear();
+                this.PlayErrorSound();
             }
         }
     }
@@ -176,10 +178,15 @@ internal partial class MacroManager : IDisposable
         {
             await step.Execute(token);
         }
+        catch (GateComplete)
+        {
+            return true;
+        }
         catch (MacroCommandError ex)
         {
             this.chatManager.PrintErrorMessage($"{ex.Message}: Failure while running {step} (step {macro.StepIndex + 1})");
             this.pausedWaiter.Reset();
+            this.PlayErrorSound();
             return false;
         }
         catch (OperationCanceledException)
@@ -214,7 +221,8 @@ internal sealed partial class MacroManager
     /// <param name="node">Macro to run.</param>
     public void EnqueueMacro(MacroNode node)
     {
-        this.macroStack.Push(new ActiveMacro(node, this.configuration));
+        var contents = this.ModifyMacroForCraftLoop(node.Contents, node.CraftingLoop, node.CraftLoopCount);
+        this.macroStack.Push(new ActiveMacro(node, contents));
         this.pausedWaiter.Set();
     }
 
@@ -339,5 +347,97 @@ internal sealed partial class MacroManager
         }
 
         return this.macroStack.First().StepIndex;
+    }
+
+    /// <summary>
+    ///     Modify a macro for craft looping.
+    /// </summary>
+    /// <param name="contents">Contents of a macroNode.</param>
+    /// <param name="craftLoop">A value indicating whether craftLooping is enabled.</param>
+    /// <param name="craftCount">Amount to craftLoop.</param>
+    /// <returns>The modified macro.</returns>
+    public string ModifyMacroForCraftLoop(string contents, bool craftLoop, int craftCount)
+    {
+        if (!craftLoop)
+        {
+            return contents;
+        }
+
+        var sb = new StringBuilder();
+
+        var maxwait = this.configuration.CraftLoopMaxWait;
+        var maxwaitMod = maxwait > 0 ? $" <maxwait.{maxwait}>" : string.Empty;
+
+        var echo = this.configuration.CraftLoopEcho;
+        var echoMod = echo ? " <echo>" : string.Empty;
+
+        var craftGateStep = this.configuration.CraftLoopFromRecipeNote
+            ? $"/craft {craftCount}{echoMod}"
+            : $"/gate {craftCount - 1}{echoMod}";
+
+        var clickSteps = string.Join("\n", $@"/waitaddon ""RecipeNote""{maxwaitMod}", @"/click ""synthesize""", $@"/waitaddon ""Synthesis""{maxwaitMod}");
+
+        var loopStep = $"/loop{echoMod}";
+
+        if (this.configuration.CraftLoopFromRecipeNote)
+        {
+            if (craftCount == -1)
+            {
+                sb.AppendLine(clickSteps);
+                sb.AppendLine(contents);
+                sb.AppendLine(loopStep);
+            }
+            else if (craftCount == 0)
+            {
+                sb.AppendLine(contents);
+            }
+            else if (craftCount == 1)
+            {
+                sb.AppendLine(clickSteps);
+                sb.AppendLine(contents);
+            }
+            else
+            {
+                sb.AppendLine(craftGateStep);
+                sb.AppendLine(clickSteps);
+                sb.AppendLine(contents);
+                sb.AppendLine(loopStep);
+            }
+        }
+        else
+        {
+            if (craftCount == -1)
+            {
+                sb.AppendLine(contents);
+                sb.AppendLine(clickSteps);
+                sb.AppendLine(loopStep);
+            }
+            else if (craftCount == 0 || craftCount == 1)
+            {
+                sb.AppendLine(contents);
+            }
+            else
+            {
+                sb.AppendLine(contents);
+                sb.AppendLine(craftGateStep);
+                sb.AppendLine(clickSteps);
+                sb.AppendLine(loopStep);
+            }
+        }
+
+        return sb.ToString().Trim();
+    }
+
+    private void PlayErrorSound()
+    {
+        if (!this.configuration.NoisyErrors)
+        {
+            return;
+        }
+
+        for (var i = 0; i < 3; i++)
+        {
+            Console.Beep(900, 250);
+        }
     }
 }

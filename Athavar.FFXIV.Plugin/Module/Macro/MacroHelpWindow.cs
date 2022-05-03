@@ -39,6 +39,14 @@ internal class MacroHelpWindow : Window
                 "/click synthesize",
             }),
         (
+            "craft", "gate",
+            "Similar to loop but used at the start of a macro with an infinite /loop at the end. Allows a certain amount of executions before stopping the macro.",
+            new[] { "echo", "wait" },
+            new[]
+            {
+                "/craft 10",
+            }),
+        (
             "loop", null,
             "Loop the current macro forever, or a certain amount of times.",
             new[] { "wait", "echo" },
@@ -46,6 +54,14 @@ internal class MacroHelpWindow : Window
             {
                 "/loop",
                 "/loop 5",
+            }),
+        (
+            "recipe", null,
+            "Open the recipe book to a specific recipe.",
+            new[] { "wait" },
+            new[]
+            {
+                "/recipe \"Tsai tou Vounou\"",
             }),
         (
             "require", null,
@@ -280,13 +296,13 @@ internal class MacroHelpWindow : Window
 
         {
             var loopEcho = this.configuration.LoopEcho;
-            if (ImGui.Checkbox("Loop Echo", ref loopEcho))
+            if (ImGui.Checkbox("Craft and Loop Echo", ref loopEcho))
             {
                 this.configuration.LoopEcho = loopEcho;
                 this.configuration.Save();
             }
 
-            DisplayOption("- Loop commands will always have an <echo> tag applied.");
+            DisplayOption("- /loop and /craft commands will always have an <echo> tag applied.");
         }
 
         {
@@ -318,7 +334,7 @@ internal class MacroHelpWindow : Window
                 this.configuration.Save();
             }
 
-            DisplayOption("- When enabled the /loop commands supplied by CraftLoop option will an echo modifier.");
+            DisplayOption("- When enabled the /craft or /gate commands supplied by the CraftLoop option will have an echo modifier.");
 
             var craftLoopMaxWait = this.configuration.CraftLoopMaxWait;
             ImGui.SetNextItemWidth(50);
@@ -337,6 +353,18 @@ internal class MacroHelpWindow : Window
             }
 
             DisplayOption("- The CraftLoop /waitaddon \"...\" <maxwait> modifiers have their maximum wait set to this value.");
+        }
+
+        // NoisyErrors
+        {
+            var noisyErrors = this.configuration.NoisyErrors;
+            if (ImGui.Checkbox("Noisy errors", ref noisyErrors))
+            {
+                this.configuration.NoisyErrors = noisyErrors;
+                this.configuration.Save();
+            }
+
+            DisplayOption("- When a check fails or error happens, some helpful sounds will play to get your attention.");
         }
 
         ImGui.PopFont();

@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
+﻿// <copyright file="RequireStatsCommand.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 using System.Globalization;
 using System.Text.RegularExpressions;

@@ -1,3 +1,7 @@
+// <copyright file="ItemInspectorTab.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin.Module.ItemInspector;
 
 using System.Text;

@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Manager;
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Channels;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
@@ -17,6 +16,8 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Logging;
 using Dalamud.Utility.Signatures;
+using FFXIVClientStructs.FFXIV.Client.System.Memory;
+using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -29,6 +30,9 @@ internal class ChatManager : IDisposable, IChatManager
 
     [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
     private readonly ProcessChatBoxDelegate processChatBox = null!;
+
+    [Signature("E8 ?? ?? ?? ?? EB 0A 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 8D")]
+    private readonly unsafe delegate* unmanaged<Utf8String*, int, IntPtr, void> sanitiseString = null!;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatManager" /> class.
@@ -48,6 +52,8 @@ internal class ChatManager : IDisposable, IChatManager
     }
 
     private unsafe delegate void ProcessChatBoxDelegate(UIModule* uiModule, IntPtr message, IntPtr unused, byte a4);
+
+    private unsafe delegate void ProcessChat(Utf8String* message, int flag, IntPtr f);
 
     /// <inheritdoc />
     public void Dispose()
@@ -113,39 +119,69 @@ internal class ChatManager : IDisposable, IChatManager
         }
     }
 
-    private unsafe void SendMessageInternal(string message)
+    private void SendMessageInternal(SeString message)
     {
-        var framework = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance();
-        var uiModule = framework->GetUiModule();
-
-        using var payload = new ChatPayload(Encoding.UTF8.GetBytes(message));
-        var payloadPtr = Marshal.AllocHGlobal(400);
-        Marshal.StructureToPtr(payload, payloadPtr, false);
-
-        this.processChatBox(uiModule, payloadPtr, IntPtr.Zero, 0);
-
-        Marshal.FreeHGlobal(payloadPtr);
-    }
-
-    private unsafe void SendMessageInternal(SeString message)
-    {
-        var messagePayload = message.Encode();
-        if (messagePayload.Length > 500)
+        var bytes = message.Encode();
+        switch (bytes.Length)
         {
-            this.PrintErrorMessage($"Message exceeds byte size of 500({messagePayload.Length})");
+            case 0:
+                return;
+            case > 500:
+                this.PrintErrorMessage($"Message exceeds byte size of 500({bytes.Length})");
+                return;
+        }
+
+        var payloadMessage = message.ToString();
+        if (payloadMessage.Length != this.SanitiseText(payloadMessage).Length)
+        {
+            this.PrintErrorMessage("Message contained invalid characters");
             return;
         }
 
-        var framework = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance();
-        var uiModule = framework->GetUiModule();
+        this.SendMessageUnsafe(bytes);
+    }
 
-        using var chatPayload = new ChatPayload(messagePayload);
-        var chatPayloadPtr = Marshal.AllocHGlobal(Marshal.SizeOf<ChatPayload>());
-        Marshal.StructureToPtr(chatPayload, chatPayloadPtr, false);
+    /// <summary>
+    ///     <para>
+    ///         Send a given message to the chat box. <b>This can send chat to the server.</b>
+    ///     </para>
+    ///     <para>
+    ///         <b>This method is unsafe.</b> This method does no checking on your input and
+    ///         may send content to the server that the normal client could not. You must
+    ///         verify what you're sending and handle content and length to properly use
+    ///         this.
+    ///     </para>
+    /// </summary>
+    /// <param name="message">Message to send.</param>
+    /// <exception cref="InvalidOperationException">If the signature for this function could not be found.</exception>
+    private unsafe void SendMessageUnsafe(byte[] message)
+    {
+        if (this.processChatBox == null)
+        {
+            throw new InvalidOperationException("Could not find signature for chat sending");
+        }
 
+        var uiModule = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule();
+        using var payload = new ChatPayload(message);
+        var chatPayloadPtr = Marshal.AllocHGlobal(400);
+        Marshal.StructureToPtr(payload, chatPayloadPtr, false);
         this.processChatBox(uiModule, chatPayloadPtr, IntPtr.Zero, 0);
-
         Marshal.FreeHGlobal(chatPayloadPtr);
+    }
+
+    private unsafe string SanitiseText(string text)
+    {
+        if (this.sanitiseString == null)
+        {
+            throw new InvalidOperationException("Could not find signature for chat sanitisation");
+        }
+
+        var uText = Utf8String.FromString(text);
+        this.sanitiseString(uText, 0x27F, IntPtr.Zero);
+        var sanitised = uText->ToString();
+        uText->Dtor();
+        IMemorySpace.Free(uText);
+        return sanitised;
     }
 
 #if DEBUG

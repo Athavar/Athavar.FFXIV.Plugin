@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar;
+﻿// <copyright file="MacroParser.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar;
 
 using System.Collections.Generic;
 using System.IO;
@@ -45,8 +49,11 @@ internal static class MacroParser
                              "/ac" => ActionCommand.Parse(line),
                              "/action" => ActionCommand.Parse(line),
                              "/click" => ClickCommand.Parse(line),
+                             "/craft" => GateCommand.Parse(line),
+                             "/gate" => GateCommand.Parse(line),
                              "/check" => CheckCommand.Parse(line),
                              "/loop" => LoopCommand.Parse(line),
+                             "/recipe" => RecipeCommand.Parse(line),
                              "/require" => RequireCommand.Parse(line),
                              "/requirestats" => RequireStatsCommand.Parse(line),
                              "/runmacro" => RunMacroCommand.Parse(line),

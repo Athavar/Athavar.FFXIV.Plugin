@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
+﻿// <copyright file="NativeCommand.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 using System.Threading;
 using System.Threading.Tasks;

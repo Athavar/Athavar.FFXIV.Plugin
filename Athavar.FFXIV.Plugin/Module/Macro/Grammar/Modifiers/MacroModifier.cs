@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
+﻿// <copyright file="MacroModifier.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 
 using System;
 using Athavar.FFXIV.Plugin.Manager.Interface;

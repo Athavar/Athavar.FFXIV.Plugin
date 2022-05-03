@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Utils;
+﻿// <copyright file="AutoTranslateWindow.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Utils;
 
 using System;
 using System.Collections.Generic;
