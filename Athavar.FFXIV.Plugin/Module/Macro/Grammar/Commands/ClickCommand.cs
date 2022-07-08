@@ -59,7 +59,7 @@ internal class ClickCommand : MacroCommand
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
 

@@ -5,8 +5,8 @@
 namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,24 +49,23 @@ internal class SendCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValues = ExtractAndUnquote(match, "name").Split(' ');
+        var nameValues = ExtractAndUnquote(match, "name").Split(' ', '+');
 
-        List<KeyCode> vkCodes = new();
-        foreach (var nameValue in nameValues)
+        var vkCodes = nameValues.Select(name =>
         {
-            if (!Enum.TryParse<KeyCode>(nameValue, true, out var vkCode))
+            if (!Enum.TryParse<KeyCode>(name, true, out var vkCode))
             {
-                throw new MacroCommandError($"Invalid key code '{nameValue}'");
+                throw new MacroCommandError($"Invalid key code '{name}'");
             }
 
-            vkCodes.Add(vkCode);
-        }
+            return vkCode;
+        }).ToArray();
 
-        return new SendCommand(text, vkCodes.ToArray(), waitModifier);
+        return new SendCommand(text, vkCodes, waitModifier);
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
@@ -79,7 +78,7 @@ internal class SendCommand : MacroCommand
 
         await Task.Delay(15, token);
 
-        foreach (var keyCode in this.vkCodes)
+        foreach (var keyCode in this.vkCodes.Reverse())
         {
             KeyUp(mWnd, keyCode);
         }

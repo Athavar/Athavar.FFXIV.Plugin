@@ -78,11 +78,11 @@ internal class CheckCommand : MacroCommand
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
-        var (_, fulfilled) = await this.LinearWait(StatusCheckInterval, this.maxWait, this.IsConditionFulfilled, token);
+        var fulfilled = await this.LinearWait(StatusCheckInterval, this.maxWait, this.IsConditionFulfilled, token);
 
         if (!fulfilled)
         {
@@ -92,5 +92,5 @@ internal class CheckCommand : MacroCommand
         await this.PerformWait(token);
     }
 
-    private (int Dummy, bool IsFulfilled) IsConditionFulfilled() => (0, conditionCheck!.Check(this.category, this.condition));
+    private bool IsConditionFulfilled() => conditionCheck!.Check(this.category, this.condition);
 }

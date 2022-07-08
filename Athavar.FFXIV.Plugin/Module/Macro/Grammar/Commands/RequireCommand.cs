@@ -4,11 +4,11 @@
 
 namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -24,7 +24,7 @@ internal class RequireCommand : MacroCommand
 
     private static readonly Regex Regex = new(@"^/require\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-    private readonly List<uint> statusIDs;
+    private readonly uint[] statusIDs;
     private readonly int maxWait;
 
     /// <summary>
@@ -42,7 +42,7 @@ internal class RequireCommand : MacroCommand
         this.statusIDs = sheet
            .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
            .Select(row => row.RowId)
-           .ToList()!;
+           .ToArray()!;
 
         this.maxWait = maxWait.Wait == 0
             ? StatusCheckMaxWait
@@ -71,32 +71,18 @@ internal class RequireCommand : MacroCommand
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
+        bool IsStatusPresent() => CommandInterface.HasStatusId(this.statusIDs);
 
-        var (statusId, hasStatus) = await this.LinearWait(StatusCheckInterval, this.maxWait, this.IsStatusPresent, token);
+        var hasStatus = await this.LinearWait(StatusCheckInterval, this.maxWait, IsStatusPresent, token);
 
         if (!hasStatus)
         {
-            throw new MacroCommandError("Status effect not found");
+            throw new MacroPause("Status effect not found", IChatManager.UiColor.Red);
         }
 
         await this.PerformWait(token);
-    }
-
-    private (uint StatusID, bool HasStatus) IsStatusPresent()
-    {
-        var statusId = DalamudServices.ClientState.LocalPlayer!.StatusList
-           .Select(se => se.StatusId)
-           .ToList().Intersect(this.statusIDs)
-           .FirstOrDefault();
-
-        if (statusId == default)
-        {
-            return (0, false);
-        }
-
-        return (statusId, true);
     }
 }

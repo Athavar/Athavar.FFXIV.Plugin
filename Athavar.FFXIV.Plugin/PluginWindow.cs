@@ -8,6 +8,7 @@ using System;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
+using Dalamud.Game.Text;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
@@ -66,7 +67,7 @@ internal class PluginWindow : Window
     private void DrawSettingTab()
     {
         using var raii = new ImGuiRaii();
-        if (!raii.Begin(() => ImGui.BeginTabItem("Settings"), ImGui.EndTabItem))
+        if (!raii.Begin(() => ImGui.BeginTabItem(this.localizerManager.Localize("Settings")), ImGui.EndTabItem))
         {
             return;
         }
@@ -101,14 +102,50 @@ internal class PluginWindow : Window
             change = true;
         }
 
-        ImGui.TextUnformatted(this.localizerManager.Localize("Modules:"));
-        foreach (var module in this.manager.GetModuleNames())
+        if (ImGui.CollapsingHeader(this.localizerManager.Localize("Chat")))
         {
-            var val = this.manager.IsEnables(module);
-            if (ImGui.Checkbox(module, ref val))
+            var names = Enum.GetNames<XivChatType>();
+            var chatTypes = Enum.GetValues<XivChatType>();
+
+            var current = Array.IndexOf(chatTypes, config.ChatType);
+            if (current == -1)
             {
-                this.manager.Enable(module, val);
+                current = Array.IndexOf(chatTypes, config.ChatType = XivChatType.Echo);
                 change = true;
+            }
+
+            ImGui.SetNextItemWidth(200f);
+            if (ImGui.Combo(this.localizerManager.Localize("Normal chat channel"), ref current, names, names.Length))
+            {
+                config.ChatType = chatTypes[current];
+                change = true;
+            }
+
+            var currentError = Array.IndexOf(chatTypes, config.ErrorChatType);
+            if (currentError == -1)
+            {
+                currentError = Array.IndexOf(chatTypes, config.ErrorChatType = XivChatType.Urgent);
+                change = true;
+            }
+
+            ImGui.SetNextItemWidth(200f);
+            if (ImGui.Combo(this.localizerManager.Localize("Error chat channel"), ref currentError, names, names.Length))
+            {
+                config.ChatType = chatTypes[currentError];
+                change = true;
+            }
+        }
+
+        if (ImGui.CollapsingHeader(this.localizerManager.Localize("Modules")))
+        {
+            foreach (var module in this.manager.GetModuleNames())
+            {
+                var val = this.manager.IsEnables(module);
+                if (ImGui.Checkbox(module, ref val))
+                {
+                    this.manager.Enable(module, val);
+                    change = true;
+                }
             }
         }
 

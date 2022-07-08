@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin;
 
 using System.Timers;
 using Dalamud.Configuration;
+using Dalamud.Game.Text;
 using Dalamud.Plugin;
 using Newtonsoft.Json;
 
@@ -30,6 +31,16 @@ internal class Configuration : IPluginConfiguration
     public bool ShowToolTips { get; set; } = true;
 
     public Language Language { get; set; } = Language.En;
+
+    /// <summary>
+    ///     Gets or sets the chat channel to use.
+    /// </summary>
+    public XivChatType ChatType { get; set; } = XivChatType.Debug;
+
+    /// <summary>
+    ///     Gets or sets the error chat channel to use.
+    /// </summary>
+    public XivChatType ErrorChatType { get; set; } = XivChatType.Urgent;
 
     /// <summary>
     ///     Save the configuration.

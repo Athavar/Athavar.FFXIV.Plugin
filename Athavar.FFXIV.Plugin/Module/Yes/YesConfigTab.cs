@@ -270,7 +270,7 @@ internal class YesConfigTab
                 this.configuration.Save();
             }
 
-            IndentedTextColored(this.shadedColor, "Remove the create new materia confirmation.");
+            IndentedTextColored(this.shadedColor, "Remove the create new (extract) materia confirmation.");
         }
 
         // MateriaRetrieveDialog
@@ -942,7 +942,7 @@ internal class YesConfigTab
                 }
 
                 var matchText = entryNode.Text;
-                if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     entryNode.Text = matchText;
                     this.configuration.Save();
@@ -983,7 +983,7 @@ internal class YesConfigTab
                 ImGui.PopStyleVar(); // ItemSpacing
 
                 var zoneText = entryNode.ZoneText;
-                if (ImGui.InputText($"##{node.Name}-zoneText", ref zoneText, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-zoneText", ref zoneText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     entryNode.ZoneText = zoneText;
                     this.configuration.Save();
@@ -1014,7 +1014,7 @@ internal class YesConfigTab
                 }
 
                 var matchText = listNode.Text;
-                if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     listNode.Text = matchText;
                     this.configuration.Save();
@@ -1050,7 +1050,7 @@ internal class YesConfigTab
                 ImGui.PopStyleVar(); // ItemSpacing
 
                 var targetText = listNode.TargetText;
-                if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     listNode.TargetText = targetText;
                     this.configuration.Save();
@@ -1103,7 +1103,7 @@ internal class YesConfigTab
                 ImGui.PopStyleVar(); // ItemSpacing
 
                 var targetText = talkNode.TargetText;
-                if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     talkNode.TargetText = targetText;
                     this.configuration.Save();
@@ -1181,7 +1181,7 @@ internal class YesConfigTab
                 ImGui.PopStyleVar(); // ItemSpacing
 
                 var folderName = folderNode.Name;
-                if (ImGui.InputText($"##{node.Name}-rename", ref folderName, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
+                if (ImGui.InputText($"##{node.Name}-rename", ref folderName, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     folderNode.Name = folderName;
                     this.configuration.Save();

@@ -4,7 +4,6 @@
 
 namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -14,11 +13,8 @@ using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
-using Action = Lumina.Excel.GeneratedSheets.Action;
 
 /// <summary>
 ///     The /action command.
@@ -82,7 +78,7 @@ internal class ActionCommand : MacroCommand
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
@@ -90,14 +86,14 @@ internal class ActionCommand : MacroCommand
         {
             if (Configuration.CraftSkip)
             {
-                if (IsNotCrafting())
+                if (CommandInterface.IsNotCrafting())
                 {
                     PluginLog.Debug($"Not crafting skip: {this.Text}");
                     await Task.Delay(10, token);
                     return;
                 }
 
-                if (HasMaxProgress())
+                if (CommandInterface.HasMaxProgress())
                 {
                     PluginLog.Debug($"Max progress skip: {this.Text}");
                     await Task.Delay(10, token);
@@ -111,7 +107,7 @@ internal class ActionCommand : MacroCommand
                 return;
             }
 
-            if (Configuration.QualitySkip && IsSkippableCraftingQualityAction(this.actionName) && HasMaxQuality())
+            if (Configuration.QualitySkip && IsSkippableCraftingQualityAction(this.actionName) && CommandInterface.HasMaxQuality())
             {
                 PluginLog.Debug($"Max quality skip: {this.Text}");
                 return;
@@ -141,58 +137,9 @@ internal class ActionCommand : MacroCommand
         }
     }
 
-    private static bool IsCrafting() => DalamudServices.Condition[ConditionFlag.Crafting] && !DalamudServices.Condition[ConditionFlag.PreparingToCraft];
-
-    private static bool IsNotCrafting() => !IsCrafting();
-
     private static bool IsCraftingAction(string name) => CraftingActionNames.Contains(name);
 
     private static bool IsSkippableCraftingQualityAction(string name) => CraftingQualityActionNames.Contains(name);
-
-    private static unsafe bool HasMaxProgress()
-    {
-        var addon = DalamudServices.GameGui.GetAddonByName("Synthesis", 1);
-        if (addon == IntPtr.Zero)
-        {
-            PluginLog.Debug("Could not find Synthesis addon");
-            return false;
-        }
-
-        var addonPtr = (AddonSynthesis*)addon;
-        var curProgress = GetNodeTextAsInt(addonPtr->CurrentProgress, "Could not parse progress number in the Synthesis addon");
-        var maxProgress = GetNodeTextAsInt(addonPtr->MaxProgress, "Could not parse max progress number in the Synthesis addon");
-        return curProgress == maxProgress;
-    }
-
-    private static unsafe bool HasMaxQuality()
-    {
-        var addon = DalamudServices.GameGui.GetAddonByName("Synthesis", 1);
-        if (addon == IntPtr.Zero)
-        {
-            PluginLog.Debug("Could not find Synthesis addon");
-            return false;
-        }
-
-        var addonPtr = (AddonSynthesis*)addon;
-
-        var step = GetNodeTextAsInt(addonPtr->StepNumber, "Could not parse step number in the Synthesis addon");
-
-        if (step <= 1)
-        {
-            return false;
-        }
-
-        var isCollectable = addonPtr->AtkUnitBase.UldManager.NodeList[34]->IsVisible;
-        if (isCollectable)
-        {
-            var curQuality = GetNodeTextAsInt(addonPtr->CurrentQuality, "Could not parse current quality number in the Synthesis addon");
-            var maxQuality = GetNodeTextAsInt(addonPtr->MaxQuality, "Could not parse max quality number number in the Synthesis addon");
-            return curQuality == maxQuality;
-        }
-
-        var percentHq = GetNodeTextAsInt(addonPtr->HQPercentage, "Could not parse percent hq number in the Synthesis addon");
-        return percentHq == 100;
-    }
 
     private static void PopulateCraftingNames()
     {
@@ -231,24 +178,6 @@ internal class ActionCommand : MacroCommand
         }
     }
 
-    private static unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
-    {
-        if (node == null)
-        {
-            throw new NullReferenceException("Node is null");
-        }
-
-        var text = node->NodeText.ToString().ToLowerInvariant();
-
-        if (!int.TryParse(text, out var value))
-        {
-            PluginLog.Debug($"Bad text value: {text}");
-            throw new MacroCommandError(error);
-        }
-
-        return value;
-    }
-
     private static void PopulateCraftingQualityActionNames()
     {
         var craftIDs = new uint[]
@@ -277,16 +206,14 @@ internal class ActionCommand : MacroCommand
         var actions = DalamudServices.DataManager.GetExcelSheet<Action>()!;
         foreach (var actionId in actionIDs)
         {
-            var row = actions.GetRow(actionId)!;
-            var name = row.Name.RawString.ToLowerInvariant();
+            var name = actions.GetRow(actionId)!.Name.RawString.ToLowerInvariant();
             CraftingQualityActionNames.Add(name);
         }
 
         var craftActions = DalamudServices.DataManager.GetExcelSheet<CraftAction>()!;
         foreach (var craftId in craftIDs)
         {
-            var row = craftActions.GetRow(craftId)!;
-            var name = row.Name.RawString.ToLowerInvariant();
+            var name = craftActions.GetRow(craftId)!.Name.RawString.ToLowerInvariant();
             CraftingQualityActionNames.Add(name);
         }
     }

@@ -42,6 +42,7 @@ internal sealed class MacroModule : IModule, IDisposable
     {
         MacroCommand.SetServiceProvider(provider);
         MacroModifier.SetServiceProvider(provider);
+        ActiveMacro.SetServiceProvider(provider);
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
         this.macroManager = provider.GetRequiredService<MacroManager>();

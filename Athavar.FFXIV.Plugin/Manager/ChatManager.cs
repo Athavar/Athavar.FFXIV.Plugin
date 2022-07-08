@@ -66,33 +66,15 @@ internal class ChatManager : IDisposable, IChatManager
     }
 
     /// <inheritdoc />
-    public void PrintChat(string message, XivChatType? type = null) => this.PrintChat((SeString)message, type);
+    public void PrintChat(SeString message, XivChatType? type = null) => this.SendMessageInternal(message, type);
 
     /// <inheritdoc />
-    public void PrintChat(SeString message, XivChatType? type = null)
-    {
-        message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
-        if (type is not null)
-        {
-            this.dalamud.ChatGui.PrintChat(new XivChatEntry
-                                           {
-                                               Message = message,
-                                               Type = type.Value,
-                                           });
-        }
-        else
-        {
-            this.dalamud.ChatGui.Print(message);
-        }
-    }
-
-    /// <inheritdoc />
-    public void PrintErrorMessage(string message) => this.dalamud.ChatGui.PrintError($"[{Plugin.PluginName}] {message}");
+    public void PrintChat(SeString message, IChatManager.UiColor color, XivChatType? type = null) => this.SendMessageInternal(message, type, color);
 
     /// <inheritdoc />
     public void PrintErrorMessage(SeString message)
     {
-        message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
+        message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}]"));
         this.dalamud.ChatGui.PrintError(message);
     }
 
@@ -108,6 +90,29 @@ internal class ChatManager : IDisposable, IChatManager
         var reader = this.chatBoxMessages.Reader;
         while (reader.Count > 0 && reader.TryRead(out var _))
         {
+        }
+    }
+
+    private void SendMessageInternal(SeString message, XivChatType? type, IChatManager.UiColor? color = null)
+    {
+        message.Payloads.Insert(0, new TextPayload($"[{Plugin.PluginName}] "));
+        if (color is not null)
+        {
+            message.Payloads.Insert(0, new UIForegroundPayload((ushort)color));
+            _ = message.Payloads.Append(UIForegroundPayload.UIForegroundOff);
+        }
+
+        if (type is not null)
+        {
+            this.dalamud.ChatGui.PrintChat(new XivChatEntry
+                                           {
+                                               Message = message,
+                                               Type = type.Value,
+                                           });
+        }
+        else
+        {
+            this.dalamud.ChatGui.Print(message);
         }
     }
 

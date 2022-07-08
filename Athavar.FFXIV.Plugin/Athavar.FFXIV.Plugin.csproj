@@ -4,47 +4,40 @@
         <Authors>athavar</Authors>
         <Company>-</Company>
         <Version>1.3.6</Version>
-        <Description>A sample plugin.</Description>
-        <Copyright>Copyright © 2022</Copyright>
+        <Description></Description>
+        <Copyright></Copyright>
         <PackageProjectUrl>https://github.com/Athavar/Athavar.FFXIV.Plugin</PackageProjectUrl>
-        <IsPackable>false</IsPackable>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
-    <PropertyGroup Label="Target">
-        <PlatformTarget>x64</PlatformTarget>
-        <TargetFramework>net5.0-windows</TargetFramework>
-        <LangVersion>10</LangVersion>
-        <Platforms>x64</Platforms>
-        <Configurations>Debug;Release</Configurations>
-    </PropertyGroup>
-    <PropertyGroup Label="Build">
-        <OutputType>Library</OutputType>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendPlatformToOutputPath>false</AppendPlatformToOutputPath>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    </PropertyGroup>
-    <PropertyGroup Label="Feature">
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    </PropertyGroup>
     <PropertyGroup>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <Platforms>x64</Platforms>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <Configurations>Debug;Release</Configurations>
+        <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Label="Documentation">
+        <DocumentationFile></DocumentationFile>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="..\Data\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false"/>
+        <Content Include="..\Data\icon.png" Link="images\icon.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
     </ItemGroup>
 
-    <PropertyGroup>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-        <!--DalamudLibPath>/home/athavar/Games/.shared/ffxiv/XIVLauncher/addon/Hooks/dev</DalamudLibPath-->
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+        <DalamudLibPath>$(home)/.xlcore/addon/Hooks/dev</DalamudLibPath>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -55,30 +48,50 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\.editorconfig" Link=".editorconfig"/>
-        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json"/>
+        <None Include="..\.editorconfig" Link=".editorconfig" />
+        <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.7" GeneratePathProperty="false"/>
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
-        <PackageReference Include="Reloaded.Memory" Version="5.0.0"/>
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354">
+        <PackageReference Include="DalamudPackager" Version="2.1.7" GeneratePathProperty="false" />
+        <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="NLua" Version="1.6.0" />
+        <PackageReference Include="Reloaded.Memory" Version="7.1.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0"/>
-        <PackageReference Include="System.Threading.Channels" Version="6.0.0"/>
-        <ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj"/>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+        <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
+        <ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" />
         <!-->Reference Include="FFXIVClientStructs">
           <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
           <Private>false</Private>
         </Reference-->
-        <Reference Include="Newtonsoft.Json" Private="False"/>
-        <Reference Include="Dalamud" Private="False"/>
-        <Reference Include="ImGui.NET" Private="False"/>
-        <Reference Include="ImGuiScene" Private="False"/>
-        <Reference Include="Lumina" Private="False"/>
-        <Reference Include="Lumina.Excel" Private="False"/>
+        <Reference Include="Newtonsoft.Json" Private="False" />
+        <Reference Include="Dalamud" Private="False" />
+        <Reference Include="ImGui.NET" Private="False" />
+        <Reference Include="ImGuiScene" Private="False" />
+        <Reference Include="Lumina" Private="False" />
+        <Reference Include="Lumina.Excel" Private="False" />
     </ItemGroup>
+
+    <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE'">
+        <ItemGroup>
+            <InputAssemblies Include="$(TargetPath)" />
+            <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath);$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll;$(TargetDir)Serilog.dll" />
+        </ItemGroup>
+        <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /lib:$(AdditionalLibPaths) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
+    </Target>
+
+    <Target Name="CleanOutDir" AfterTargets="ILRepack">
+        <ItemGroup>
+            <DeleteFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll;$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll" />
+            <DeleteFiles Include="$(TargetDir)*.pdb" Exclude="$(TargetDir)$(TargetName).pdb" />
+            <DeleteFiles Include="$(TargetDir)*.xml" />
+        </ItemGroup>
+        <Message Text="Deleting @(DeleteFiles)" Importance="high" />
+        <Delete Files="@(DeleteFiles)" />
+    </Target>
 </Project>

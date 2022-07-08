@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
-using Dalamud.Game.Text;
 using Dalamud.Logging;
 
 /// <summary>
@@ -71,7 +70,7 @@ internal class LoopCommand : MacroCommand
     }
 
     /// <inheritdoc />
-    public override async Task Execute(CancellationToken token)
+    public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
 
@@ -79,7 +78,7 @@ internal class LoopCommand : MacroCommand
         {
             if (this.echoMod.PerformEcho || Configuration.LoopEcho)
             {
-                ChatManager.PrintChat(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining", XivChatType.Echo);
+                ChatManager.PrintChat(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
             }
 
             this.loopsRemaining--;
@@ -91,11 +90,10 @@ internal class LoopCommand : MacroCommand
             }
         }
 
-        MacroManager.Loop();
-
-        await this.PerformWait(token);
-
+        macro.Loop();
         MacroManager.LoopCheckForPause();
         MacroManager.LoopCheckForStop();
+
+        await this.PerformWait(token);
     }
 }

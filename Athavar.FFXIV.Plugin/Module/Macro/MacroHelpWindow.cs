@@ -7,8 +7,10 @@ namespace Athavar.FFXIV.Plugin.Module.Macro;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
@@ -72,6 +74,31 @@ internal class MacroHelpWindow : Window
                 "/require \"Well Fed\"",
             }),
         (
+            "requirequality", null,
+            "Require a certain amount of quality be present before continuing.",
+            new[] { "wait", "maxwait" },
+            new[]
+            {
+                "/requirequality 3000",
+            }),
+        (
+            "requirerepair", null,
+            "Pause if an item is at zero durability.",
+            new[] { "wait" },
+            new[]
+            {
+                "/requirerepair",
+            }),
+        (
+            "requirespiritbond", null,
+            "Pause when an item is ready to have materia extracted. Optional argument to keep crafting if the next highest spiritbond is greater-than-or-equal to the argument value.",
+            new[] { "wait" },
+            new[]
+            {
+                "/requirespiritbond",
+                "/requirespiritbond 99.5",
+            }),
+        (
             "requirestats", null,
             "Require a certain amount of stats effect to be present before continuing. Syntax is Craftsmanship, Control, then CP.",
             new[] { "wait", "maxwait" },
@@ -89,12 +116,13 @@ internal class MacroHelpWindow : Window
             }),
         (
             "send", null,
-            "Send an arbitrary keystroke.",
+            "Send an arbitrary keystroke with optional modifiers. Keys are pressed in the same order as the command",
             new[] { "wait" },
             new[]
             {
                 "/send MULTIPLY",
                 "/send NUMPAD0",
+                "/send CONTROL+MENU+SHIFT+NUMPAD0",
             }),
         (
             "target", null,
@@ -181,7 +209,6 @@ internal class MacroHelpWindow : Window
     };
 
     private readonly IList<string> clickNames;
-    private readonly MacroConfiguration configuration;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroHelpWindow" /> class.
@@ -192,7 +219,7 @@ internal class MacroHelpWindow : Window
     public MacroHelpWindow(WindowSystem windowSystem, IClick click, Configuration configuration)
         : base($"{Plugin.PluginName} Macro Help")
     {
-        this.configuration = configuration.Macro!;
+        this.Configuration = configuration.Macro!;
         this.Flags |= ImGuiWindowFlags.NoScrollbar;
 
         this.Size = new Vector2(400, 600);
@@ -202,6 +229,8 @@ internal class MacroHelpWindow : Window
         this.clickNames = click.GetClickNames();
         windowSystem.AddWindow(this);
     }
+
+    private MacroConfiguration Configuration { get; }
 
     /// <inheritdoc />
     public override void Draw()
@@ -213,6 +242,7 @@ internal class MacroHelpWindow : Window
                            ("Options", this.DrawOptions),
                            ("Commands", this.DrawCommands),
                            ("Modifiers", this.DrawModifiers),
+                           ("Lua", this.DrawLua),
                            ("CLI", this.DrawCli),
                            ("Clicks", this.DrawClicks),
                            ("Sends", this.DrawVirtualKeys),
@@ -250,121 +280,191 @@ internal class MacroHelpWindow : Window
         }
 
         ImGui.PushFont(UiBuilder.MonoFont);
+        if (ImGui.CollapsingHeader("Crafting skips"))
         {
-            var craftSkip = this.configuration.CraftSkip;
+            var craftSkip = this.Configuration.CraftSkip;
             if (ImGui.Checkbox("Craft Skip", ref craftSkip))
             {
-                this.configuration.CraftSkip = craftSkip;
-                this.configuration.Save();
+                this.Configuration.CraftSkip = craftSkip;
+                this.Configuration.Save();
             }
 
             DisplayOption("- Skip craft actions when not crafting.");
-        }
 
-        {
-            var craftWaitSkip = this.configuration.CraftWaitSkip;
+            ImGui.Separator();
+
+            var craftWaitSkip = this.Configuration.CraftWaitSkip;
             if (ImGui.Checkbox("Craft Wait Skip", ref craftWaitSkip))
             {
-                this.configuration.CraftWaitSkip = craftWaitSkip;
-                this.configuration.Save();
+                this.Configuration.CraftWaitSkip = craftWaitSkip;
+                this.Configuration.Save();
             }
 
             DisplayOption("- Ignore <wait> in craft commands and execute next line as soon as possible.");
-        }
 
-        {
-            var qualitySkip = this.configuration.QualitySkip;
+            ImGui.Separator();
+
+            var qualitySkip = this.Configuration.QualitySkip;
             if (ImGui.Checkbox("Quality Skip", ref qualitySkip))
             {
-                this.configuration.QualitySkip = qualitySkip;
-                this.configuration.Save();
+                this.Configuration.QualitySkip = qualitySkip;
+                this.Configuration.Save();
             }
 
             DisplayOption("- Skip quality increasing actions when the HQ chance is at 100%. If you depend on durability increases from Manipulation towards the end of your macro, you will likely want to disable this.");
         }
 
+        if (ImGui.CollapsingHeader("Loop echo"))
         {
-            var loopTotal = this.configuration.LoopTotal;
+            var loopTotal = this.Configuration.LoopTotal;
             if (ImGui.Checkbox("Loop Total", ref loopTotal))
             {
-                this.configuration.LoopTotal = loopTotal;
-                this.configuration.Save();
+                this.Configuration.LoopTotal = loopTotal;
+                this.Configuration.Save();
             }
 
             DisplayOption("- The numeric option provided to /loop will be considered as the total number of iterations, rather than the amount of times to loop. Internally, this will just subtract 1 from your /loop <amount> command.");
-        }
 
-        {
-            var loopEcho = this.configuration.LoopEcho;
+            ImGui.Separator();
+
+            var loopEcho = this.Configuration.LoopEcho;
             if (ImGui.Checkbox("Craft and Loop Echo", ref loopEcho))
             {
-                this.configuration.LoopEcho = loopEcho;
-                this.configuration.Save();
+                this.Configuration.LoopEcho = loopEcho;
+                this.Configuration.Save();
             }
 
             DisplayOption("- /loop and /craft commands will always have an <echo> tag applied.");
         }
 
+        if (ImGui.CollapsingHeader("Font"))
         {
-            var disableMonospaced = this.configuration.DisableMonospaced;
+            var disableMonospaced = this.Configuration.DisableMonospaced;
             if (ImGui.Checkbox("Disable Monospaced fonts", ref disableMonospaced))
             {
-                this.configuration.DisableMonospaced = disableMonospaced;
-                this.configuration.Save();
+                this.Configuration.DisableMonospaced = disableMonospaced;
+                this.Configuration.Save();
             }
 
             DisplayOption("- Use the regular font instead of monospaced in the macro window. This may be handy for JP users so as to prevent missing unicode errors.");
         }
 
         // Crafting Loop
+        if (ImGui.CollapsingHeader("Craft loop"))
         {
-            var craftLoopFromRecipeNote = this.configuration.CraftLoopFromRecipeNote;
-            if (ImGui.Checkbox("CraftLoop starts in the Crafting Log", ref craftLoopFromRecipeNote))
+            var useCraftLoopTemplate = this.Configuration.UseCraftLoopTemplate;
+            if (ImGui.Checkbox("Enable CraftLoop templating", ref useCraftLoopTemplate))
             {
-                this.configuration.CraftLoopFromRecipeNote = craftLoopFromRecipeNote;
-                this.configuration.Save();
+                this.Configuration.UseCraftLoopTemplate = useCraftLoopTemplate;
+                this.Configuration.Save();
             }
 
-            DisplayOption("- When enabled the CraftLoop option will expect the Crafting Log to be visible, otherwise the Synthesis window must be visible.");
-
-            var craftLoopEcho = this.configuration.CraftLoopEcho;
-            if (ImGui.Checkbox("CraftLoop echo", ref craftLoopEcho))
+            DisplayOption("- When enabled the CraftLoop template will replace various placeholders with values.");
+            if (useCraftLoopTemplate)
             {
-                this.configuration.CraftLoopEcho = craftLoopEcho;
-                this.configuration.Save();
-            }
+                var craftLoopTemplate = this.Configuration.CraftLoopTemplate;
+                const string macroKeyword = "{{macro}}";
+                const string countKeyword = "{{count}}";
 
-            DisplayOption("- When enabled the /craft or /gate commands supplied by the CraftLoop option will have an echo modifier.");
-
-            var craftLoopMaxWait = this.configuration.CraftLoopMaxWait;
-            ImGui.SetNextItemWidth(50);
-            if (ImGui.InputInt("CraftLoop maxwait", ref craftLoopMaxWait, 0))
-            {
-                if (craftLoopMaxWait < 0)
+                if (!craftLoopTemplate.Contains(macroKeyword))
                 {
-                    craftLoopMaxWait = 0;
+                    ImGui.TextColored(ImGuiColors.DPSRed, $"{macroKeyword} must be present in the template");
                 }
 
-                if (craftLoopMaxWait != this.configuration.CraftLoopMaxWait)
+                DisplayOption($"- {macroKeyword} inserts the current macro content.");
+                DisplayOption($"- {countKeyword} inserts the loop count for various commands.");
+
+                if (ImGui.InputTextMultiline("CraftLoopTemplate", ref craftLoopTemplate, 100_000, new Vector2(-1, 200)))
                 {
-                    this.configuration.CraftLoopMaxWait = craftLoopMaxWait;
-                    this.configuration.Save();
+                    this.Configuration.CraftLoopTemplate = craftLoopTemplate;
+                    this.Configuration.Save();
                 }
             }
+            else
+            {
+                var craftLoopFromRecipeNote = this.Configuration.CraftLoopFromRecipeNote;
+                if (ImGui.Checkbox("CraftLoop starts in the Crafting Log", ref craftLoopFromRecipeNote))
+                {
+                    this.Configuration.CraftLoopFromRecipeNote = craftLoopFromRecipeNote;
+                    this.Configuration.Save();
+                }
 
-            DisplayOption("- The CraftLoop /waitaddon \"...\" <maxwait> modifiers have their maximum wait set to this value.");
+                DisplayOption("- When enabled the CraftLoop option will expect the Crafting Log to be visible, otherwise the Synthesis window must be visible.");
+
+                var craftLoopEcho = this.Configuration.CraftLoopEcho;
+                if (ImGui.Checkbox("CraftLoop echo", ref craftLoopEcho))
+                {
+                    this.Configuration.CraftLoopEcho = craftLoopEcho;
+                    this.Configuration.Save();
+                }
+
+                DisplayOption("- When enabled the /craft or /gate commands supplied by the CraftLoop option will have an echo modifier.");
+
+                ImGui.SetNextItemWidth(50);
+                var craftLoopMaxWait = this.Configuration.CraftLoopMaxWait;
+                if (ImGui.InputInt("CraftLoop maxwait", ref craftLoopMaxWait, 0))
+                {
+                    if (craftLoopMaxWait < 0)
+                    {
+                        craftLoopMaxWait = 0;
+                    }
+
+                    if (craftLoopMaxWait != this.Configuration.CraftLoopMaxWait)
+                    {
+                        this.Configuration.CraftLoopMaxWait = craftLoopMaxWait;
+                        this.Configuration.Save();
+                    }
+                }
+
+                DisplayOption("- The CraftLoop /waitaddon \"...\" <maxwait> modifiers have their maximum wait set to this value.");
+            }
         }
 
-        // NoisyErrors
+        if (ImGui.CollapsingHeader("Error beeps"))
         {
-            var noisyErrors = this.configuration.NoisyErrors;
+            var noisyErrors = this.Configuration.NoisyErrors;
             if (ImGui.Checkbox("Noisy errors", ref noisyErrors))
             {
-                this.configuration.NoisyErrors = noisyErrors;
-                this.configuration.Save();
+                this.Configuration.NoisyErrors = noisyErrors;
+                this.Configuration.Save();
             }
 
-            DisplayOption("- When a check fails or error happens, some helpful sounds will play to get your attention.");
+            DisplayOption("- When a check fails or error happens, some helpful beeps will play to get your attention.");
+
+            ImGui.SetNextItemWidth(50f);
+            var beepFrequency = this.Configuration.BeepFrequency;
+            if (ImGui.InputInt("Beep frequency", ref beepFrequency, 0))
+            {
+                this.Configuration.BeepFrequency = beepFrequency;
+                this.Configuration.Save();
+            }
+
+            ImGui.SetNextItemWidth(50f);
+            var beepDuration = this.Configuration.BeepDuration;
+            if (ImGui.InputInt("Beep duration", ref beepDuration, 0))
+            {
+                this.Configuration.BeepDuration = beepDuration;
+                this.Configuration.Save();
+            }
+
+            ImGui.SetNextItemWidth(50f);
+            var beepCount = this.Configuration.BeepCount;
+            if (ImGui.InputInt("Beep count", ref beepCount, 0))
+            {
+                this.Configuration.BeepCount = beepCount;
+                this.Configuration.Save();
+            }
+
+            if (ImGui.Button("Beep test"))
+            {
+                Task.Run(() =>
+                {
+                    for (var i = 0; i < beepCount; i++)
+                    {
+                        Console.Beep(beepFrequency, beepDuration);
+                    }
+                });
+            }
         }
 
         ImGui.PopFont();
@@ -457,6 +557,66 @@ internal class MacroHelpWindow : Window
 
             ImGui.Separator();
         }
+
+        ImGui.PopFont();
+    }
+
+    private void DrawLua()
+    {
+        ImGui.PushFont(UiBuilder.MonoFont);
+
+        var text = @"
+Lua scripts work by yielding commands back to the macro engine.
+
+For example:
+
+yield(""/ac Muscle memory <wait.3>"")
+yield(""/ac Precise touch <wait.2>"")
+yield(""/echo done!"")
+...and so on.
+
+Documentation for these functions are available at https://github.com/daemitus/SomethingNeedDoing
+
+===Available functions===
+bool IsCrafting()
+bool IsNotCrafting()
+bool IsCollectable()
+
+// lower: Get the condition in lowercase
+string GetCondition(bool lower = true)
+
+// condition: The condition name, as displayed in the UI
+// lower:     Get the condition in lowercase
+bool HasCondition(string condition, bool lower = true)
+
+int GetProgress()
+int GetMaxProgress()
+bool HasMaxProgress()
+
+int GetQuality()
+int GetMaxQuality()
+bool HasMaxQuality()
+int GetDurability()
+int GetMaxDurability()
+int GetCp()
+int GetMaxCp()
+int GetStep()
+int GetPercentHQ()
+bool NeedsRepair()
+
+// within: Return false if the next highest spiritbond is >= the within value.
+bool CanExtractMateria(float within = 100)
+
+bool HasStats(uint craftsmanship, uint control, uint cp)
+
+// name: status effect name
+bool HasStatus(string name)
+
+// id: status effect id(s).
+bool HasStatusId(uint id, ...)
+".Trim();
+
+        ImGui.TextWrapped(text);
 
         ImGui.PopFont();
     }

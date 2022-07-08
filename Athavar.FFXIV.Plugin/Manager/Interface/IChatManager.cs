@@ -13,11 +13,38 @@ using Dalamud.Game.Text.SeStringHandling;
 internal interface IChatManager
 {
     /// <summary>
-    ///     Print a information message to the chat window.
+    ///     Colors for SeString payloads.
     /// </summary>
-    /// <param name="message">The message to print.</param>
-    /// <param name="type">The chat type.</param>
-    void PrintChat(string message, XivChatType? type = null);
+    /// <remarks>
+    ///     https://github.com/Caraxi/SimpleTweaksPlugin/blob/main/images/placeholderHelp.png.
+    /// </remarks>
+    public enum UiColor
+    {
+        /// <summary>
+        ///     Orange.
+        /// </summary>
+        Orange = 500,
+
+        /// <summary>
+        ///     Blue.
+        /// </summary>
+        Blue = 502,
+
+        /// <summary>
+        ///     Green.
+        /// </summary>
+        Green = 504,
+
+        /// <summary>
+        ///     Yellow.
+        /// </summary>
+        Yellow = 506,
+
+        /// <summary>
+        ///     Red.
+        /// </summary>
+        Red = 508,
+    }
 
     /// <summary>
     ///     Print a information message to the chat window.
@@ -27,10 +54,12 @@ internal interface IChatManager
     void PrintChat(SeString message, XivChatType? type = null);
 
     /// <summary>
-    ///     Print an error message to the chat window.
+    ///     Print a information message to the chat window.
     /// </summary>
     /// <param name="message">The message to print.</param>
-    void PrintErrorMessage(string message);
+    /// <param name="color">The text color.</param>
+    /// <param name="type">The chat type.</param>
+    void PrintChat(SeString message, UiColor color, XivChatType? type = null);
 
     /// <summary>
     ///     Print an error message to the chat window.
@@ -40,6 +69,7 @@ internal interface IChatManager
 
     /// <summary>
     ///     Process a command through the chat box.
+    ///     Can also modify the message.
     /// </summary>
     /// <param name="message">Message to send.</param>
     void SendMessage(string message);

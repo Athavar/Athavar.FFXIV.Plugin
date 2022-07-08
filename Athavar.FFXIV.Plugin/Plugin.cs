@@ -153,6 +153,7 @@ public sealed class Plugin : IDalamudPlugin
         service.AddSingleton<KeyStateExtended>();
         service.AddSingleton<AutoTranslateWindow>();
         service.AddSingleton<IClick, Click>();
+        service.AddSingleton<ICommandInterface, CommandInterface>();
 
         service.AddMacroModule();
         service.AddYesModule();

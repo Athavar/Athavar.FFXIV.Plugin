@@ -25,6 +25,7 @@ internal abstract class MacroCommand
     private static IChatManager? chatManager;
     private static MacroManager? macroManager;
     private static MacroConfiguration? configuration;
+    private static ICommandInterface? commandInterface;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroCommand" /> class.
@@ -80,6 +81,11 @@ internal abstract class MacroCommand
     protected static MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
+    ///     Gets the <see cref="MacroManager" />.
+    /// </summary>
+    protected static ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
+
+    /// <summary>
     ///     Gets the milliseconds to wait.
     /// </summary>
     protected int Wait { get; }
@@ -95,9 +101,10 @@ internal abstract class MacroCommand
     /// <summary>
     ///     Execute a macro command.
     /// </summary>
+    /// <param name="macro"></param>
     /// <param name="token">Async cancellation token.</param>
     /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
-    public abstract Task Execute(CancellationToken token);
+    public abstract Task Execute(ActiveMacro macro, CancellationToken token);
 
     /// <summary>
     ///     Setup the <see cref="IServiceProvider" /> for all commands.
@@ -110,6 +117,7 @@ internal abstract class MacroCommand
         chatManager = serviceProvider.GetRequiredService<IChatManager>();
         macroManager = serviceProvider.GetRequiredService<MacroManager>();
         configuration = serviceProvider.GetRequiredService<Configuration>().Macro!;
+        commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
     }
 
     /// <summary>
@@ -201,7 +209,7 @@ internal abstract class MacroCommand
     /// <param name="token">Cancellation token.</param>
     /// <returns>A value indicating whether the action succeeded.</returns>
     /// <typeparam name="T">Result type.</typeparam>
-    protected async Task<bool> LinearWait<T>(int interval, int until, Func<bool> action, CancellationToken token)
+    protected async Task<bool> LinearWait(int interval, int until, Func<bool> action, CancellationToken token)
     {
         var totalWait = 0;
         while (true)
