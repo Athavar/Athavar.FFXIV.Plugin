@@ -344,7 +344,7 @@ internal class CommandInterface : ICommandInterface
         }
 
         var addon = (AtkUnitBase*)ptr;
-        return addon->UldManager.LoadedState == 3;
+        return addon->UldManager.LoadedState == AtkLoadState.Loaded;
     }
 
     /// <inheritdoc />
