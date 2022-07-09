@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon JournalResult.
 /// </summary>
-public sealed unsafe class ClickJournalResult : ClickAddonBase<AddonJournalResult>
+public sealed unsafe class ClickJournalResult : ClickBase<ClickJournalResult, AddonJournalResult>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickJournalResult" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickJournalResult(IntPtr addon = default)
-        : base(addon)
+        : base("JournalResult", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "JournalResult";
 
     public static implicit operator ClickJournalResult(IntPtr addon) => new(addon);
 
@@ -38,11 +36,11 @@ public sealed unsafe class ClickJournalResult : ClickAddonBase<AddonJournalResul
     ///     Click the complete button.
     /// </summary>
     [ClickName("journal_result_complete")]
-    public void Complete() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->CompleteButton, 1);
+    public void Complete() => this.ClickAddonButton(this.Addon->CompleteButton, 1);
 
     /// <summary>
     ///     Click the decline button.
     /// </summary>
     [ClickName("journal_result_decline")]
-    public void Decline() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->DeclineButton, 2);
+    public void Decline() => this.ClickAddonButton(this.Addon->DeclineButton, 2);
 }

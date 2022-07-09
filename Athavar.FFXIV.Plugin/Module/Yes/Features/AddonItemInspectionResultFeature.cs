@@ -23,8 +23,9 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
     ///     Initializes a new instance of the <see cref="AddonItemInspectionResultFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonItemInspectionResultFeature(YesModule module)
-        : base(module.AddressResolver.AddonItemInspectionResultOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 8B F2 49 8B F8 BA ?? ?? ?? ?? 48 8B D9 E8 ?? ?? ?? ?? 48 8B C8 E8 ?? ?? ?? ?? 48 8B D0", module)
         => this.module = module;
 
     /// <inheritdoc />

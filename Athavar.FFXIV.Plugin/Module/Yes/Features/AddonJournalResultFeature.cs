@@ -19,7 +19,7 @@ internal class AddonJournalResultFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonJournalResultFeature(YesModule module)
-        : base(module.AddressResolver.AddonJournalResultOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 8B EA 49 8B F0 BA ?? ?? ?? ?? 48 8B F9 E8 ?? ?? ?? ?? BA ?? ?? ?? ?? 48 89 87", module)
     {
     }
 

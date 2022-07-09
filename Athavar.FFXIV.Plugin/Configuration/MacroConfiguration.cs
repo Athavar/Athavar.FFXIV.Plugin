@@ -63,10 +63,10 @@ internal class MacroConfiguration
     /// </summary>
     public string CraftLoopTemplate { get; set; } =
         "/craft {{count}}\n" +
-        "/waitaddon \"RecipeNote\" <maxwait.5>" +
-        "/click \"synthesize\"" +
-        "/waitaddon \"Synthesis\" <maxwait.5>" +
-        "{{macro}}" +
+        "/waitaddon \"RecipeNote\" <maxwait.5>\n" +
+        "/click \"synthesize\"\n" +
+        "/waitaddon \"Synthesis\" <maxwait.5>\n" +
+        "{{macro}}\n" +
         "/loop";
 
     /// <summary>

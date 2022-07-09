@@ -5,26 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     Addon ItemInspectionResult.
 /// </summary>
-public sealed unsafe class ClickItemInspectionResult : ClickAddonBase<AddonItemInspectionResult>
+public sealed class ClickItemInspectionResult : ClickBase<ClickItemInspectionResult, AddonItemInspectionResult>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickItemInspectionResult" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickItemInspectionResult(IntPtr addon = default)
-        : base(addon)
+        : base("ItemInspectionResult", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "ItemInspectionResult";
 
     public static implicit operator ClickItemInspectionResult(IntPtr addon) => new(addon);
 
@@ -39,11 +36,11 @@ public sealed unsafe class ClickItemInspectionResult : ClickAddonBase<AddonItemI
     ///     Click the next button.
     /// </summary>
     [ClickName("item_inspection_result_next")]
-    public void Next() => ClickAddonButton(&this.Addon->AtkUnitBase, (AtkComponentButton*)this.Addon->AtkUnitBase.UldManager.NodeList[2], 0);
+    public void Next() => this.ClickAddonButtonIndex(2, 0);
 
     /// <summary>
     ///     Click the close button.
     /// </summary>
     [ClickName("item_inspection_result_close")]
-    public void Close() => ClickAddonButton(&this.Addon->AtkUnitBase, (AtkComponentButton*)this.Addon->AtkUnitBase.UldManager.NodeList[3], 0xFFFF_FFFF);
+    public void Close() => this.ClickAddonButtonIndex(3, 0xFFFF_FFFF);
 }

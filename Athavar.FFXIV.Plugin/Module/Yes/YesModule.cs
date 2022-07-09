@@ -11,7 +11,6 @@ using System.Text;
 using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
-using Athavar.FFXIV.Plugin.Module.Yes.Features;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
@@ -55,7 +54,6 @@ internal sealed class YesModule : IModule, IDisposable
         this.ChatManager = chatManager;
         this.configTab = configTab;
         this.pluginWindow = pluginWindow;
-        this.AddressResolver = addressResolver;
 
         this.Configuration = configuration.Yes ??= new YesConfiguration();
 
@@ -63,20 +61,10 @@ internal sealed class YesModule : IModule, IDisposable
 
         this.DalamudServices.Framework.Update += this.FrameworkUpdate;
 
-        this.features.Add(new AddonSelectYesNoFeature(this));
-        this.features.Add(new AddonSelectStringFeature(this));
-        this.features.Add(new AddonSelectIconStringFeature(this));
-        this.features.Add(new AddonSalvageDialogFeature(this));
-        this.features.Add(new AddonMaterializeDialogFeature(this));
-        this.features.Add(new AddonMateriaRetrieveDialogFeature(this));
-        this.features.Add(new AddonItemInspectionResultFeature(this));
-        this.features.Add(new AddonRetainerTaskAskFeature(this));
-        this.features.Add(new AddonRetainerTaskResultFeature(this));
-        this.features.Add(new AddonGrandCompanySupplyRewardFeature(this));
-        this.features.Add(new AddonShopCardDialogFeature(this));
-        this.features.Add(new AddonJournalResultFeature(this));
-        this.features.Add(new AddonContentsFinderConfirmFeature(this));
-        this.features.Add(new AddonTalkFeature(this));
+        this.features = new List<IBaseFeature>(this.GetType()
+           .Assembly.GetTypes()
+           .Where(t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(IBaseFeature)))
+           .Select(t => (IBaseFeature)Activator.CreateInstance(t, this)!));
 
         this.DalamudServices.CommandManager.AddHandler(Command, new CommandInfo(this.OnChatCommand)
                                                                 {
@@ -109,14 +97,14 @@ internal sealed class YesModule : IModule, IDisposable
     internal IChatManager ChatManager { get; }
 
     /// <summary>
-    ///     Gets the <see cref="PluginAddressResolver" />.
-    /// </summary>
-    internal PluginAddressResolver AddressResolver { get; }
-
-    /// <summary>
     ///     Gets a mapping of territory IDs to names.
     /// </summary>
     internal Dictionary<uint, string> TerritoryNames { get; } = new();
+
+    /// <summary>
+    ///     Gets the target name when the escape button was last pressed.
+    /// </summary>
+    internal string EscapeTargetName { get; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets the text of the last seen dialog.
@@ -152,6 +140,11 @@ internal sealed class YesModule : IModule, IDisposable
     ///     Gets a value indicating whether the forced yes hotkey is pressed.
     /// </summary>
     internal bool ForcedYesKeyPressed { get; private set; }
+
+    /// <summary>
+    ///     Gets or sets the last selected list node, so the escape only skips that specific one.
+    /// </summary>
+    internal ListEntryNode LastSelectedListNode { get; set; } = new();
 
     /// <inheritdoc />
     public void Dispose()

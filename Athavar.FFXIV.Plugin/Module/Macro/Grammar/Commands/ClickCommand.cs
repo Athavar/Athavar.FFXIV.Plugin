@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Logging;

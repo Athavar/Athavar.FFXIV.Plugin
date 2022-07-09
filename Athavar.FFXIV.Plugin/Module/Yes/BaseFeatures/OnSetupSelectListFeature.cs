@@ -23,10 +23,10 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature" /> class.
     /// </summary>
-    /// <param name="onSetupAddress">Address to the OnSetup method.</param>
+    /// <param name="onSetupSig">Signature to the OnSetup method.</param>
     /// <param name="module"><see cref="YesModule" />.</param>
-    protected OnSetupSelectListFeature(IntPtr onSetupAddress, YesModule module)
-        : base(onSetupAddress, module)
+    protected OnSetupSelectListFeature(string onSetupSig, YesModule module)
+        : base(onSetupSig, module)
     {
         this.dalamudServices = module.DalamudServices;
         this.module = module;
@@ -58,10 +58,6 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     protected unsafe void CompareNodesToEntryTexts(IntPtr addon, PopupMenu* popupMenu)
     {
         var millisSinceLastEscape = (DateTime.Now - this.module.EscapeLastPressed).TotalMilliseconds;
-        if (millisSinceLastEscape < 1000)
-        {
-            return;
-        }
 
         var target = this.dalamudServices.TargetManager.Target;
         var targetName = target != null
@@ -77,6 +73,11 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
                 continue;
             }
 
+            if (millisSinceLastEscape < 1000 && node == this.module.LastSelectedListNode && targetName == this.module.EscapeTargetName)
+            {
+                continue;
+            }
+
             var (matched, index) = this.EntryMatchesTexts(node, texts);
             if (!matched)
             {
@@ -88,6 +89,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
                 if (!string.IsNullOrEmpty(targetName) && this.EntryMatchesTargetName(node, targetName))
                 {
                     PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
+                    this.module.LastSelectedListNode = node;
                     this.SelectItemExecute(addon, index);
                     return;
                 }
@@ -95,6 +97,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             else
             {
                 PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
+                this.module.LastSelectedListNode = node;
                 this.SelectItemExecute(addon, index);
                 return;
             }

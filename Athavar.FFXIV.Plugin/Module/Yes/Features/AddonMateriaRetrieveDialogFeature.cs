@@ -17,8 +17,9 @@ internal class AddonMateriaRetrieveDialogFeature : OnSetupFeature
     ///     Initializes a new instance of the <see cref="AddonMateriaRetrieveDialogFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonMateriaRetrieveDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonMateriaRetrieveDialogOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 8B FA 49 8B D8 BA ?? ?? ?? ?? 48 8B F1 E8 ?? ?? ?? ?? 48 8B C8", module)
     {
     }
 

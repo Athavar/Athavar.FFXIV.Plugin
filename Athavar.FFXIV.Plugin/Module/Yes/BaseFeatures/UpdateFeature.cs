@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Module.Yes.BaseFeatures;
 
 using System;
+using Dalamud.Game;
 using Dalamud.Hooking;
 using Dalamud.Logging;
 
@@ -19,12 +20,14 @@ internal abstract class UpdateFeature : IBaseFeature
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFeature" /> class.
     /// </summary>
-    /// <param name="updateAddress">Address to the Update method.</param>
+    /// <param name="updateSig">Signature to the Update method.</param>
+    /// <param name="scanner"><see cref="SigScanner" /> to scan after signature in memory.</param>
     /// <param name="module">The module.</param>
-    public UpdateFeature(IntPtr updateAddress, YesModule module)
+    public UpdateFeature(string updateSig, YesModule module)
     {
         this.module = module;
-        this.updateHook = new Hook<UpdateDelegate>(updateAddress, this.UpdateDetour);
+        this.HookAddress = module.DalamudServices.SigScanner.ScanText(updateSig);
+        this.updateHook = new Hook<UpdateDelegate>(this.HookAddress, this.UpdateDetour);
         this.updateHook.Enable();
     }
 
@@ -45,6 +48,11 @@ internal abstract class UpdateFeature : IBaseFeature
     ///     Gets the name of the addon being hooked.
     /// </summary>
     protected abstract string AddonName { get; }
+
+    /// <summary>
+    ///     Gets the address of the addon Update function.
+    /// </summary>
+    protected IntPtr HookAddress { get; }
 
     /// <inheritdoc />
     public void Dispose()

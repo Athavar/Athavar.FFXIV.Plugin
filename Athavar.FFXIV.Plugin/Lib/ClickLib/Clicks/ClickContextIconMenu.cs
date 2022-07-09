@@ -11,19 +11,16 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 /// <summary>
 ///     Addon ContextIconMenu.
 /// </summary>
-public sealed class ClickContextIconMenu : ClickAddonBase<AddonContextIconMenu>
+public sealed class ClickContextIconMenu : ClickBase<ClickContextIconMenu, AddonContextIconMenu>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickContextIconMenu" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickContextIconMenu(IntPtr addon = default)
-        : base(addon)
+        : base("ContextIconMenu", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "ContextIconMenu";
 
     public static implicit operator ClickContextIconMenu(IntPtr addon) => new(addon);
 

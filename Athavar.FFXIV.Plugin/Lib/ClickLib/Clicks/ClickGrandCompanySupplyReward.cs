@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon GrandCompanySupplyReward.
 /// </summary>
-public sealed unsafe class ClickGrandCompanySupplyReward : ClickAddonBase<AddonGrandCompanySupplyReward>
+public sealed unsafe class ClickGrandCompanySupplyReward : ClickBase<ClickGrandCompanySupplyReward, AddonGrandCompanySupplyReward>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickGrandCompanySupplyReward" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickGrandCompanySupplyReward(IntPtr addon = default)
-        : base(addon)
+        : base("GrandCompanySupplyReward", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "GrandCompanySupplyReward";
 
     public static implicit operator ClickGrandCompanySupplyReward(IntPtr addon) => new(addon);
 
@@ -38,11 +36,11 @@ public sealed unsafe class ClickGrandCompanySupplyReward : ClickAddonBase<AddonG
     ///     Click the deliver button.
     /// </summary>
     [ClickName("grand_company_expert_delivery_deliver")]
-    public void Deliver() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->DeliverButton, 0);
+    public void Deliver() => this.ClickAddonButton(this.Addon->DeliverButton, 0);
 
     /// <summary>
     ///     Click the cancel button.
     /// </summary>
     [ClickName("grand_company_expert_delivery_cancel")]
-    public void Cancel() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->CancelButton, 1);
+    public void Cancel() => this.ClickAddonButton(this.Addon->CancelButton, 1);
 }

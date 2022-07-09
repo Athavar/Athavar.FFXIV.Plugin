@@ -53,7 +53,7 @@ internal class RequireSpiritbondCommand : MacroCommand
     /// <inheritdoc />
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        PluginLog.Debug($"Executing: {this.Text} with {this.within}");
 
         if (CommandInterface.CanExtractMateria(this.within))
         {

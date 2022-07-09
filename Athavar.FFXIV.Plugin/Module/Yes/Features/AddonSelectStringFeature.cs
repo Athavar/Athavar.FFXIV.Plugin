@@ -20,7 +20,7 @@ internal class AddonSelectStringFeature : OnSetupSelectListFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonSelectStringFeature(YesModule module)
-        : base(module.AddressResolver.AddonSelectStringOnSetupAddress, module)
+        : base("40 53 56 57 41 54 41 55 41 57 48 83 EC 48 4D 8B F8 44 8B E2 48 8B F1 E8 ?? ?? ?? ??", module)
     {
     }
 

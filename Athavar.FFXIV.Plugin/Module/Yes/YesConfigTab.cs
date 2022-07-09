@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Exceptions;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Game.ClientState.Keys;
@@ -23,7 +24,6 @@ internal class YesConfigTab
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
     private readonly IClick click;
-    private readonly YesConfiguration configuration;
     private readonly ZoneListWindow zoneListWindow;
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
 
@@ -47,20 +47,30 @@ internal class YesConfigTab
     private INode? draggedNode;
     private string debugClickName = string.Empty;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="YesConfigTab" /> class.
+    /// </summary>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
+    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
+    /// <param name="click"><see cref="IClick" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    /// <param name="zoneListWindow"><see cref="ZoneListWindow" /> added by DI.</param>
     public YesConfigTab(IDalamudServices dalamudServices, IChatManager chatManager, IClick click, Configuration configuration, ZoneListWindow zoneListWindow)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
         this.click = click;
-        this.configuration = configuration.Yes!;
+        this.Configuration = configuration.Yes!;
         this.zoneListWindow = zoneListWindow;
     }
 
-    private TextFolderNode RootFolder => this.configuration.RootFolder;
+    private YesConfiguration Configuration { get; }
 
-    private TextFolderNode ListRootFolder => this.configuration.ListRootFolder;
+    private TextFolderNode RootFolder => this.Configuration.RootFolder;
 
-    private TextFolderNode TalkRootFolder => this.configuration.TalkRootFolder;
+    private TextFolderNode ListRootFolder => this.Configuration.ListRootFolder;
+
+    private TextFolderNode TalkRootFolder => this.Configuration.TalkRootFolder;
 
     public void DrawTab()
     {
@@ -74,11 +84,11 @@ internal class YesConfigTab
         this.UiBuilder_TestButton();
 #endif
 
-        var enabled = this.configuration.FunctionEnabled;
+        var enabled = this.Configuration.FunctionEnabled;
         if (ImGui.Checkbox("Enabled", ref enabled))
         {
-            this.configuration.FunctionEnabled = enabled;
-            this.configuration.Save();
+            this.Configuration.FunctionEnabled = enabled;
+            this.Configuration.Save();
         }
 
         if (ImGui.BeginTabBar("Settings"))
@@ -202,48 +212,48 @@ internal class YesConfigTab
         ImGui.PushID("BotherOptions");
 
         // Disable hotkey
-        if (!this.hotkeyValues.Contains(this.configuration.DisableKey))
+        if (!this.hotkeyValues.Contains(this.Configuration.DisableKey))
         {
-            this.configuration.DisableKey = VirtualKey.NO_KEY;
-            this.configuration.Save();
+            this.Configuration.DisableKey = VirtualKey.NO_KEY;
+            this.Configuration.Save();
         }
 
-        var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.configuration.DisableKey);
+        var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.DisableKey);
 
         ImGui.SetNextItemWidth(85);
         if (ImGui.Combo("Disable Hotkey", ref disableHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
         {
-            this.configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
-            this.configuration.Save();
+            this.Configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
+            this.Configuration.Save();
         }
 
         IndentedTextColored(this.shadedColor, "While this key is held, the plugin is disabled.");
 
         // Forced Yes hotkey
-        if (!this.hotkeyValues.Contains(this.configuration.ForcedYesKey))
+        if (!this.hotkeyValues.Contains(this.Configuration.ForcedYesKey))
         {
-            this.configuration.ForcedYesKey = VirtualKey.NO_KEY;
-            this.configuration.Save();
+            this.Configuration.ForcedYesKey = VirtualKey.NO_KEY;
+            this.Configuration.Save();
         }
 
-        var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.configuration.ForcedYesKey);
+        var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.ForcedYesKey);
 
         ImGui.SetNextItemWidth(85);
         if (ImGui.Combo("Forced Yes Hotkey", ref forcedYesHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
         {
-            this.configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
-            this.configuration.Save();
+            this.Configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
+            this.Configuration.Save();
         }
 
         IndentedTextColored(this.shadedColor, "While this key is held, any Yes/No prompt will always default to yes. Be careful.");
 
         // SalvageDialog
         {
-            var desynthDialog = this.configuration.DesynthDialogEnabled;
+            var desynthDialog = this.Configuration.DesynthDialogEnabled;
             if (ImGui.Checkbox("SalvageDialog", ref desynthDialog))
             {
-                this.configuration.DesynthDialogEnabled = desynthDialog;
-                this.configuration.Save();
+                this.Configuration.DesynthDialogEnabled = desynthDialog;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Remove the Desynthesis menu confirmation.");
@@ -251,11 +261,11 @@ internal class YesConfigTab
 
         // SalvageDialog (Bulk)
         {
-            var desynthBulkDialog = this.configuration.DesynthBulkDialogEnabled;
+            var desynthBulkDialog = this.Configuration.DesynthBulkDialogEnabled;
             if (ImGui.Checkbox("SalvageDialog (Bulk)", ref desynthBulkDialog))
             {
-                this.configuration.DesynthBulkDialogEnabled = desynthBulkDialog;
-                this.configuration.Save();
+                this.Configuration.DesynthBulkDialogEnabled = desynthBulkDialog;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Check the bulk desynthesis button when using the SalvageDialog feature.");
@@ -263,11 +273,11 @@ internal class YesConfigTab
 
         // MaterializeDialog
         {
-            var materialize = this.configuration.MaterializeDialogEnabled;
+            var materialize = this.Configuration.MaterializeDialogEnabled;
             if (ImGui.Checkbox("MaterializeDialog", ref materialize))
             {
-                this.configuration.MaterializeDialogEnabled = materialize;
-                this.configuration.Save();
+                this.Configuration.MaterializeDialogEnabled = materialize;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Remove the create new (extract) materia confirmation.");
@@ -275,11 +285,11 @@ internal class YesConfigTab
 
         // MateriaRetrieveDialog
         {
-            var materiaRetrieve = this.configuration.MateriaRetrieveDialogEnabled;
+            var materiaRetrieve = this.Configuration.MateriaRetrieveDialogEnabled;
             if (ImGui.Checkbox("MateriaRetrieveDialog", ref materiaRetrieve))
             {
-                this.configuration.MateriaRetrieveDialogEnabled = materiaRetrieve;
-                this.configuration.Save();
+                this.Configuration.MateriaRetrieveDialogEnabled = materiaRetrieve;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Remove the retrieve materia confirmation.");
@@ -287,11 +297,11 @@ internal class YesConfigTab
 
         // ItemInspectionResult
         {
-            var itemInspection = this.configuration.ItemInspectionResultEnabled;
+            var itemInspection = this.Configuration.ItemInspectionResultEnabled;
             if (ImGui.Checkbox("ItemInspectionResult", ref itemInspection))
             {
-                this.configuration.ItemInspectionResultEnabled = itemInspection;
-                this.configuration.Save();
+                this.Configuration.ItemInspectionResultEnabled = itemInspection;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Eureka/Bozja lockboxes, forgotten fragments, and more.\nWarning: this does not check if you are maxed on items.");
@@ -300,7 +310,7 @@ internal class YesConfigTab
             ImGui.SameLine();
 
             ImGui.PushItemWidth(100f * ImGuiHelpers.GlobalScale);
-            var itemInspectionResultLimiter = this.configuration.ItemInspectionResultRateLimiter;
+            var itemInspectionResultLimiter = this.Configuration.ItemInspectionResultRateLimiter;
             if (ImGui.InputInt("###itemInspectionResultRateLimiter", ref itemInspectionResultLimiter))
             {
                 if (itemInspectionResultLimiter < 0)
@@ -309,19 +319,19 @@ internal class YesConfigTab
                 }
                 else
                 {
-                    this.configuration.ItemInspectionResultRateLimiter = itemInspectionResultLimiter;
-                    this.configuration.Save();
+                    this.Configuration.ItemInspectionResultRateLimiter = itemInspectionResultLimiter;
+                    this.Configuration.Save();
                 }
             }
         }
 
         // RetainerTaskAsk
         {
-            var retainerTaskAsk = this.configuration.RetainerTaskAskEnabled;
+            var retainerTaskAsk = this.Configuration.RetainerTaskAskEnabled;
             if (ImGui.Checkbox("RetainerTaskAsk", ref retainerTaskAsk))
             {
-                this.configuration.RetainerTaskAskEnabled = retainerTaskAsk;
-                this.configuration.Save();
+                this.Configuration.RetainerTaskAskEnabled = retainerTaskAsk;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Skip the confirmation in the final dialog before sending out a retainer.");
@@ -329,11 +339,11 @@ internal class YesConfigTab
 
         // RetainerTaskResult
         {
-            var retainerTaskResult = this.configuration.RetainerTaskResultEnabled;
+            var retainerTaskResult = this.Configuration.RetainerTaskResultEnabled;
             if (ImGui.Checkbox("RetainerTaskResult", ref retainerTaskResult))
             {
-                this.configuration.RetainerTaskResultEnabled = retainerTaskResult;
-                this.configuration.Save();
+                this.Configuration.RetainerTaskResultEnabled = retainerTaskResult;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically send a retainer on the same venture as before when receiving an item.");
@@ -341,11 +351,11 @@ internal class YesConfigTab
 
         // GrandCompanySupplyReward
         {
-            var grandCompanySupplyReward = this.configuration.GrandCompanySupplyReward;
+            var grandCompanySupplyReward = this.Configuration.GrandCompanySupplyReward;
             if (ImGui.Checkbox("GrandCompanySupplyReward", ref grandCompanySupplyReward))
             {
-                this.configuration.GrandCompanySupplyReward = grandCompanySupplyReward;
-                this.configuration.Save();
+                this.Configuration.GrandCompanySupplyReward = grandCompanySupplyReward;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Skip the confirmation when submitting Grand Company expert delivery items.");
@@ -353,11 +363,11 @@ internal class YesConfigTab
 
         // ShopCardDialog
         {
-            var shopCard = this.configuration.ShopCardDialog;
+            var shopCard = this.Configuration.ShopCardDialog;
             if (ImGui.Checkbox("ShopCardDialog", ref shopCard))
             {
-                this.configuration.ShopCardDialog = shopCard;
-                this.configuration.Save();
+                this.Configuration.ShopCardDialog = shopCard;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically confirm selling Triple Triad cards in the saucer.");
@@ -365,11 +375,11 @@ internal class YesConfigTab
 
         // JournalResultComplete
         {
-            var journalResultComplete = this.configuration.JournalResultCompleteEnabled;
+            var journalResultComplete = this.Configuration.JournalResultCompleteEnabled;
             if (ImGui.Checkbox("JournalResultComplete", ref journalResultComplete))
             {
-                this.configuration.JournalResultCompleteEnabled = journalResultComplete;
-                this.configuration.Save();
+                this.Configuration.JournalResultCompleteEnabled = journalResultComplete;
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically confirm quest reward acceptance when there is nothing to choose.");
@@ -377,17 +387,17 @@ internal class YesConfigTab
 
         // ContentFinderConfirm
         {
-            var contentsFinderConfirm = this.configuration.ContentsFinderConfirmEnabled;
+            var contentsFinderConfirm = this.Configuration.ContentsFinderConfirmEnabled;
             if (ImGui.Checkbox("ContentsFinderConfirm", ref contentsFinderConfirm))
             {
-                this.configuration.ContentsFinderConfirmEnabled = contentsFinderConfirm;
+                this.Configuration.ContentsFinderConfirmEnabled = contentsFinderConfirm;
 
                 if (!contentsFinderConfirm)
                 {
-                    this.configuration.ContentsFinderOneTimeConfirmEnabled = false;
+                    this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
                 }
 
-                this.configuration.Save();
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically commence duties when ready.");
@@ -395,20 +405,32 @@ internal class YesConfigTab
 
         // ContentFinderOneTimeConfirm
         {
-            var contentsFinderOneTimeConfirm = this.configuration.ContentsFinderOneTimeConfirmEnabled;
+            var contentsFinderOneTimeConfirm = this.Configuration.ContentsFinderOneTimeConfirmEnabled;
             if (ImGui.Checkbox("ContentsFinderOneTimeConfirm", ref contentsFinderOneTimeConfirm))
             {
-                this.configuration.ContentsFinderOneTimeConfirmEnabled = contentsFinderOneTimeConfirm;
+                this.Configuration.ContentsFinderOneTimeConfirmEnabled = contentsFinderOneTimeConfirm;
 
                 if (contentsFinderOneTimeConfirm)
                 {
-                    this.configuration.ContentsFinderConfirmEnabled = true;
+                    this.Configuration.ContentsFinderConfirmEnabled = true;
                 }
 
-                this.configuration.Save();
+                this.Configuration.Save();
             }
 
             IndentedTextColored(this.shadedColor, "Automatically commence duties when ready, but only once.\nRequires Contents Finder Confirm, and disables both after activation.");
+        }
+
+        // InclusionShop
+        {
+            var inclusionShopRemember = this.Configuration.InclusionShopRememberEnabled;
+            if (ImGui.Checkbox("InclusionShopRemember", ref inclusionShopRemember))
+            {
+                this.Configuration.InclusionShopRememberEnabled = inclusionShopRemember;
+                this.Configuration.Save();
+            }
+
+            IndentedTextColored(this.shadedColor, "Remember the last panel visited on the scrip exchange window.");
         }
 
         ImGui.PopID();
@@ -427,7 +449,7 @@ internal class YesConfigTab
         {
             var newNode = new TextEntryNode { Enabled = false, Text = "Your text goes here" };
             this.RootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -439,7 +461,7 @@ internal class YesConfigTab
             var selectNo = io.KeyAlt;
 
             this.module.CreateTextNode(this.RootFolder, zoneRestricted, createFolder, selectNo);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -447,7 +469,7 @@ internal class YesConfigTab
         {
             var newNode = new TextFolderNode { Name = "Untitled folder" };
             this.RootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         var sb = new StringBuilder();
@@ -487,7 +509,7 @@ internal class YesConfigTab
         if (root.Children.Count == 0)
         {
             root.Children.Add(new TextEntryNode { Enabled = false, Text = "Add some text here!" });
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         foreach (var node in root.Children.ToArray())
@@ -507,7 +529,7 @@ internal class YesConfigTab
         {
             var newNode = new ListEntryNode { Enabled = false, Text = "Your text goes here" };
             this.ListRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -515,7 +537,7 @@ internal class YesConfigTab
         {
             var newNode = new ListEntryNode { Enabled = true, Text = this.module.LastSeenListSelection, TargetRestricted = true, TargetText = this.module.LastSeenListTarget };
             this.ListRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -523,7 +545,7 @@ internal class YesConfigTab
         {
             var newNode = new TextFolderNode { Name = "Untitled folder" };
             this.ListRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         var sb = new StringBuilder();
@@ -557,7 +579,7 @@ internal class YesConfigTab
         if (root.Children.Count == 0)
         {
             root.Children.Add(new ListEntryNode { Enabled = false, Text = "Add some text here!" });
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         foreach (var node in root.Children.ToArray())
@@ -577,7 +599,7 @@ internal class YesConfigTab
         {
             var newNode = new TalkEntryNode { Enabled = false, TargetText = "Your text goes here" };
             this.TalkRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -592,7 +614,7 @@ internal class YesConfigTab
 
             var newNode = new TalkEntryNode { Enabled = true, TargetText = targetName };
             this.TalkRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -600,7 +622,7 @@ internal class YesConfigTab
         {
             var newNode = new TextFolderNode { Name = "Untitled folder" };
             this.TalkRootFolder.Children.Add(newNode);
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         var sb = new StringBuilder();
@@ -633,7 +655,7 @@ internal class YesConfigTab
         if (root.Children.Count == 0)
         {
             root.Children.Add(new TalkEntryNode { Enabled = false, TargetText = "Add some text here!" });
-            this.configuration.Save();
+            this.Configuration.Save();
         }
 
         foreach (var node in root.Children.ToArray())
@@ -707,7 +729,7 @@ internal class YesConfigTab
             if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
             {
                 node.Enabled = !node.Enabled;
-                this.configuration.Save();
+                this.Configuration.Save();
                 return;
             }
 
@@ -716,10 +738,10 @@ internal class YesConfigTab
                 var io = ImGui.GetIO();
                 if (io.KeyCtrl && io.KeyShift)
                 {
-                    if (this.configuration.TryFindParent(node, out var parent))
+                    if (this.Configuration.TryFindParent(node, out var parent))
                     {
                         parent!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
 
                     return;
@@ -777,7 +799,7 @@ internal class YesConfigTab
             if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
             {
                 node.Enabled = !node.Enabled;
-                this.configuration.Save();
+                this.Configuration.Save();
                 return;
             }
 
@@ -786,10 +808,10 @@ internal class YesConfigTab
                 var io = ImGui.GetIO();
                 if (io.KeyCtrl && io.KeyShift)
                 {
-                    if (this.configuration.TryFindParent(node, out var parent))
+                    if (this.Configuration.TryFindParent(node, out var parent))
                     {
                         parent!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
 
                     return;
@@ -838,7 +860,7 @@ internal class YesConfigTab
             if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
             {
                 node.Enabled = !node.Enabled;
-                this.configuration.Save();
+                this.Configuration.Save();
                 return;
             }
 
@@ -847,10 +869,10 @@ internal class YesConfigTab
                 var io = ImGui.GetIO();
                 if (io.KeyCtrl && io.KeyShift)
                 {
-                    if (this.configuration.TryFindParent(node, out var parent))
+                    if (this.Configuration.TryFindParent(node, out var parent))
                     {
                         parent!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
 
                     return;
@@ -875,10 +897,10 @@ internal class YesConfigTab
                 var io = ImGui.GetIO();
                 if (io.KeyCtrl && io.KeyShift)
                 {
-                    if (this.configuration.TryFindParent(node, out var parent))
+                    if (this.Configuration.TryFindParent(node, out var parent))
                     {
                         parent!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
 
                     return;
@@ -917,7 +939,7 @@ internal class YesConfigTab
                 if (ImGui.Checkbox("Enabled", ref enabled))
                 {
                     entryNode.Enabled = enabled;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 ImGui.SameLine(100f);
@@ -926,7 +948,7 @@ internal class YesConfigTab
                 if (ImGui.Button(title))
                 {
                     entryNode.IsYes = !isYes;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var trashAltWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.TrashAlt);
@@ -934,10 +956,10 @@ internal class YesConfigTab
                 ImGui.SameLine(ImGui.GetContentRegionMax().X - trashAltWidth);
                 if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Delete"))
                 {
-                    if (this.configuration.TryFindParent(node, out var parentNode))
+                    if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
                         parentNode!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -945,14 +967,14 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     entryNode.Text = matchText;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var zoneRestricted = entryNode.ZoneRestricted;
                 if (ImGui.Checkbox("Zone Restricted", ref zoneRestricted))
                 {
                     entryNode.ZoneRestricted = zoneRestricted;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var searchWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.Search);
@@ -971,12 +993,12 @@ internal class YesConfigTab
                     if (this.module.TerritoryNames.TryGetValue(currentId, out var zoneName))
                     {
                         entryNode.ZoneText = zoneName;
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else
                     {
                         entryNode.ZoneText = "Could not find name";
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -986,7 +1008,7 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-zoneText", ref zoneText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     entryNode.ZoneText = zoneText;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
             }
 
@@ -998,7 +1020,7 @@ internal class YesConfigTab
                 if (ImGui.Checkbox("Enabled", ref enabled))
                 {
                     listNode.Enabled = enabled;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var trashAltWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.TrashAlt);
@@ -1006,10 +1028,10 @@ internal class YesConfigTab
                 ImGui.SameLine(ImGui.GetContentRegionMax().X - trashAltWidth);
                 if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Delete"))
                 {
-                    if (this.configuration.TryFindParent(node, out var parentNode))
+                    if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
                         parentNode!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1017,14 +1039,14 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-matchText", ref matchText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     listNode.Text = matchText;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var targetRestricted = listNode.TargetRestricted;
                 if (ImGui.Checkbox("Target Restricted", ref targetRestricted))
                 {
                     listNode.TargetRestricted = targetRestricted;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var searchPlusWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.SearchPlus);
@@ -1038,12 +1060,12 @@ internal class YesConfigTab
                     if (!string.IsNullOrEmpty(name))
                     {
                         listNode.TargetText = name;
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else
                     {
                         listNode.TargetText = "Could not find target";
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1053,7 +1075,7 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     listNode.TargetText = targetText;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
             }
 
@@ -1065,7 +1087,7 @@ internal class YesConfigTab
                 if (ImGui.Checkbox("Enabled", ref enabled))
                 {
                     talkNode.Enabled = enabled;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var trashAltWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.TrashAlt);
@@ -1073,10 +1095,10 @@ internal class YesConfigTab
                 ImGui.SameLine(ImGui.GetContentRegionMax().X - trashAltWidth);
                 if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Delete"))
                 {
-                    if (this.configuration.TryFindParent(node, out var parentNode))
+                    if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
                         parentNode!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1091,12 +1113,12 @@ internal class YesConfigTab
                     if (!string.IsNullOrEmpty(name))
                     {
                         talkNode.TargetText = name;
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else
                     {
                         talkNode.TargetText = "Could not find target";
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1106,7 +1128,7 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-targetText", ref targetText, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     talkNode.TargetText = targetText;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
             }
 
@@ -1127,7 +1149,7 @@ internal class YesConfigTab
                         folderNode.Children.Add(newNode);
                     }
 
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 ImGui.SameLine();
@@ -1143,19 +1165,19 @@ internal class YesConfigTab
                         this.module.CreateTextNode(folderNode, zoneRestricted, createFolder, selectNo);
                         var newNode = new TextEntryNode { Enabled = true, Text = this.module.LastSeenDialogText };
                         folderNode.Children.Add(newNode);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else if (root == this.ListRootFolder)
                     {
                         var newNode = new ListEntryNode { Enabled = true, Text = this.module.LastSeenListSelection, TargetRestricted = true, TargetText = this.module.LastSeenListTarget };
                         folderNode.Children.Add(newNode);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else if (root == this.TalkRootFolder)
                     {
                         var newNode = new TalkEntryNode { Enabled = true, TargetText = this.module.LastSeenTalkTarget };
                         folderNode.Children.Add(newNode);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1164,17 +1186,17 @@ internal class YesConfigTab
                 {
                     var newNode = new TextFolderNode { Name = "Untitled folder" };
                     folderNode.Children.Add(newNode);
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
 
                 var trashWidth = ImGuiEx.GetIconButtonWidth(FontAwesomeIcon.TrashAlt);
                 ImGui.SameLine(ImGui.GetContentRegionMax().X - trashWidth);
                 if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Delete"))
                 {
-                    if (this.configuration.TryFindParent(node, out var parentNode))
+                    if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
                         parentNode!.Children.Remove(node);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -1184,7 +1206,7 @@ internal class YesConfigTab
                 if (ImGui.InputText($"##{node.Name}-rename", ref folderName, 10_000, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
                 {
                     folderNode.Name = folderName;
-                    this.configuration.Save();
+                    this.Configuration.Save();
                 }
             }
 
@@ -1216,17 +1238,17 @@ internal class YesConfigTab
             var targetNode = node;
             if (!nullPtr && payload.IsDelivery() && this.draggedNode != null)
             {
-                if (this.configuration.TryFindParent(this.draggedNode, out var draggedNodeParent))
+                if (this.Configuration.TryFindParent(this.draggedNode, out var draggedNodeParent))
                 {
                     if (targetNode is TextFolderNode targetFolderNode)
                     {
                         draggedNodeParent!.Children.Remove(this.draggedNode);
                         targetFolderNode.Children.Add(this.draggedNode);
-                        this.configuration.Save();
+                        this.Configuration.Save();
                     }
                     else
                     {
-                        if (this.configuration.TryFindParent(targetNode, out var targetNodeParent))
+                        if (this.Configuration.TryFindParent(targetNode, out var targetNodeParent))
                         {
                             var targetNodeIndex = targetNodeParent!.Children.IndexOf(targetNode);
                             if (targetNodeParent == draggedNodeParent)
@@ -1240,7 +1262,7 @@ internal class YesConfigTab
 
                             draggedNodeParent!.Children.Remove(this.draggedNode);
                             targetNodeParent.Children.Insert(targetNodeIndex, this.draggedNode);
-                            this.configuration.Save();
+                            this.Configuration.Save();
                         }
                         else
                         {

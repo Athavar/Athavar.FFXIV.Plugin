@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Lib.ClickLib;
+namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Exceptions;
 
 using System;
 

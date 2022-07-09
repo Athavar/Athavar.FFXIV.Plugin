@@ -5,26 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     Addon ShopCardDialog.
 /// </summary>
-public sealed unsafe class ClickShopCardDialog : ClickAddonBase<AddonShopCardDialog>
+public sealed class ClickShopCardDialog : ClickBase<ClickShopCardDialog, AddonShopCardDialog>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickShopCardDialog" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickShopCardDialog(IntPtr addon = default)
-        : base(addon)
+        : base("ShopCardDialog", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "ShopCardDialog";
 
     public static implicit operator ClickShopCardDialog(IntPtr addon) => new(addon);
 
@@ -39,5 +36,5 @@ public sealed unsafe class ClickShopCardDialog : ClickAddonBase<AddonShopCardDia
     ///     Click the sell button.
     /// </summary>
     [ClickName("sell_triple_triad_card")]
-    public void Sell() => ClickAddonButton(&this.Addon->AtkUnitBase, (AtkComponentButton*)this.Addon->AtkUnitBase.UldManager.NodeList[3], 0);
+    public void Sell() => this.ClickAddonButtonIndex(3, 0); // Callback(0, 0, 0)
 }

@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon ContentsFinderConfirm.
 /// </summary>
-public sealed unsafe class ClickContentsFinderConfirm : ClickAddonBase<AddonContentsFinderConfirm>
+public sealed unsafe class ClickContentsFinderConfirm : ClickBase<ClickContentsFinderConfirm, AddonContentsFinderConfirm>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickContentsFinderConfirm" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickContentsFinderConfirm(IntPtr addon = default)
-        : base(addon)
+        : base("ContentsFinderConfirm", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "ContentsFinderConfirm";
 
     public static implicit operator ClickContentsFinderConfirm(IntPtr addon) => new(addon);
 
@@ -35,8 +33,20 @@ public sealed unsafe class ClickContentsFinderConfirm : ClickAddonBase<AddonCont
     public static ClickContentsFinderConfirm Using(IntPtr addon) => new(addon);
 
     /// <summary>
-    ///     Click the collect button.
+    ///     Click the commence button.
     /// </summary>
     [ClickName("duty_commence")]
-    public void Commence() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->CommenceButton, 0x8);
+    public void Commence() => this.ClickAddonButton(this.Addon->CommenceButton, 8);
+
+    /// <summary>
+    ///     Click the commence button.
+    /// </summary>
+    [ClickName("duty_withdraw")]
+    public void Withdraw() => this.ClickAddonButton(this.Addon->WithdrawButton, 9);
+
+    /// <summary>
+    ///     Click the commence button.
+    /// </summary>
+    [ClickName("duty_wait")]
+    public void Wait() => this.ClickAddonButton(this.Addon->WaitButton, 11);
 }

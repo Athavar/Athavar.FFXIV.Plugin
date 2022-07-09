@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon MaterializeDialog.
 /// </summary>
-public sealed unsafe class ClickMaterializeDialog : ClickAddonBase<AddonMaterializeDialog>
+public sealed unsafe class ClickMaterializeDialog : ClickBase<ClickMaterializeDialog, AddonMaterializeDialog>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickMaterializeDialog" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickMaterializeDialog(IntPtr addon = default)
-        : base(addon)
+        : base("MaterializeDialog", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "MaterializeDialog";
 
     public static implicit operator ClickMaterializeDialog(IntPtr addon) => new(addon);
 
@@ -38,5 +36,5 @@ public sealed unsafe class ClickMaterializeDialog : ClickAddonBase<AddonMaterial
     ///     Click the deliver button.
     /// </summary>
     [ClickName("materialize")]
-    public void Materialize() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->YesButton, 0);
+    public void Materialize() => this.ClickAddonButton(this.Addon->YesButton, 0);
 }

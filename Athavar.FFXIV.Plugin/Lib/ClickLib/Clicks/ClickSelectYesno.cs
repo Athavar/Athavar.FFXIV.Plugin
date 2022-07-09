@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon SelectYesNo.
 /// </summary>
-public sealed unsafe class ClickSelectYesNo : ClickAddonBase<AddonSelectYesno>
+public sealed unsafe class ClickSelectYesNo : ClickBase<ClickSelectYesNo, AddonSelectYesno>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickSelectYesNo" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickSelectYesNo(IntPtr addon = default)
-        : base(addon)
+        : base("SelectYesno", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "SelectYesno";
 
     public static implicit operator ClickSelectYesNo(IntPtr addon) => new(addon);
 
@@ -38,20 +36,17 @@ public sealed unsafe class ClickSelectYesNo : ClickAddonBase<AddonSelectYesno>
     ///     Click the yes button.
     /// </summary>
     [ClickName("select_yes")]
-    public void Yes() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->YesButton, 0);
+    public void Yes() => this.ClickAddonButton(this.Addon->YesButton, 0);
 
     /// <summary>
     ///     Click the no button.
     /// </summary>
     [ClickName("select_no")]
-    public void No() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->NoButton, 1);
+    public void No() => this.ClickAddonButton(this.Addon->NoButton, 1);
 
-    // /// <summary>
-    // /// Click the confirm checkbox.
-    // /// </summary>
-    // [ClickName("select_confirm")]
-    // public void Confirm()
-    // {
-    //     ClickAddonCheckBox(&this.Addon->AtkUnitBase, this.Addon->ConfirmCheckBox, 3);
-    // }
+    /// <summary>
+    ///     Click the confirm checkbox.
+    /// </summary>
+    [ClickName("select_confirm")]
+    public void Confirm() => this.ClickAddonCheckBox(this.Addon->ConfirmCheckBox, 3);
 }

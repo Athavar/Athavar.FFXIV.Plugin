@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon RetainerTaskAsk.
 /// </summary>
-public sealed unsafe class ClickRetainerTaskAsk : ClickAddonBase<AddonRetainerTaskAsk>
+public sealed unsafe class ClickRetainerTaskAsk : ClickBase<ClickRetainerTaskAsk, AddonRetainerTaskAsk>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickRetainerTaskAsk" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickRetainerTaskAsk(IntPtr addon = default)
-        : base(addon)
+        : base("RetainerTaskAsk", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "RetainerTaskAsk";
 
     public static implicit operator ClickRetainerTaskAsk(IntPtr addon) => new(addon);
 
@@ -38,11 +36,11 @@ public sealed unsafe class ClickRetainerTaskAsk : ClickAddonBase<AddonRetainerTa
     ///     Click the assign button.
     /// </summary>
     [ClickName("retainer_venture_ask_assign")]
-    public void Assign() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->AssignButton, 1);
+    public void Assign() => this.ClickAddonButton(this.Addon->AssignButton, 1);
 
     /// <summary>
     ///     Click the return button.
     /// </summary>
     [ClickName("retainer_venture_ask_return")]
-    public void Return() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->ReturnButton, 2);
+    public void Return() => this.ClickAddonButton(this.Addon->ReturnButton, 2);
 }

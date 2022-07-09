@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon RetainerTaskResult.
 /// </summary>
-public sealed unsafe class ClickRetainerTaskResult : ClickAddonBase<AddonRetainerTaskResult>
+public sealed unsafe class ClickRetainerTaskResult : ClickBase<ClickRetainerTaskResult, AddonRetainerTaskResult>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickRetainerTaskResult" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickRetainerTaskResult(IntPtr addon = default)
-        : base(addon)
+        : base("RetainerTaskResult", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "RetainerTaskResult";
 
     public static implicit operator ClickRetainerTaskResult(IntPtr addon) => new(addon);
 
@@ -38,11 +36,11 @@ public sealed unsafe class ClickRetainerTaskResult : ClickAddonBase<AddonRetaine
     ///     Click the confirm button.
     /// </summary>
     [ClickName("retainer_venture_result_confirm")]
-    public void Confirm() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->ConfirmButton, 2);
+    public void Confirm() => this.ClickAddonButton(this.Addon->ConfirmButton, 2);
 
     /// <summary>
     ///     Click the reassign button.
     /// </summary>
     [ClickName("retainer_venture_result_reassign")]
-    public void Reassign() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->ReassignButton, 3);
+    public void Reassign() => this.ClickAddonButton(this.Addon->ReassignButton, 3);
 }

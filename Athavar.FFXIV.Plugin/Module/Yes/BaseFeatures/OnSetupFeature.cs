@@ -19,12 +19,13 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupFeature" /> class.
     /// </summary>
-    /// <param name="onSetupAddress">Address to the OnSetup method.</param>
+    /// <param name="onSetupSig">Signature to the OnSetup method.</param>
     /// <param name="module">The module.</param>
-    public OnSetupFeature(IntPtr onSetupAddress, YesModule module)
+    public OnSetupFeature(string onSetupSig, YesModule module)
     {
         this.module = module;
-        this.onSetupHook = new Hook<OnSetupDelegate>(onSetupAddress, this.OnSetupDetour);
+        this.HookAddress = module.DalamudServices.SigScanner.ScanText(onSetupSig);
+        this.onSetupHook = new Hook<OnSetupDelegate>(this.HookAddress, this.OnSetupDetour);
         this.onSetupHook.Enable();
     }
 
@@ -46,6 +47,11 @@ internal abstract class OnSetupFeature : IBaseFeature
     ///     Gets the name of the addon being hooked.
     /// </summary>
     protected abstract string AddonName { get; }
+
+    /// <summary>
+    ///     Gets the address of the addon Update function.
+    /// </summary>
+    protected IntPtr HookAddress { get; }
 
     /// <inheritdoc />
     public void Dispose()

@@ -17,13 +17,16 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 internal class AddonTalkFeature : UpdateFeature
 {
     private readonly YesModule module;
+    private ClickTalk? clickTalk;
+    private IntPtr lastTalkAddon = IntPtr.Zero;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonTalkFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonTalkFeature(YesModule module)
-        : base(module.AddressResolver.AddonTalkUpdateAddress, module)
+        : base("48 89 74 24 ?? 57 48 83 EC 40 0F 29 74 24 ?? 48 8B F9 0F 29 7C 24 ?? 0F 28 F1", module)
         => this.module = module;
 
     /// <inheritdoc />
@@ -57,31 +60,14 @@ internal class AddonTalkFeature : UpdateFeature
                 continue;
             }
 
-            PluginLog.Debug("AddonTalk: Advancing");
-            ClickTalk.Using(addon).Click();
-            return;
-        }
-    }
-
-    private unsafe void AddonSelectYesNoExecute(IntPtr addon, bool yes)
-    {
-        if (yes)
-        {
-            var addonPtr = (AddonSelectYesno*)addon;
-            var yesButton = addonPtr->YesButton;
-            if (yesButton != null && !yesButton->IsEnabled)
+            if (this.clickTalk == null || this.lastTalkAddon != addon)
             {
-                PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
-                yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
+                this.clickTalk = ClickTalk.Using(this.lastTalkAddon = addon);
             }
 
-            PluginLog.Debug("AddonSelectYesNo: Selecting yes");
-            ClickSelectYesNo.Using(addon).Yes();
-        }
-        else
-        {
-            PluginLog.Debug("AddonSelectYesNo: Selecting no");
-            ClickSelectYesNo.Using(addon).No();
+            PluginLog.Debug("AddonTalk: Advancing");
+            this.clickTalk.Click();
+            return;
         }
     }
 

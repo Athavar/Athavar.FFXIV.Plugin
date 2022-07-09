@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon Talk.
 /// </summary>
-public sealed class ClickTalk : ClickAddonBase<AddonTalk>
+public sealed class ClickTalk : ClickBase<ClickTalk, AddonTalk>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickTalk" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickTalk(IntPtr addon = default)
-        : base(addon)
+        : base("Talk", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "Talk";
 
     public static implicit operator ClickTalk(IntPtr addon) => new(addon);
 
@@ -38,5 +36,5 @@ public sealed class ClickTalk : ClickAddonBase<AddonTalk>
     ///     Click the talk dialog.
     /// </summary>
     [ClickName("talk")]
-    public unsafe void Click() => ClickAddonStage(&this.Addon->AtkUnitBase, this.Addon->AtkEventListenerUnk.AtkStage, 0);
+    public void Click() => this.ClickAddonStage(0);
 }

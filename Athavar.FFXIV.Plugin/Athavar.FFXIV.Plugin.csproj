@@ -12,6 +12,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -77,7 +78,7 @@
         <Reference Include="Lumina.Excel" Private="False" />
     </ItemGroup>
 
-    <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE'">
+    <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
         <ItemGroup>
             <InputAssemblies Include="$(TargetPath)" />
             <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath);$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll;$(TargetDir)Serilog.dll" />
@@ -85,10 +86,10 @@
         <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /parallel /union /lib:$(AdditionalLibPaths) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
     </Target>
 
-    <Target Name="CleanOutDir" AfterTargets="ILRepack">
+    <Target Name="CleanOutDir" AfterTargets="ILRepack" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
         <ItemGroup>
             <DeleteFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll;$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll" />
-            <DeleteFiles Include="$(TargetDir)*.pdb" Exclude="$(TargetDir)$(TargetName).pdb" />
+            <DeleteFiles Include="$(TargetDir)*.pdb" />
             <DeleteFiles Include="$(TargetDir)*.xml" />
         </ItemGroup>
         <Message Text="Deleting @(DeleteFiles)" Importance="high" />

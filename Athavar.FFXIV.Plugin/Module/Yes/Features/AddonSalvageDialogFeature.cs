@@ -19,7 +19,7 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonSalvageDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonSalvageDialogOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 30 44 8B F2 49 8B E8", module)
     {
     }
 

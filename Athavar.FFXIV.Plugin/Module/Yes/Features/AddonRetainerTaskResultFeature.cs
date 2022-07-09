@@ -19,7 +19,7 @@ internal class AddonRetainerTaskResultFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
     public AddonRetainerTaskResultFeature(YesModule module)
-        : base(module.AddressResolver.AddonRetainerTaskResultOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 55 56 57 48 83 EC 40 8B F2 49 8B F8 BA ?? ?? ?? ?? 48 8B D9 E8 ?? ?? ?? ??", module)
     {
     }
 

@@ -9,14 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Exceptions;
+using FFXIVClientStructs;
 
 /// <summary>
 ///     Main class for clicking by name.
 /// </summary>
-internal class Click : IClick
+public class Click : IClick
 {
-    private readonly Dictionary<string, PrecompiledDelegate> availableClicks = new();
+    private readonly Dictionary<string, PrecompiledDelegate> AvailableClicks = new();
     private bool initialized;
 
     /// <summary>
@@ -26,43 +29,10 @@ internal class Click : IClick
 
     private delegate void PrecompiledDelegate(IntPtr addon);
 
-    /// <inheritdoc />
-    public void SendClick(string name, IntPtr addon = default)
-    {
-        if (!this.initialized)
-        {
-            throw new InvalidClickException("Not initialized yet");
-        }
-
-        if (!this.availableClicks.TryGetValue(name, out var clickDelegate))
-        {
-            throw new ClickNotFoundError($"Click \"{name}\" does not exist");
-        }
-
-        clickDelegate!(addon);
-    }
-
-    /// <inheritdoc />
-    public bool TrySendClick(string name, IntPtr addon = default)
-    {
-        try
-        {
-            this.SendClick(name, addon);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    /// <inheritdoc />
-    public IList<string> GetClickNames() => this.availableClicks.Keys.ToList();
-
     /// <summary>
     ///     Load the mapping of click names.
     /// </summary>
-    private void Initialize()
+    public void Initialize()
     {
         if (this.initialized)
         {
@@ -71,9 +41,11 @@ internal class Click : IClick
 
         this.initialized = true;
 
+        Resolver.Initialize();
+
         // Get all parameterless methods, of types that inherit from ClickBase
-        var clicks = typeof(ClickBase).Assembly.GetTypes()
-           .Where(type => type.IsSubclassOf(typeof(ClickBase)) && !type.IsGenericType)
+        var clicks = typeof(IClickable).Assembly.GetTypes()
+           .Where(type => type.IsAssignableTo(typeof(IClickable)) && !type.IsGenericType)
            .SelectMany(cls => cls.GetMethods())
            .Where(method => method.GetParameters().Length == 0)
            .Select(method => (method, method.GetCustomAttribute<ClickNameAttribute>()?.Name))
@@ -92,7 +64,52 @@ internal class Click : IClick
             var lambdaExpr = Expression.Lambda<PrecompiledDelegate>(blockExpr, param);
             var compiled = lambdaExpr.Compile()!;
 
-            this.availableClicks.Add(click.Name!, compiled);
+            this.AvailableClicks.Add(click.Name!, compiled);
+        }
+    }
+
+    /// <summary>
+    ///     Get a list of available click strings that can be used with SendClick.
+    /// </summary>
+    /// <returns>A list of click names.</returns>
+    public IList<string> GetClickNames() => this.AvailableClicks.Keys.ToList();
+
+    /// <summary>
+    ///     Send a click by the name of the individual click.
+    /// </summary>
+    /// <param name="name">Click name.</param>
+    /// <param name="addon">Pointer to an existing addon.</param>
+    public void SendClick(string name, IntPtr addon = default)
+    {
+        if (!this.initialized)
+        {
+            throw new InvalidClickException("Not initialized yet");
+        }
+
+        if (!this.AvailableClicks.TryGetValue(name, out var clickDelegate))
+        {
+            throw new ClickNotFoundError($"Click \"{name}\" does not exist");
+        }
+
+        clickDelegate!(addon);
+    }
+
+    /// <summary>
+    ///     Send a click by the name of the individual click.
+    /// </summary>
+    /// <param name="name">Click name.</param>
+    /// <param name="addon">Pointer to an existing addon.</param>
+    /// <returns>A value indicating whether the delegate was successfully called.</returns>
+    public bool TrySendClick(string name, IntPtr addon = default)
+    {
+        try
+        {
+            this.SendClick(name, addon);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
 }

@@ -131,6 +131,21 @@ internal class YesConfiguration : IPluginConfiguration
     public bool ContentsFinderOneTimeConfirmEnabled { get; set; } = false;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to remember the last pane in the inclusion shop.
+    /// </summary>
+    public bool InclusionShopRememberEnabled { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets the first AtkValue for the inclusion shop category change event.
+    /// </summary>
+    public uint InclusionShopRememberCategory { get; set; } = 0;
+
+    /// <summary>
+    ///     Gets or sets the second AtkValue for the inclusion shop subcategory change event.
+    /// </summary>
+    public uint InclusionShopRememberSubcategory { get; set; } = 0;
+
+    /// <summary>
     ///     Save the configuration.
     /// </summary>
     public void Save() => this.configuration?.Save();

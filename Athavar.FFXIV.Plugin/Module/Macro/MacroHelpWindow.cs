@@ -575,8 +575,6 @@ yield(""/ac Precise touch <wait.2>"")
 yield(""/echo done!"")
 ...and so on.
 
-Documentation for these functions are available at https://github.com/daemitus/SomethingNeedDoing
-
 ===Available functions===
 bool IsCrafting()
 bool IsNotCrafting()

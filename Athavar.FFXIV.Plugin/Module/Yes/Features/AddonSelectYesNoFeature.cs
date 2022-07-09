@@ -23,8 +23,9 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectYesNoFeature(YesModule module)
-        : base(module.AddressResolver.AddonSelectYesNoOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC 40 44 8B F2 0F 29 74 24 ??", module)
         => this.module = module;
 
     /// <inheritdoc />

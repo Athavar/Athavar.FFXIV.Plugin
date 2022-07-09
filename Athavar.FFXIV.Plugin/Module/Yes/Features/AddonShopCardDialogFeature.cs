@@ -18,8 +18,9 @@ internal class AddonShopCardDialogFeature : OnSetupFeature
     ///     Initializes a new instance of the <see cref="AddonShopCardDialogFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonShopCardDialogFeature(YesModule module)
-        : base(module.AddressResolver.AddonShopCardDialogOnSetupAddress, module)
+        : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 48 89 7C 24 ?? 41 54 41 56 41 57 48 83 EC 50 48 8B F9 49 8B F0", module)
     {
     }
 

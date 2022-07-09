@@ -5,25 +5,23 @@
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;
+using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     Addon Request.
 /// </summary>
-public sealed unsafe class ClickRepair : ClickAddonBase<AddonRepair>
+public sealed unsafe class ClickRepair : ClickBase<ClickRepair, AddonRepair>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickRepair" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickRepair(IntPtr addon = default)
-        : base(addon)
+        : base("Repair", addon)
     {
     }
-
-    /// <inheritdoc />
-    protected override string AddonName => "Repair";
 
     public static implicit operator ClickRepair(IntPtr addon) => new(addon);
 
@@ -38,5 +36,5 @@ public sealed unsafe class ClickRepair : ClickAddonBase<AddonRepair>
     ///     Click the repair all button.
     /// </summary>
     [ClickName("repair_all")]
-    public void RepairAll() => ClickAddonButton(&this.Addon->AtkUnitBase, this.Addon->RepairAllButton, 0);
+    public void RepairAll() => this.ClickAddonButton(this.Addon->RepairAllButton, 0);
 }

@@ -19,8 +19,9 @@ internal class AddonSelectIconStringFeature : OnSetupSelectListFeature
     ///     Initializes a new instance of the <see cref="AddonSelectIconStringFeature" /> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectIconStringFeature(YesModule module)
-        : base(module.AddressResolver.AddonSelectIconStringOnSetupAddress, module)
+        : base("40 53 56 57 41 54 41 57 48 83 EC 30 4D 8B F8 44 8B E2 48 8B F1 E8 ?? ?? ?? ??", module)
     {
     }
 
