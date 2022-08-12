@@ -67,8 +67,6 @@ internal class PluginService : IHostedService
         this.windowSystem = windowSystem;
         this.provider = provider;
 
-        var address = provider.GetRequiredService<PluginAddressResolver>();
-        address.Setup(this.dalamudServices.SigScanner);
         _ = provider.GetRequiredService<MacroModule>();
         _ = provider.GetRequiredService<YesModule>();
         _ = provider.GetRequiredService<InstancinatorModule>();

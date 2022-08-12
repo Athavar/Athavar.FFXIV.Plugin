@@ -2,6 +2,7 @@ namespace Athavar.FFXIV.Plugin.Manager;
 
 using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Dalamud.Game.ClientState.Conditions;
@@ -10,7 +11,6 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Microsoft.Extensions.DependencyInjection;
 using Status = Lumina.Excel.GeneratedSheets.Status;
 
 /// <summary>
@@ -18,7 +18,7 @@ using Status = Lumina.Excel.GeneratedSheets.Status;
 /// </summary>
 internal class CommandInterface : ICommandInterface
 {
-    private IDalamudServices dalamudServices;
+    private readonly IDalamudServices dalamudServices;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CommandInterface" /> class.
@@ -378,11 +378,60 @@ internal class CommandInterface : ICommandInterface
         return textNode->NodeText.ToString();
     }
 
-    /// <summary>
-    ///     Setup the <see cref="IServiceProvider" /> for all commands.
-    /// </summary>
-    /// <param name="sp">The <see cref="IServiceProvider" />.</param>
-    internal void SetServiceProvider(IServiceProvider sp) => this.dalamudServices = sp.GetRequiredService<DalamudServices>();
+    /// <inheritdoc />
+    public unsafe string GetSelectStringText(int index)
+    {
+        var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString", 1);
+        if (ptr == IntPtr.Zero)
+        {
+            throw new MacroCommandError("Could not find SelectString addon");
+        }
+
+        var addon = (AddonSelectString*)ptr;
+        var popup = &addon->PopupMenu.PopupMenu;
+
+        var count = popup->EntryCount;
+        PluginLog.Debug($"index={index} // Count={count} // {index < 0 || index > count}");
+        if (index < 0 || index > count)
+        {
+            throw new MacroCommandError("Index out of range");
+        }
+
+        var textPtr = popup->EntryNames[index];
+        if (textPtr == null)
+        {
+            throw new MacroCommandError("Text pointer was null");
+        }
+
+        return Marshal.PtrToStringUTF8((IntPtr)textPtr) ?? string.Empty;
+    }
+
+    /// <inheritdoc />
+    public unsafe string GetSelectIconStringText(int index)
+    {
+        var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectIconString", 1);
+        if (ptr == IntPtr.Zero)
+        {
+            throw new MacroCommandError("Could not find SelectIconString addon");
+        }
+
+        var addon = (AddonSelectIconString*)ptr;
+        var popup = &addon->PopupMenu.PopupMenu;
+
+        var count = popup->EntryCount;
+        if (index < 0 || index > count)
+        {
+            throw new MacroCommandError("Index out of range");
+        }
+
+        var textPtr = popup->EntryNames[index];
+        if (textPtr == null)
+        {
+            throw new MacroCommandError("Text pointer was null");
+        }
+
+        return Marshal.PtrToStringUTF8((IntPtr)textPtr) ?? string.Empty;
+    }
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
     {

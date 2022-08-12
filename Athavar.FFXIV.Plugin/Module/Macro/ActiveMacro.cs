@@ -264,6 +264,7 @@ internal partial class ActiveMacro : IDisposable
                .ForEach(method => lua.RegisterFunction(method.Name, instance, method));
 
         this.lua = new Lua();
+        this.lua.State.Encoding = Encoding.UTF8;
         this.lua.LoadCLRPackage();
         RegisterClass(this.lua, CommandInterface);
 

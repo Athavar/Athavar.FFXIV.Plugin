@@ -43,12 +43,11 @@ internal sealed class YesModule : IModule, IDisposable
     /// </summary>
     /// <param name="moduleManager"><see cref="ModuleManager" /> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="addressResolver"><see cref="PluginAddressResolver" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     /// <param name="configTab"><see cref="YesConfigTab" /> added by DI.</param>
     /// <param name="pluginWindow"><see cref="PluginWindow" /> added by DI.</param>
-    public YesModule(IModuleManager moduleManager, IDalamudServices dalamudServices, PluginAddressResolver addressResolver, Configuration configuration, IChatManager chatManager, YesConfigTab configTab, PluginWindow pluginWindow)
+    public YesModule(IModuleManager moduleManager, IDalamudServices dalamudServices, Configuration configuration, IChatManager chatManager, YesConfigTab configTab, PluginWindow pluginWindow)
     {
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
