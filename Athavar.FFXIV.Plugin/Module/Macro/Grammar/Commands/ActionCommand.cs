@@ -92,13 +92,13 @@ internal class ActionCommand : MacroCommand
                     await Task.Delay(10, token);
                     return;
                 }
-
-                if (CommandInterface.HasMaxProgress())
-                {
-                    PluginLog.Debug($"Max progress skip: {this.Text}");
-                    await Task.Delay(10, token);
-                    return;
-                }
+                /*
+                                if (CommandInterface.HasMaxProgress())
+                                {
+                                    PluginLog.Debug($"Max progress skip: {this.Text}");
+                                    await Task.Delay(10, token);
+                                    return;
+                                }*/
             }
 
             if (!this.conditionMod.HasCondition())
