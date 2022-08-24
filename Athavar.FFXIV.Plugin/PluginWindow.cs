@@ -86,6 +86,7 @@ internal class PluginWindow : Window
             change = true;
         }
 
+        /*
         // Language setting
         var selectedLanguage = (int)config.Language;
         ImGui.TextUnformatted(this.localizerManager.Localize("Language:"));
@@ -100,7 +101,7 @@ internal class PluginWindow : Window
         {
             this.localizerManager.ChangeLanguage(config.Language = (Language)selectedLanguage);
             change = true;
-        }
+        }*/
 
         if (ImGui.CollapsingHeader(this.localizerManager.Localize("Chat")))
         {

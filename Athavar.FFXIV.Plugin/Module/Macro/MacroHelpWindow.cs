@@ -594,10 +594,13 @@ bool HasMaxProgress()
 int GetQuality()
 int GetMaxQuality()
 bool HasMaxQuality()
+
 int GetDurability()
 int GetMaxDurability()
+
 int GetCp()
 int GetMaxCp()
+
 int GetStep()
 int GetPercentHQ()
 bool NeedsRepair()
@@ -612,6 +615,11 @@ bool HasStatus(string name)
 
 // id: status effect id(s).
 bool HasStatusId(uint id, ...)
+
+IsAddonVisible(string addonName)
+IsAddonReady(string addonName)
+// Can fetch nested nodes
+GetNodeText(string addonName, int nodeNumber, ...)
 ".Trim();
 
         ImGui.TextWrapped(text);
