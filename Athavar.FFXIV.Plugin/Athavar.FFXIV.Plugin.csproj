@@ -78,7 +78,7 @@
     <Reference Include="Lumina.Excel" Private="False" />
   </ItemGroup>
 
-  <Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
+  <!--Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
     <ItemGroup>
       <InputAssemblies Include="$(TargetPath)" />
       <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath);$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll;$(TargetDir)Serilog.dll" />
@@ -94,5 +94,5 @@
     </ItemGroup>
     <Message Text="Deleting @(DeleteFiles)" Importance="high" />
     <Delete Files="@(DeleteFiles)" />
-  </Target>
+  </Target-->
 </Project>
