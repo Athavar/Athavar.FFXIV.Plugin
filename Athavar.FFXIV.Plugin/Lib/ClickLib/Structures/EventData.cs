@@ -41,4 +41,18 @@ public sealed unsafe class EventData : SharedBuffer
         data.Data[2] = listener;
         return data;
     }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="EventData" /> class.
+    /// </summary>
+    /// <param name="target">Target.</param>
+    /// <param name="listener">Event listener.</param>
+    /// <returns>Event data.</returns>
+    public static EventData ForNormalRightTarget(void* target, void* listener)
+    {
+        var data = ForNormalTarget(target, listener);
+        data.Data[5] = (byte*)0x184003;
+        data.Data[7] = target;
+        return data;
+    }
 }

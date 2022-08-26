@@ -23,6 +23,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
+          token: ${{ secrets.GIT_SECRET }}
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1.1
       - name: Download Dalamud
@@ -48,6 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          submodules: true
           repository: ${{ env.PERSONAL_PLUGIN_REPO }}
           token: ${{ secrets.PAT }}
       - uses: actions/download-artifact@v2

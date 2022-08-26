@@ -616,10 +616,13 @@ bool HasStatus(string name)
 // id: status effect id(s).
 bool HasStatusId(uint id, ...)
 
-IsAddonVisible(string addonName)
-IsAddonReady(string addonName)
+bool IsAddonVisible(string addonName)
+bool IsAddonReady(string addonName)
 // Can fetch nested nodes
-GetNodeText(string addonName, int nodeNumber, ...)
+string GetNodeText(string addonName, int nodeNumber, ...)
+
+string GetSelectStringText(int index)
+int GetSelectStringEntryCount()
 ".Trim();
 
         ImGui.TextWrapped(text);

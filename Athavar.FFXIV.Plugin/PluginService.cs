@@ -68,9 +68,7 @@ internal class PluginService : IHostedService
         this.provider = provider;
 
         _ = provider.GetRequiredService<MacroModule>();
-#if DEBUG
         _ = provider.GetRequiredService<YesModule>();
-#endif
         _ = provider.GetRequiredService<InstancinatorModule>();
 #if DEBUG
         _ = provider.GetRequiredService<HuntLinkModule>();

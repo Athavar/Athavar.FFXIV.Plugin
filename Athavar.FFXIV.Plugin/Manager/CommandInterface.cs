@@ -433,6 +433,21 @@ internal class CommandInterface : ICommandInterface
     }
 
     /// <inheritdoc />
+    public unsafe int GetSelectStringEntryCount()
+    {
+        var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString", 1);
+        if (ptr == IntPtr.Zero)
+        {
+            throw new MacroCommandError("Could not find SelectString addon");
+        }
+
+        var addon = (AddonSelectString*)ptr;
+        var popup = &addon->PopupMenu.PopupMenu;
+
+        return popup->EntryCount;
+    }
+
+    /// <inheritdoc />
     public unsafe string GetSelectIconStringText(int index)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectIconString", 1);
@@ -458,6 +473,12 @@ internal class CommandInterface : ICommandInterface
 
         return Marshal.PtrToStringUTF8((IntPtr)textPtr) ?? string.Empty;
     }
+
+    /// <inheritdoc />
+    public string? GetCurrentTarget() => this.dalamudServices.TargetManager.Target?.Name.ToString();
+
+    /// <inheritdoc />
+    public string? GetCurrentFocusTarget() => this.dalamudServices.TargetManager.FocusTarget?.Name.ToString();
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
     {

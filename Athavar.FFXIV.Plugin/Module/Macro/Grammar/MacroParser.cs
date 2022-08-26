@@ -59,10 +59,12 @@ internal static class MacroParser
                {
                    "/ac" => ActionCommand.Parse(line),
                    "/action" => ActionCommand.Parse(line),
+                   "/check" => CheckCommand.Parse(line),
                    "/click" => ClickCommand.Parse(line),
                    "/craft" => GateCommand.Parse(line),
                    "/gate" => GateCommand.Parse(line),
-                   "/check" => CheckCommand.Parse(line),
+                   "/interact" => InteractCommand.Parse(line),
+                   "/item" => ItemCommand.Parse(line),
                    "/loop" => LoopCommand.Parse(line),
                    "/recipe" => RecipeCommand.Parse(line),
                    "/require" => RequireCommand.Parse(line),

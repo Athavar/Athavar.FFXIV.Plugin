@@ -106,6 +106,24 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     }
 
     /// <summary>
+    ///     Send a right click.
+    /// </summary>
+    /// <param name="which">Internal game click routing.</param>
+    /// <param name="type">Event type.</param>
+    protected void RightClickAddonStage(uint which, EventType type = EventType.MOUSE_CLICK)
+    {
+        var target = AtkStage.GetSingleton();
+
+        var eventData = EventData.ForNormalRightTarget(target, this.UnitBase);
+        var inputData = InputData.Empty();
+        inputData.Data[0] = (byte*)0x0001000000000000;
+        inputData.Data[1] = null;
+        inputData.Data[2] = null;
+
+        this.InvokeReceiveEvent(&this.UnitBase->AtkEventListener, type, which, eventData, inputData);
+    }
+
+    /// <summary>
     ///     Send a click.
     /// </summary>
     /// <param name="target">Target node.</param>

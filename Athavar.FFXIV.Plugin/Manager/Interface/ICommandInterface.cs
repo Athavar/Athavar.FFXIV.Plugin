@@ -178,9 +178,27 @@ public interface ICommandInterface
     public string GetSelectStringText(int index);
 
     /// <summary>
+    ///     Get the count of entries of a SelectIconString addon.
+    /// </summary>
+    /// <returns>The entry count.</returns>
+    public int GetSelectStringEntryCount();
+
+    /// <summary>
     ///     Get the text of a 0-indexed SelectIconString entry.
     /// </summary>
     /// <param name="index">Item number, 0 indexed.</param>
     /// <returns>The item text, or an empty string.</returns>
     public string GetSelectIconStringText(int index);
+
+    /// <summary>
+    ///     Get the name of the current selected target.
+    /// </summary>
+    /// <returns>The name of the current selected target.</returns>
+    public string? GetCurrentTarget();
+
+    /// <summary>
+    ///     Get the name of the current selected target.
+    /// </summary>
+    /// <returns>The name of the current selected target.</returns>
+    public string? GetCurrentFocusTarget();
 }
