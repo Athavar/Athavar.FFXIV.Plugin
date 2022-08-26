@@ -2,6 +2,7 @@ namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Structures;
 
 using System;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     Input data.
@@ -50,6 +51,20 @@ public sealed unsafe class InputData : SharedBuffer
     {
         var data = new InputData();
         data.Data[0] = popupMenu->List->ItemRendererList[index].AtkComponentListItemRenderer;
+        data.Data[2] = (void*)(index | ((ulong)index << 48));
+        return data;
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="InputData" /> class.
+    /// </summary>
+    /// <param name="node">List popup menu.</param>
+    /// <param name="index">Selected index.</param>
+    /// <returns>Input data.</returns>
+    public static InputData ForAtkComponentNode(AtkComponentNode* node, ushort index)
+    {
+        var data = new InputData();
+        data.Data[0] = ((AtkComponentList*)node->Component)->ItemRendererList[index].AtkComponentListItemRenderer;
         data.Data[2] = (void*)(index | ((ulong)index << 48));
         return data;
     }

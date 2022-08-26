@@ -19,7 +19,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 internal class WaitAddonCommand : MacroCommand
 {
     private const int AddonCheckMaxWait = 5000;
-    private const int AddonCheckInterval = 500;
+    private const int AddonCheckInterval = 50;
 
     private static readonly Regex Regex = new(@"^/waitaddon\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

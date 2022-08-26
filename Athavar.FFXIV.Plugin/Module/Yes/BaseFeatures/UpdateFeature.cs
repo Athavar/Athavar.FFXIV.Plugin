@@ -27,7 +27,7 @@ internal abstract class UpdateFeature : IBaseFeature
     {
         this.module = module;
         this.HookAddress = module.DalamudServices.SigScanner.ScanText(updateSig);
-        this.updateHook = new Hook<UpdateDelegate>(this.HookAddress, this.UpdateDetour);
+        this.updateHook = Hook<UpdateDelegate>.FromAddress(this.HookAddress, this.UpdateDetour);
         this.updateHook.Enable();
     }
 

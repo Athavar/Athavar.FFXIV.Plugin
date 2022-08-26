@@ -160,6 +160,27 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     }
 
     /// <summary>
+    ///     Send a click.
+    /// </summary>
+    /// <param name="node">AtkComponentNode event listener.</param>
+    /// <param name="index">List index.</param>
+    /// <param name="which">Internal routing number.</param>
+    /// <param name="type">Event type.</param>
+    protected void ClickAddonComponentList(AtkComponentNode* node, ushort index, uint which = 0, EventType type = EventType.LIST_INDEX_CHANGE)
+    {
+        var targetList = (AtkComponentList*)node->Component;
+        if (index >= targetList->ListLength)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "List index is out of range");
+        }
+
+        var eventData = EventData.ForNormalTarget(targetList->AtkComponentBase.OwnerNode, node);
+        var inputData = InputData.ForAtkComponentNode(node, index);
+
+        this.InvokeReceiveEvent(&this.UnitBase->AtkEventListener, type, which, eventData, inputData);
+    }
+
+    /// <summary>
     ///     Invoke the receive event delegate.
     /// </summary>
     /// <param name="eventListener">Type receiving the event.</param>

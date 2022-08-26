@@ -25,7 +25,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     {
         this.module = module;
         this.HookAddress = module.DalamudServices.SigScanner.ScanText(onSetupSig);
-        this.onSetupHook = new Hook<OnSetupDelegate>(this.HookAddress, this.OnSetupDetour);
+        this.onSetupHook = Hook<OnSetupDelegate>.FromAddress(this.HookAddress, this.OnSetupDetour);
         this.onSetupHook.Enable();
     }
 

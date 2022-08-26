@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Enums;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
-public class ClickFocusTargetInfo : ClickBase<ClickContextIconMenu, AddonTalk>
+public class ClickFocusTargetInfo : ClickBase<ClickFocusTargetInfo, AddonTalk>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickFocusTargetInfo" /> class.
