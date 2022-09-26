@@ -4,6 +4,7 @@
 namespace Athavar.FFXIV.Plugin.Module.Macro.Grammar.Commands;
 
 using System.Linq;
+using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +48,13 @@ internal class InteractCommand : MacroCommand
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
-        var target = DalamudServices.ObjectTable.FirstOrDefault(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName);
+        var position = GetPlayerPosition();
+        var target = DalamudServices.ObjectTable
+           .Where(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName)
+           .Select(o => (Object: o, Distance: Vector3.Distance(position, o.Position)))
+           .OrderBy(o => o.Distance)
+           .Select(o => o.Object)
+           .FirstOrDefault();
 
         if (target == default)
         {
@@ -62,5 +69,19 @@ internal class InteractCommand : MacroCommand
         DalamudServices.TargetManager.SetFocusTarget(currentFocusTarget);
 
         await this.PerformWait(token);
+    }
+
+    private static Vector3 GetPlayerPosition()
+    {
+        var player = DalamudServices.ClientState.LocalPlayer;
+        if (player != null)
+        {
+            return new Vector3(
+                player.Position.X,
+                player.Position.Y,
+                player.Position.Z);
+        }
+
+        return Vector3.Zero;
     }
 }

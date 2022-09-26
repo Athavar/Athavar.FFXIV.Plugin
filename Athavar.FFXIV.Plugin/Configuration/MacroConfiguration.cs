@@ -7,16 +7,12 @@ namespace Athavar.FFXIV.Plugin;
 
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 /// <summary>
 ///     Macro Module configuration.
 /// </summary>
-internal class MacroConfiguration
+internal class MacroConfiguration : BasicModuleConfig
 {
-    [JsonIgnore]
-    private Configuration? configuration;
-
     /// <summary>
     ///     Gets the root folder.
     /// </summary>
@@ -113,22 +109,6 @@ internal class MacroConfiguration
     ///     Gets or sets the configuration version.
     /// </summary>
     public int Version { get; set; } = 1;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the plugin functionality is enabled.
-    /// </summary>
-    public bool Enabled { get; set; } = true;
-
-    /// <summary>
-    ///     Save the configuration.
-    /// </summary>
-    public void Save() => this.configuration?.Save();
-
-    /// <summary>
-    ///     Setup <see cref="YesConfiguration" />.
-    /// </summary>
-    /// <param name="configuration">The <see cref="Configuration" />.</param>
-    internal void Setup(Configuration configuration) => this.configuration = configuration;
 
     /// <summary>
     ///     Get all nodes in the tree.

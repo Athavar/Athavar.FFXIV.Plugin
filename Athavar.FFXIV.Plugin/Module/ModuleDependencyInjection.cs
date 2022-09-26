@@ -4,6 +4,7 @@
 
 namespace Athavar.FFXIV.Plugin.Module;
 
+using Athavar.FFXIV.Plugin.Module.AutoSpear;
 using Athavar.FFXIV.Plugin.Module.HuntLink;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
@@ -55,6 +56,14 @@ public static class ModuleDependencyInjection
     {
         services.AddSingleton<InstancinatorModule>();
         services.AddSingleton<InstancinatorWindow>();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddAutoSpearModule(this IServiceCollection services)
+    {
+        services.AddSingleton<AutoSpearModule>();
+        services.AddSingleton<AutoSpear.AutoSpear>();
 
         return services;
     }

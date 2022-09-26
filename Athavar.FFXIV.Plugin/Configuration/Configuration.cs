@@ -28,6 +28,8 @@ internal class Configuration : IPluginConfiguration
 
     public InstancinatorConfiguration? Instancinator { get; set; }
 
+    public AutoSpearConfiguration? AutoSpear { get; set; }
+
     public bool ShowToolTips { get; set; } = true;
 
     public Language Language { get; set; } = Language.En;
@@ -84,9 +86,11 @@ internal class Configuration : IPluginConfiguration
         this.Yes ??= new YesConfiguration();
         this.Macro ??= new MacroConfiguration();
         this.Instancinator ??= new InstancinatorConfiguration();
+        this.AutoSpear ??= new AutoSpearConfiguration();
 
         this.Yes.Setup(this);
         this.Macro.Setup(this);
         this.Instancinator.Setup(this);
+        this.AutoSpear.Setup(this);
     }
 }

@@ -157,6 +157,7 @@ public sealed class Plugin : IDalamudPlugin
         service.AddMacroModule();
         service.AddYesModule();
         service.AddInstancinatorModule();
+        service.AddAutoSpearModule();
 #if DEBUG
         service.AddHuntLinkModule();
         service.AddItemInspectorModule();

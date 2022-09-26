@@ -115,15 +115,18 @@ internal class ActionCommand : MacroCommand
 
             const int delayWait = 500;
 
-            ChatManager.SendMessage(this.Text);
+            ChatManager.SendMessage($"/ac \"{this.actionName}\"");
 
-            if (!Configuration.CraftWaitSkip)
+            if (!Configuration.CraftWaitSkip && (this.Wait != 0 || this.WaitUntil != 0))
             {
                 await this.PerformWait(token);
             }
+            else
+            {
+                await Task.Delay(delayWait, token);
+            }
 
             // wait for crafting condition flag to exit.
-            await Task.Delay(delayWait, token);
             while (DalamudServices.Condition[ConditionFlag.Crafting40])
             {
                 await Task.Delay(10, token);

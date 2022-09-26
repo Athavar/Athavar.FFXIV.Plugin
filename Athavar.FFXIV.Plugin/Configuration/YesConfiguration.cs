@@ -7,18 +7,14 @@ namespace Athavar.FFXIV.Plugin;
 
 using System.Collections.Generic;
 using System.Linq;
-using Dalamud.Configuration;
 using Dalamud.Game.ClientState.Keys;
 using Newtonsoft.Json;
 
 /// <summary>
 ///     Yes module configuration.
 /// </summary>
-internal class YesConfiguration : IPluginConfiguration
+internal class YesConfiguration : BasicModuleConfig
 {
-    [JsonIgnore]
-    private Configuration? configuration;
-
     /// <summary>
     ///     Gets the root folder.
     /// </summary>
@@ -38,7 +34,7 @@ internal class YesConfiguration : IPluginConfiguration
     ///     Gets a value indicating whether the module is enabled with functionality.
     /// </summary>
     [JsonIgnore]
-    public bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
+    public new bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
 
     /// <summary>
     ///     Gets or sets the hotkey to always click yes.
@@ -146,11 +142,6 @@ internal class YesConfiguration : IPluginConfiguration
     public uint InclusionShopRememberSubcategory { get; set; } = 0;
 
     /// <summary>
-    ///     Save the configuration.
-    /// </summary>
-    public void Save() => this.configuration?.Save();
-
-    /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>
@@ -206,10 +197,4 @@ internal class YesConfiguration : IPluginConfiguration
         parent = null;
         return false;
     }
-
-    /// <summary>
-    ///     Setup <see cref="YesConfiguration" />.
-    /// </summary>
-    /// <param name="configuration">The <see cref="Configuration" />.</param>
-    internal void Setup(Configuration configuration) => this.configuration = configuration;
 }

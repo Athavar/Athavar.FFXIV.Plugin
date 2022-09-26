@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
+using Athavar.FFXIV.Plugin.Module.AutoSpear;
 using Athavar.FFXIV.Plugin.Module.HuntLink;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
@@ -70,6 +71,7 @@ internal class PluginService : IHostedService
         _ = provider.GetRequiredService<MacroModule>();
         _ = provider.GetRequiredService<YesModule>();
         _ = provider.GetRequiredService<InstancinatorModule>();
+        _ = provider.GetRequiredService<AutoSpearModule>();
 #if DEBUG
         _ = provider.GetRequiredService<HuntLinkModule>();
         _ = provider.GetRequiredService<ItemInspectorModule>();

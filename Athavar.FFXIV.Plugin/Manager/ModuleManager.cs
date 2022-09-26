@@ -16,14 +16,14 @@ internal class ModuleManager : IModuleManager
     private readonly Dictionary<string, bool> enabled = new();
     private readonly Dictionary<string, IModule> modules = new();
 
+    private readonly Configuration configuration;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleManager" /> class.
     /// </summary>
-    public ModuleManager(Configuration configuration)
-    {
-        // init module array
-    }
+    public ModuleManager(Configuration configuration) => this.configuration = configuration;
 
+    // init module array
     /// <inheritdoc />
     public IEnumerable<string> GetModuleNames() => this.modules.Keys;
 
@@ -37,6 +37,8 @@ internal class ModuleManager : IModuleManager
         {
             this.enabled[moduleName] = state;
             mod.Enable(state);
+
+            this.configuration.Save();
         }
     }
 
