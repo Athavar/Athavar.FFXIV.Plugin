@@ -18,16 +18,18 @@ internal partial class AutoSpear
             return;
         }
 
+        this.configuration.FishMatchText ??= string.Empty;
         if (ImGui.InputText("Spear Fish Name Matcher", ref this.configuration.FishMatchText, 1024))
         {
             this.configuration.Save();
         }
 
-
-        ImGui.Text("Debug info:");
-        foreach (var line in this.fishData)
+        if (ImGui.CollapsingHeader("Debug"))
         {
-            ImGui.Text(line);
+            foreach (var line in this.fishData)
+            {
+                ImGui.Text(line);
+            }
         }
     }
 }

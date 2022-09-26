@@ -16,6 +16,7 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Logging;
 using Dalamud.Memory;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
@@ -73,6 +74,7 @@ internal sealed class YesModule : IModule, IDisposable
 
         this.configTab.Setup(this);
         moduleManager.Register(this, this.Configuration.ModuleEnabled);
+        PluginLog.LogDebug("Module 'Yes' init");
     }
 
     /// <summary>

@@ -53,13 +53,14 @@ internal sealed class MacroModule : IModule, IDisposable
         this.helpWindow = provider.GetRequiredService<MacroHelpWindow>();
 
         moduleManager.Register(this, this.Configuration.Enabled);
-        PluginLog.LogDebug($"Module 'Macro' init. {this.Configuration}");
 
+        PluginLog.LogDebug("Module 'Macro' add command");
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
                                                                          {
                                                                              HelpMessage = "Commands of the macro module.",
                                                                              ShowInHelp = true,
                                                                          });
+        PluginLog.LogDebug("Module 'Macro' init");
     }
 
     public string Name => ModuleName;

@@ -15,12 +15,20 @@ internal struct SpearfishWindow
     [FieldOffset(0)]
     public AtkUnitBase Base;
 
+    // 0
+    // + 544 (AtkUnitBase)
+    // + 100
+    // 644
     [FieldOffset(0x284)]
     public Info Fish1;
 
+    // + 28
+    // 672
     [FieldOffset(0x2A0)]
     public Info Fish2;
 
+    // + 28
+    // 700
     [FieldOffset(0x2BC)]
     public Info Fish3;
 

@@ -14,9 +14,9 @@ internal partial class AutoSpear
 {
     public override unsafe void Draw()
     {
-        this.DrawFish(this._currentSpot, this._addon->Fish1, this._addon->Fish1Node, this._addon->FishLines, 0);
-        this.DrawFish(this._currentSpot, this._addon->Fish2, this._addon->Fish2Node, this._addon->FishLines, 1);
-        this.DrawFish(this._currentSpot, this._addon->Fish3, this._addon->Fish3Node, this._addon->FishLines, 2);
+        this.DrawFish(this._currentSpot, this._addon->Fish1, this._addon->Fish1Node, 0);
+        this.DrawFish(this._currentSpot, this._addon->Fish2, this._addon->Fish2Node, 1);
+        this.DrawFish(this._currentSpot, this._addon->Fish3, this._addon->Fish3Node, 2);
     }
 
     // We should always have to target a spearfishing spot when opening the window.
@@ -55,7 +55,7 @@ internal partial class AutoSpear
         return fishes.Count == 0 ? unknown : string.Join("\n", fishes.Select(f => f.Name[this.dalamudServices.DataManager.Language]));
     }
 
-    private unsafe void DrawFish(FishingSpot? spot, SpearfishWindow.Info info, AtkResNode* node, AtkResNode* fishLines, int index)
+    private unsafe void DrawFish(FishingSpot? spot, SpearfishWindow.Info info, AtkResNode* node, int index)
     {
         this.fishData[index] = $"Line {index}: Empty";
         if (!info.Available)
@@ -68,14 +68,19 @@ internal partial class AutoSpear
 
         var center = this._uiSize.X / 2;
         var posStart = node->X * this._uiScale;
-        var posEnd = posStart + (node->Width * node->ScaleX * this._uiScale);
+        var fishWide = node->Width * node->ScaleX * this._uiScale;
+        var posEnd = posStart + fishWide;
 
-        this.fishData[index] = $"Line {index}: {center}, x1={(int)posStart}, x2={(int)posEnd}, Name: {text}";
+        this.fishData[index] = $"Line {index}: {(int)center}, x1={(int)posStart}, x2={(int)posEnd}, Name: {text}";
 
-        if (!Regex.IsMatch(text, this.configuration.FishMatchText))
+        if (this.configuration.FishMatchText is null || !Regex.IsMatch(text, this.configuration.FishMatchText))
         {
             return;
         }
+
+        var indexReduction = fishWide * 0.2f * (2 - index);
+        posStart += indexReduction;
+        posEnd -= indexReduction;
 
         if (!info.InverseDirection)
         {

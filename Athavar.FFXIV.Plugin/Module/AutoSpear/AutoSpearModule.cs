@@ -4,6 +4,7 @@
 namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
 
 using Athavar.FFXIV.Plugin.Manager.Interface;
+using Dalamud.Logging;
 
 internal class AutoSpearModule : IModule
 {
@@ -16,6 +17,7 @@ internal class AutoSpearModule : IModule
 
         moduleManager.Register(this, this.Configuration.Enabled);
         this.tab = windowHelper;
+        PluginLog.LogDebug("Module 'AutoSpear' init");
     }
 
     public string Name => ModuleName;

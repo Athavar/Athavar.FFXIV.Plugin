@@ -5,5 +5,5 @@ namespace Athavar.FFXIV.Plugin;
 
 internal class AutoSpearConfiguration : BasicModuleConfig
 {
-    public string FishMatchText;
+    public string? FishMatchText = string.Empty;
 }

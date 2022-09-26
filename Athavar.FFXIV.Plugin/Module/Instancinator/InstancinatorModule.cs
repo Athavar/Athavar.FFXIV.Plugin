@@ -20,6 +20,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
+using Dalamud.Logging;
 using ImGuiNET;
 using Lumina;
 using Lumina.Data;
@@ -76,6 +77,7 @@ internal class InstancinatorModule : IModule, IDisposable
                                                                          });
         this.dalamudServices.Framework.Update += this.Tick;
         moduleManager.Register(this, this.Configuration.Enabled);
+        PluginLog.LogDebug("Module 'Instancinator' init");
     }
 
     /// <inheritdoc />
