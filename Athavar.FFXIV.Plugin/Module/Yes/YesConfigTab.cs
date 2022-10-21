@@ -1240,7 +1240,7 @@ internal class YesConfigTab
             {
                 if (this.Configuration.TryFindParent(this.draggedNode, out var draggedNodeParent))
                 {
-                    if (targetNode is TextFolderNode targetFolderNode)
+                    if (targetNode is TextFolderNode targetFolderNode && !ImGui.IsKeyDown(ImGuiKey.ModShift))
                     {
                         draggedNodeParent!.Children.Remove(this.draggedNode);
                         targetFolderNode.Children.Add(this.draggedNode);

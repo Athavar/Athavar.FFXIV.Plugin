@@ -543,7 +543,7 @@ internal class MacroConfigTab
                     throw new Exception($"Could not find parent of node \"{this.draggedNode.Name}\"");
                 }
 
-                if (targetNode is FolderNode targetFolderNode)
+                if (targetNode is FolderNode targetFolderNode && !ImGui.IsKeyDown(ImGuiKey.ModShift))
                 {
                     draggedNodeParent!.Children.Remove(this.draggedNode);
                     targetFolderNode.Children.Add(this.draggedNode);

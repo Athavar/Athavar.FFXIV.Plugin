@@ -36,7 +36,6 @@ internal class InstancinatorModule : IModule, IDisposable
     private const string ModuleName = "Instancinator";
     private const string FolderName = "InstancinatorInternal";
     private const string MacroCommandName = "/instancinator";
-    private const string Signature = "Your destination is currently congested";
 
     private static readonly string[] Instances = { "//", "//", "//" };
     private static readonly ushort[] Territories = { 957 /* Thavnair */ };
