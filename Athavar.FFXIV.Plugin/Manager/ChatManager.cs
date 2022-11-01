@@ -31,6 +31,7 @@ internal class ChatManager : IDisposable, IChatManager
     [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
     private readonly ProcessChatBoxDelegate processChatBox = null!;
 
+    // https://git.anna.lgbt/ascclemens/ChatTwo/src/branch/main/ChatTwo/GameFunctions/Chat.cs
     [Signature("E8 ?? ?? ?? ?? EB 0A 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 8D")]
     private readonly unsafe delegate* unmanaged<Utf8String*, int, IntPtr, void> sanitiseString = null!;
 
@@ -105,10 +106,10 @@ internal class ChatManager : IDisposable, IChatManager
         if (type is not null)
         {
             this.dalamud.ChatGui.PrintChat(new XivChatEntry
-                                           {
-                                               Message = message,
-                                               Type = type.Value,
-                                           });
+            {
+                Message = message,
+                Type = type.Value,
+            });
         }
         else
         {
