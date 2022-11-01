@@ -38,7 +38,7 @@ internal class InstancinatorModule : IModule, IDisposable
     private const string MacroCommandName = "/instancinator";
 
     private static readonly string[] Instances = { "//", "//", "//" };
-    private static readonly ushort[] Territories = { 957 /* Thavnair */ };
+    private static readonly ushort[] Territories = { 960 /* Ultima Thule */ };
 
     private readonly IDalamudServices dalamudServices;
     private readonly Configuration configuration;
@@ -70,10 +70,10 @@ internal class InstancinatorModule : IModule, IDisposable
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
-                                                                         {
-                                                                             HelpMessage = "Commands of the instancinator module.",
-                                                                             ShowInHelp = false,
-                                                                         });
+        {
+            HelpMessage = "Commands of the instancinator module.",
+            ShowInHelp = false,
+        });
         this.dalamudServices.Framework.Update += this.Tick;
         moduleManager.Register(this, this.Configuration.Enabled);
         PluginLog.LogDebug("Module 'Instancinator' init");
@@ -168,9 +168,9 @@ internal class InstancinatorModule : IModule, IDisposable
         {
             var rootChildren = this.configuration.Yes!.ListRootFolder.Children;
             var instance = new TextFolderNode
-                           {
-                               Name = FolderName,
-                           };
+            {
+                Name = FolderName,
+            };
             var children = instance.Children;
             children.Add(this.CreateListEntryNode(this.aetheryteTarget, this.travelToInstancedArea));
             children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[0]));
@@ -184,11 +184,11 @@ internal class InstancinatorModule : IModule, IDisposable
         where T : ExcelRow
         => this.dalamudServices.DataManager.Excel.GetType().GetMethod("GetSheet", BindingFlags.Instance | BindingFlags.NonPublic)!
            .MakeGenericMethod(typeof(T)).Invoke(this.dalamudServices.DataManager.Excel, new object?[]
-                                                                                        {
-                                                                                            path,
-                                                                                            this.dalamudServices.ClientState.ClientLanguage.ToLumina(),
-                                                                                            null,
-                                                                                        }) as ExcelSheet<T>;
+            {
+                path,
+                this.dalamudServices.ClientState.ClientLanguage.ToLumina(),
+                null,
+            }) as ExcelSheet<T>;
 
     private void OnChatCommand(string command, string arguments)
     {
@@ -298,12 +298,12 @@ internal class InstancinatorModule : IModule, IDisposable
     private ListEntryNode CreateListEntryNode(string target, string text)
     {
         var instance = new ListEntryNode
-                       {
-                           Enabled = false,
-                           TargetRestricted = true,
-                           Text = text,
-                           TargetText = target,
-                       };
+        {
+            Enabled = false,
+            TargetRestricted = true,
+            Text = text,
+            TargetText = target,
+        };
         return instance;
     }
 
