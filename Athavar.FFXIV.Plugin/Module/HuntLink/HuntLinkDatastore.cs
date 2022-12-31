@@ -1,4 +1,4 @@
-﻿// <copyright file="Datastore.cs" company="Athavar">
+﻿// <copyright file="HuntLinkDatastore.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 

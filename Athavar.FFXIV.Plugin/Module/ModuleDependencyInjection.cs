@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Module;
 
 using Athavar.FFXIV.Plugin.Module.AutoSpear;
+using Athavar.FFXIV.Plugin.Module.Cheat;
 using Athavar.FFXIV.Plugin.Module.HuntLink;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
@@ -64,6 +65,14 @@ public static class ModuleDependencyInjection
     {
         services.AddSingleton<AutoSpearModule>();
         services.AddSingleton<AutoSpear.AutoSpear>();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddCheatModule(this IServiceCollection services)
+    {
+        services.AddSingleton<CheatModule>();
+        services.AddSingleton<PluginManagerWrapper>();
 
         return services;
     }

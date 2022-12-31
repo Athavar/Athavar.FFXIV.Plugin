@@ -1,4 +1,8 @@
-﻿namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Enums;
+﻿// <copyright file="EventType.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Enums;
 
 /// <summary>
 ///     Various event types.

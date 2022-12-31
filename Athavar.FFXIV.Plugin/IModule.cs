@@ -15,6 +15,11 @@ internal interface IModule
     string Name { get; }
 
     /// <summary>
+    ///     Gets a value indicating whether the plugin is hidden.
+    /// </summary>
+    bool Hidden { get; }
+
+    /// <summary>
     ///     Draw the main tab of the module.
     /// </summary>
     void Draw();

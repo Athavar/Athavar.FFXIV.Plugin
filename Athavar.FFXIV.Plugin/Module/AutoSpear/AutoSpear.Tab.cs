@@ -8,7 +8,7 @@ using ImGuiNET;
 
 internal partial class AutoSpear
 {
-    private readonly string[] fishData = new string[3] { "", "", "" };
+    private readonly string[] fishData = new string[3] { string.Empty, string.Empty, string.Empty };
 
     public void DrawTab()
     {

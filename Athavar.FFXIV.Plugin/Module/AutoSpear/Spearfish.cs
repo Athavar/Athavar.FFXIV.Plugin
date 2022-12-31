@@ -1,4 +1,4 @@
-// <copyright file="SpearFish.cs" company="Athavar">
+// <copyright file="Spearfish.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
@@ -12,18 +12,18 @@ using SpearFishRow = Lumina.Excel.GeneratedSheets.SpearfishingItem;
 
 internal class SpearFish : IComparable<SpearFish>
 {
-    private readonly object _fishData;
+    private readonly object fishData;
 
     public SpearFish(DataManager gameData, SpearFishRow fishRow)
     {
         this.ItemData = fishRow.Item.Value ?? new ItemRow();
-        this._fishData = fishRow;
+        this.fishData = fishRow;
         this.Name = MultiString.FromItem(gameData, this.ItemData.RowId);
         this.Size = SpearfishSize.Unknown;
         this.Speed = SpearfishSpeed.Unknown;
     }
 
-    public SpearFishRow? SpearfishData => this._fishData as SpearFishRow;
+    public SpearFishRow? SpearfishData => this.fishData as SpearFishRow;
 
     public uint ItemId => this.ItemData.RowId;
 

@@ -13,11 +13,11 @@ internal class FishingSpot
 {
     public const uint SpearfishingIdOffset = 1u << 31;
 
-    private readonly object _data;
+    private readonly object data;
 
     public FishingSpot(IDictionary<uint, SpearFish> data, SpearfishingNotebook spot)
     {
-        this._data = spot;
+        this.data = spot;
 
         this.Items = spot.GatheringPointBase.Value?.Item.Where(i => i > 0)
                         .Select(i => data.Values.FirstOrDefault(f => f.FishId == i))
@@ -31,21 +31,21 @@ internal class FishingSpot
         }
     }
 
-    public SpearfishingNotebook? SpearfishingSpotData => this._data as SpearfishingNotebook;
+    public SpearfishingNotebook? SpearfishingSpotData => this.data as SpearfishingNotebook;
 
-    public Lumina.Excel.GeneratedSheets.FishingSpot? FishingSpotData => this._data as Lumina.Excel.GeneratedSheets.FishingSpot;
+    public Lumina.Excel.GeneratedSheets.FishingSpot? FishingSpotData => this.data as Lumina.Excel.GeneratedSheets.FishingSpot;
 
     public uint SheetId
-        => this._data is SpearfishingNotebook sf
+        => this.data is SpearfishingNotebook sf
             ? sf.RowId
-            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this._data).RowId;
+            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this.data).RowId;
 
     public uint Id
-        => this._data is SpearfishingNotebook sf
+        => this.data is SpearfishingNotebook sf
             ? sf.RowId | SpearfishingIdOffset
-            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this._data).RowId;
+            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this.data).RowId;
 
-    public bool Spearfishing => this._data is SpearfishingNotebook;
+    public bool Spearfishing => this.data is SpearfishingNotebook;
 
     public SpearFish[] Items { get; init; }
 

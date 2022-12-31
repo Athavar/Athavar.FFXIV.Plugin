@@ -1,3 +1,7 @@
+// <copyright file="AddonInclusionShopFeature.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin.Module.Yes.Features;
 
 using System;

@@ -1,3 +1,7 @@
+// <copyright file="ClickGoldSaucerReward.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
 using System;

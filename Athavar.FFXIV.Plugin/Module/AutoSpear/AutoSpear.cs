@@ -1,4 +1,4 @@
-// <copyright file="AutoSpearTab.cs" company="Athavar">
+// <copyright file="AutoSpear.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
@@ -24,18 +24,25 @@ internal partial class AutoSpear : Window
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
     private readonly AutoSpearConfiguration configuration;
-    private readonly Dictionary<uint, FishingSpot> SpearfishingSpots;
+    private readonly Dictionary<uint, FishingSpot> spearfishingSpots;
 
     private readonly string useSpearSkillName;
 
-    private unsafe SpearfishWindow* _addon = null;
-    private float _uiScale = 1;
-    private Vector2 _uiPos = Vector2.Zero;
-    private Vector2 _uiSize = Vector2.Zero;
+    private unsafe SpearfishWindow* addon = null;
+    private float uiScale = 1;
+    private Vector2 uiPos = Vector2.Zero;
+    private Vector2 uiSize = Vector2.Zero;
 
-    private FishingSpot? _currentSpot;
-    private bool _isOpen;
+    private FishingSpot? currentSpot;
+    private bool isOpen;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AutoSpear" /> class.
+    /// </summary>
+    /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
+    /// <param name="configuration"><see cref="configuration" /> added by Di.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by Di.</param>
+    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     public AutoSpear(WindowSystem windowSystem, Configuration configuration, IDalamudServices dalamudServices, IChatManager chatManager)
         : base("AutoSpear", WindowFlags, true)
     {
@@ -67,7 +74,7 @@ internal partial class AutoSpear : Window
            .ToDictionary(fs => fs.SpearfishingSpotData!.GatheringPointBase.Row, fs => fs);
 
         // Now we correspond all gathering nodes to their associated fishing spot.
-        this.SpearfishingSpots = new Dictionary<uint, FishingSpot>(baseNodes.Count);
+        this.spearfishingSpots = new Dictionary<uint, FishingSpot>(baseNodes.Count);
         foreach (var point in points)
         {
             if (!baseNodes.TryGetValue(point.GatheringPointBase.Row, out var node))
@@ -75,23 +82,23 @@ internal partial class AutoSpear : Window
                 continue;
             }
 
-            this.SpearfishingSpots.Add(point.RowId, node);
+            this.spearfishingSpots.Add(point.RowId, node);
         }
     }
 
     public override unsafe bool DrawConditions()
     {
-        var oldOpen = this._isOpen;
-        this._addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing", 1);
-        this._isOpen = this._addon != null && this._addon->Base.WindowNode != null;
-        if (!this._isOpen)
+        var oldOpen = this.isOpen;
+        this.addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing", 1);
+        this.isOpen = this.addon != null && this.addon->Base.WindowNode != null;
+        if (!this.isOpen)
         {
             return false;
         }
 
-        if (this._isOpen != oldOpen)
+        if (this.isOpen != oldOpen)
         {
-            this._currentSpot = this.GetTargetFishingSpot();
+            this.currentSpot = this.GetTargetFishingSpot();
         }
 
         return true;
@@ -99,8 +106,8 @@ internal partial class AutoSpear : Window
 
     public override unsafe void PreDraw()
     {
-        this._uiScale = this._addon->Base.Scale;
-        this._uiPos = new Vector2(this._addon->Base.X, this._addon->Base.Y);
-        this._uiSize = new Vector2(this._addon->Base.WindowNode->AtkResNode.Width * this._uiScale, this._addon->Base.WindowNode->AtkResNode.Height * this._uiScale);
+        this.uiScale = this.addon->Base.Scale;
+        this.uiPos = new Vector2(this.addon->Base.X, this.addon->Base.Y);
+        this.uiSize = new Vector2(this.addon->Base.WindowNode->AtkResNode.Width * this.uiScale, this.addon->Base.WindowNode->AtkResNode.Height * this.uiScale);
     }
 }

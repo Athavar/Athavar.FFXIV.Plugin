@@ -20,7 +20,11 @@ internal class AutoSpearModule : IModule
         PluginLog.LogDebug("Module 'AutoSpear' init");
     }
 
+    /// <inheritdoc />
     public string Name => ModuleName;
+
+    /// <inheritdoc />
+    public bool Hidden => false;
 
     /// <summary>
     ///     Gets the configuration.

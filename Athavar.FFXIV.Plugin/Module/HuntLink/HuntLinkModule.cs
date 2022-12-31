@@ -28,6 +28,9 @@ internal class HuntLinkModule : IModule
 
     public string Name => ModuleName;
 
+    /// <inheritdoc />
+    public bool Hidden => false;
+
     public void Dispose()
     {
     }

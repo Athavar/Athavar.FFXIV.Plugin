@@ -56,14 +56,18 @@ internal sealed class MacroModule : IModule, IDisposable
 
         PluginLog.LogDebug("Module 'Macro' add command");
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
-                                                                         {
-                                                                             HelpMessage = "Commands of the macro module.",
-                                                                             ShowInHelp = true,
-                                                                         });
+        {
+            HelpMessage = "Commands of the macro module.",
+            ShowInHelp = true,
+        });
         PluginLog.LogDebug("Module 'Macro' init");
     }
 
+    /// <inheritdoc />
     public string Name => ModuleName;
+
+    /// <inheritdoc />
+    public bool Hidden => false;
 
     /// <summary>
     ///     Gets the configuration.
@@ -134,10 +138,10 @@ internal sealed class MacroModule : IModule, IDisposable
             {
                 // Clone a new node so the modification doesn't save.
                 node = new MacroNode
-                       {
-                           Name = node.Name,
-                           Contents = node.Contents,
-                       };
+                {
+                    Name = node.Name,
+                    Contents = node.Contents,
+                };
 
                 var lines = node.Contents.Split('\r', '\n');
                 for (var i = lines.Length - 1; i >= 0; i--)

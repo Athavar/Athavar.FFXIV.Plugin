@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.AutoSpear;
+using Athavar.FFXIV.Plugin.Module.Cheat;
 using Athavar.FFXIV.Plugin.Module.HuntLink;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
@@ -72,6 +73,7 @@ internal class PluginService : IHostedService
         _ = provider.GetRequiredService<YesModule>();
         _ = provider.GetRequiredService<InstancinatorModule>();
         _ = provider.GetRequiredService<AutoSpearModule>();
+        _ = provider.GetRequiredService<CheatModule>();
 #if DEBUG
         _ = provider.GetRequiredService<HuntLinkModule>();
         _ = provider.GetRequiredService<ItemInspectorModule>();
@@ -86,10 +88,10 @@ internal class PluginService : IHostedService
         this.windowSystem.AddWindow(this.pluginWindow);
 
         this.dalamudServices.CommandManager.AddHandler(Plugin.CommandName, new CommandInfo(this.OnCommand)
-                                                                           {
-                                                                               HelpMessage =
-                                                                                   "Open the Configuration of Athavar's ToolsBox.",
-                                                                           });
+        {
+            HelpMessage =
+                "Open the Configuration of Athavar's ToolsBox.",
+        });
 
         var dal = this.dalamudServices as DalamudServices;
 

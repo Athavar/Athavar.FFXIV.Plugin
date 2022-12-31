@@ -23,9 +23,8 @@ internal class ModuleManager : IModuleManager
     /// </summary>
     public ModuleManager(Configuration configuration) => this.configuration = configuration;
 
-    // init module array
     /// <inheritdoc />
-    public IEnumerable<string> GetModuleNames() => this.modules.Keys;
+    public IEnumerable<string> GetModuleNames() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Key);
 
     /// <inheritdoc />
     public bool IsEnables(string moduleName) => this.enabled.TryGetValue(moduleName, out var state) && state;

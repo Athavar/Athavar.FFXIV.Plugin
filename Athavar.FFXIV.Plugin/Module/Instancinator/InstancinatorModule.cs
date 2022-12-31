@@ -54,6 +54,7 @@ internal class InstancinatorModule : IModule, IDisposable
     /// <param name="moduleManager"><see cref="ModuleManager" /> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    /// <param name="window"><see cref="InstancinatorWindow" /> added by DI.</param>
     public InstancinatorModule(IModuleManager moduleManager, IDalamudServices dalamudServices, Configuration configuration, InstancinatorWindow window)
     {
         this.dalamudServices = dalamudServices;
@@ -81,6 +82,9 @@ internal class InstancinatorModule : IModule, IDisposable
 
     /// <inheritdoc />
     public string Name => ModuleName;
+
+    /// <inheritdoc />
+    public bool Hidden => false;
 
     /// <summary>
     ///     Gets the configuration.

@@ -53,6 +53,9 @@ internal class ItemInspectorModule : IModule, IDisposable
     public string Name => ModuleName;
 
     /// <inheritdoc />
+    public bool Hidden => false;
+
+    /// <inheritdoc />
     public void Draw() => this.tab.DrawTab();
 
     /// <inheritdoc />

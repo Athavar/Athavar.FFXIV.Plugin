@@ -67,20 +67,21 @@ internal sealed class YesModule : IModule, IDisposable
            .Select(t => (IBaseFeature)Activator.CreateInstance(t, this)!));
 
         this.DalamudServices.CommandManager.AddHandler(Command, new CommandInfo(this.OnChatCommand)
-                                                                {
-                                                                    HelpMessage = "Commands that control the yes module.",
-                                                                    ShowInHelp = true,
-                                                                });
+        {
+            HelpMessage = "Commands that control the yes module.",
+            ShowInHelp = true,
+        });
 
         this.configTab.Setup(this);
         moduleManager.Register(this, this.Configuration.ModuleEnabled);
         PluginLog.LogDebug("Module 'Yes' init");
     }
 
-    /// <summary>
-    ///     gets the name of the Module.
-    /// </summary>
+    /// <inheritdoc />
     public string Name => ModuleName;
+
+    /// <inheritdoc />
+    public bool Hidden => false;
 
     /// <summary>
     ///     Gets the <see cref="IDalamudServices" />.
