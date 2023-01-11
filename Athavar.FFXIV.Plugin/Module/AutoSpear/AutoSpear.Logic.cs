@@ -71,7 +71,7 @@ internal partial class AutoSpear
         var fishWide = node->Width * node->ScaleX * this.uiScale;
         var posEnd = posStart + fishWide;
 
-        this.fishData[index] = $"Line {index}: {(int)center}, x1={(int)posStart}, x2={(int)posEnd}, Name: {text}";
+        this.fishData[index] = $"Line {index}: {(int)center}, x1={(int)posStart}, x2={(int)posEnd}, Speed={info.Speed}, Size={info.Size}, Name: {text}";
 
         if (this.configuration.FishMatchText is null || !Regex.IsMatch(text, this.configuration.FishMatchText))
         {

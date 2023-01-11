@@ -14,6 +14,7 @@ internal partial class AutoSpear
         this.Data5_0(fishes);
         this.Data6_0(fishes);
         this.Data6_1(fishes);
+        this.Data6_3(fishes);
     }
 
     private void Data4_0(IDictionary<uint, SpearFish> data)
@@ -521,5 +522,26 @@ internal partial class AutoSpear
            .Spear(SpearfishSize.Average, SpearfishSpeed.Average);
         data.Apply(36661, Patch.NewfoundAdventure) // Auroral Clam
            .Spear(SpearfishSize.Small, SpearfishSpeed.ExtremelySlow);
+    }
+
+    private void Data6_3(IDictionary<uint, SpearFish> data)
+    {
+        data.Apply(38811, Patch.GodsRevelLandsTremble) // Ken Kiln
+           .Spear(SpearfishSize.Average, SpearfishSpeed.Average);
+        data.Apply(38813, Patch.GodsRevelLandsTremble) // Glorianda's Tear
+           .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+        data.Apply(38837, Patch.GodsRevelLandsTremble) // Lakeskipper
+           .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+        data.Apply(38838, Patch.GodsRevelLandsTremble) // Bronze Eel
+           .Spear(SpearfishSize.Average, SpearfishSpeed.VerySlow);
+        data.Apply(38839, Patch.GodsRevelLandsTremble) // Striped Peacock Bass
+           .Spear(SpearfishSize.Average, SpearfishSpeed.Average);
+        data.Apply(38840, Patch.GodsRevelLandsTremble) // Bronze Trout
+           .Spear(SpearfishSize.Large, SpearfishSpeed.Slow);
+        data.Apply(38841, Patch.GodsRevelLandsTremble) // Nosceasaur
+           .Spear(SpearfishSize.Large, SpearfishSpeed.Fast)
+           .Predators(data, 60, (38939, 4));
+        data.Apply(38939, Patch.GodsRevelLandsTremble) // Verdigris Guppy
+           .Spear(SpearfishSize.Small, SpearfishSpeed.Fast);
     }
 }

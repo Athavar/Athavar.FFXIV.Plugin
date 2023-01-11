@@ -4,7 +4,6 @@
 
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
-using System;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -18,19 +17,19 @@ public sealed unsafe class ClickSelectString : ClickBase<ClickSelectString, Addo
     ///     Initializes a new instance of the <see cref="ClickSelectString" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
-    public ClickSelectString(IntPtr addon = default)
+    public ClickSelectString(nint addon = default)
         : base("SelectString", addon)
     {
     }
 
-    public static implicit operator ClickSelectString(IntPtr addon) => new(addon);
+    public static implicit operator ClickSelectString(nint addon) => new(addon);
 
     /// <summary>
     ///     Instantiate this click using the given addon.
     /// </summary>
     /// <param name="addon">Addon to reference.</param>
     /// <returns>A click instance.</returns>
-    public static ClickSelectString Using(IntPtr addon) => new(addon);
+    public static ClickSelectString Using(nint addon) => new(addon);
 
     /// <summary>
     ///     Select the item at the given index.
@@ -74,5 +73,11 @@ public sealed unsafe class ClickSelectString : ClickBase<ClickSelectString, Addo
 
     [ClickName("select_string12")]
     public void SelectItem12() => this.SelectItem(11);
+
+    [ClickName("select_string13")]
+    public void SelectItem13() => this.SelectItem(12);
+
+    [ClickName("select_string14")]
+    public void SelectItem14() => this.SelectItem(13);
 #pragma warning restore SA1134,SA1516,SA1600
 }

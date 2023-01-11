@@ -6,7 +6,7 @@
   "RepoUrl": "https://github.com/Athavar/Athavar.FFXIV.Plugin",
   "ImageUrls": [],
   "IconUrl": "https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/plugins/Athavar.FFXIV.Plugin/images/icon.png",
-  "Changelog": "",
+  "Changelog": "Update to 6.3",
   "AcceptsFeedback": false,
   "IsThirdParty": true
 }
