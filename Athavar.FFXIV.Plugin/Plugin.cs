@@ -16,7 +16,6 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
-using FFXIVClientStructs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -58,7 +57,8 @@ public sealed class Plugin : IDalamudPlugin
         _ = Task.Run(
             async () =>
             {
-                Resolver.Initialize();
+                /* Resolver.GetInstance.SetupSearchSpace();
+                Resolver.GetInstance.Resolve();*/
 
                 this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
                    .ConfigureServices(this.ConfigureServices)

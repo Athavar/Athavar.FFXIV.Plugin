@@ -38,7 +38,17 @@ internal class InstancinatorModule : IModule, IDisposable
     private const string MacroCommandName = "/instancinator";
 
     private static readonly string[] Instances = { "//", "//", "//" };
-    private static readonly ushort[] Territories = { 960 /* Ultima Thule */ };
+
+    private static readonly ushort[] Territories =
+    {
+        // 956, /* Labyrinthos */
+        // 957, /* Thavnair */
+        958, /* Garlemald */
+
+        // 959, /* Mare Lamentorum */
+        // 960, /* Ultima Thule */
+        // 961, /* Elpis */
+    };
 
     private readonly IDalamudServices dalamudServices;
     private readonly Configuration configuration;

@@ -12,7 +12,6 @@ using System.Reflection;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Exceptions;
-using FFXIVClientStructs;
 
 /// <summary>
 ///     Main class for clicking by name.
@@ -27,7 +26,7 @@ public class Click : IClick
     /// </summary>
     public Click() => this.Initialize();
 
-    private delegate void PrecompiledDelegate(IntPtr addon);
+    private delegate void PrecompiledDelegate(nint addon);
 
     /// <summary>
     ///     Load the mapping of click names.
@@ -41,8 +40,6 @@ public class Click : IClick
 
         this.initialized = true;
 
-        Resolver.Initialize();
-
         // Get all parameterless methods, of types that inherit from ClickBase
         var clicks = typeof(IClickable).Assembly.GetTypes()
            .Where(type => type.IsAssignableTo(typeof(IClickable)) && !type.IsGenericType)
@@ -55,9 +52,9 @@ public class Click : IClick
         {
             var method = click.method;
             var clickType = method.DeclaringType!;
-            var ctor = clickType.GetConstructor(new[] { typeof(IntPtr) })!;
+            var ctor = clickType.GetConstructor(new[] { typeof(nint) })!;
 
-            var param = Expression.Parameter(typeof(IntPtr), "addon");
+            var param = Expression.Parameter(typeof(nint), "addon");
             var instantiate = Expression.New(ctor, param);
             var invoke = Expression.Call(instantiate, method);
             var blockExpr = Expression.Block(invoke);
@@ -79,7 +76,7 @@ public class Click : IClick
     /// </summary>
     /// <param name="name">Click name.</param>
     /// <param name="addon">Pointer to an existing addon.</param>
-    public void SendClick(string name, IntPtr addon = default)
+    public void SendClick(string name, nint addon = default)
     {
         if (!this.initialized)
         {
@@ -100,7 +97,7 @@ public class Click : IClick
     /// <param name="name">Click name.</param>
     /// <param name="addon">Pointer to an existing addon.</param>
     /// <returns>A value indicating whether the delegate was successfully called.</returns>
-    public bool TrySendClick(string name, IntPtr addon = default)
+    public bool TrySendClick(string name, nint addon = default)
     {
         try
         {

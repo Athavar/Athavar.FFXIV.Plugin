@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Ac
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs", "lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj", "{E0FC8DF0-5503-4235-A862-601416D21D9C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FFXIVClientStructs.Generators", "lib\FFXIVClientStructs\FFXIVClientStructs.Generators\FFXIVClientStructs.Generators.csproj", "{2E003E4E-1D22-4B82-9087-54B8EEF65AD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIVClientStructs.InteropSourceGenerators", "lib\FFXIVClientStructs\FFXIVClientStructs.InteropSourceGenerators\FFXIVClientStructs.InteropSourceGenerators.csproj", "{70F46CB0-93A0-44CF-BB72-5AF516AEA771}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{E0FC8DF0-5503-4235-A862-601416D21D9C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E0FC8DF0-5503-4235-A862-601416D21D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E0FC8DF0-5503-4235-A862-601416D21D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E003E4E-1D22-4B82-9087-54B8EEF65AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E003E4E-1D22-4B82-9087-54B8EEF65AD2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E003E4E-1D22-4B82-9087-54B8EEF65AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E003E4E-1D22-4B82-9087-54B8EEF65AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F46CB0-93A0-44CF-BB72-5AF516AEA771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F46CB0-93A0-44CF-BB72-5AF516AEA771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70F46CB0-93A0-44CF-BB72-5AF516AEA771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F46CB0-93A0-44CF-BB72-5AF516AEA771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
