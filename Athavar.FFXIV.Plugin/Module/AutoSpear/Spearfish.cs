@@ -5,6 +5,7 @@ namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
 
 using System;
 using System.Collections.Generic;
+using Athavar.FFXIV.Plugin.Module.AutoSpear.Enum;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Data;
 using ItemRow = Lumina.Excel.GeneratedSheets.Item;

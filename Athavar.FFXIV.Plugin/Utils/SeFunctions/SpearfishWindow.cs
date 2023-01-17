@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Utils.SeFunctions;
 
 using System.Runtime.InteropServices;
-using Athavar.FFXIV.Plugin.Module.AutoSpear;
+using Athavar.FFXIV.Plugin.Module.AutoSpear.Enum;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 // Source: https://github.com/Ottermandias/GatherBuddy/blob/main/GatherBuddy/SeFunctions/SpearfishWindow.cs

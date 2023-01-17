@@ -1,7 +1,7 @@
 // <copyright file="Patch.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
-namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
+namespace Athavar.FFXIV.Plugin.Module.AutoSpear.Enum;
 
 using System;
 

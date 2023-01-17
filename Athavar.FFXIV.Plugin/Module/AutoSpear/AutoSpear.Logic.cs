@@ -5,6 +5,7 @@ namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
 
 using System.Linq;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Module.AutoSpear.Enum;
 using Athavar.FFXIV.Plugin.Utils.SeFunctions;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;

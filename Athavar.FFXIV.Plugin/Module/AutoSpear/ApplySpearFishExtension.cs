@@ -4,6 +4,7 @@
 namespace Athavar.FFXIV.Plugin.Module.AutoSpear;
 
 using System.Collections.Generic;
+using Athavar.FFXIV.Plugin.Module.AutoSpear.Enum;
 
 internal static class ApplySpearFishExtension
 {

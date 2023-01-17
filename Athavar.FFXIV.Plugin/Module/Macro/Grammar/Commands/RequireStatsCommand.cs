@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Module.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -86,7 +87,7 @@ internal class RequireStatsCommand : MacroCommand
 
         if (!hasStats)
         {
-            throw new MacroCommandError("Required stats were not found");
+            throw new MacroPause("Required stats were not found", IChatManager.UiColor.Yellow);
         }
 
         await this.PerformWait(token).ConfigureAwait(false);
