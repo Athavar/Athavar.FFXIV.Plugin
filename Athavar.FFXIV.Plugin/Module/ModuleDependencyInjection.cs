@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Module;
 
 using Athavar.FFXIV.Plugin.Module.AutoSpear;
 using Athavar.FFXIV.Plugin.Module.Cheat;
-using Athavar.FFXIV.Plugin.Module.HuntLink;
+using Athavar.FFXIV.Plugin.Module.CraftQueue;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
 using Athavar.FFXIV.Plugin.Module.Macro;
@@ -32,15 +32,6 @@ public static class ModuleDependencyInjection
         services.AddSingleton<YesModule>();
         services.AddSingleton<YesConfigTab>();
         services.AddSingleton<ZoneListWindow>();
-
-        return services;
-    }
-
-    internal static IServiceCollection AddHuntLinkModule(this IServiceCollection services)
-    {
-        services.AddSingleton<HuntLinkModule>();
-        services.AddSingleton<HuntLinkDatastore>();
-        services.AddSingleton<HuntLinkTab>();
 
         return services;
     }
@@ -73,6 +64,13 @@ public static class ModuleDependencyInjection
     {
         services.AddSingleton<CheatModule>();
         services.AddSingleton<PluginManagerWrapper>();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddCraftQueueModule(this IServiceCollection services)
+    {
+        services.AddSingleton<CraftQueueModule>();
 
         return services;
     }

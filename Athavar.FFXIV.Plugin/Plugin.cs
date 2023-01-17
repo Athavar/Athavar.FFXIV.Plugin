@@ -160,7 +160,7 @@ public sealed class Plugin : IDalamudPlugin
         service.AddAutoSpearModule();
         service.AddCheatModule();
 #if DEBUG
-        service.AddHuntLinkModule();
+        service.AddCraftQueueModule();
         service.AddItemInspectorModule();
 #endif
 

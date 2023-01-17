@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.AutoSpear;
 using Athavar.FFXIV.Plugin.Module.Cheat;
-using Athavar.FFXIV.Plugin.Module.HuntLink;
+using Athavar.FFXIV.Plugin.Module.CraftQueue;
 using Athavar.FFXIV.Plugin.Module.Instancinator;
 using Athavar.FFXIV.Plugin.Module.ItemInspector;
 using Athavar.FFXIV.Plugin.Module.Macro;
@@ -75,7 +75,7 @@ internal class PluginService : IHostedService
         _ = provider.GetRequiredService<AutoSpearModule>();
         _ = provider.GetRequiredService<CheatModule>();
 #if DEBUG
-        _ = provider.GetRequiredService<HuntLinkModule>();
+        _ = provider.GetRequiredService<CraftQueueModule>();
         _ = provider.GetRequiredService<ItemInspectorModule>();
 #endif
     }

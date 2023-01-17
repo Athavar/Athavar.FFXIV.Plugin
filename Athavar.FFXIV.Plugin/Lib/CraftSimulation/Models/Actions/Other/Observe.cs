@@ -1,0 +1,41 @@
+// <copyright file="Observe.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
+
+internal class Observe : CraftingAction
+{
+    private static readonly int[] IdsValue = { 100010, 100023, 100040, 100053, 100070, 100082, 100099, 100113 };
+
+    /// <inheritdoc />
+    public override ActionType ActionType => ActionType.Other;
+
+    /// <inheritdoc />
+    public override int Level => 13;
+
+    /// <inheritdoc />
+    public override CraftingJob Job => CraftingJob.ANY;
+
+    /// <inheritdoc />
+    protected override int[] Ids => IdsValue;
+
+    /// <inheritdoc />
+    public override int GetDurabilityCost(Simulation simulation) => 0;
+
+    /// <inheritdoc />
+    public override void Execute(Simulation simulation)
+    {
+    }
+
+    /// <inheritdoc />
+    public override int GetBaseCPCost(Simulation simulation) => 7;
+
+    /// <inheritdoc />
+    public override bool SkipOnFail() => true;
+
+    /// <inheritdoc />
+    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+
+    /// <inheritdoc />
+    protected override int GetBaseSuccessRate(Simulation simulation) => 100;
+}
