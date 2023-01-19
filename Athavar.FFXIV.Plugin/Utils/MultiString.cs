@@ -6,45 +6,48 @@ namespace Athavar.FFXIV.Plugin.Utils;
 using System;
 using Dalamud;
 using Dalamud.Data;
+using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
+using Action = Lumina.Excel.GeneratedSheets.Action;
 
-public readonly struct MultiString
+public record MultiString(string English, string German, string French, string Japanese) : IEquatable<string>
 {
     public static readonly MultiString Empty = new(string.Empty, string.Empty, string.Empty, string.Empty);
 
-    public readonly string English;
-    public readonly string German;
-    public readonly string French;
-    public readonly string Japanese;
-
-    public MultiString(string en, string de, string fr, string jp)
-    {
-        this.English = en;
-        this.German = de;
-        this.French = fr;
-        this.Japanese = jp;
-    }
-
     public string this[ClientLanguage lang] => this.Name(lang);
 
-    public static string ParseSeStringLumina(SeString? luminaString) => luminaString == null ? string.Empty : Dalamud.Game.Text.SeStringHandling.SeString.Parse(luminaString.RawData).TextValue;
-
-    public static MultiString FromPlaceName(DataManager gameData, uint id)
+    /// <inheritdoc />
+    public virtual bool Equals(string? other)
     {
-        var en = ParseSeStringLumina(gameData.GetExcelSheet<PlaceName>(ClientLanguage.English)!.GetRow(id)?.Name);
-        var de = ParseSeStringLumina(gameData.GetExcelSheet<PlaceName>(ClientLanguage.German)!.GetRow(id)?.Name);
-        var fr = ParseSeStringLumina(gameData.GetExcelSheet<PlaceName>(ClientLanguage.French)!.GetRow(id)?.Name);
-        var jp = ParseSeStringLumina(gameData.GetExcelSheet<PlaceName>(ClientLanguage.Japanese)!.GetRow(id)?.Name);
-        return new MultiString(en, de, fr, jp);
+        if (this.English.Equals(other, StringComparison.InvariantCultureIgnoreCase) ||
+            this.German.Equals(other, StringComparison.InvariantCultureIgnoreCase) ||
+            this.French.Equals(other, StringComparison.InvariantCultureIgnoreCase) ||
+            this.Japanese.Equals(other, StringComparison.InvariantCultureIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
     }
 
-    public static MultiString FromItem(DataManager gameData, uint id)
+    public static MultiString FromPlaceName(DataManager gameData, uint id) => From<PlaceName>(gameData, id, item => item?.Name);
+
+    public static MultiString FromItem(DataManager gameData, uint id) => From<Item>(gameData, id, item => item?.Name);
+
+    public static MultiString FromAction(DataManager gameData, uint id) => From<Action>(gameData, id, item => item?.Name);
+
+    public static MultiString FromCraftAction(DataManager gameData, uint id) => From<CraftAction>(gameData, id, item => item?.Name);
+
+    private static MultiString From<T>(DataManager gameData, uint id, Func<T?, SeString?> action)
+        where T : ExcelRow
     {
-        var en = ParseSeStringLumina(gameData.GetExcelSheet<Item>(ClientLanguage.English)!.GetRow(id)?.Name);
-        var de = ParseSeStringLumina(gameData.GetExcelSheet<Item>(ClientLanguage.German)!.GetRow(id)?.Name);
-        var fr = ParseSeStringLumina(gameData.GetExcelSheet<Item>(ClientLanguage.French)!.GetRow(id)?.Name);
-        var jp = ParseSeStringLumina(gameData.GetExcelSheet<Item>(ClientLanguage.Japanese)!.GetRow(id)?.Name);
+        string ParseSeStringLumina(SeString? luminaString) => luminaString == null ? string.Empty : Dalamud.Game.Text.SeStringHandling.SeString.Parse(luminaString.RawData).TextValue;
+
+        var en = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.English)!.GetRow(id)));
+        var de = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.German)!.GetRow(id)));
+        var fr = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.French)!.GetRow(id)));
+        var jp = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.Japanese)!.GetRow(id)));
         return new MultiString(en, de, fr, jp);
     }
 
@@ -61,4 +64,6 @@ public readonly struct MultiString
                ClientLanguage.French => this.French,
                _ => throw new ArgumentException(),
            };
+
+    public override int GetHashCode() => HashCode.Combine(this.English, this.German, this.French, this.Japanese);
 }

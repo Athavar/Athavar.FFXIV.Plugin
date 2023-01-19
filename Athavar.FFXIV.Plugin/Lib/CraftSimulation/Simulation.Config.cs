@@ -13,14 +13,14 @@ internal partial class Simulation
     public Recipe Recipe { get; }
 
     /// <summary>
-    ///     Gets the current recipe to craft.
+    ///     Gets the current crafting stats for the recipe to craft.
     /// </summary>
     public CrafterStats CrafterStats { get; }
 
     /// <summary>
     ///     Gets the current crafting stats for the recipe to craft.
     /// </summary>
-    public CrafterJobStats? CurrentStats => this.CrafterStats.Jobs[(int)this.Recipe.Job];
+    public CrafterStats CurrentStats { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether everything should be linear (aka no fail on actions, Initial preparations

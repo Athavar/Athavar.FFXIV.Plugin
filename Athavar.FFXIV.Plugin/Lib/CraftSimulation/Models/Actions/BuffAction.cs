@@ -40,14 +40,14 @@ internal abstract class BuffAction : CraftingAction
 
     protected virtual bool CanBeClipped() => false;
 
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (this.CanBeClipped())
         {
-            return null;
+            return true;
         }
 
-        return simulation.HasBuff(this.GetBuff()) ? SimulationFailCause.INVALID_ACTION : null;
+        return !simulation.HasBuff(this.GetBuff());
     }
 
     /// <inheritdoc />

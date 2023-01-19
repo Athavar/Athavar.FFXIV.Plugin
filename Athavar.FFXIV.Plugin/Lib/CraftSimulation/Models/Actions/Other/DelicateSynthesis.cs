@@ -7,7 +7,7 @@ using System;
 
 internal class DelicateSynthesis : GeneralAction
 {
-    private static readonly int[] IdsValue = { 100323, 100324, 100325, 100326, 100327, 100328, 100329, 100330 };
+    private static readonly uint[] IdsValue = { 100323, 100324, 100325, 100326, 100327, 100328, 100329, 100330 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;
@@ -19,7 +19,7 @@ internal class DelicateSynthesis : GeneralAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override void Execute(Simulation simulation)
@@ -65,7 +65,7 @@ internal class DelicateSynthesis : GeneralAction
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

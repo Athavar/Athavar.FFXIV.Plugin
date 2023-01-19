@@ -12,6 +12,8 @@ internal class Recipe
 {
     public Recipe(Lumina.Excel.GeneratedSheets.Recipe recipe, ExcelSheet<Item> sheets)
     {
+        this.GameRecipe = recipe;
+        this.RecipeId = recipe.RowId;
         var lvlTable = recipe.RecipeLevelTable.Value;
         this.RecipeLevel = lvlTable.RowId;
         this.Level = lvlTable.ClassJobLevel;
@@ -39,9 +41,14 @@ internal class Recipe
 
         this.Ingredients = recipe.UnkData5.Select(i =>
         {
-            var item = sheets.GetRow((uint)i.ItemIngredient)!;
+            var item = sheets.GetRow((uint)i.ItemIngredient);
+            if (item is null)
+            {
+                return null;
+            }
+
             return new Ingredient { Id = item.RowId, ILevel = item.LevelItem.Row, Amount = i.AmountIngredient, CanBeHq = item.CanBeHq };
-        }).ToArray();
+        }).Where(i => i is not null).Cast<Ingredient>().ToArray();
         var totalItemLevel = this.Ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
         var totalContribution = (this.MaxQuality * recipe.MaterialQualityFactor) / 100;
         foreach (var ingredient in this.Ingredients)
@@ -52,6 +59,16 @@ internal class Recipe
             }
         }
     }
+
+    /// <summary>
+    ///     Gets the recipe id.
+    /// </summary>
+    public uint RecipeId { get; }
+
+    /// <summary>
+    ///     Gets the lumina game recipe.
+    /// </summary>
+    public Lumina.Excel.GeneratedSheets.Recipe GameRecipe { get; }
 
     /// <summary>
     ///     Gets the lvl.

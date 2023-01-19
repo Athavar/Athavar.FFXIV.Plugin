@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 
 internal class Observe : CraftingAction
 {
-    private static readonly int[] IdsValue = { 100010, 100023, 100040, 100053, 100070, 100082, 100099, 100113 };
+    private static readonly uint[] IdsValue = { 100010, 100023, 100040, 100053, 100070, 100082, 100099, 100113 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;
@@ -17,7 +17,7 @@ internal class Observe : CraftingAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetDurabilityCost(Simulation simulation) => 0;
@@ -34,7 +34,7 @@ internal class Observe : CraftingAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

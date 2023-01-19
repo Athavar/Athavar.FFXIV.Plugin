@@ -7,7 +7,7 @@ using System.Linq;
 
 internal class Reflect : QualityAction
 {
-    private static readonly int[] IdsValue = { 100387, 100388, 100389, 100390, 100391, 100392, 100393, 100394 };
+    private static readonly uint[] IdsValue = { 100387, 100388, 100389, 100390, 100391, 100392, 100393, 100394 };
 
     /// <inheritdoc />
     public override int Level => 69;
@@ -16,7 +16,7 @@ internal class Reflect : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 6;
@@ -32,15 +32,7 @@ internal class Reflect : QualityAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
-    {
-        if (simulation.Steps.All(s => s.Action.IsSkipsBuffTicks()))
-        {
-            return null;
-        }
-
-        return SimulationFailCause.INVALID_ACTION;
-    }
+    protected override bool BaseCanBeUsed(Simulation simulation) => simulation.Steps.All(s => s.Skill.Action.IsSkipsBuffTicks());
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

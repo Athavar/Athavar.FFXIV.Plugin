@@ -7,7 +7,7 @@ using System.Linq;
 
 internal class MuscleMemory : ProgressAction
 {
-    private static readonly int[] IdsValue = { 100379, 100380, 100381, 100382, 100383, 100384, 100385, 100386 };
+    private static readonly uint[] IdsValue = { 100379, 100380, 100381, 100382, 100383, 100384, 100385, 100386 };
 
     /// <inheritdoc />
     public override int Level => 54;
@@ -16,7 +16,7 @@ internal class MuscleMemory : ProgressAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 6;
@@ -32,21 +32,21 @@ internal class MuscleMemory : ProgressAction
     }
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
-        if (simulation.Steps.All(s => s.Action.IsSkipsBuffTicks()))
+        if (simulation.Steps.All(s => s.Skill.Action.IsSkipsBuffTicks()))
         {
-            return null;
+            return true;
         }
 
-        return SimulationFailCause.INVALID_ACTION;
+        return false;
     }
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
     /// <inheritdoc />
-    protected override int GetPotency(Simulation simulation) => 400;
+    protected override int GetPotency(Simulation simulation) => 300;
 
     /// <inheritdoc />
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;

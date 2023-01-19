@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Progression;
 
 internal class PrudentSynthesis : ProgressAction
 {
-    private static readonly int[] IdsValue = { 100427, 100428, 100429, 100430, 100431, 100432, 100433, 100434 };
+    private static readonly uint[] IdsValue = { 100427, 100428, 100429, 100430, 100431, 100432, 100433, 100434 };
 
     /// <inheritdoc />
     public override int Level => 88;
@@ -14,13 +14,13 @@ internal class PrudentSynthesis : ProgressAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 18;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => simulation.HasBuff(Buffs.WASTE_NOT) || simulation.HasBuff(Buffs.WASTE_NOT_II) ? SimulationFailCause.INVALID_ACTION : null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.HasBuff(Buffs.WASTE_NOT) && !simulation.HasBuff(Buffs.WASTE_NOT_II);
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Progression;
 
 internal class IntensiveSynthesis : ProgressAction
 {
-    private static readonly int[] IdsValue = { 100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322 };
+    private static readonly uint[] IdsValue = { 100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322 };
 
     /// <inheritdoc />
     public override int Level => 78;
@@ -14,30 +14,25 @@ internal class IntensiveSynthesis : ProgressAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 6;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
         {
-            return null;
+            return true;
         }
 
         if (simulation.Safe && !simulation.HasBuff(Buffs.HEART_AND_SOUL))
         {
-            return SimulationFailCause.UNSAFE_ACTION;
+            return false;
         }
 
-        if (simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT)
-        {
-            return null;
-        }
-
-        return SimulationFailCause.INVALID_ACTION;
+        return simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT;
     }
 
     /// <inheritdoc />

@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Buff;
 
 internal class Manipulation : BuffAction
 {
-    private static readonly int[] IdsValue = { 4574, 4575, 4576, 4577, 4578, 4579, 4580, 4581 };
+    private static readonly uint[] IdsValue = { 4574, 4575, 4576, 4577, 4578, 4579, 4580, 4581 };
 
     /// <inheritdoc />
     public override int Level => 65;
@@ -17,7 +17,7 @@ internal class Manipulation : BuffAction
     public override ActionType ActionType => ActionType.Repair;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 96;
@@ -30,6 +30,9 @@ internal class Manipulation : BuffAction
 
     /// <inheritdoc />
     public override int GetInitialStacks() => 0;
+
+    /// <inheritdoc />
+    public override int GetWaitDuration() => 2;
 
     /// <inheritdoc />
     protected override OnTick? GetOnTick() => this.OnTick;

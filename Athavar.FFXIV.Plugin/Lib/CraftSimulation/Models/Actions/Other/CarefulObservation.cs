@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 
 internal class CarefulObservation : CraftingAction
 {
-    private static readonly int[] IdsValue = { 100395, 100396, 100397, 100398, 100399, 100400, 100401, 100402 };
+    private static readonly uint[] IdsValue = { 100395, 100396, 100397, 100398, 100399, 100400, 100401, 100402 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;
@@ -17,7 +17,7 @@ internal class CarefulObservation : CraftingAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetDurabilityCost(Simulation simulation) => 0;
@@ -34,7 +34,7 @@ internal class CarefulObservation : CraftingAction
     public override bool IsSkipsBuffTicks() => true;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => !simulation.CurrentStats?.Specialist ?? false ? SimulationFailCause.NOT_SPECIALIST : null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.CurrentStats?.Specialist ?? false ? false : true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

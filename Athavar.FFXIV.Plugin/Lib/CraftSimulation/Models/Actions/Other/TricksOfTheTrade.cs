@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 
 internal class TricksOfTheTrade : CraftingAction
 {
-    private static readonly int[] IdsValue = { 100371, 100372, 100373, 100374, 100375, 100376, 100377, 100378 };
+    private static readonly uint[] IdsValue = { 100371, 100372, 100373, 100374, 100375, 100376, 100377, 100378 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.CpRecovery;
@@ -17,7 +17,7 @@ internal class TricksOfTheTrade : CraftingAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetDurabilityCost(Simulation simulation) => 0;
@@ -31,7 +31,7 @@ internal class TricksOfTheTrade : CraftingAction
             simulation.AvailableCP += 20;
             if (simulation.AvailableCP > stats?.CP)
             {
-                simulation.AvailableCP = stats.CP;
+                simulation.AvailableCP = (int)stats.CP;
             }
         }
     }
@@ -43,24 +43,19 @@ internal class TricksOfTheTrade : CraftingAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
         {
-            return null;
+            return true;
         }
 
         if (simulation.Safe)
         {
-            return SimulationFailCause.UNSAFE_ACTION;
+            return false;
         }
 
-        if (simulation.State is StepState.GOOD or StepState.EXCELLENT)
-        {
-            return null;
-        }
-
-        return SimulationFailCause.INVALID_ACTION;
+        return simulation.State is StepState.GOOD or StepState.EXCELLENT;
     }
 
     /// <inheritdoc />

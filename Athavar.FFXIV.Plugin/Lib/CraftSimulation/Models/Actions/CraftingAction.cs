@@ -10,17 +10,23 @@ internal abstract class CraftingAction
 {
     public bool IsRequiresGood => false;
 
+    /// <summary>
+    ///     Gets the type of the action.
+    /// </summary>
     public abstract ActionType ActionType { get; }
 
+    /// <summary>
+    ///     Gets the unlock level of the action.
+    /// </summary>
     public abstract int Level { get; }
+
     public abstract CraftingJob Job { get; }
 
-    protected abstract int[] Ids { get; }
+    protected abstract uint[] Ids { get; }
 
-    public int GetId(CraftingJob job)
-        =>
-            /* Crafter ids are 8 to 15, we want indexes from 0 to 7, so... */
-            job != CraftingJob.ANY ? this.Ids[(int)job] : this.Ids[0];
+    public virtual int GetWaitDuration() => this.ActionType == ActionType.Buff ? 2 : 3;
+
+    public uint GetId(CraftingJob job) => job != CraftingJob.ANY ? this.Ids[(int)job] : this.Ids[0];
 
     public int GetSuccessRate(Simulation simulation)
     {
@@ -46,24 +52,24 @@ internal abstract class CraftingAction
 
     public abstract int GetDurabilityCost(Simulation simulation);
 
-    public SimulationFailCause? CanBeUsed(Simulation simulation)
+    public bool CanBeUsed(Simulation simulation)
     {
         if (this.Job != CraftingJob.ANY && simulation.Recipe.Job != this.Job)
         {
             // action not valid for the recipe job.
-            return SimulationFailCause.INVALID_ACTION;
+            return false;
         }
 
-        var currentStats = simulation.CrafterStats.Jobs[(int)simulation.Recipe.Job];
+        var currentStats = simulation.CurrentStats;
 
         if (currentStats is null || (simulation.SafeMode && this.GetSuccessRate(simulation) < 100))
         {
-            return SimulationFailCause.UNSAFE_ACTION;
+            return false;
         }
 
-        if (currentStats.Level >= this.Level)
+        if (currentStats.Level < this.Level)
         {
-            return SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
+            return false;
         }
 
         return this.BaseCanBeUsed(simulation);
@@ -95,10 +101,36 @@ internal abstract class CraftingAction
 
         if (Tables.LevelTable[stats.Level] <= simulation.Recipe.RecipeLevel)
         {
-            return (int)Math.Floor(baseValue * (simulation.Recipe.ProgressModifier == 0 ? 100 : simulation.Recipe.ProgressModifier) * Math.Round(0.01));
+            return (int)Math.Floor(baseValue * (simulation.Recipe.ProgressModifier == 0 ? 100 : simulation.Recipe.ProgressModifier) * 0.01);
         }
 
         return (int)Math.Floor(baseValue);
+    }
+
+    public virtual SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        if (simulation.Success == true)
+        {
+            return null;
+        }
+
+        if (simulation.SafeMode && this.GetSuccessRate(simulation) < 100)
+        {
+            return SimulationFailCause.UNSAFE_ACTION;
+        }
+
+        if (this.Job != CraftingJob.ANY && simulation.Recipe.Job != this.Job)
+        {
+            // action not valid for the recipe job.
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        if (simulation.CurrentStats?.Level < this.Level)
+        {
+            return SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
+        }
+
+        return null;
     }
 
     public long GetBaseQuality(Simulation simulation)
@@ -108,13 +140,13 @@ internal abstract class CraftingAction
 
         if (Tables.LevelTable[stats.Level] <= simulation.Recipe.RecipeLevel)
         {
-            return (long)Math.Floor(baseValue * (simulation.Recipe.QualityModifier == 0 ? 100 : simulation.Recipe.QualityModifier) * Math.Round(0.01));
+            return (long)Math.Floor(baseValue * (simulation.Recipe.QualityModifier == 0 ? 100 : simulation.Recipe.QualityModifier) * 0.01);
         }
 
         return (long)Math.Floor(baseValue);
     }
 
-    protected abstract SimulationFailCause? BaseCanBeUsed(Simulation simulation);
+    protected abstract bool BaseCanBeUsed(Simulation simulation);
 
     protected abstract int GetBaseSuccessRate(Simulation simulation);
 }

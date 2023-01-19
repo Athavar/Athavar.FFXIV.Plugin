@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
+using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module;
@@ -137,10 +138,16 @@ public sealed class Plugin : IDalamudPlugin
         service.AddSingleton<IDalamudServices, DalamudServices>();
         service.AddSingleton<IModuleManager, ModuleManager>();
         service.AddSingleton<ILocalizerManager, LocalizerManager>();
+        service.AddSingleton<IIconCacheManager, IconCacheManager>();
+        service.AddSingleton<IGearsetManager, GearsetManager>();
         service.AddSingleton<PluginWindow>();
         service.AddSingleton(o =>
         {
-            var pi = o.GetRequiredService<IDalamudServices>().PluginInterface;
+            var ser = o.GetRequiredService<IDalamudServices>();
+            CraftingSkill.Populate(ser.DataManager);
+
+            var pi = ser.PluginInterface;
+
             var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
             c.Setup(this.pluginInterface);
             return c;

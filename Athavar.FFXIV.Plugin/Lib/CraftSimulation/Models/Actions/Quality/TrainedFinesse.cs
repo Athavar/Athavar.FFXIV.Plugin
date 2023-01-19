@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class TrainedFinesse : QualityAction
 {
-    private static readonly int[] IdsValue = { 100435, 100436, 100437, 100438, 100439, 100440, 100441, 100442 };
+    private static readonly uint[] IdsValue = { 100435, 100436, 100437, 100438, 100439, 100440, 100441, 100442 };
 
     /// <inheritdoc />
     public override int Level => 90;
@@ -14,20 +14,20 @@ internal class TrainedFinesse : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.GetBuff(Buffs.INNER_QUIET)?.Stacks == 10)
         {
-            return null;
+            return true;
         }
 
-        return SimulationFailCause.INVALID_ACTION;
+        return false;
     }
 
     /// <inheritdoc />

@@ -9,7 +9,7 @@ internal class SimulationResult
 {
     public List<ActionResult> Steps { get; init; }
 
-    public double HpPercent { get; init; }
+    public int HqPercent { get; init; }
 
     public bool Success { get; set; }
 

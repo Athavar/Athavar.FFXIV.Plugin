@@ -14,28 +14,29 @@ using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 internal partial class Simulation
 {
     private readonly Random random = new((int)DateTime.UtcNow.Ticks);
-    private readonly long startingQuality;
+    private long startingQuality;
 
-    public Simulation(CrafterStats crafterStats, Recipe recipe, (uint ItemId, byte Amount)[] hqIngredients, int startingQuality = 0)
+    public Simulation(CrafterStats crafterStats, Recipe recipe, int startingQuality = 0)
     {
         this.CrafterStats = crafterStats;
         this.Recipe = recipe;
+        this.startingQuality = startingQuality;
+        this.Reset();
+    }
 
+    public void SetHqIngredients((uint ItemId, byte Amount)[] hqIngredients)
+    {
+        long quality = 0;
         foreach (var ingredient in hqIngredients)
         {
-            var ingredientDetails = recipe.Ingredients.FirstOrDefault(i => i.Id == ingredient.ItemId);
+            var ingredientDetails = this.Recipe.Ingredients.FirstOrDefault(i => i.Id == ingredient.ItemId);
             if (ingredientDetails?.Quality != null)
             {
-                this.Quality += ingredientDetails.Quality.Value * ingredient.Amount;
+                quality += ingredientDetails.Quality.Value * ingredient.Amount;
             }
         }
 
-        if (hqIngredients.Length == 0)
-        {
-            this.Quality = startingQuality;
-        }
-
-        this.startingQuality = this.Quality;
+        this.startingQuality = quality;
     }
 
     public void Repair(int amount)
@@ -47,12 +48,12 @@ internal partial class Simulation
         }
     }
 
-    public SimulationResult Run(IEnumerable<CraftingAction> actions, int maxTurns = int.MaxValue)
+    public SimulationResult Run(IEnumerable<CraftingSkills> skills, params StatModifiers[] statModifiers)
     {
         SimulationFailCause? simulationFailCause = null;
-        this.Reset();
+        this.Reset(statModifiers);
         var currentStats = this.CurrentStats;
-        if (currentStats is null || currentStats.Level < this.Recipe.Level)
+        if (currentStats.Level < this.Recipe.Level)
         {
             simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
         }
@@ -63,11 +64,20 @@ internal partial class Simulation
         }
         else
         {
-            foreach (var craftingAction in actions)
+            foreach (var skill in skills)
             {
+                var craftingSkill = CraftingSkill.FindAction(skill);
+                var action = craftingSkill.Action;
                 ActionResult result;
-                var failCause = craftingAction.CanBeUsed(this);
-                var hasEnoughCP = craftingAction.GetBaseCPCost(this) <= this.AvailableCP;
+
+                SimulationFailCause? failCause = null;
+                var canUseAction = action.CanBeUsed(this);
+                if (!canUseAction)
+                {
+                    failCause = action.GetFailCause(this);
+                }
+
+                var hasEnoughCP = action.GetBaseCPCost(this) <= this.AvailableCP;
                 if (!hasEnoughCP)
                 {
                     failCause = SimulationFailCause.NOT_ENOUGH_CP;
@@ -75,12 +85,12 @@ internal partial class Simulation
 
                 if (this.Success is null && hasEnoughCP && failCause is null)
                 {
-                    result = this.RunAction(craftingAction);
+                    result = this.RunAction(craftingSkill);
                 }
                 else
                 {
                     result = new ActionResult(
-                        craftingAction,
+                        craftingSkill,
                         null,
                         0,
                         0,
@@ -90,20 +100,6 @@ internal partial class Simulation
                         this.State,
                         failCause,
                         false);
-                }
-
-                if (this.Steps.Count < maxTurns)
-                {
-                    var skipTicksOnFail = this.Success == false && craftingAction.SkipOnFail();
-                    if (this.Success is null && !craftingAction.IsSkipsBuffTicks() && !skipTicksOnFail)
-                    {
-                        this.TickBuffs(craftingAction);
-                    }
-                }
-
-                if (!this.Linear && actions is not FinalAppraisal or RemoveFinalAppraisal)
-                {
-                    this.TickState();
                 }
 
                 this.Steps.Add(result);
@@ -117,6 +113,7 @@ internal partial class Simulation
             Steps = this.Steps,
             Success = this.Progression >= this.Recipe.Progress,
             Simulation = this,
+            HqPercent = this.GetHqPercent(),
         };
 
         if (res.Success && this.Recipe.QualityReq is not null)
@@ -134,6 +131,66 @@ internal partial class Simulation
         return res;
     }
 
+    public (uint Control, uint Craftsmanship, uint Cp, bool Found) GetMinStats(CraftingSkills[] rotation)
+    {
+        var totalIterations = 0;
+        var originalHqPercent = this.Run(rotation).HqPercent;
+        var originalStats = this.CurrentStats;
+        var res = (
+            this.CurrentStats.Control,
+            this.CurrentStats.Craftsmanship,
+            this.CurrentStats.CP,
+            Found: true);
+
+        this.CurrentStats.Craftsmanship = 1;
+
+        var result = this.Run(rotation);
+
+        // Three loops, one per stat
+        while (!result.Success && totalIterations < 10000)
+        {
+            this.CurrentStats.Craftsmanship++;
+            result = this.Run(rotation);
+            totalIterations++;
+        }
+
+        res.Craftsmanship = this.CurrentStats.Craftsmanship;
+
+        this.CurrentStats.Control = 1;
+        result = this.Run(rotation);
+
+        while (result.HqPercent < originalHqPercent && totalIterations < 10000)
+        {
+            this.CurrentStats.Control++;
+            result = this.Run(rotation);
+            totalIterations++;
+        }
+
+        res.Control = this.CurrentStats.Control;
+
+        this.CurrentStats.CP = 180;
+        result = this.Run(rotation);
+
+        while (totalIterations < 10000 && (!result.Success || result.HqPercent < originalHqPercent))
+        {
+            this.CurrentStats.CP++;
+            result = this.Run(rotation);
+            totalIterations++;
+        }
+
+        res.CP = this.CurrentStats.CP;
+
+        if (totalIterations >= 10000)
+        {
+            res.Found = false;
+        }
+
+        this.CurrentStats.CP = originalStats.CP;
+        this.CurrentStats.Craftsmanship = originalStats.Craftsmanship;
+        this.CurrentStats.Control = originalStats.Control;
+        return res;
+    }
+
     /**
    * Changes the state of the craft,
    * source: https://github.com/Ermad/ffxiv-craft-opt-web/blob/master/app/js/ffxivcraftmodel.js#L255
@@ -147,7 +204,7 @@ internal partial class Simulation
             return;
         }
 
-        var currentStats = this.CrafterStats.Jobs[(int)this.Recipe.Job];
+        var currentStats = this.CurrentStats;
         if (currentStats is null)
         {
             return;
@@ -217,8 +274,10 @@ internal partial class Simulation
         this.State = statesAndRates.Last().item;
     }
 
-    private ActionResult RunAction(CraftingAction action)
+    private ActionResult RunAction(CraftingSkill skill)
     {
+        var action = skill.Action;
+
         // The roll for the current action's success rate, 0 if ideal mode, as 0 will even match a 1% chances.
         var probabilityRoll = this.Linear ? 0 : this.random.Next(0, 100);
 
@@ -268,8 +327,19 @@ internal partial class Simulation
             failCause = SimulationFailCause.DURABILITY_REACHED_ZERO;
         }
 
+        var skipTicksOnFail = this.Success == false && action.SkipOnFail();
+        if (this.Success is null && !action.IsSkipsBuffTicks() && !skipTicksOnFail)
+        {
+            this.TickBuffs(action);
+        }
+
+        if (!this.Linear && action is not FinalAppraisal or RemoveFinalAppraisal)
+        {
+            this.TickState();
+        }
+
         return new ActionResult(
-            action,
+            skill,
             success,
             this.Quality - qualityBefore,
             this.Progression - progressionBefore,
@@ -302,6 +372,6 @@ internal partial class Simulation
             effectiveBuff.ExpireAction?.Invoke(this);
         }
 
-        this.effectiveBuffs.RemoveAll(buff => buff.Duration > 0);
+        this.effectiveBuffs.RemoveAll(buff => buff.Duration <= 0);
     }
 }

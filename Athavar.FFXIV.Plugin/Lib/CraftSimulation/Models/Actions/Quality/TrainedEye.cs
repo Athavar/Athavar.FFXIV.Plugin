@@ -7,7 +7,7 @@ using System.Linq;
 
 internal class TrainedEye : CraftingAction
 {
-    private static readonly int[] IdsValue = { 100283, 100284, 100285, 100286, 100287, 100288, 100289, 100290 };
+    private static readonly uint[] IdsValue = { 100283, 100284, 100285, 100286, 100287, 100288, 100289, 100290 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Quality;
@@ -19,7 +19,7 @@ internal class TrainedEye : CraftingAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetDurabilityCost(Simulation simulation) => 0;
@@ -34,15 +34,7 @@ internal class TrainedEye : CraftingAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
-    {
-        if (!simulation.Recipe.Expert && simulation.CurrentStats?.Level - simulation.Recipe.Level >= 10 && !simulation.Steps.Any())
-        {
-            return null;
-        }
-
-        return SimulationFailCause.INVALID_ACTION;
-    }
+    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.Recipe.Expert && simulation.CurrentStats?.Level - simulation.Recipe.Level >= 10 && !simulation.Steps.Any();
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

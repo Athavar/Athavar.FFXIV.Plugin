@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Progression;
 
 internal class Groundwork : ProgressAction
 {
-    private static readonly int[] IdsValue = { 100403, 100404, 100405, 100406, 100407, 100408, 100409, 100410 };
+    private static readonly uint[] IdsValue = { 100403, 100404, 100405, 100406, 100407, 100408, 100409, 100410 };
 
     /// <inheritdoc />
     public override int Level => 72;
@@ -14,13 +14,13 @@ internal class Groundwork : ProgressAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 18;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

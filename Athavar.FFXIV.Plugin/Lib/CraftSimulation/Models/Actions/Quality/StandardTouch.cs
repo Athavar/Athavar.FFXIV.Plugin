@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class StandardTouch : QualityAction
 {
-    private static readonly int[] IdsValue = { 100004, 100018, 100034, 100078, 100048, 100064, 100093, 100109 };
+    private static readonly uint[] IdsValue = { 100004, 100018, 100034, 100078, 100048, 100064, 100093, 100109 };
 
     /// <inheritdoc />
     public override int Level => 18;
@@ -14,7 +14,7 @@ internal class StandardTouch : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => this.HasCombo(simulation) ? 18 : 32;
@@ -23,7 +23,7 @@ internal class StandardTouch : QualityAction
     public override bool HasCombo(Simulation simulation) => simulation.HasComboAvaiable<BasicTouch>();
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

@@ -8,7 +8,7 @@ using System.Linq;
 
 internal class WasteNotII : BuffAction
 {
-    private static readonly int[] IdsValue = { 4639, 4640, 4641, 4642, 4643, 4644, 19002, 19003 };
+    private static readonly uint[] IdsValue = { 4639, 4640, 4641, 4642, 4643, 4644, 19002, 19003 };
 
     /// <inheritdoc />
     public override int Level => 47;
@@ -17,7 +17,7 @@ internal class WasteNotII : BuffAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 98;

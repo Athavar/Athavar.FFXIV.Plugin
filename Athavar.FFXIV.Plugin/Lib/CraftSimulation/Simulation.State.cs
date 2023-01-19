@@ -3,7 +3,9 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation;
 
+using System;
 using System.Collections.Generic;
+using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Constants;
 using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions;
 
@@ -11,6 +13,8 @@ using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions;
 /// </summary>
 internal partial class Simulation
 {
+    public List<ActionResult> Steps { get; } = new();
+
     /// <summary>
     ///     Gets or sets a value indicating whether the craft was a success.
     /// </summary>
@@ -41,24 +45,27 @@ internal partial class Simulation
     /// </summary>
     public StepState State { get; set; }
 
-    public List<ActionResult> Steps { get; set; }
-
     /// <summary>
     ///     Gets or sets the state of the current craft.
     /// </summary>
     public bool Safe { get; set; }
 
-    public void Reset()
+    public void Reset(StatModifiers[]? statModifiers = null)
     {
         this.Success = null;
         this.Progression = 0;
         this.Durability = this.Recipe.Durability;
         this.Quality = this.startingQuality;
         this.effectiveBuffs.Clear();
+        this.CurrentStats = new CrafterStats(this.CrafterStats);
+        if (statModifiers is not null)
+        {
+            this.CurrentStats.Apply(statModifiers);
+        }
 
         this.Steps.Clear();
 
-        this.AvailableCP = this.CurrentStats?.CP ?? 0;
+        this.AvailableCP = (int?)this.CurrentStats?.CP ?? 0;
         this.State = StepState.NORMAL;
         this.Safe = false;
     }
@@ -69,7 +76,7 @@ internal partial class Simulation
         for (var index = this.Steps.Count - 1; index >= 0; index--)
         {
             var step = this.Steps[index];
-            if (step.Success == true && step.Action is T)
+            if (step.Success == true && step.Skill.Action is T)
             {
                 return true;
             }
@@ -82,5 +89,22 @@ internal partial class Simulation
         }
 
         return false;
+    }
+
+    private int GetHqPercent()
+    {
+        if (this.Quality == 0)
+        {
+            return 1;
+        }
+
+        var qualityPercent = (int)(Math.Min((double)this.Quality / this.Recipe.MaxQuality, 1) * 100);
+
+        if (qualityPercent >= 100)
+        {
+            return 100;
+        }
+
+        return Tables.HQ_TABLE[qualityPercent];
     }
 }

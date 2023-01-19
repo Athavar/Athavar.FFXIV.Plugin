@@ -3,6 +3,4 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 
-using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions;
-
-internal record ActionResult(CraftingAction Action, bool? Success, long AddedQuality, int AddedProgression, int CpDifference, bool Skipped, int DurabilityDifference, StepState State, SimulationFailCause? FailCause, bool Combo);
+internal record ActionResult(CraftingSkill Skill, bool? Success, long AddedQuality, int AddedProgression, int CpDifference, bool Skipped, int DurabilityDifference, StepState State, SimulationFailCause? FailCause, bool Combo);

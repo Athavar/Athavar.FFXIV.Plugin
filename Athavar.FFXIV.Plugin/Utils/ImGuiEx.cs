@@ -94,4 +94,51 @@ internal static class ImGuiEx
             return *ImGui.GetStyleColorVec4(ImGuiCol.Button);
         }
     }
+
+    /// <summary>
+    ///     Get a list clipper.
+    /// </summary>
+    /// <param name="itemsCount">Amount of items in the list.</param>
+    /// <returns>A RGBA vec4.</returns>
+    public static ImGuiListClipperPtr Clipper(int itemsCount)
+    {
+        unsafe
+        {
+            var guiListClipperPtr = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
+            guiListClipperPtr.Begin(itemsCount);
+            return guiListClipperPtr;
+        }
+    }
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
+    /// <param name="handle">Pointer to the image texture.</param>
+    /// <param name="iconWidth">Image width.</param>
+    /// <param name="iconHeight">Image height.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    public static void ScaledImageY(nint handle, int iconWidth, int iconHeight, float scaledHeight)
+    {
+        var num = scaledHeight / iconHeight;
+        var x = iconWidth * num;
+        ImGui.Image(handle, new Vector2(x, scaledHeight));
+    }
+
+    /// <summary>
+    ///     Color text based on the condition.
+    /// </summary>
+    /// <param name="condition">The condition.</param>
+    /// <param name="color">The color.</param>
+    /// <param name="text">The text.</param>
+    public static void TextColorCondition(bool condition, Vector4 color, string text)
+    {
+        if (condition)
+        {
+            ImGui.TextColored(color, text);
+        }
+        else
+        {
+            ImGui.TextUnformatted(text);
+        }
+    }
 }

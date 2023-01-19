@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class PreparatoryTouch : QualityAction
 {
-    private static readonly int[] IdsValue = { 100299, 100300, 100301, 100302, 100303, 100304, 100305, 100306 };
+    private static readonly uint[] IdsValue = { 100299, 100300, 100301, 100302, 100303, 100304, 100305, 100306 };
 
     /// <inheritdoc />
     public override int Level => 71;
@@ -14,7 +14,7 @@ internal class PreparatoryTouch : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 40;
@@ -27,7 +27,7 @@ internal class PreparatoryTouch : QualityAction
     }
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

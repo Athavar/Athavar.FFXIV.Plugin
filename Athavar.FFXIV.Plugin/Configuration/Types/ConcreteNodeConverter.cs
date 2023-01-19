@@ -54,6 +54,11 @@ public class ConcreteNodeConverter : JsonConverter
             return this.CreateObject<MacroNode>(jObject, serializer);
         }
 
+        if (jType == this.SimpleName(typeof(RotationNode)))
+        {
+            return this.CreateObject<RotationNode>(jObject, serializer);
+        }
+
         if (jType == this.SimpleName(typeof(FolderNode)))
         {
             return this.CreateObject<FolderNode>(jObject, serializer);

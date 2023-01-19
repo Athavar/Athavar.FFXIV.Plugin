@@ -17,7 +17,7 @@ internal enum StepState : ushort
     /// <summary>
     ///     Default state.
     /// </summary>
-    NORMAL,
+    NORMAL = 0x00,
 
     /// <summary>
     ///     Quality multiplication of 1.5x for next command.

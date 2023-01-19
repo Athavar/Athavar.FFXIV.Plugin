@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Buff;
 
 internal class Innovation : BuffAction
 {
-    private static readonly int[] IdsValue = { 19004, 19005, 19006, 19007, 19008, 19009, 19010, 19011 };
+    private static readonly uint[] IdsValue = { 19004, 19005, 19006, 19007, 19008, 19009, 19010, 19011 };
 
     /// <inheritdoc />
     public override int Level => 26;
@@ -14,7 +14,7 @@ internal class Innovation : BuffAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 18;

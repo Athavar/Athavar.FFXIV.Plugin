@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class HeartAndSoul : BuffAction
 {
-    private static readonly int[] IdsValue = { 100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426 };
+    private static readonly uint[] IdsValue = { 100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;
@@ -21,7 +21,7 @@ internal class HeartAndSoul : BuffAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 0;
@@ -41,11 +41,11 @@ internal class HeartAndSoul : BuffAction
     /// <inheritdoc />
     protected override bool CanBeClipped() => true;
 
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (!simulation.CurrentStats?.Specialist ?? false)
         {
-            return SimulationFailCause.NOT_SPECIALIST;
+            return false;
         }
 
         return base.BaseCanBeUsed(simulation);

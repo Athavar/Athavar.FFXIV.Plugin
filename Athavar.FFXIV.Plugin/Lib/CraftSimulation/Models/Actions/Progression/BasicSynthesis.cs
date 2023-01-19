@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Progression;
 
 internal class BasicSynthesis : ProgressAction
 {
-    private static readonly int[] IdsValue = { 100001, 100015, 100030, 100075, 100045, 100060, 100090, 100105 };
+    private static readonly uint[] IdsValue = { 100001, 100015, 100030, 100075, 100045, 100060, 100090, 100105 };
 
     /// <inheritdoc />
     public override int Level => 1;
@@ -14,13 +14,13 @@ internal class BasicSynthesis : ProgressAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

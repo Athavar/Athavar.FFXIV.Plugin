@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 
 internal class RemoveFinalAppraisal : CraftingAction
 {
-    private static readonly int[] IdsValue = new int[1] { -1 };
+    private static readonly uint[] IdsValue = { 0 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;
@@ -17,7 +17,7 @@ internal class RemoveFinalAppraisal : CraftingAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override void Execute(Simulation simulation) => simulation.RemoveBuff(Buffs.FINAL_APPRAISAL);
@@ -29,7 +29,7 @@ internal class RemoveFinalAppraisal : CraftingAction
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => simulation.HasBuff(Buffs.FINAL_APPRAISAL) ? null : SimulationFailCause.INVALID_ACTION;
+    protected override bool BaseCanBeUsed(Simulation simulation) => simulation.HasBuff(Buffs.FINAL_APPRAISAL) ? true : false;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

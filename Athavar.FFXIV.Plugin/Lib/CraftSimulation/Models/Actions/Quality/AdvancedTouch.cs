@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class AdvancedTouch : QualityAction
 {
-    private static readonly int[] IdsValue = { 100411, 100412, 100413, 100414, 100415, 100416, 100417, 100418 };
+    private static readonly uint[] IdsValue = { 100411, 100412, 100413, 100414, 100415, 100416, 100417, 100418 };
 
     /// <inheritdoc />
     public override int Level => 84;
@@ -14,7 +14,7 @@ internal class AdvancedTouch : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => this.HasCombo(simulation) ? 18 : 46;
@@ -24,7 +24,7 @@ internal class AdvancedTouch : QualityAction
         for (var index = simulation.Steps.Count - 1; index >= 0; index--)
         {
             var step = simulation.Steps[index];
-            if (step.Success == true && step.Action is StandardTouch && step.Combo)
+            if (step.Success == true && step.Skill.Action is StandardTouch && step.Combo)
             {
                 return true;
             }
@@ -40,7 +40,7 @@ internal class AdvancedTouch : QualityAction
     }
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class HastyTouch : QualityAction
 {
-    private static readonly int[] IdsValue = { 100355, 100356, 100357, 100358, 100359, 100360, 100361, 100362 };
+    private static readonly uint[] IdsValue = { 100355, 100356, 100357, 100358, 100359, 100360, 100361, 100362 };
 
     /// <inheritdoc />
     public override int Level => 9;
@@ -14,13 +14,13 @@ internal class HastyTouch : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation) => null;
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 60;

@@ -16,24 +16,24 @@ internal partial class Simulation
     /// <summary>
     ///     Checks if a buff is applied.
     /// </summary>
-    /// <param name="buffs">The buff category.</param>
+    /// <param name="buff">The buff category.</param>
     /// <returns>returns a value indication if the buff is applied.</returns>
-    public bool HasBuff(Buffs? buffs) => this.effectiveBuffs.Find(row => row.Buffs == buffs) != null;
+    public bool HasBuff(Buffs? buff) => this.effectiveBuffs.Find(row => row.Buffs == buff) != null;
 
     /// <summary>
     ///     Gets the crafting buff.
     /// </summary>
-    /// <param name="buffs">The buff category.</param>
+    /// <param name="buff">The buff category.</param>
     /// <returns>returns the buff.</returns>
-    public EffectiveBuff? GetBuff(Buffs buffs) => this.effectiveBuffs.Find(row => row.Buffs == buffs);
+    public EffectiveBuff? GetBuff(Buffs buff) => this.effectiveBuffs.Find(row => row.Buffs == buff);
 
     /// <summary>
     ///     Remove a crafting buff.
     /// </summary>
-    /// <param name="buffs">The buff category.</param>
-    public void RemoveBuff(Buffs buffs)
+    /// <param name="buff">The buff category.</param>
+    public void RemoveBuff(Buffs buff)
     {
-        var toRemove = this.effectiveBuffs.Find(row => row.Buffs != buffs);
+        var toRemove = this.effectiveBuffs.Find(row => row.Buffs == buff);
         if (toRemove is not null)
         {
             this.effectiveBuffs.Remove(toRemove);

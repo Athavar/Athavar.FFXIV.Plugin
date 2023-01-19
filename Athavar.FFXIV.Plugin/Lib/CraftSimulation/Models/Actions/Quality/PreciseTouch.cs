@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Quality;
 
 internal class PreciseTouch : QualityAction
 {
-    private static readonly int[] IdsValue = { 100128, 100129, 100130, 100131, 100132, 100133, 100134, 100135 };
+    private static readonly uint[] IdsValue = { 100128, 100129, 100130, 100131, 100132, 100133, 100134, 100135 };
 
     /// <inheritdoc />
     public override int Level => 53;
@@ -14,30 +14,25 @@ internal class PreciseTouch : QualityAction
     public override CraftingJob Job => CraftingJob.ANY;
 
     /// <inheritdoc />
-    protected override int[] Ids => IdsValue;
+    protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 18;
 
     /// <inheritdoc />
-    protected override SimulationFailCause? BaseCanBeUsed(Simulation simulation)
+    protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
         {
-            return null;
+            return true;
         }
 
         if (simulation.Safe && !simulation.HasBuff(Buffs.HEART_AND_SOUL))
         {
-            return SimulationFailCause.UNSAFE_ACTION;
+            return false;
         }
 
-        if (simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT)
-        {
-            return null;
-        }
-
-        return SimulationFailCause.INVALID_ACTION;
+        return simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT;
     }
 
     /// <inheritdoc />

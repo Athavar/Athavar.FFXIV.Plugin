@@ -45,9 +45,9 @@ internal abstract class QualityAction : GeneralAction
             buffMult += 0.5;
         }
 
-        buffMod = Math.Round(buffMod) * Math.Round(buffMult);
+        buffMod *= buffMult;
 
-        var efficiency = Math.Round(potency * buffMod);
+        var efficiency = potency * buffMod;
 
         simulation.Quality += (long)Math.Floor((qualityIncrease * conditionMod * efficiency) / 100);
         simulation.AddInnerQuietStacks(1);
