@@ -37,6 +37,7 @@ internal class StatsTab : Tab
 
         void DrawCraftingGearsetTable()
         {
+            ImGui.TextUnformatted("Gearsets need to be saved mit all Materia for the correct detection.");
             if (!ImGui.BeginTable("##gearset-table", 7))
             {
                 return;

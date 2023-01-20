@@ -11,7 +11,7 @@ internal class GreatStrides : BuffAction
     public override int Level => 21;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

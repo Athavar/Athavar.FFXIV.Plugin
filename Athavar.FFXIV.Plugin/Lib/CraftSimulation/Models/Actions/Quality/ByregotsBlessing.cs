@@ -13,7 +13,7 @@ internal class ByregotsBlessing : QualityAction
     public override int Level => 50;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

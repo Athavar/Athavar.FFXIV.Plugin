@@ -15,7 +15,6 @@ internal unsafe class EquipmentScanner : IDisposable
 
     private InventoryManager* inventoryManager;
     private InventoryContainer* equipmentContainer;
-    private InventoryItem* equipmentInventoryItem;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EquipmentScanner" /> class.
@@ -40,8 +39,8 @@ internal unsafe class EquipmentScanner : IDisposable
         }
 
         var lowestValue = ushort.MaxValue;
-        var inventoryItem = this.equipmentInventoryItem;
-        for (var i = 0; i < EquipmentContainerSize; i++, inventoryItem++)
+        var inventoryItem = this.equipmentContainer->GetInventorySlot(0);
+        for (var i = 0; i < this.equipmentContainer->Size; i++, inventoryItem++)
         {
             if (lowestValue > inventoryItem->Condition)
             {
@@ -54,9 +53,9 @@ internal unsafe class EquipmentScanner : IDisposable
 
     public InventoryItem[] GetEquippedItems()
     {
-        var items = new InventoryItem[EquipmentContainerSize];
-        var inventoryItem = this.equipmentInventoryItem;
-        for (var i = 0; i < EquipmentContainerSize; i++, inventoryItem++)
+        var items = new InventoryItem[this.equipmentContainer->Size];
+        var inventoryItem = this.equipmentContainer->GetInventorySlot(0);
+        for (var i = 0; i < this.equipmentContainer->Size; i++, inventoryItem++)
         {
             items[i] = *inventoryItem;
         }
@@ -73,6 +72,5 @@ internal unsafe class EquipmentScanner : IDisposable
     {
         this.inventoryManager = InventoryManager.Instance();
         this.equipmentContainer = this.inventoryManager->GetInventoryContainer(InventoryType.EquippedItems);
-        this.equipmentInventoryItem = this.equipmentContainer->GetInventorySlot(0);
     }
 }

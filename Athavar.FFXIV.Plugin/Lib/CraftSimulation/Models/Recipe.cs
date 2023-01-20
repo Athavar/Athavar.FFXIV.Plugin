@@ -14,10 +14,10 @@ internal class Recipe
     {
         this.GameRecipe = recipe;
         this.RecipeId = recipe.RowId;
-        var lvlTable = recipe.RecipeLevelTable.Value;
+        var lvlTable = recipe.RecipeLevelTable.Value ?? throw new AthavarPluginException();
         this.RecipeLevel = lvlTable.RowId;
         this.Level = lvlTable.ClassJobLevel;
-        this.Job = (CraftingJob)recipe.CraftType.Row;
+        this.Class = (CraftingClass)recipe.CraftType.Row;
 
         this.MaxQuality = (lvlTable.Quality * recipe.QualityFactor) / 100;
         this.Progress = ((uint)lvlTable.Difficulty * recipe.DifficultyFactor) / 100;
@@ -39,25 +39,29 @@ internal class Recipe
         this.ProgressModifier = lvlTable.ProgressModifier;
         this.QualityModifier = lvlTable.QualityModifier;
 
-        this.Ingredients = recipe.UnkData5.Select(i =>
+        Ingredient[] ingredients = recipe.UnkData5.Select(i =>
         {
             var item = sheets.GetRow((uint)i.ItemIngredient);
-            if (item is null)
+            if (item is null || item.RowId == 0)
             {
                 return null;
             }
 
-            return new Ingredient { Id = item.RowId, ILevel = item.LevelItem.Row, Amount = i.AmountIngredient, CanBeHq = item.CanBeHq };
-        }).Where(i => i is not null).Cast<Ingredient>().ToArray();
-        var totalItemLevel = this.Ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
+            return new Ingredient(item.RowId, item, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
+        }).Where(i => i is not null).ToArray()!;
+        var totalItemLevel = ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
         var totalContribution = (this.MaxQuality * recipe.MaterialQualityFactor) / 100;
-        foreach (var ingredient in this.Ingredients)
+
+        for (var index = 0; index < ingredients.Length; index++)
         {
+            var ingredient = ingredients[index];
             if (ingredient.CanBeHq)
             {
-                ingredient.Quality = (uint)(ingredient.ILevel / totalItemLevel) * totalContribution;
+                ingredient.Quality = (uint)(((float)ingredient.ILevel / totalItemLevel) * totalContribution);
             }
         }
+
+        this.Ingredients = ingredients;
     }
 
     /// <summary>
@@ -115,5 +119,5 @@ internal class Recipe
 
     public Ingredient[] Ingredients { get; }
 
-    public CraftingJob Job { get; set; }
+    public CraftingClass Class { get; set; }
 }

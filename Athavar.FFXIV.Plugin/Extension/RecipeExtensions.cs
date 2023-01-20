@@ -1,4 +1,4 @@
-// <copyright file="RecipeHelper.cs" company="Athavar">
+// <copyright file="RecipeExtensions.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Extension;
@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Extension;
 using Athavar.FFXIV.Plugin.Utils.Constants;
 using Lumina.Excel.GeneratedSheets;
 
-internal static class RecipeHelper
+internal static class RecipeExtensions
 {
     internal static Job GetJobType(this Recipe recipe)
     {

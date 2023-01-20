@@ -16,7 +16,7 @@ internal class TrainedEye : CraftingAction
     public override int Level => 80;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

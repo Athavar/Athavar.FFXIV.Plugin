@@ -14,7 +14,7 @@ internal class RemoveFinalAppraisal : CraftingAction
     public override int Level => 42;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

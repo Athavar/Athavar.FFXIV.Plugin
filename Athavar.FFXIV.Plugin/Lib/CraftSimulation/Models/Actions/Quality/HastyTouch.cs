@@ -11,7 +11,7 @@ internal class HastyTouch : QualityAction
     public override int Level => 9;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

@@ -72,27 +72,10 @@ internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, Multi
 
     public static IReadOnlyCollection<CraftingSkill> AllSkills() => actions?.Values ?? throw new IncompleteInitialization();
 
-    public static CraftingMacro Parse(CraftingSkills[] skills)
-        => new()
-        {
-            Rotation = skills.Select(s => actions![s]).ToArray(),
-        };
+    public static CraftingMacro Parse(CraftingSkills[] skills) => new(skills.Select(s => actions![s]).ToArray());
 
     public static CraftingSkills[] Parse(string text)
     {
-        string ExtractAndUnquote(Match match, string groupName)
-        {
-            var group = match.Groups[groupName];
-            var groupValue = group.Value;
-
-            if (groupValue.StartsWith('"') && groupValue.EndsWith('"'))
-            {
-                groupValue = groupValue.Trim('"');
-            }
-
-            return groupValue;
-        }
-
         string? line;
         using var reader = new StringReader(text);
 
@@ -137,7 +120,7 @@ internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, Multi
             }
 
 
-            var actionId = value.GetId(value.Job);
+            var actionId = value.GetId(value.Class);
             var useCraftActionSheet = actionId > 100000;
 
             ushort iconId = 0;

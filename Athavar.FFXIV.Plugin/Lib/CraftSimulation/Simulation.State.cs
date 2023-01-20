@@ -50,7 +50,7 @@ internal partial class Simulation
     /// </summary>
     public bool Safe { get; set; }
 
-    public void Reset(StatModifiers[]? statModifiers = null)
+    public void Reset()
     {
         this.Success = null;
         this.Progression = 0;
@@ -58,9 +58,9 @@ internal partial class Simulation
         this.Quality = this.startingQuality;
         this.effectiveBuffs.Clear();
         this.CurrentStats = new CrafterStats(this.CrafterStats);
-        if (statModifiers is not null)
+        if (this.CurrentStatModifiers is not null)
         {
-            this.CurrentStats.Apply(statModifiers);
+            this.CurrentStats.Apply(this.CurrentStatModifiers);
         }
 
         this.Steps.Clear();

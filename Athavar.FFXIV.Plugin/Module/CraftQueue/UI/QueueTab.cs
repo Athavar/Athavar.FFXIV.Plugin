@@ -16,30 +16,33 @@ using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Utils;
 using Athavar.FFXIV.Plugin.Utils.Constants;
 using Dalamud;
-using Dalamud.Data;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Action = System.Action;
+using CurrentIngredient = System.Tuple<(uint ItemId, ushort Icon, byte Amount, ushort NqCount, uint NqAvailable, bool HaveAllNq, int HqIndex, ushort HqCount, uint HqAvailable, bool HaveAllHq)>;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
 internal class QueueTab : Tab
 {
-    private readonly DataManager dataManager;
+    private readonly CraftQueue craftQueue;
+    private readonly CraftQueueData craftQueueData;
     private readonly IIconCacheManager iconCacheManager;
     private readonly IGearsetManager gearsetManager;
+    private readonly ICommandInterface ci;
     private readonly ExcelSheet<Item> itemsSheet;
     private readonly ExcelSheet<ClassJob> classJobsSheet;
     private readonly ExcelSheet<BaseParam> baseParamsSheet;
     private readonly ExcelSheet<Addon> addonsSheet;
+    private readonly string PotionLabel;
+    private readonly string FoodLabel;
     private readonly List<(int Index, Recipe Recipe, Job Job)> filteredRecipes = new();
 
-    private readonly List<(Recipe Recipe, Job Job)> recipes = new();
-    private readonly List<BuffInfo> foods = new();
-    private readonly List<BuffInfo> potions = new();
+    private int craftCount = 1;
 
     private RotationNode[]? rotations;
 
@@ -50,32 +53,41 @@ internal class QueueTab : Tab
     private bool rotationHq;
 
     private int foodIdx = -1;
-    private bool foodHq;
-
     private int potionIdx = -1;
-    private bool potionHq;
 
     private bool selectionChanged;
 
     private Lib.CraftSimulation.Models.Recipe? selectedRecipe;
     private RotationNode? selectedRotation;
+    private BuffInfo? selectedFood;
+    private BuffInfo? selectedPotion;
+    private (uint ItemId, byte Amount)[] hqIngredients = Array.Empty<(uint ItemId, byte Amount)>();
+    private CurrentIngredient[] currentIngredients = Array.Empty<CurrentIngredient>();
+    private bool haveAllIngredient;
+
     private Simulation? craftingSimulation;
     private SimulationResult? simulationResult;
 
     private bool init;
 
-    public QueueTab(DataManager dataManager, IIconCacheManager iconCacheManager, IGearsetManager gearsetManager, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
+    public QueueTab(IIconCacheManager iconCacheManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
     {
-        this.dataManager = dataManager;
+        this.craftQueue = craftQueue;
+        this.craftQueueData = craftQueue.Data;
+        this.ci = craftQueue.CommandInterface;
+        this.gearsetManager = craftQueue.GearsetManager;
         this.iconCacheManager = iconCacheManager;
-        this.gearsetManager = gearsetManager;
         this.Configuration = configuration;
         this.ClientLanguage = clientLanguage;
+        var dataManager = craftQueue.DalamudServices.DataManager;
 
         this.itemsSheet = dataManager.GetExcelSheet<Item>() ?? throw new AthavarPluginException();
         this.classJobsSheet = dataManager.GetExcelSheet<ClassJob>() ?? throw new AthavarPluginException();
         this.baseParamsSheet = dataManager.GetExcelSheet<BaseParam>() ?? throw new AthavarPluginException();
         this.addonsSheet = dataManager.GetExcelSheet<Addon>() ?? throw new AthavarPluginException();
+        var sheet = dataManager.GetExcelSheet<ItemSearchCategory>();
+        this.FoodLabel = sheet?.GetRow(45)?.Name ?? string.Empty;
+        this.PotionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
     }
 
     /// <inheritdoc />
@@ -103,11 +115,19 @@ internal class QueueTab : Tab
             this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
         }
 
+        if (!this.craftQueue.DalamudServices.ClientState.IsLoggedIn)
+        {
+            ImGui.TextUnformatted("Please login.");
+            return;
+        }
+
         ImGui.Columns(2);
 
         this.DisplayAddQueueItem();
 
         ImGui.NextColumn();
+
+        this.DisplayQueueAndHistory();
 
         ImGui.Columns(1);
     }
@@ -124,108 +144,49 @@ internal class QueueTab : Tab
 
     private void PopulateData()
     {
-        // recipes
-        this.recipes.AddRange(this.dataManager.GetExcelSheet<Recipe>()!
-           .Where(row => row.RowId != 0U && row.ItemResult.Row > 0U)
-           .Select(row => (Recipe: row, Job: row.GetJobType()))
-           .Where(row => row.Job > 0)
-           .OrderByDescending(row => row.Recipe.RecipeLevelTable.Row)
-           .ThenBy(row => row.Job));
-        for (var index = 0; index < this.recipes.Count; ++index)
+        for (var index = 0; index < this.craftQueueData.Recipes.Count; ++index)
         {
-            this.filteredRecipes.Add((index, this.recipes[index].Recipe, this.recipes[index].Job));
+            var recipe = this.craftQueueData.Recipes[index];
+            this.filteredRecipes.Add((index, recipe.Recipe, recipe.Job));
         }
-
-        // foods and potions
-        var itemFoodSheet = this.dataManager.GetExcelSheet<ItemFood>()!;
-        foreach (var item in this.dataManager.GetExcelSheet<Item>()!)
-        {
-            var itemAction = item.ItemAction.Value;
-            var dataType = itemAction?.Data[0];
-            if (itemAction is null || dataType is not 48 or 49)
-            {
-                continue;
-            }
-
-            var itemFoodRowId = itemAction.Data[1];
-            var row = itemFoodSheet.GetRow(itemFoodRowId);
-            if (row is null)
-            {
-                continue;
-            }
-
-            StatModifiers nq = new();
-            StatModifiers hq = new();
-            foreach (var itemFoodUnkData1Obj in row.UnkData1)
-            {
-                switch ((StatIds)itemFoodUnkData1Obj.BaseParam)
-                {
-                    case StatIds.CP:
-                        nq.CpPct = itemFoodUnkData1Obj.Value;
-                        nq.CpMax = itemFoodUnkData1Obj.Max;
-                        hq.CpPct = itemFoodUnkData1Obj.ValueHQ;
-                        hq.CpMax = itemFoodUnkData1Obj.MaxHQ;
-                        break;
-                    case StatIds.Craftsmanship:
-                        nq.CraftsmanshipPct = itemFoodUnkData1Obj.Value;
-                        nq.CraftsmanshipMax = itemFoodUnkData1Obj.Max;
-                        hq.CraftsmanshipPct = itemFoodUnkData1Obj.ValueHQ;
-                        hq.CraftsmanshipMax = itemFoodUnkData1Obj.MaxHQ;
-                        break;
-                    case StatIds.Control:
-                        nq.ControlPct = itemFoodUnkData1Obj.Value;
-                        nq.ControlMax = itemFoodUnkData1Obj.Max;
-                        hq.ControlPct = itemFoodUnkData1Obj.ValueHQ;
-                        hq.ControlMax = itemFoodUnkData1Obj.MaxHQ;
-                        break;
-                }
-            }
-
-            if (nq.Valid() && hq.Valid())
-            {
-                if (itemAction.Data[0] == 48)
-                {
-                    this.foods.Add(new BuffInfo(item, itemFoodRowId, nq, hq));
-                }
-                else
-                {
-                    this.potions.Add(new BuffInfo(item, itemFoodRowId, nq, hq));
-                }
-            }
-        }
-
-        this.foods.Sort((a, b) => b.Item.LevelItem.Row.CompareTo(a.Item.LevelItem.Row));
-        this.potions.Sort((a, b) => b.Item.LevelItem.Row.CompareTo(a.Item.LevelItem.Row));
     }
 
     private void DisplayAddQueueItem()
     {
-        this.DisplayRecipeSelect();
-        ImGui.Separator();
-        this.DisplayFoodSelect();
-        ImGui.Separator();
-        this.DisplayPotionSelect();
-        ImGui.Separator();
-        this.DisplayRotationSelect();
-        ImGui.Separator();
-        this.RunSimulation();
-        this.DisplaySimulationResult();
-        this.DisplayCraftingSteps();
+        if (ImGui.BeginChild("##craftqueue-addqueue"))
+        {
+            this.DisplayRecipeSelect();
+            ImGui.Separator();
+            this.DisplayFoodSelect();
+            ImGui.Separator();
+            this.DisplayPotionSelect();
+            ImGui.Separator();
+            this.DisplayRotationSelect();
+            ImGui.Separator();
+            this.DisplayJobEnqueue();
+            ImGui.Separator();
+            this.DisplayIngredient();
+            ImGui.Separator();
+            this.RunSimulation();
+            this.DisplaySimulationResult();
+            this.DisplayCraftingSteps();
+            ImGui.EndChild();
+        }
     }
 
     private void DisplayRecipeSelect()
     {
         ImGui.SetNextItemWidth(-1f);
-        if (ImGui.BeginCombo("##cq-recipe-list", this.recipeIdx > -1 ? this.recipes[this.recipeIdx].Item1.ItemResult.Value?.Name.RawString ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
+        if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.Value?.Name.RawString ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
         {
             ImGui.SetNextItemWidth(-1f);
-            if (ImGui.InputTextWithHint("##cq-recipe-search", "Search...", ref this.recipeSearch, 512U, ImGuiInputTextFlags.AutoSelectAll))
+            if (ImGui.InputTextWithHint("##recipe-search", "Search...", ref this.recipeSearch, 512U, ImGuiInputTextFlags.AutoSelectAll))
             {
                 this.recipeSearch = this.recipeSearch.Trim();
                 this.FilterRecipes(this.recipeSearch);
             }
 
-            if (ImGui.BeginChild("##cq-recipe-list-child", new Vector2(0.0f, 250f) * ImGuiHelpers.GlobalScale, false, ImGuiWindowFlags.NoScrollbar) && ImGui.BeginTable("##cq-recipe-list-table", 4, ImGuiTableFlags.ScrollY))
+            if (ImGui.BeginChild("##recipe-list-child", new Vector2(0.0f, 250f) * ImGuiHelpers.GlobalScale, false, ImGuiWindowFlags.NoScrollbar) && ImGui.BeginTable("##cq-recipe-list-table", 4, ImGuiTableFlags.ScrollY))
             {
                 ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableSetupColumn("Job##job", ImGuiTableColumnFlags.WidthFixed);
@@ -244,10 +205,13 @@ internal class QueueTab : Tab
                         var text = this.classJobsSheet.GetRow((uint)job)?.Abbreviation.RawString ?? "???";
                         ImGui.TableSetColumnIndex(0);
                         Vector2 cursorPos = ImGui.GetCursorPos();
-                        if (ImGui.Selectable($"##cq-recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
+                        if (ImGui.Selectable($"##recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             this.recipeIdx = num;
-                            this.selectedRecipe = new Lib.CraftSimulation.Models.Recipe(this.recipes[this.recipeIdx].Recipe, this.itemsSheet);
+                            this.selectedRecipe = new Lib.CraftSimulation.Models.Recipe(this.craftQueueData.Recipes[this.recipeIdx].Recipe, this.itemsSheet);
+                            this.hqIngredients = this.selectedRecipe.Ingredients.Where(i => i.CanBeHq).Select(i => (ItemId: i.Id, Amount: (byte)0)).ToArray();
+                            this.craftCount = 1;
+                            this.UpdateCurrentIngredients();
                             this.SetSimulation();
                             this.selectionChanged = true;
                             ImGui.CloseCurrentPopup();
@@ -280,23 +244,24 @@ internal class QueueTab : Tab
         }
     }
 
-    private void DisplayFoodSelect() => this.DisplayItemPicker("food", this.foods, ref this.foodIdx, ref this.foodHq);
+    private void DisplayFoodSelect() => this.DisplayItemPicker(this.FoodLabel, "food", this.craftQueueData.Foods, ref this.foodIdx, ref this.selectedFood);
 
-    private void DisplayPotionSelect() => this.DisplayItemPicker("potion", this.potions, ref this.potionIdx, ref this.potionHq);
+    private void DisplayPotionSelect() => this.DisplayItemPicker(this.PotionLabel, "potion", this.craftQueueData.Potions, ref this.potionIdx, ref this.selectedPotion);
 
     private void DisplayItemPicker(
+        string label,
         string id,
-        List<BuffInfo> items,
+        IReadOnlyList<BuffInfo> items,
         ref int idx,
-        ref bool hq)
+        ref BuffInfo? selected)
     {
-        var previewValue = idx == -1 ? "None" : items[idx].Item.Name.RawString;
-        if (hq)
+        var previewValue = selected == null ? "None" : selected.Item.Name.RawString;
+        if (selected?.IsHq == true)
         {
             previewValue += " \uE03C";
         }
 
-        if (ImGui.BeginCombo("##" + id, previewValue))
+        if (ImGui.BeginCombo(label + "##" + id, previewValue))
         {
             if (ImGui.BeginTable("##" + id + "-table", 2))
             {
@@ -307,7 +272,8 @@ internal class QueueTab : Tab
                 if (ImGui.Selectable("##none", idx == -1, ImGuiSelectableFlags.SpanAllColumns))
                 {
                     idx = -1;
-                    hq = false;
+                    selected = null;
+                    this.selectionChanged = true;
                 }
 
                 ImGui.TableSetColumnIndex(1);
@@ -318,45 +284,34 @@ internal class QueueTab : Tab
                 {
                     for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
                     {
-                        var obj = items[index].Item;
+                        var buffInfo = items[index];
+                        var item = buffInfo.Item;
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
                         Vector2 cursorPos1 = ImGui.GetCursorPos();
-                        if (ImGui.Selectable($"##{obj.RowId}-hq", (idx == index) & hq, ImGuiSelectableFlags.SpanAllColumns))
+                        if (ImGui.Selectable($"##{index}", idx == index, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             idx = index;
-                            hq = true;
+                            selected = items[index];
                             this.selectionChanged = true;
                         }
 
                         ImGui.SetCursorPos(cursorPos1);
-                        var icon1 = this.iconCacheManager.GetIcon(obj.Icon, true);
-                        if (icon1 != null)
+                        var icon = this.iconCacheManager.GetIcon(item.Icon, buffInfo.IsHq);
+                        if (icon != null)
                         {
-                            ImGuiEx.ScaledImageY(icon1.ImGuiHandle, icon1.Width, icon1.Height, ImGui.GetTextLineHeight());
+                            ImGuiEx.ScaledImageY(icon.ImGuiHandle, icon.Width, icon.Height, ImGui.GetTextLineHeight());
                         }
 
                         ImGui.TableSetColumnIndex(1);
-                        ImGui.TextUnformatted(obj.Name.RawString + " \uE03C");
-                        ImGui.TableNextRow();
-                        ImGui.TableSetColumnIndex(0);
-                        Vector2 cursorPos2 = ImGui.GetCursorPos();
-                        if (ImGui.Selectable($"##{obj.RowId}-nq", idx == index && !hq, ImGuiSelectableFlags.SpanAllColumns))
+                        if (buffInfo.IsHq)
                         {
-                            idx = index;
-                            hq = false;
-                            this.selectionChanged = true;
+                            ImGui.TextUnformatted(item.Name.RawString + " \uE03C");
                         }
-
-                        ImGui.SetCursorPos(cursorPos2);
-                        var icon2 = this.iconCacheManager.GetIcon(obj.Icon);
-                        if (icon2 != null)
+                        else
                         {
-                            ImGuiEx.ScaledImageY(icon2.ImGuiHandle, icon2.Width, icon2.Height, ImGui.GetTextLineHeight());
+                            ImGui.TextUnformatted(item.Name.RawString);
                         }
-
-                        ImGui.TableSetColumnIndex(1);
-                        ImGui.TextUnformatted(obj.Name.RawString);
                     }
                 }
 
@@ -399,6 +354,130 @@ internal class QueueTab : Tab
         }
     }
 
+    private void DisplayJobEnqueue()
+    {
+        if (ImGui.InputInt("Quantity", ref this.craftCount))
+        {
+            if (this.craftCount <= 0)
+            {
+                this.craftCount = 1;
+            }
+
+            this.UpdateCurrentIngredients();
+        }
+
+        ImGui.SameLine();
+
+        var valid = this.UpdateQueueChecklist(out var drawChecklistAction);
+
+        if (!valid)
+        {
+            ImGui.BeginDisabled();
+        }
+
+        if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedRotation is not null)
+        {
+            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients);
+        }
+
+        if (!valid)
+        {
+            ImGui.EndDisabled();
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+            {
+                ImGui.BeginTooltip();
+                drawChecklistAction?.Invoke();
+
+                ImGui.EndTooltip();
+            }
+        }
+    }
+
+    private void DisplayIngredient()
+    {
+        if (this.selectedRecipe is null)
+        {
+            return;
+        }
+
+        if (ImGui.BeginTable("##ingredient-table", 4))
+        {
+            ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Amt", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("NQ", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableSetupColumn("HQ", ImGuiTableColumnFlags.WidthStretch);
+            ImGui.TableHeadersRow();
+            for (var index = 0; index < this.currentIngredients.Length; ++index)
+            {
+                var ingredient = this.currentIngredients[index].Item1;
+                if (ingredient.ItemId != 0)
+                {
+                    ImGui.TableNextRow();
+                    if (ImGui.TableSetColumnIndex(0) && this.iconCacheManager.TryGetIcon(ingredient.Icon, false, out var textureWrap))
+                    {
+                        ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
+                        ImGuiEx.TextTooltip(this.itemsSheet.GetRow(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
+                    }
+
+                    if (ImGui.TableSetColumnIndex(1))
+                    {
+                        ImGui.TextUnformatted(ingredient.Amount.ToString());
+                    }
+
+                    if (ImGui.TableSetColumnIndex(2))
+                    {
+                        if (ingredient.HqIndex != -1)
+                        {
+                            ImGuiEx.TextColorCondition(!ingredient.HaveAllNq, ImGuiColors.DalamudRed, $"({ingredient.NqCount * this.craftCount})");
+                            ImGui.SameLine();
+                            int quantity = ingredient.NqCount;
+                            if (DrawItemPicker($"/ {ingredient.NqAvailable}##nq-ing-{index}", ingredient.Amount, ref quantity))
+                            {
+                                this.hqIngredients[ingredient.HqIndex] = (ingredient.ItemId, (byte)(ingredient.Amount - quantity));
+                                this.craftingSimulation?.SetHqIngredients(this.hqIngredients);
+                                this.selectionChanged = true;
+                                this.UpdateCurrentIngredients();
+                            }
+                        }
+                        else
+                        {
+                            ImGuiEx.TextColorCondition(!ingredient.HaveAllNq, ImGuiColors.DalamudRed, $"{ingredient.NqCount * this.craftCount}");
+                            ImGui.SameLine();
+                            ImGui.TextUnformatted($"/ {ingredient.NqAvailable}");
+                        }
+                    }
+
+                    if (ImGui.TableSetColumnIndex(3) && ingredient.HqIndex != -1)
+                    {
+                        ImGuiEx.TextColorCondition(!ingredient.HaveAllHq, ImGuiColors.DalamudRed, $"({ingredient.HqCount * this.craftCount})");
+                        ImGui.SameLine();
+                        int quantity = ingredient.HqCount;
+                        if (DrawItemPicker($"/ {ingredient.HqAvailable}##hq-ing-{index}", ingredient.Amount, ref quantity))
+                        {
+                            this.hqIngredients[ingredient.HqIndex] = (ingredient.ItemId, (byte)quantity);
+                            this.craftingSimulation?.SetHqIngredients(this.hqIngredients);
+                            this.selectionChanged = true;
+                            this.UpdateCurrentIngredients();
+                        }
+                    }
+                }
+
+                bool DrawItemPicker(string id, int total, ref int quality)
+                {
+                    if (!ImGui.InputInt(id, ref quality))
+                    {
+                        return false;
+                    }
+
+                    quality = Math.Min(Math.Max(0, quality), total);
+                    return true;
+                }
+            }
+
+            ImGui.EndTable();
+        }
+    }
+
     private void DisplaySimulationResult()
     {
         if (this.craftingSimulation is null || this.selectedRecipe is null)
@@ -406,7 +485,7 @@ internal class QueueTab : Tab
             return;
         }
 
-        ImGui.TextUnformatted($"{this.classJobsSheet.GetRow(8U + (uint)this.selectedRecipe.Job)!.Name}");
+        ImGui.TextUnformatted($"{this.classJobsSheet.GetRow(8U + (uint)this.selectedRecipe.Class)!.Name}");
 
         // stats Craftsmanship and Control
         ImGuiEx.TextColorCondition(this.craftingSimulation.Recipe.CraftsmanshipReq > this.craftingSimulation.CurrentStats.Craftsmanship, ImGuiColors.DalamudRed, $"{this.baseParamsSheet.GetRow(70)!.Name}: {this.craftingSimulation.CurrentStats.Craftsmanship} ");
@@ -419,15 +498,17 @@ internal class QueueTab : Tab
         ImGui.ProgressBar((float)this.craftingSimulation.AvailableCP / this.craftingSimulation.CurrentStats.CP, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), $"{this.craftingSimulation.AvailableCP} / {this.craftingSimulation.CurrentStats.CP}");
         ImGui.PopStyleColor();
 
-        if (this.simulationResult is null)
+        ImGui.Separator();
+
+        if (this.simulationResult is null || this.selectedRotation is null)
         {
             return;
         }
 
         // result
-        ImGui.TextUnformatted($"Result {this.simulationResult.Success}. FailCause: {this.simulationResult.FailCause} ");
-        ImGui.SameLine();
         ImGuiEx.TextColorCondition(this.simulationResult.FailCause == SimulationFailCause.DURABILITY_REACHED_ZERO, ImGuiColors.DalamudRed, $"{this.addonsSheet.GetRow(214)!.Text}: {this.craftingSimulation.Durability} / {this.craftingSimulation.Recipe.Durability}");
+        ImGui.SameLine();
+        ImGui.TextUnformatted($"Result {this.simulationResult.Success}. FailCause: {this.simulationResult.FailCause} ");
 
         // Progress line
         var progress = (float)this.craftingSimulation.Progression / this.craftingSimulation.Recipe.Progress;
@@ -492,30 +573,6 @@ internal class QueueTab : Tab
                 }
             }
         }
-
-
-        var valid = this.UpdateQueueChecklist(out var drawChecklistAction);
-
-        if (!valid)
-        {
-            ImGui.BeginDisabled();
-        }
-
-        if (ImGui.Button("Queue##cq-queue-btn"))
-        {
-        }
-
-        if (!valid)
-        {
-            ImGui.EndDisabled();
-            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-            {
-                ImGui.BeginTooltip();
-                drawChecklistAction?.Invoke();
-
-                ImGui.EndTooltip();
-            }
-        }
     }
 
     private void DisplayCraftingSteps()
@@ -528,7 +585,7 @@ internal class QueueTab : Tab
         var rotationSteps = this.simulationResult.Steps;
 
         ImGui.SetNextItemWidth(-1);
-        if (ImGui.CollapsingHeader("Steps##cq-step-table-collapsing") && ImGui.BeginTable("##cq-step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders))
+        if (ImGui.CollapsingHeader("Steps##step-table-collapsing") && ImGui.BeginTable("##step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders))
         {
             ImGui.TableSetupColumn("Step##index", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
@@ -590,6 +647,133 @@ internal class QueueTab : Tab
         }
     }
 
+    private void DisplayQueueAndHistory()
+    {
+        using var raii = new ImGuiRaii();
+
+        if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history"), ImGui.EndChild))
+        {
+            return;
+        }
+
+        var queueState = this.craftQueue.Paused;
+        var stateName = queueState switch
+                        {
+                            QueueState.Paused => "Paused",
+                            QueueState.Running => "Running",
+                            QueueState.PausedSoon => "Pausing Soon",
+                        };
+
+        var buttonCol = ImGuiEx.GetStyleColorVec4(ImGuiCol.Button);
+        ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonCol);
+        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, buttonCol);
+        ImGui.Button($"{stateName}##LoopState", new Vector2(100, 0));
+        ImGui.PopStyleColor();
+        ImGui.PopStyleColor();
+
+
+        switch (queueState)
+        {
+            case QueueState.Paused:
+                ImGui.SameLine();
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "Resume"))
+                {
+                    this.craftQueue.Paused = QueueState.Running;
+                }
+
+                break;
+
+            case QueueState.Running:
+                ImGui.SameLine();
+                if (ImGuiEx.IconButton(FontAwesomeIcon.Pause, "Pause (hold control to pause at next craft)"))
+                {
+                    var io = ImGui.GetIO();
+                    var ctrlHeld = io.KeyCtrl;
+                    this.craftQueue.Paused = ctrlHeld ? QueueState.PausedSoon : QueueState.Paused;
+                }
+
+                break;
+        }
+
+        if (this.craftQueue.CurrentJob != null)
+        {
+            ImGui.SameLine();
+            if (ImGuiEx.IconButton(FontAwesomeIcon.TrashAlt, "Cancel"))
+            {
+                this.craftQueue.CancelCurrentJob();
+            }
+        }
+
+        const int columnCount = 8;
+        if (!raii.Begin(() => ImGui.BeginTable("##queue-and-history", columnCount), ImGui.EndTable))
+        {
+            return;
+        }
+
+        ImGui.TableSetupColumn("Item", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Job", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Qty", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Step", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("Per craft", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableSetupColumn("##cancel", ImGuiTableColumnFlags.WidthFixed);
+        ImGui.TableHeadersRow();
+
+        var currentJob = this.craftQueue.CurrentJob;
+        if (currentJob != null)
+        {
+            DrawRow(currentJob, "current", (Action)(() => this.craftQueue.CancelCurrentJob()));
+        }
+
+        var remove = -1;
+        for (var i = 0; i < this.craftQueue.Jobs.Count; i++)
+        {
+            var job2 = this.craftQueue.Jobs[i];
+            var index = i;
+            var cancel = (Action)(() => remove = index);
+            DrawRow(job2, "queued-" + i, cancel);
+        }
+
+        for (var index = this.craftQueue.JobsCompleted.Count - 1; index > -1; --index)
+        {
+            DrawRow(this.craftQueue.JobsCompleted[index], null, null);
+        }
+
+        if (remove != -1)
+        {
+            this.craftQueue.DequeueJob(remove);
+        }
+
+
+        void DrawRow(CraftingJob drawnJob, string? id, Action? cancel)
+        {
+            ImGui.TableNextRow();
+            var timeSpan1 = drawnJob.Duration;
+            var timeSpan2 = drawnJob.LoopDuration;
+            var str1 = drawnJob.Recipe.GameRecipe.ItemResult.Value?.Name.RawString ?? "???";
+            var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
+            var values = new object[columnCount];
+            values[0] = str1;
+            values[1] = str2;
+            values[2] = drawnJob.CurrentLoop.ToString() + '/' + drawnJob.Loops;
+            values[3] = drawnJob.Status.ToString();
+            values[4] = $"{drawnJob.CurrentStep} {drawnJob.RotationCurrentStep}/{drawnJob.RotationMaxSteps}";
+            values[5] = timeSpan1.ToString("hh':'mm':'ss");
+            values[6] = "~" + timeSpan2.ToString("mm':'ss");
+            values[7] = (Action)(() =>
+            {
+                if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, $"Cancel {id} Job", small: true))
+                {
+                    return;
+                }
+
+                cancel();
+            });
+            ImGuiEx.TableRow(values);
+        }
+    }
+
     private void SetSimulation()
     {
         if (this.selectedRecipe is null)
@@ -607,7 +791,7 @@ internal class QueueTab : Tab
 
 
         this.craftingSimulation = new Simulation(
-            new CrafterStats(90, gs.Control, gs.Craftsmanship, gs.CP, gs.HasSoulStone),
+            new CrafterStats(Constants.MaxLevel, gs.Control, gs.Craftsmanship, gs.CP, gs.HasSoulStone),
             this.selectedRecipe)
         {
             Linear = true,
@@ -616,30 +800,40 @@ internal class QueueTab : Tab
 
     private void RunSimulation()
     {
-        if (this.selectionChanged && this.craftingSimulation is not null && this.selectedRotation is not null)
+        if (this.selectionChanged && this.craftingSimulation is not null)
         {
-            this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations, this.GetCurrentStatBuffs().ToArray());
+            this.craftingSimulation.CurrentStatModifiers = this.GetCurrentStatBuffs().ToArray();
+            if (this.selectedRotation is not null)
+            {
+                this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations);
+            }
+            else
+            {
+                this.craftingSimulation.Reset();
+            }
+
             this.selectionChanged = false;
         }
     }
 
     private void FilterRecipes(string needle)
     {
+        var recipes = this.craftQueueData.Recipes;
         if (string.IsNullOrEmpty(needle))
         {
             this.filteredRecipes.Clear();
-            for (var index = 0; index < this.recipes.Count; ++index)
+            for (var index = 0; index < recipes.Count; ++index)
             {
-                this.filteredRecipes.Add((index, this.recipes[index].Recipe, this.recipes[index].Job));
+                this.filteredRecipes.Add((index, recipes[index].Recipe, recipes[index].Job));
             }
         }
         else
         {
             needle = needle.ToLowerInvariant();
             this.filteredRecipes.Clear();
-            for (var index = 0; index < this.recipes.Count; ++index)
+            for (var index = 0; index < recipes.Count; ++index)
             {
-                var (recipe, job) = this.recipes[index];
+                var (recipe, job) = recipes[index];
                 if (recipe.ItemResult.Value != null && recipe.ItemResult.Value.Name.RawString.ToLowerInvariant().Contains(needle))
                 {
                     this.filteredRecipes.Add((index, recipe, job));
@@ -650,10 +844,14 @@ internal class QueueTab : Tab
 
     private bool UpdateQueueChecklist([NotNullWhen(false)] out Action? action)
     {
+        var ci = this.craftQueue.CommandInterface;
+
         var recipeSelected = this.recipeIdx > -1;
         var rotationSelected = this.selectedRotation is not null;
         var haveGearset = this.simulationResult?.Success == true;
-        var valid = recipeSelected & rotationSelected;
+        var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.Item.RowId, this.selectedFood.IsHq) > 0;
+        var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.Item.RowId, this.selectedPotion.IsHq) > 0;
+        var valid = recipeSelected & rotationSelected & haveGearset & this.haveAllIngredient & haveFood & havePotion;
 
         if (!valid)
         {
@@ -662,13 +860,12 @@ internal class QueueTab : Tab
                 ImGui.PushTextWrapPos();
                 ImGui.BeginDisabled();
                 ImGui.Checkbox("Recipe selected", ref recipeSelected);
-                /*ImGui.Checkbox("Have ingredients (considering queue)", ref haveIngredients);
-                ImGui.Checkbox("All ingredients selected", ref allIngredientsSelected);*/
+                ImGui.Checkbox("Have ingredients (considering queue)", ref this.haveAllIngredient);
                 ImGui.Spacing();
                 ImGui.Checkbox("Rotation selected", ref rotationSelected);
-                ImGui.Checkbox("Have gearset with required stats", ref haveGearset);
-                /*ImGui.Checkbox("Have food", ref haveFood);
-                ImGui.Checkbox("Have potion", ref havePotion);*/
+                ImGui.Checkbox("Have gearset with required stats and rotation for success", ref haveGearset);
+                ImGui.Checkbox("Have food", ref haveFood);
+                ImGui.Checkbox("Have potion", ref havePotion);
                 ImGui.EndDisabled();
                 ImGui.PopTextWrapPos();
             };
@@ -681,32 +878,75 @@ internal class QueueTab : Tab
         return valid;
     }
 
+    private void UpdateCurrentIngredients()
+    {
+        if (this.selectedRecipe is null)
+        {
+            this.currentIngredients = Array.Empty<CurrentIngredient>();
+            return;
+        }
+
+        this.haveAllIngredient = true;
+
+        var result = new CurrentIngredient[this.selectedRecipe.Ingredients.Length];
+
+        for (var index = 0; index < result.Length; index++)
+        {
+            var ingredient = this.selectedRecipe.Ingredients[index];
+
+            var itemId = ingredient.Id;
+
+            var total = ingredient.Amount;
+
+            ushort nqAmount = 0;
+            var nqAvailable = this.ci.CountItem(itemId) - this.craftQueue.CountItemInQueueAndCurrent(itemId, false);
+
+            var hqIndex = -1;
+            ushort hqAmount = 0;
+            uint hqAvailable = 0;
+            if (ingredient.CanBeHq && (hqIndex = Array.FindIndex(this.hqIngredients, i => i.ItemId == itemId)) != -1)
+            {
+                hqAmount = this.hqIngredients[hqIndex].Amount;
+                nqAmount = (byte)(total - hqAmount);
+                hqAvailable = this.ci.CountItem(itemId, true) - this.craftQueue.CountItemInQueueAndCurrent(itemId, true);
+            }
+            else
+            {
+                nqAmount = total;
+            }
+
+            var haveAllNq = true;
+            var haveAllHq = true;
+            if (nqAvailable < nqAmount * this.craftCount)
+            {
+                haveAllNq = false;
+                this.haveAllIngredient = false;
+            }
+
+            if (hqIndex != -1 && hqAvailable < hqAmount * this.craftCount)
+            {
+                haveAllHq = false;
+                this.haveAllIngredient = false;
+            }
+
+            result[index] = new CurrentIngredient((ItemId: itemId, ingredient.Item.Icon, ingredient.Amount, NqCount: nqAmount, NqAvailable: nqAvailable, HaveAllNq: haveAllNq, HqIndex: hqIndex, HqCount: hqAmount, HqAvailable: hqAvailable, HaveAllHq: haveAllHq));
+        }
+
+        this.currentIngredients = result;
+    }
+
     private IEnumerable<StatModifiers> GetCurrentStatBuffs()
     {
         if (this.foodIdx > 0)
         {
-            var food = this.foods[this.foodIdx];
-            if (this.foodHq)
-            {
-                yield return food.Hq;
-            }
-            else
-            {
-                yield return food.Nq;
-            }
+            var food = this.craftQueueData.Foods[this.foodIdx];
+            yield return food.Stats;
         }
 
         if (this.potionIdx > 0)
         {
-            var potion = this.potions[this.potionIdx];
-            if (this.potionHq)
-            {
-                yield return potion.Hq;
-            }
-            else
-            {
-                yield return potion.Nq;
-            }
+            var potion = this.craftQueueData.Potions[this.potionIdx];
+            yield return potion.Stats;
         }
     }
 
@@ -717,12 +957,10 @@ internal class QueueTab : Tab
             return;
         }
 
-        var currentStatModifier = this.GetCurrentStatBuffs().ToArray();
-
         List<(RotationNode Node, SimulationResult Result)> success = new();
         foreach (var rotationNode in this.rotations)
         {
-            var result = this.craftingSimulation.Run(rotationNode.Rotations, currentStatModifier);
+            var result = this.craftingSimulation.Run(rotationNode.Rotations);
             if (result.Success)
             {
                 success.Add((rotationNode, result));

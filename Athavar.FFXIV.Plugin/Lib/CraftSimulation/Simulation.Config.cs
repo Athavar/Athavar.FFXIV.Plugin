@@ -32,4 +32,9 @@ internal partial class Simulation
     ///     Gets or sets a value indicating whether all the actions have a success chances &lt; 100.
     /// </summary>
     public bool SafeMode { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets applied stat modifiers.
+    /// </summary>
+    public StatModifiers?[]? CurrentStatModifiers { get; set; }
 }

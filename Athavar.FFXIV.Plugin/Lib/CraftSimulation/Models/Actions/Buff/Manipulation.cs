@@ -11,7 +11,7 @@ internal class Manipulation : BuffAction
     public override int Level => 65;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Repair;

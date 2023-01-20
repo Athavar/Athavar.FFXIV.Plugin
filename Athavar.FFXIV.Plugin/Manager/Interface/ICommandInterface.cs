@@ -116,6 +116,42 @@ public interface ICommandInterface
     public int GetPercentHQ();
 
     /// <summary>
+    ///     Open the RecipeNode addon by recipe.
+    /// </summary>
+    /// <param name="recipeId">The recipe id.</param>
+    public void OpenRecipeByRecipeId(uint recipeId);
+
+    /// <summary>
+    ///     Open the current selected recipe id of the RecipeNode addon.
+    /// </summary>
+    /// <returns>returns the recipeId. May return -1 if the addon is closes.</returns>
+    public int GetRecipeNoteSelectedRecipeId();
+
+    /// <summary>
+    ///     Check if an Item can be used.
+    /// </summary>
+    /// <param name="itemId">The item id.</param>
+    /// <param name="hq">Indicated if the item has the hq quality.</param>
+    /// <returns>returns a bool indication if the item can be used.</returns>
+    public bool CanUseItem(uint itemId, bool hq = false);
+
+    /// <summary>
+    ///     Use an Item from the inventory.
+    /// </summary>
+    /// <param name="itemId">The item id.</param>
+    /// <param name="hq">Indicated if the item has the hq quality.</param>
+    /// <returns>returns a bool indication the item was used successful.</returns>
+    public bool UseItem(uint itemId, bool hq = false);
+
+    /// <summary>
+    ///     Counts the quantity of an item in the inventory.
+    /// </summary>
+    /// <param name="itemId">The item id.</param>
+    /// <param name="hq">Indicated if the item has the hq quality.</param>
+    /// <returns>returns the inventory slot id.</returns>
+    public uint CountItem(uint itemId, bool hq = false);
+
+    /// <summary>
     ///     Gets a value indicating whether any of the player's worn equipment is broken.
     /// </summary>
     /// <returns>A value indicating whether any of the player's worn equipment is broken.</returns>
@@ -134,7 +170,7 @@ public interface ICommandInterface
     /// <param name="craftsmanship">Craftsmanship.</param>
     /// <param name="control">Control.</param>
     /// <param name="cp">Crafting points.</param>
-    /// <returns>A value indcating whether the required crafting stats bave been met.</returns>
+    /// <returns>A value indicating whether the required crafting stats have been met.</returns>
     public bool HasStats(uint craftsmanship, uint control, uint cp);
 
     /// <summary>
@@ -164,6 +200,12 @@ public interface ICommandInterface
     /// <param name="addonName">Addon name.</param>
     /// <returns>A value indicating whether an addon is ready to be used.</returns>
     public bool IsAddonReady(string addonName);
+
+    /// <summary>
+    ///     Close an addon that is visible.
+    /// </summary>
+    /// <param name="addonName">Addon name.</param>
+    public void CloseAddon(string addonName);
 
     /// <summary>
     ///     Get the text of a TextNode by its index number. You can find this by using the addon inspector.
@@ -205,4 +247,32 @@ public interface ICommandInterface
     /// </summary>
     /// <returns>The name of the current selected target.</returns>
     public string? GetCurrentFocusTarget();
+
+    /// <summary>
+    ///     Check of an action can be used.
+    /// </summary>
+    /// <param name="actionId">The actionId.</param>
+    /// <returns>A value indicating whether the action can be used.</returns>
+    public bool CanUseAction(uint actionId);
+
+    /// <summary>
+    ///     Use an action by actionId.
+    /// </summary>
+    /// <param name="actionId">The actionId.</param>
+    /// <returns>A value indicating whether the action was used.</returns>
+    public bool UseAction(uint actionId);
+
+    /// <summary>
+    ///     Check of an general action can be used.
+    /// </summary>
+    /// <param name="actionId">The actionId.</param>
+    /// <returns>A value indicating whether the general action can be used.</returns>
+    public bool CanUseGeneralAction(uint actionId);
+
+    /// <summary>
+    ///     Use an general action by actionId.
+    /// </summary>
+    /// <param name="actionId">The actionId.</param>
+    /// <returns>A value indicating whether the general action was used.</returns>
+    public bool UseGeneralAction(uint actionId);
 }

@@ -4,7 +4,6 @@
 
 namespace Athavar.FFXIV.Plugin.Lib.ClickLib.Clicks;
 
-using System;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Attributes;
 using Athavar.FFXIV.Plugin.Lib.ClickLib.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -18,19 +17,19 @@ public sealed unsafe class ClickRecipeNote : ClickBase<ClickRecipeNote, AddonRec
     ///     Initializes a new instance of the <see cref="ClickRecipeNote" /> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
-    public ClickRecipeNote(IntPtr addon = default)
+    public ClickRecipeNote(nint addon = default)
         : base("RecipeNote", addon)
     {
     }
 
-    public static implicit operator ClickRecipeNote(IntPtr addon) => new(addon);
+    public static implicit operator ClickRecipeNote(nint addon) => new(addon);
 
     /// <summary>
     ///     Instantiate this click using the given addon.
     /// </summary>
     /// <param name="addon">Addon to reference.</param>
     /// <returns>A click instance.</returns>
-    public static ClickRecipeNote Using(IntPtr addon) => new(addon);
+    public static ClickRecipeNote Using(nint addon) => new(addon);
 
     /// <summary>
     ///     Click the synthesize button.
@@ -66,6 +65,9 @@ public sealed unsafe class ClickRecipeNote : ClickBase<ClickRecipeNote, AddonRec
     }
 
 #pragma warning disable SA1134, SA1516, SA1600
+    [ClickName("synthesis_material_nq")]
+    public void MaterialNq() => this.Material(ushort.MaxValue, false);
+
     [ClickName("synthesis_material1_nq")]
     public void Material1Nq() => this.Material(0, false);
 
@@ -83,6 +85,9 @@ public sealed unsafe class ClickRecipeNote : ClickBase<ClickRecipeNote, AddonRec
 
     [ClickName("synthesis_material6_nq")]
     public void Material6Nq() => this.Material(5, false);
+
+    [ClickName("synthesis_material_hq")]
+    public void MaterialHq() => this.Material(ushort.MaxValue, true);
 
     [ClickName("synthesis_material1_hq")]
     public void Material1Hq() => this.Material(0, true);

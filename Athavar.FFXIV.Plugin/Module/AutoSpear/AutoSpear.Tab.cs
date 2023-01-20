@@ -1,4 +1,4 @@
-// <copyright file="AuroSpear.Tab.cs" company="Athavar">
+// <copyright file="AutoSpear.Tab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Module.AutoSpear;

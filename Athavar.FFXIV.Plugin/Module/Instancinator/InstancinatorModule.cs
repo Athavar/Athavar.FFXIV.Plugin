@@ -86,6 +86,7 @@ internal class InstancinatorModule : IModule, IDisposable
             ShowInHelp = false,
         });
         this.dalamudServices.Framework.Update += this.Tick;
+        // this.dalamudServices.ClientState.TerritoryChanged += ;
         moduleManager.Register(this, this.Configuration.Enabled);
         PluginLog.LogDebug("Module 'Instancinator' init");
     }
@@ -229,6 +230,8 @@ internal class InstancinatorModule : IModule, IDisposable
             this.EnableInstance(3);
         }
     }
+
+    // private unsafe bool IsInstanced() => UIState.Instance()->AreaInstance.Instance;
 
     private void Tick(Framework framework)
     {

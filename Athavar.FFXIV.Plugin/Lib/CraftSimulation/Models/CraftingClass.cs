@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 
 #pragma warning disable SA1602
-public enum CraftingJob
+public enum CraftingClass
 {
     ANY = -1,
     CRP = 0,

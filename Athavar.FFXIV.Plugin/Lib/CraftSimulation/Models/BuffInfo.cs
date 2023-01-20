@@ -7,19 +7,19 @@ using Lumina.Excel.GeneratedSheets;
 
 internal class BuffInfo
 {
-    internal BuffInfo(Item item, uint itemFoodId, StatModifiers nq, StatModifiers hq)
+    internal BuffInfo(Item item, uint itemFoodId, StatModifiers stats, bool hq)
     {
         this.Item = item;
         this.ItemFoodId = itemFoodId;
-        this.Nq = nq;
-        this.Hq = hq;
+        this.Stats = stats;
+        this.IsHq = hq;
     }
 
     internal Item Item { get; }
 
     internal uint ItemFoodId { get; }
 
-    internal StatModifiers Nq { get; }
+    internal StatModifiers Stats { get; }
 
-    internal StatModifiers Hq { get; }
+    internal bool IsHq { get; }
 }

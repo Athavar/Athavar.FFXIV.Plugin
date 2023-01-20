@@ -151,7 +151,12 @@ internal class YesConfigTab
         ImGui.PushID("TextOptions");
 
         this.DisplayTextButtons();
-        this.DisplayTextNodes();
+
+        if (ImGui.BeginChild("##yes-yesNo-tree", ImGui.GetContentRegionAvail(), false))
+        {
+            this.DisplayTextNodes();
+            ImGui.EndChild();
+        }
 
         ImGui.PopID();
 
@@ -168,7 +173,11 @@ internal class YesConfigTab
         ImGui.PushID("ListOptions");
 
         this.DisplayListButtons();
-        this.DisplayListNodes();
+        if (ImGui.BeginChild("##yes-lists-tree", ImGui.GetContentRegionAvail(), false))
+        {
+            this.DisplayListNodes();
+            ImGui.EndChild();
+        }
 
         ImGui.PopID();
 
@@ -185,7 +194,11 @@ internal class YesConfigTab
         ImGui.PushID("TalkOptions");
 
         this.DisplayTalkButtons();
-        this.DisplayTalkNodes();
+        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail(), false))
+        {
+            this.DisplayTalkNodes();
+            ImGui.EndChild();
+        }
 
         ImGui.PopID();
 
@@ -211,226 +224,231 @@ internal class YesConfigTab
 
         ImGui.PushID("BotherOptions");
 
-        // Disable hotkey
-        if (!this.hotkeyValues.Contains(this.Configuration.DisableKey))
+        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail(), false))
         {
-            this.Configuration.DisableKey = VirtualKey.NO_KEY;
-            this.Configuration.Save();
-        }
-
-        var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.DisableKey);
-
-        ImGui.SetNextItemWidth(85);
-        if (ImGui.Combo("Disable Hotkey", ref disableHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
-        {
-            this.Configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
-            this.Configuration.Save();
-        }
-
-        IndentedTextColored(this.shadedColor, "While this key is held, the plugin is disabled.");
-
-        // Forced Yes hotkey
-        if (!this.hotkeyValues.Contains(this.Configuration.ForcedYesKey))
-        {
-            this.Configuration.ForcedYesKey = VirtualKey.NO_KEY;
-            this.Configuration.Save();
-        }
-
-        var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.ForcedYesKey);
-
-        ImGui.SetNextItemWidth(85);
-        if (ImGui.Combo("Forced Yes Hotkey", ref forcedYesHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
-        {
-            this.Configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
-            this.Configuration.Save();
-        }
-
-        IndentedTextColored(this.shadedColor, "While this key is held, any Yes/No prompt will always default to yes. Be careful.");
-
-        // SalvageDialog
-        {
-            var desynthDialog = this.Configuration.DesynthDialogEnabled;
-            if (ImGui.Checkbox("SalvageDialog", ref desynthDialog))
+            // Disable hotkey
+            if (!this.hotkeyValues.Contains(this.Configuration.DisableKey))
             {
-                this.Configuration.DesynthDialogEnabled = desynthDialog;
+                this.Configuration.DisableKey = VirtualKey.NO_KEY;
                 this.Configuration.Save();
             }
 
-            IndentedTextColored(this.shadedColor, "Remove the Desynthesis menu confirmation.");
-        }
+            var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.DisableKey);
 
-        // SalvageDialog (Bulk)
-        {
-            var desynthBulkDialog = this.Configuration.DesynthBulkDialogEnabled;
-            if (ImGui.Checkbox("SalvageDialog (Bulk)", ref desynthBulkDialog))
+            ImGui.SetNextItemWidth(85);
+            if (ImGui.Combo("Disable Hotkey", ref disableHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
             {
-                this.Configuration.DesynthBulkDialogEnabled = desynthBulkDialog;
+                this.Configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
                 this.Configuration.Save();
             }
 
-            IndentedTextColored(this.shadedColor, "Check the bulk desynthesis button when using the SalvageDialog feature.");
-        }
+            IndentedTextColored(this.shadedColor, "While this key is held, the plugin is disabled.");
 
-        // MaterializeDialog
-        {
-            var materialize = this.Configuration.MaterializeDialogEnabled;
-            if (ImGui.Checkbox("MaterializeDialog", ref materialize))
+            // Forced Yes hotkey
+            if (!this.hotkeyValues.Contains(this.Configuration.ForcedYesKey))
             {
-                this.Configuration.MaterializeDialogEnabled = materialize;
+                this.Configuration.ForcedYesKey = VirtualKey.NO_KEY;
                 this.Configuration.Save();
             }
 
-            IndentedTextColored(this.shadedColor, "Remove the create new (extract) materia confirmation.");
-        }
+            var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.ForcedYesKey);
 
-        // MateriaRetrieveDialog
-        {
-            var materiaRetrieve = this.Configuration.MateriaRetrieveDialogEnabled;
-            if (ImGui.Checkbox("MateriaRetrieveDialog", ref materiaRetrieve))
+            ImGui.SetNextItemWidth(85);
+            if (ImGui.Combo("Forced Yes Hotkey", ref forcedYesHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
             {
-                this.Configuration.MateriaRetrieveDialogEnabled = materiaRetrieve;
+                this.Configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
                 this.Configuration.Save();
             }
 
-            IndentedTextColored(this.shadedColor, "Remove the retrieve materia confirmation.");
-        }
+            IndentedTextColored(this.shadedColor, "While this key is held, any Yes/No prompt will always default to yes. Be careful.");
 
-        // ItemInspectionResult
-        {
-            var itemInspection = this.Configuration.ItemInspectionResultEnabled;
-            if (ImGui.Checkbox("ItemInspectionResult", ref itemInspection))
+            // SalvageDialog
             {
-                this.Configuration.ItemInspectionResultEnabled = itemInspection;
-                this.Configuration.Save();
-            }
-
-            IndentedTextColored(this.shadedColor, "Eureka/Bozja lockboxes, forgotten fragments, and more.\nWarning: this does not check if you are maxed on items.");
-
-            IndentedTextColored(this.shadedColor, "Rate limiter (pause after N items)");
-            ImGui.SameLine();
-
-            ImGui.PushItemWidth(100f * ImGuiHelpers.GlobalScale);
-            var itemInspectionResultLimiter = this.Configuration.ItemInspectionResultRateLimiter;
-            if (ImGui.InputInt("###itemInspectionResultRateLimiter", ref itemInspectionResultLimiter))
-            {
-                if (itemInspectionResultLimiter < 0)
+                var desynthDialog = this.Configuration.DesynthDialogEnabled;
+                if (ImGui.Checkbox("SalvageDialog", ref desynthDialog))
                 {
-                    itemInspectionResultLimiter = 0;
-                }
-                else
-                {
-                    this.Configuration.ItemInspectionResultRateLimiter = itemInspectionResultLimiter;
+                    this.Configuration.DesynthDialogEnabled = desynthDialog;
                     this.Configuration.Save();
                 }
-            }
-        }
 
-        // RetainerTaskAsk
-        {
-            var retainerTaskAsk = this.Configuration.RetainerTaskAskEnabled;
-            if (ImGui.Checkbox("RetainerTaskAsk", ref retainerTaskAsk))
-            {
-                this.Configuration.RetainerTaskAskEnabled = retainerTaskAsk;
-                this.Configuration.Save();
+                IndentedTextColored(this.shadedColor, "Remove the Desynthesis menu confirmation.");
             }
 
-            IndentedTextColored(this.shadedColor, "Skip the confirmation in the final dialog before sending out a retainer.");
-        }
-
-        // RetainerTaskResult
-        {
-            var retainerTaskResult = this.Configuration.RetainerTaskResultEnabled;
-            if (ImGui.Checkbox("RetainerTaskResult", ref retainerTaskResult))
+            // SalvageDialog (Bulk)
             {
-                this.Configuration.RetainerTaskResultEnabled = retainerTaskResult;
-                this.Configuration.Save();
-            }
-
-            IndentedTextColored(this.shadedColor, "Automatically send a retainer on the same venture as before when receiving an item.");
-        }
-
-        // GrandCompanySupplyReward
-        {
-            var grandCompanySupplyReward = this.Configuration.GrandCompanySupplyReward;
-            if (ImGui.Checkbox("GrandCompanySupplyReward", ref grandCompanySupplyReward))
-            {
-                this.Configuration.GrandCompanySupplyReward = grandCompanySupplyReward;
-                this.Configuration.Save();
-            }
-
-            IndentedTextColored(this.shadedColor, "Skip the confirmation when submitting Grand Company expert delivery items.");
-        }
-
-        // ShopCardDialog
-        {
-            var shopCard = this.Configuration.ShopCardDialog;
-            if (ImGui.Checkbox("ShopCardDialog", ref shopCard))
-            {
-                this.Configuration.ShopCardDialog = shopCard;
-                this.Configuration.Save();
-            }
-
-            IndentedTextColored(this.shadedColor, "Automatically confirm selling Triple Triad cards in the saucer.");
-        }
-
-        // JournalResultComplete
-        {
-            var journalResultComplete = this.Configuration.JournalResultCompleteEnabled;
-            if (ImGui.Checkbox("JournalResultComplete", ref journalResultComplete))
-            {
-                this.Configuration.JournalResultCompleteEnabled = journalResultComplete;
-                this.Configuration.Save();
-            }
-
-            IndentedTextColored(this.shadedColor, "Automatically confirm quest reward acceptance when there is nothing to choose.");
-        }
-
-        // ContentFinderConfirm
-        {
-            var contentsFinderConfirm = this.Configuration.ContentsFinderConfirmEnabled;
-            if (ImGui.Checkbox("ContentsFinderConfirm", ref contentsFinderConfirm))
-            {
-                this.Configuration.ContentsFinderConfirmEnabled = contentsFinderConfirm;
-
-                if (!contentsFinderConfirm)
+                var desynthBulkDialog = this.Configuration.DesynthBulkDialogEnabled;
+                if (ImGui.Checkbox("SalvageDialog (Bulk)", ref desynthBulkDialog))
                 {
-                    this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
+                    this.Configuration.DesynthBulkDialogEnabled = desynthBulkDialog;
+                    this.Configuration.Save();
                 }
 
-                this.Configuration.Save();
+                IndentedTextColored(this.shadedColor, "Check the bulk desynthesis button when using the SalvageDialog feature.");
             }
 
-            IndentedTextColored(this.shadedColor, "Automatically commence duties when ready.");
-        }
-
-        // ContentFinderOneTimeConfirm
-        {
-            var contentsFinderOneTimeConfirm = this.Configuration.ContentsFinderOneTimeConfirmEnabled;
-            if (ImGui.Checkbox("ContentsFinderOneTimeConfirm", ref contentsFinderOneTimeConfirm))
+            // MaterializeDialog
             {
-                this.Configuration.ContentsFinderOneTimeConfirmEnabled = contentsFinderOneTimeConfirm;
-
-                if (contentsFinderOneTimeConfirm)
+                var materialize = this.Configuration.MaterializeDialogEnabled;
+                if (ImGui.Checkbox("MaterializeDialog", ref materialize))
                 {
-                    this.Configuration.ContentsFinderConfirmEnabled = true;
+                    this.Configuration.MaterializeDialogEnabled = materialize;
+                    this.Configuration.Save();
                 }
 
-                this.Configuration.Save();
+                IndentedTextColored(this.shadedColor, "Remove the create new (extract) materia confirmation.");
             }
 
-            IndentedTextColored(this.shadedColor, "Automatically commence duties when ready, but only once.\nRequires Contents Finder Confirm, and disables both after activation.");
-        }
-
-        // InclusionShop
-        {
-            var inclusionShopRemember = this.Configuration.InclusionShopRememberEnabled;
-            if (ImGui.Checkbox("InclusionShopRemember", ref inclusionShopRemember))
+            // MateriaRetrieveDialog
             {
-                this.Configuration.InclusionShopRememberEnabled = inclusionShopRemember;
-                this.Configuration.Save();
+                var materiaRetrieve = this.Configuration.MateriaRetrieveDialogEnabled;
+                if (ImGui.Checkbox("MateriaRetrieveDialog", ref materiaRetrieve))
+                {
+                    this.Configuration.MateriaRetrieveDialogEnabled = materiaRetrieve;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Remove the retrieve materia confirmation.");
             }
 
-            IndentedTextColored(this.shadedColor, "Remember the last panel visited on the scrip exchange window.");
+            // ItemInspectionResult
+            {
+                var itemInspection = this.Configuration.ItemInspectionResultEnabled;
+                if (ImGui.Checkbox("ItemInspectionResult", ref itemInspection))
+                {
+                    this.Configuration.ItemInspectionResultEnabled = itemInspection;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Eureka/Bozja lockboxes, forgotten fragments, and more.\nWarning: this does not check if you are maxed on items.");
+
+                IndentedTextColored(this.shadedColor, "Rate limiter (pause after N items)");
+                ImGui.SameLine();
+
+                ImGui.PushItemWidth(100f * ImGuiHelpers.GlobalScale);
+                var itemInspectionResultLimiter = this.Configuration.ItemInspectionResultRateLimiter;
+                if (ImGui.InputInt("###itemInspectionResultRateLimiter", ref itemInspectionResultLimiter))
+                {
+                    if (itemInspectionResultLimiter < 0)
+                    {
+                        itemInspectionResultLimiter = 0;
+                    }
+                    else
+                    {
+                        this.Configuration.ItemInspectionResultRateLimiter = itemInspectionResultLimiter;
+                        this.Configuration.Save();
+                    }
+                }
+            }
+
+            // RetainerTaskAsk
+            {
+                var retainerTaskAsk = this.Configuration.RetainerTaskAskEnabled;
+                if (ImGui.Checkbox("RetainerTaskAsk", ref retainerTaskAsk))
+                {
+                    this.Configuration.RetainerTaskAskEnabled = retainerTaskAsk;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Skip the confirmation in the final dialog before sending out a retainer.");
+            }
+
+            // RetainerTaskResult
+            {
+                var retainerTaskResult = this.Configuration.RetainerTaskResultEnabled;
+                if (ImGui.Checkbox("RetainerTaskResult", ref retainerTaskResult))
+                {
+                    this.Configuration.RetainerTaskResultEnabled = retainerTaskResult;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically send a retainer on the same venture as before when receiving an item.");
+            }
+
+            // GrandCompanySupplyReward
+            {
+                var grandCompanySupplyReward = this.Configuration.GrandCompanySupplyReward;
+                if (ImGui.Checkbox("GrandCompanySupplyReward", ref grandCompanySupplyReward))
+                {
+                    this.Configuration.GrandCompanySupplyReward = grandCompanySupplyReward;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Skip the confirmation when submitting Grand Company expert delivery items.");
+            }
+
+            // ShopCardDialog
+            {
+                var shopCard = this.Configuration.ShopCardDialog;
+                if (ImGui.Checkbox("ShopCardDialog", ref shopCard))
+                {
+                    this.Configuration.ShopCardDialog = shopCard;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically confirm selling Triple Triad cards in the saucer.");
+            }
+
+            // JournalResultComplete
+            {
+                var journalResultComplete = this.Configuration.JournalResultCompleteEnabled;
+                if (ImGui.Checkbox("JournalResultComplete", ref journalResultComplete))
+                {
+                    this.Configuration.JournalResultCompleteEnabled = journalResultComplete;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically confirm quest reward acceptance when there is nothing to choose.");
+            }
+
+            // ContentFinderConfirm
+            {
+                var contentsFinderConfirm = this.Configuration.ContentsFinderConfirmEnabled;
+                if (ImGui.Checkbox("ContentsFinderConfirm", ref contentsFinderConfirm))
+                {
+                    this.Configuration.ContentsFinderConfirmEnabled = contentsFinderConfirm;
+
+                    if (!contentsFinderConfirm)
+                    {
+                        this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
+                    }
+
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically commence duties when ready.");
+            }
+
+            // ContentFinderOneTimeConfirm
+            {
+                var contentsFinderOneTimeConfirm = this.Configuration.ContentsFinderOneTimeConfirmEnabled;
+                if (ImGui.Checkbox("ContentsFinderOneTimeConfirm", ref contentsFinderOneTimeConfirm))
+                {
+                    this.Configuration.ContentsFinderOneTimeConfirmEnabled = contentsFinderOneTimeConfirm;
+
+                    if (contentsFinderOneTimeConfirm)
+                    {
+                        this.Configuration.ContentsFinderConfirmEnabled = true;
+                    }
+
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically commence duties when ready, but only once.\nRequires Contents Finder Confirm, and disables both after activation.");
+            }
+
+            // InclusionShop
+            {
+                var inclusionShopRemember = this.Configuration.InclusionShopRememberEnabled;
+                if (ImGui.Checkbox("InclusionShopRemember", ref inclusionShopRemember))
+                {
+                    this.Configuration.InclusionShopRememberEnabled = inclusionShopRemember;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Remember the last panel visited on the scrip exchange window.");
+            }
+
+            ImGui.EndChild();
         }
 
         ImGui.PopID();
@@ -1221,7 +1239,7 @@ internal class YesConfigTab
             this.draggedNode = node;
 
             ImGui.Text(node.Name);
-            ImGui.SetDragDropPayload("TextNodePayload", IntPtr.Zero, 0);
+            ImGui.SetDragDropPayload("TextNodePayload", nint.Zero, 0);
             ImGui.EndDragDropSource();
         }
 

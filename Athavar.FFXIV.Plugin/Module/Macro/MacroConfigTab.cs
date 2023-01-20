@@ -65,7 +65,11 @@ internal class MacroConfigTab
 
         ImGui.Columns(2);
 
-        this.DisplayNodeTree();
+        if (ImGui.BeginChild("##macro-tree", ImGui.GetContentRegionAvail(), false))
+        {
+            this.DisplayNodeTree();
+            ImGui.EndChild();
+        }
 
         ImGui.NextColumn();
 
@@ -520,7 +524,7 @@ internal class MacroConfigTab
             {
                 this.draggedNode = node;
                 ImGui.Text(node.Name);
-                ImGui.SetDragDropPayload("NodePayload", IntPtr.Zero, 0);
+                ImGui.SetDragDropPayload("NodePayload", nint.Zero, 0);
                 ImGui.EndDragDropSource();
             }
         }

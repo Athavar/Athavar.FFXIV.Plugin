@@ -18,7 +18,7 @@ internal class Gearset
     /// <param name="jobClass">The jobclass of the gearset.</param>
     /// <param name="stats">The stats.</param>
     /// <param name="hasSoulStone">The soulstone check.</param>
-    public Gearset(string name, uint id, uint jobClass, uint[] stats, bool hasSoulStone)
+    public Gearset(string name, byte id, uint jobClass, uint[] stats, bool hasSoulStone)
     {
         this.Name = name;
         this.Id = id;
@@ -35,7 +35,7 @@ internal class Gearset
     /// <summary>
     ///     Gets the id.
     /// </summary>
-    public uint Id { get; }
+    public byte Id { get; }
 
     /// <summary>
     ///     Gets the jobclass.
@@ -47,11 +47,11 @@ internal class Gearset
     /// </summary>
     public bool HasSoulStone { get; }
 
-    public CraftingJob? GetCraftingJob()
+    public CraftingClass? GetCraftingJob()
     {
         if ((uint)this.JobClass is >= 8 and < 16)
         {
-            return (CraftingJob)(this.JobClass - 8);
+            return (CraftingClass)(this.JobClass - 8);
         }
 
         return null;

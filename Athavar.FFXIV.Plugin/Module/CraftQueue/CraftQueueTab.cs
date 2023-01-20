@@ -9,6 +9,7 @@ using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud;
 using ImGuiNET;
+using Microsoft.Extensions.DependencyInjection;
 
 internal class CraftQueueTab
 {
@@ -16,19 +17,30 @@ internal class CraftQueueTab
 
     private string debugInput = string.Empty;
 
-    public CraftQueueTab(IDalamudServices dalamudServices, IIconCacheManager iconCacheManager, IChatManager chatManager, Configuration configuration, IGearsetManager gearsetManager)
+    public CraftQueueTab(IServiceProvider serviceProvider, Configuration configuration)
     {
         this.BaseConfiguration = configuration;
 
+        var dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
         var dataManager = dalamudServices.DataManager;
+
+        var commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
+        var iconCacheManager = serviceProvider.GetRequiredService<IIconCacheManager>();
+        var chatManager = serviceProvider.GetRequiredService<IChatManager>();
+        var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
+
+        var craftQueue = serviceProvider.GetRequiredService<CraftQueue>();
 
         this.ClientLanguage = dalamudServices.ClientState.ClientLanguage;
 
         this.tabBarHandler
            .Register(new StatsTab(gearsetManager, dataManager))
            .Register(new RotationTab(this.Configuration, chatManager, iconCacheManager, this.ClientLanguage))
-           .Register(new QueueTab(dataManager, iconCacheManager, gearsetManager, this.Configuration, this.ClientLanguage))
-           .Register(new DebugTab(gearsetManager));
+           .Register(new QueueTab(iconCacheManager, craftQueue, this.Configuration, this.ClientLanguage))
+#if DEBUG
+           .Register(new DebugTab(gearsetManager, commandInterface, craftQueue))
+#endif
+            ;
     }
 
     private ClientLanguage ClientLanguage { get; }
@@ -54,8 +66,17 @@ internal class CraftQueueTab
     private class DebugTab : Tab
     {
         private readonly IGearsetManager gearsetManager;
+        private readonly ICommandInterface commandInterface;
+        private readonly CraftQueue craftQueue;
 
-        public DebugTab(IGearsetManager gearsetManager) => this.gearsetManager = gearsetManager;
+        private Gearset? current;
+
+        public DebugTab(IGearsetManager gearsetManager, ICommandInterface commandInterface, CraftQueue craftQueue)
+        {
+            this.gearsetManager = gearsetManager;
+            this.commandInterface = commandInterface;
+            this.craftQueue = craftQueue;
+        }
 
         protected internal override string Name => "Debug";
 
@@ -66,6 +87,22 @@ internal class CraftQueueTab
             if (ImGui.Button("Update"))
             {
                 this.gearsetManager.UpdateGearsets();
+            }
+
+            ImGui.TextUnformatted($"Index: {this.commandInterface.GetRecipeNoteSelectedRecipeId()}");
+            ImGui.TextUnformatted($"Food: {this.craftQueue.Data.Foods.Count}");
+            ImGui.TextUnformatted($"Potion: {this.craftQueue.Data.Potions.Count}");
+
+            if (ImGui.Button("Update Gear"))
+            {
+                this.current = this.gearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
+            }
+
+            if (this.current is not null)
+            {
+                ImGui.TextUnformatted($"Control: {this.current.Control}");
+                ImGui.TextUnformatted($"Craftsmanship: {this.current.Craftsmanship}");
+                ImGui.TextUnformatted($"CP: {this.current.CP}");
             }
         }
     }

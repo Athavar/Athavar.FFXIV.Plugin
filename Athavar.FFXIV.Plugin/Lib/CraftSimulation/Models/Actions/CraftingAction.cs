@@ -20,13 +20,13 @@ internal abstract class CraftingAction
     /// </summary>
     public abstract int Level { get; }
 
-    public abstract CraftingJob Job { get; }
+    public abstract CraftingClass Class { get; }
 
     protected abstract uint[] Ids { get; }
 
     public virtual int GetWaitDuration() => this.ActionType == ActionType.Buff ? 2 : 3;
 
-    public uint GetId(CraftingJob job) => job != CraftingJob.ANY ? this.Ids[(int)job] : this.Ids[0];
+    public uint GetId(CraftingClass @class) => @class != CraftingClass.ANY ? this.Ids[(int)@class] : this.Ids[0];
 
     public int GetSuccessRate(Simulation simulation)
     {
@@ -54,7 +54,7 @@ internal abstract class CraftingAction
 
     public bool CanBeUsed(Simulation simulation)
     {
-        if (this.Job != CraftingJob.ANY && simulation.Recipe.Job != this.Job)
+        if (this.Class != CraftingClass.ANY && simulation.Recipe.Class != this.Class)
         {
             // action not valid for the recipe job.
             return false;
@@ -119,7 +119,7 @@ internal abstract class CraftingAction
             return SimulationFailCause.UNSAFE_ACTION;
         }
 
-        if (this.Job != CraftingJob.ANY && simulation.Recipe.Job != this.Job)
+        if (this.Class != CraftingClass.ANY && simulation.Recipe.Class != this.Class)
         {
             // action not valid for the recipe job.
             return SimulationFailCause.INVALID_ACTION;

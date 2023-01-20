@@ -17,6 +17,18 @@ internal interface IGearsetManager
     public IEnumerable<Gearset> AllGearsets { get; }
 
     /// <summary>
+    ///     Equip a gearset by id.
+    /// </summary>
+    /// <param name="gearsetId">The gearset id.</param>
+    public void EquipGearset(int gearsetId);
+
+    /// <summary>
+    ///     Gets the current equipment as <see cref="Gearset" />.
+    /// </summary>
+    /// <returns>returns the current equipment as <see cref="Gearset" />.</returns>
+    public Gearset? GetCurrentEquipment();
+
+    /// <summary>
     ///     Updates all <see cref="Gearset" />.
     /// </summary>
     public void UpdateGearsets();

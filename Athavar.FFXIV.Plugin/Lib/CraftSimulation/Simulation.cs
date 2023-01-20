@@ -48,10 +48,10 @@ internal partial class Simulation
         }
     }
 
-    public SimulationResult Run(IEnumerable<CraftingSkills> skills, params StatModifiers[] statModifiers)
+    public SimulationResult Run(IEnumerable<CraftingSkills> skills)
     {
         SimulationFailCause? simulationFailCause = null;
-        this.Reset(statModifiers);
+        this.Reset();
         var currentStats = this.CurrentStats;
         if (currentStats.Level < this.Recipe.Level)
         {

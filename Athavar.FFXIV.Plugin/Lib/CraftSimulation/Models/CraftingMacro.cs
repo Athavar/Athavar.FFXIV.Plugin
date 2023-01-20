@@ -8,6 +8,8 @@ using Dalamud;
 
 internal class CraftingMacro
 {
+    public CraftingMacro(CraftingSkill[] rotation) => this.Rotation = rotation;
+
     public CraftingSkill[] Rotation { get; init; }
 
     public string CreateMacro(ClientLanguage language)

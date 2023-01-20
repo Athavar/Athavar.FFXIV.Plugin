@@ -72,6 +72,8 @@ public static class ModuleDependencyInjection
     {
         services.AddSingleton<CraftQueueModule>();
         services.AddSingleton<CraftQueueTab>();
+        services.AddSingleton<CraftQueueData>();
+        services.AddSingleton<CraftQueue.CraftQueue>();
 
         return services;
     }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
+using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -55,6 +56,8 @@ internal class GearsetManager : IGearsetManager, IDisposable
         clientState.Logout -= this.ClientStateOnLogout;
     }
 
+    public unsafe void EquipGearset(int gearsetId) => RaptureGearsetModule.Instance()->EquipGearset(gearsetId);
+
     /// <inheritdoc />
     public unsafe void UpdateGearsets()
     {
@@ -86,6 +89,41 @@ internal class GearsetManager : IGearsetManager, IDisposable
         }
     }
 
+    public Gearset? GetCurrentEquipment()
+    {
+        var stats = new uint[StatLength];
+        var equipmentItems = this.CurrentEquipment();
+        if (equipmentItems == null)
+        {
+            return null;
+        }
+
+        foreach (var inventoryItem in equipmentItems)
+        {
+            this.GetItemStats(ref stats, inventoryItem);
+        }
+
+        return new Gearset("<???>", 0, this.dalamudServices.ClientState.LocalPlayer?.ClassJob.Id ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0);
+    }
+
+    private unsafe InventoryItem[]? CurrentEquipment()
+    {
+        var im = this.GetInventoryManager();
+        var container = im->GetInventoryContainer(InventoryType.EquippedItems);
+        if (container is null)
+        {
+            return null;
+        }
+
+        var items = new InventoryItem[container->Size];
+        for (var index = 0; index < container->Size; index++)
+        {
+            items[index] = *container->GetInventorySlot(index);
+        }
+
+        return items;
+    }
+
     private void ClientStateOnLogin(object? sender, EventArgs e) => this.UpdateGearsets();
 
     private void ClientStateOnLogout(object? sender, EventArgs e) => this.Gearsets.Clear();
@@ -99,6 +137,23 @@ internal class GearsetManager : IGearsetManager, IDisposable
         }
 
         this.GetItemStats(ref stats, item->ItemID, materia);
+    }
+
+    private unsafe void GetItemStats(ref uint[] stats, InventoryItem item)
+    {
+        var materia = new (ushort Id, byte Grade)[5];
+        for (var i = 0; i < 5; i++)
+        {
+            materia[i] = (item.Materia[i], item.MateriaGrade[i]);
+        }
+
+        var itemId = item.ItemID;
+        if ((item.Flags & InventoryItem.ItemFlags.HQ) != 0)
+        {
+            itemId += 1000000U;
+        }
+
+        this.GetItemStats(ref stats, itemId, materia);
     }
 
     private void GetItemStats(ref uint[] stats, uint itemId, (ushort Id, byte Grade)[]? materia = null)
@@ -237,4 +292,6 @@ internal class GearsetManager : IGearsetManager, IDisposable
 
         return equipSlotPercent;
     }
+
+    private unsafe InventoryManager* GetInventoryManager() => InventoryManager.Instance();
 }

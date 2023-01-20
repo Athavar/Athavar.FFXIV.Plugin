@@ -11,7 +11,7 @@ internal class IntensiveSynthesis : ProgressAction
     public override int Level => 78;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;

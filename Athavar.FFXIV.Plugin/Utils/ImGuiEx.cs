@@ -4,6 +4,7 @@
 
 namespace Athavar.FFXIV.Plugin.Utils;
 
+using System;
 using System.Numerics;
 using Dalamud.Interface;
 using ImGuiNET;
@@ -19,8 +20,9 @@ internal static class ImGuiEx
     /// <param name="icon">Icon to display.</param>
     /// <param name="tooltip">Tooltip to display.</param>
     /// <param name="width">Width of the button.</param>
+    /// <param name="small">Use the small button.</param>
     /// <returns>A value indicating whether the button has been pressed.</returns>
-    public static bool IconButton(FontAwesomeIcon icon, string tooltip, int width = -1)
+    public static bool IconButton(FontAwesomeIcon icon, string? tooltip = null, int width = -1, bool small = false)
     {
         ImGui.PushFont(UiBuilder.IconFont);
 
@@ -29,7 +31,8 @@ internal static class ImGuiEx
             ImGui.SetNextItemWidth(32);
         }
 
-        var result = ImGui.Button($"{icon.ToIconString()}##{icon.ToIconString()}-{tooltip}");
+        var label = $"{icon.ToIconString()}##{icon.ToIconString()}-{tooltip}";
+        var result = small ? ImGui.SmallButton(label) : ImGui.Button(label);
         ImGui.PopFont();
 
         if (tooltip != null)
@@ -139,6 +142,32 @@ internal static class ImGuiEx
         else
         {
             ImGui.TextUnformatted(text);
+        }
+    }
+
+    /// <summary>
+    ///     Draw a table row based on the input values.
+    /// </summary>
+    /// <param name="values">The input values.</param>
+    public static void TableRow(object[] values)
+    {
+        for (var columnIndex = 0; columnIndex < values.Length; ++columnIndex)
+        {
+            ImGui.TableSetColumnIndex(columnIndex);
+            switch (values[columnIndex])
+            {
+                case string text:
+                    ImGui.TextUnformatted(text);
+                    continue;
+                case Action action:
+                    action();
+                    continue;
+                case null:
+                    continue;
+                default:
+                    ImGui.TextUnformatted(values[columnIndex].ToString());
+                    continue;
+            }
         }
     }
 }

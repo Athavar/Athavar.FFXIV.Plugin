@@ -52,7 +52,11 @@ internal class RotationTab : Tab
     {
         ImGui.Columns(2);
 
-        this.DisplayRotationTree();
+        if (ImGui.BeginChild("##craftQueue-rotation-tree", ImGui.GetContentRegionAvail(), false))
+        {
+            this.DisplayRotationTree();
+            ImGui.EndChild();
+        }
 
         ImGui.NextColumn();
 

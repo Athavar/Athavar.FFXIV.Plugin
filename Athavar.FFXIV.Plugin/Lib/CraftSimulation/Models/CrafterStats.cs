@@ -35,7 +35,7 @@ internal class CrafterStats
 
     public bool Specialist { get; set; }
 
-    public void Apply(params StatModifiers[] modifiers)
+    public void Apply(params StatModifiers?[] modifiers)
     {
         var baseCp = this.CP;
         var baseCraftsmanship = this.Craftsmanship;
@@ -43,6 +43,11 @@ internal class CrafterStats
 
         foreach (var modifier in modifiers)
         {
+            if (modifier is null)
+            {
+                continue;
+            }
+
             this.CP += (uint)Math.Min(modifier.CpMax, (modifier.CpPct * baseCp) / 100);
             this.Craftsmanship += (uint)Math.Min(modifier.CraftsmanshipMax, (modifier.CraftsmanshipPct * baseCraftsmanship) / 100);
             this.Control += (uint)Math.Min(modifier.ControlMax, (modifier.ControlPct * baseControl) / 100);

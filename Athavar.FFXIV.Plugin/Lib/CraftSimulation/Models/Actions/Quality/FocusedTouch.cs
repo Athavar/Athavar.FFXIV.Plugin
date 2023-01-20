@@ -13,7 +13,7 @@ internal class FocusedTouch : QualityAction
     public override int Level => 68;
 
     /// <inheritdoc />
-    public override CraftingJob Job => CraftingJob.ANY;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc />
     protected override uint[] Ids => IdsValue;
