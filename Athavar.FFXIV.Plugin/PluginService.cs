@@ -74,8 +74,8 @@ internal class PluginService : IHostedService
         _ = provider.GetRequiredService<InstancinatorModule>();
         _ = provider.GetRequiredService<AutoSpearModule>();
         _ = provider.GetRequiredService<CheatModule>();
-#if DEBUG
         _ = provider.GetRequiredService<CraftQueueModule>();
+#if DEBUG
         _ = provider.GetRequiredService<ItemInspectorModule>();
 #endif
     }

@@ -8,7 +8,7 @@ using Dalamud.Logging;
 
 internal class CraftQueueModule : IModule
 {
-    private const string ModuleName = "CraftQueue";
+    private const string ModuleName = "CraftQueue (Beta)";
 
     private readonly IDalamudServices dalamudServices;
     private readonly CraftQueueTab tab;
