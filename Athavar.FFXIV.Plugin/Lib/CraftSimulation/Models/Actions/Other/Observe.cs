@@ -5,7 +5,7 @@ namespace Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions.Other;
 
 internal class Observe : CraftingAction
 {
-    private static readonly uint[] IdsValue = { 100010, 100023, 100040, 100053, 100070, 100082, 100099, 100113 };
+    private static readonly uint[] IdsValue = { 100010, 100023, 100040, 100082, 100053, 100070, 100099, 100113 };
 
     /// <inheritdoc />
     public override ActionType ActionType => ActionType.Other;

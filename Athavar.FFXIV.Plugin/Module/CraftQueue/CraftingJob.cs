@@ -15,6 +15,7 @@ using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Actions;
 using Athavar.FFXIV.Plugin.Utils.Constants;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Recipe;
 
@@ -146,6 +147,7 @@ internal class CraftingJob
         if (!this.DurationWatch.IsRunning)
         {
             this.DurationWatch.Start();
+            this.Status = JobStatus.Running;
         }
 
         if (this.CurrentLoop >= this.Loops)
@@ -461,7 +463,9 @@ internal class CraftingJob
                 ++this.RotationCurrentStep;
             }
 
-            return -1;
+            PluginLog.Information("Fail {0} {1}", action.Skill.Name, action.Skill.Action.GetId(this.Recipe.Class));
+
+            return -10;
         }
 
         ++this.RotationCurrentStep;

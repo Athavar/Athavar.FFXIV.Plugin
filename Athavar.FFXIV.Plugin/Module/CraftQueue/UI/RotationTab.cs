@@ -90,7 +90,7 @@ internal class RotationTab : Tab
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var action = rotations[index];
-                var tex = this.iconCacheManager.GetIcon(action.IconId);
+                var tex = this.iconCacheManager.GetIcon(action.IconIds[0]);
                 ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
                 if (ImGui.IsItemHovered())
                 {

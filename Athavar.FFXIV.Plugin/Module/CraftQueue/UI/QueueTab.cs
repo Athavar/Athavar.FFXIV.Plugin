@@ -69,6 +69,7 @@ internal class QueueTab : Tab
     private SimulationResult? simulationResult;
 
     private bool init;
+    private uint updateTick;
 
     public QueueTab(IIconCacheManager iconCacheManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
     {
@@ -119,6 +120,13 @@ internal class QueueTab : Tab
         {
             ImGui.TextUnformatted("Please login.");
             return;
+        }
+
+        this.updateTick++;
+        if (this.updateTick > 10)
+        {
+            this.UpdateCurrentIngredients();
+            this.updateTick = 0;
         }
 
         ImGui.Columns(2);
@@ -485,7 +493,7 @@ internal class QueueTab : Tab
             return;
         }
 
-        ImGui.TextUnformatted($"{this.classJobsSheet.GetRow(8U + (uint)this.selectedRecipe.Class)!.Name}");
+        ImGui.TextUnformatted($"{this.classJobsSheet.GetRow(this.selectedRecipe.Class.GetRowId())!.Name}");
 
         // stats Craftsmanship and Control
         ImGuiEx.TextColorCondition(this.craftingSimulation.Recipe.CraftsmanshipReq > this.craftingSimulation.CurrentStats.Craftsmanship, ImGuiColors.DalamudRed, $"{this.baseParamsSheet.GetRow(70)!.Name}: {this.craftingSimulation.CurrentStats.Craftsmanship} ");
@@ -536,6 +544,7 @@ internal class QueueTab : Tab
         var style = ImGui.GetStyle();
         var rotationSteps = this.simulationResult.Steps;
         {
+            var classIndex = (int)this.selectedRecipe.Class;
             var size = new System.Numerics.Vector2(22, 22);
             ImGui.GetWindowDrawList().AddRectFilled(new System.Numerics.Vector2(0f, 0f), new System.Numerics.Vector2(100f, 100f), ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudRed));
             for (var index = 0; index < rotationSteps.Count; index++)
@@ -543,7 +552,7 @@ internal class QueueTab : Tab
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var actionResult = rotationSteps[index];
-                var tex = this.iconCacheManager.GetIcon(actionResult.Skill.IconId);
+                var tex = this.iconCacheManager.GetIcon(actionResult.Skill.IconIds[classIndex]);
 
                 ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 5);
                 if (actionResult.Success == false)
@@ -577,7 +586,7 @@ internal class QueueTab : Tab
 
     private void DisplayCraftingSteps()
     {
-        if (this.simulationResult is null)
+        if (this.simulationResult is null || this.selectedRecipe is null)
         {
             return;
         }
@@ -596,6 +605,7 @@ internal class QueueTab : Tab
             ImGui.TableSetupScrollFreeze(0, 1);
             ImGui.TableHeadersRow();
             var guiListClipperPtr = ImGuiEx.Clipper(rotationSteps.Count);
+            var classIndex = (int)this.selectedRecipe.Class;
             while (guiListClipperPtr.Step())
             {
                 for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
@@ -611,7 +621,7 @@ internal class QueueTab : Tab
                     ImGui.TableSetColumnIndex(0);
                     ImGui.TextUnformatted($"{index}");
                     ImGui.TableSetColumnIndex(1);
-                    if (this.iconCacheManager.TryGetIcon(step.Skill.IconId, false, out var textureWrap))
+                    if (this.iconCacheManager.TryGetIcon(step.Skill.IconIds[classIndex], false, out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                     }
@@ -972,7 +982,8 @@ internal class QueueTab : Tab
             return;
         }
 
-        var winner = (this.rotationHq ? success.OrderByDescending(s => s.Result.HqPercent) : success.OrderBy(s => s.Result.Steps.Count(ar => !ar.Skipped)))
+        int StepOrder((RotationNode Node, SimulationResult Result) s) => s.Result.Steps.Count(ar => !ar.Skipped);
+        var winner = (this.rotationHq ? success.OrderByDescending(s => s.Result.HqPercent).ThenBy(StepOrder) : success.OrderBy(StepOrder))
            .FirstOrDefault();
 
         this.selectedRotation = winner.Node;

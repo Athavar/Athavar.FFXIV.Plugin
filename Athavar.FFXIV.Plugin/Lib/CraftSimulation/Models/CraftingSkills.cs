@@ -20,7 +20,7 @@ using Lumina.Excel.GeneratedSheets;
 using Microsoft.VisualBasic.CompilerServices;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
-internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiString Name, ushort IconId)
+internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiString Name, ushort[] IconIds)
 {
     private static readonly Regex ActionRegex = new(@"^(/(?:ac|action)\s+)?(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -107,6 +107,18 @@ internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, Multi
 
     private class CraftingSkillCollectionBuilder
     {
+        private static readonly CraftingClass?[] craftingClass =
+        {
+            CraftingClass.CRP,
+            CraftingClass.BSM,
+            CraftingClass.ARM,
+            CraftingClass.GSM,
+            CraftingClass.LTW,
+            CraftingClass.WVR,
+            CraftingClass.ALC,
+            CraftingClass.CUL,
+        };
+
         private readonly DataManager dataManager;
         private Dictionary<CraftingSkills, CraftingSkill>? dictionary = new();
 
@@ -119,28 +131,50 @@ internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, Multi
                 throw new InvalidOperationException();
             }
 
-
-            var actionId = value.GetId(value.Class);
-            var useCraftActionSheet = actionId > 100000;
-
-            ushort iconId = 0;
-
-            if (useCraftActionSheet)
+            CraftingClass?[] loopClasses;
+            if (value.Class == CraftingClass.ANY)
             {
-                var row = this.dataManager.GetExcelSheet<CraftAction>()!.GetRow(actionId);
-                if (actionId != 0 && row is not null)
-                {
-                    iconId = row.Icon;
-                }
+                loopClasses = craftingClass;
             }
             else
             {
-                var row = this.dataManager.GetExcelSheet<Action>()!.GetRow(actionId);
-                if (actionId != 0 && row is not null)
+                loopClasses = new CraftingClass?[8];
+                loopClasses[(int)value.Class] = value.Class;
+            }
+
+            uint actionId = 0;
+            var useCraftActionSheet = false;
+            var iconIds = new ushort[8];
+            for (var index = 0; index < loopClasses.Length; index++)
+            {
+                var loopClass = loopClasses[index];
+                if (loopClass is null)
                 {
-                    iconId = row.Icon;
+                    continue;
+                }
+
+                actionId = value.GetId(loopClass.Value);
+                useCraftActionSheet = actionId > 100000;
+
+
+                if (useCraftActionSheet)
+                {
+                    var row = this.dataManager.GetExcelSheet<CraftAction>()!.GetRow(actionId);
+                    if (actionId != 0 && row is not null)
+                    {
+                        iconIds[index] = row.Icon;
+                    }
+                }
+                else
+                {
+                    var row = this.dataManager.GetExcelSheet<Action>()!.GetRow(actionId);
+                    if (actionId != 0 && row is not null)
+                    {
+                        iconIds[index] = row.Icon;
+                    }
                 }
             }
+
 
             this.dictionary.Add(
                 key,
@@ -148,7 +182,7 @@ internal record CraftingSkill(CraftingSkills Skill, CraftingAction Action, Multi
                     key,
                     value,
                     useCraftActionSheet ? MultiString.FromCraftAction(this.dataManager, actionId) : MultiString.FromAction(this.dataManager, actionId),
-                    iconId));
+                    iconIds));
             return this;
         }
 
