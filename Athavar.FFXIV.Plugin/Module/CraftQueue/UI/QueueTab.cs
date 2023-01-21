@@ -185,7 +185,7 @@ internal class QueueTab : Tab
     private void DisplayRecipeSelect()
     {
         ImGui.SetNextItemWidth(-1f);
-        if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.Value?.Name.RawString ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
+        if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.Value?.Name.ToDalamudString().TextValue ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
         {
             ImGui.SetNextItemWidth(-1f);
             if (ImGui.InputTextWithHint("##recipe-search", "Search...", ref this.recipeSearch, 512U, ImGuiInputTextFlags.AutoSelectAll))
@@ -240,7 +240,7 @@ internal class QueueTab : Tab
                         ImGui.TableSetColumnIndex(2);
                         ImGui.TextUnformatted($"{recipe.RecipeLevelTable.Row}");
                         ImGui.TableSetColumnIndex(3);
-                        ImGui.TextUnformatted(obj?.Name.RawString);
+                        ImGui.TextUnformatted(obj?.Name.ToDalamudString().TextValue);
                     }
                 }
 
@@ -661,6 +661,7 @@ internal class QueueTab : Tab
     {
         using var raii = new ImGuiRaii();
 
+
         if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history"), ImGui.EndChild))
         {
             return;
@@ -714,8 +715,13 @@ internal class QueueTab : Tab
             }
         }
 
+        if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history-table-child", new System.Numerics.Vector2(-1, ImGui.GetContentRegionAvail().Y)), ImGui.EndChild))
+        {
+            return;
+        }
+
         const int columnCount = 8;
-        if (!raii.Begin(() => ImGui.BeginTable("##queue-and-history", columnCount), ImGui.EndTable))
+        if (!raii.Begin(() => ImGui.BeginTable("##queue-and-history-table", columnCount), ImGui.EndTable))
         {
             return;
         }
@@ -910,6 +916,10 @@ internal class QueueTab : Tab
 
             ushort nqAmount = 0;
             var nqAvailable = this.ci.CountItem(itemId) - this.craftQueue.CountItemInQueueAndCurrent(itemId, false);
+            if (nqAvailable > 0x100000)
+            {
+                nqAvailable = 0;
+            }
 
             var hqIndex = -1;
             ushort hqAmount = 0;
@@ -919,6 +929,10 @@ internal class QueueTab : Tab
                 hqAmount = this.hqIngredients[hqIndex].Amount;
                 nqAmount = (byte)(total - hqAmount);
                 hqAvailable = this.ci.CountItem(itemId, true) - this.craftQueue.CountItemInQueueAndCurrent(itemId, true);
+                if (hqAvailable > 0x100000)
+                {
+                    nqAvailable = 0;
+                }
             }
             else
             {

@@ -99,26 +99,29 @@ internal class CraftQueue : IDisposable
 
         uint AmountInJob(CraftingJob job)
         {
+            var found = job.Recipe.Ingredients.FirstOrDefault(i => i.Id == itemId);
+            if (found is null)
+            {
+                return 0;
+            }
+
+            var hqFound = job.HqIngredients.FirstOrDefault(i => i.ItemId == itemId);
+            if (hqFound == default)
+            {
+                if (hqState)
+                {
+                    return 0;
+                }
+
+                return found.Amount * job.RemainingLoops;
+            }
+
             if (hqState)
             {
-                var found = job.HqIngredients.FirstOrDefault();
-                if (found == default)
-                {
-                    return 0;
-                }
-
-                return found.Amount * job.RemainingLoops;
+                return hqFound.Amount * job.RemainingLoops;
             }
-            else
-            {
-                var found = job.Recipe.Ingredients.FirstOrDefault(i => i.Id == itemId);
-                if (found is null)
-                {
-                    return 0;
-                }
 
-                return found.Amount * job.RemainingLoops;
-            }
+            return (uint)Math.Max(0, (found.Amount - hqFound.Amount) * job.RemainingLoops);
         }
     }
 
