@@ -66,6 +66,8 @@ internal class CraftQueue : IDisposable
 
     internal void DequeueJob(int idx) => this.queuedJobs.RemoveAt(idx);
 
+    internal void DeleteHistory(int idx) => this.completedJobs.RemoveAt(idx);
+
     internal void CancelCurrentJob()
     {
         if (this.CurrentJob == null)

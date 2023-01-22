@@ -62,7 +62,7 @@ internal abstract class CraftingAction
 
         var currentStats = simulation.CurrentStats;
 
-        if (currentStats is null || (simulation.SafeMode && this.GetSuccessRate(simulation) < 100))
+        if (simulation.SafeMode && this.GetSuccessRate(simulation) < 100)
         {
             return false;
         }
@@ -125,7 +125,7 @@ internal abstract class CraftingAction
             return SimulationFailCause.INVALID_ACTION;
         }
 
-        if (simulation.CurrentStats?.Level < this.Level)
+        if (simulation.CurrentStats.Level < this.Level)
         {
             return SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
         }

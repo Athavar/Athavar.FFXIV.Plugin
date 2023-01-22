@@ -48,8 +48,9 @@ internal partial class Simulation
         }
     }
 
-    public SimulationResult Run(IEnumerable<CraftingSkills> skills)
+    public SimulationResult Run(IEnumerable<CraftingSkills> skills, bool linear = false)
     {
+        this.Linear = linear;
         SimulationFailCause? simulationFailCause = null;
         this.Reset();
         var currentStats = this.CurrentStats;
@@ -77,13 +78,13 @@ internal partial class Simulation
                     failCause = action.GetFailCause(this);
                 }
 
-                var hasEnoughCP = action.GetBaseCPCost(this) <= this.AvailableCP;
-                if (!hasEnoughCP)
+                var hasEnoughCp = action.GetBaseCPCost(this) <= this.AvailableCP;
+                if (!hasEnoughCp)
                 {
                     failCause = SimulationFailCause.NOT_ENOUGH_CP;
                 }
 
-                if (this.Success is null && hasEnoughCP && failCause is null)
+                if (this.Success is null && hasEnoughCp && failCause is null)
                 {
                     result = this.RunAction(craftingSkill);
                 }
@@ -134,7 +135,7 @@ internal partial class Simulation
     public (uint Control, uint Craftsmanship, uint Cp, bool Found) GetMinStats(CraftingSkills[] rotation)
     {
         var totalIterations = 0;
-        var originalHqPercent = this.Run(rotation).HqPercent;
+        var originalHqPercent = this.Run(rotation, true).HqPercent;
         var originalStats = this.CurrentStats;
         var res = (
             this.CurrentStats.Control,
@@ -144,37 +145,37 @@ internal partial class Simulation
 
         this.CurrentStats.Craftsmanship = 1;
 
-        var result = this.Run(rotation);
+        var result = this.Run(rotation, true);
 
         // Three loops, one per stat
         while (!result.Success && totalIterations < 10000)
         {
             this.CurrentStats.Craftsmanship++;
-            result = this.Run(rotation);
+            result = this.Run(rotation, true);
             totalIterations++;
         }
 
         res.Craftsmanship = this.CurrentStats.Craftsmanship;
 
         this.CurrentStats.Control = 1;
-        result = this.Run(rotation);
+        result = this.Run(rotation, true);
 
         while (result.HqPercent < originalHqPercent && totalIterations < 10000)
         {
             this.CurrentStats.Control++;
-            result = this.Run(rotation);
+            result = this.Run(rotation, true);
             totalIterations++;
         }
 
         res.Control = this.CurrentStats.Control;
 
         this.CurrentStats.CP = 180;
-        result = this.Run(rotation);
+        result = this.Run(rotation, true);
 
         while (totalIterations < 10000 && (!result.Success || result.HqPercent < originalHqPercent))
         {
             this.CurrentStats.CP++;
-            result = this.Run(rotation);
+            result = this.Run(rotation, true);
             totalIterations++;
         }
 
@@ -189,6 +190,34 @@ internal partial class Simulation
         this.CurrentStats.Craftsmanship = originalStats.Craftsmanship;
         this.CurrentStats.Control = originalStats.Control;
         return res;
+    }
+
+    public SimulationReliabilityReport GetReliabilityReport(CraftingSkills[] rotation)
+    {
+        const int simulationTimes = 200;
+        var results = new SimulationResult[simulationTimes];
+        for (var i = 0; i < simulationTimes; i++)
+        {
+            results[i] = this.Run(rotation);
+        }
+
+        var successPercent = (results.Count(res => res.Success) / results.Length) * 100;
+        var hqPercent = results.Sum(sr => sr.HqPercent) / results.Length;
+        var hqMedian = 0;
+        Array.Sort(results, (a, b) => a.HqPercent - b.HqPercent);
+        if (results.Length % 2 == 0)
+        {
+            hqMedian = results[(int)Math.Floor((double)results.Length / 2)].HqPercent;
+        }
+        else
+        {
+            hqMedian =
+                (results[(int)Math.Floor((double)results.Length / 2)].HqPercent +
+                 results[(int)Math.Ceiling((double)results.Length / 2)].HqPercent) /
+                2;
+        }
+
+        return new SimulationReliabilityReport(results, successPercent, hqPercent, hqMedian, results[0].HqPercent, results[^1].HqPercent);
     }
 
     /**

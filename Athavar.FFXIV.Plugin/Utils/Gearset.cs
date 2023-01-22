@@ -16,13 +16,15 @@ internal class Gearset
     /// <param name="name">THe name of the gearset.</param>
     /// <param name="id">The id of the gearset.</param>
     /// <param name="jobClass">The jobclass of the gearset.</param>
+    /// <param name="level">The jobClass level.</param>
     /// <param name="stats">The stats.</param>
     /// <param name="hasSoulStone">The soulstone check.</param>
-    public Gearset(string name, byte id, uint jobClass, uint[] stats, bool hasSoulStone)
+    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone)
     {
         this.Name = name;
         this.Id = id;
         this.JobClass = (Job)jobClass;
+        this.JobLevel = level;
         this.stats = stats;
         this.HasSoulStone = hasSoulStone;
     }
@@ -41,6 +43,11 @@ internal class Gearset
     ///     Gets the jobclass.
     /// </summary>
     public Job JobClass { get; }
+
+    /// <summary>
+    ///     Gets the jobclass level.
+    /// </summary>
+    public byte JobLevel { get; }
 
     /// <summary>
     ///     Gets a value indicating whether the gearset has a soulstone.

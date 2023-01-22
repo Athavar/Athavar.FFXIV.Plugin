@@ -55,7 +55,6 @@ internal class CraftingJob
 
         this.simulation = new Simulation(crafterStats, this.Recipe)
         {
-            Linear = true,
             CurrentStatModifiers = new[] { food?.Stats, potion?.Stats },
         };
         this.simulation.SetHqIngredients(hqIngredients);
@@ -166,7 +165,7 @@ internal class CraftingJob
     }
 
     [MemberNotNull(nameof(simulationResult))]
-    private void RunSimulation() => this.simulationResult = this.simulation.Run(this.rotation);
+    private void RunSimulation() => this.simulationResult = this.simulation.Run(this.rotation, true);
 
     private void InternalTick()
     {
@@ -189,16 +188,16 @@ internal class CraftingJob
         if (playerJob == recipeJob)
         {
             var current = this.queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
-            this.simulation.CrafterStats.Apply(current);
+            this.simulation.CrafterStats = current.ToCrafterStats();
             return 0;
         }
 
         // is in crafting mode
         if (this.IsKneeling)
         {
-            if (ci.IsAddonVisible("RecipeNote"))
+            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
             {
-                ci.CloseAddon("RecipeNote");
+                ci.CloseAddon(Constants.Addons.RecipeNote);
             }
 
             return -1000;
@@ -223,9 +222,9 @@ internal class CraftingJob
         // check for repair
         if (!ci.NeedsRepair())
         {
-            if (ci.IsAddonVisible("Repair"))
+            if (ci.IsAddonVisible(Constants.Addons.Repair))
             {
-                ci.CloseAddon("Repair");
+                ci.CloseAddon(Constants.Addons.Repair);
                 return -1000;
             }
 
@@ -235,11 +234,17 @@ internal class CraftingJob
         // is in crafting mode
         if (this.IsKneeling)
         {
-            if (ci.IsAddonVisible("RecipeNote"))
+            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
             {
-                ci.CloseAddon("RecipeNote");
+                ci.CloseAddon(Constants.Addons.RecipeNote);
                 return -1000;
             }
+        }
+
+        if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+        {
+            ci.CloseAddon(Constants.Addons.RecipeNote);
+            return -100;
         }
 
         // is currently repairing
@@ -256,7 +261,7 @@ internal class CraftingJob
         }
 
         // repair all
-        if (ci.IsAddonVisible("Repair"))
+        if (ci.IsAddonVisible(Constants.Addons.Repair))
         {
             this.queue.Click.TrySendClick("repair_all");
             return -100;
@@ -295,9 +300,9 @@ internal class CraftingJob
 
         if (this.IsKneeling)
         {
-            if (ci.IsAddonVisible("RecipeNote"))
+            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
             {
-                ci.CloseAddon("RecipeNote");
+                ci.CloseAddon(Constants.Addons.RecipeNote);
                 return -1000;
             }
         }
@@ -341,24 +346,24 @@ internal class CraftingJob
         var recipeId = this.Recipe.GameRecipe.RowId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
-        if ((!ci.IsAddonVisible("RecipeNote") && !ci.IsAddonVisible("Synthesis")) || (ci.IsAddonVisible("RecipeNote") && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
+        if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
         {
             ci.OpenRecipeByRecipeId(recipeId);
             return -500;
         }
 
-        return !ci.IsAddonVisible("RecipeNote") ? -1000 : 100;
+        return !ci.IsAddonVisible(Constants.Addons.RecipeNote) ? -1000 : 100;
     }
 
     private int SelectIngredients()
     {
         var ci = this.queue.CommandInterface;
-        if (!ci.IsAddonVisible("RecipeNote"))
+        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
         {
             return -100;
         }
 
-        var ptr = this.queue.DalamudServices.GameGui.GetAddonByName("RecipeNote");
+        var ptr = this.queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
         if (ptr == nint.Zero)
         {
             return -100;
@@ -390,7 +395,7 @@ internal class CraftingJob
 
     private int StartCraft()
     {
-        if (!this.queue.CommandInterface.IsAddonVisible("RecipeNote"))
+        if (!this.queue.CommandInterface.IsAddonVisible(Constants.Addons.RecipeNote))
         {
             return -100;
         }
@@ -402,7 +407,7 @@ internal class CraftingJob
 
     private int WaitSynthesis()
     {
-        if (!this.queue.CommandInterface.IsAddonVisible("Synthesis"))
+        if (!this.queue.CommandInterface.IsAddonVisible(Constants.Addons.Synthesis))
         {
             return -100;
         }
@@ -429,7 +434,7 @@ internal class CraftingJob
 
         if (this.RotationCurrentStep >= this.rotation.Length || !ci.IsAddonVisible("Synthesis"))
         {
-            if (ci.IsAddonVisible("Synthesis"))
+            if (ci.IsAddonVisible(Constants.Addons.Synthesis))
             {
                 return -100;
             }
@@ -457,7 +462,7 @@ internal class CraftingJob
 
         if (!ci.UseAction(action.Skill.Action.GetId(this.Recipe.Class)))
         {
-            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP)
+            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || action.Skill.Action.SkipOnFail())
             {
                 ++this.RotationCurrentStep;
             }

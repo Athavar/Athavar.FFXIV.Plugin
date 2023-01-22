@@ -43,6 +43,18 @@ internal class TricksOfTheTrade : CraftingAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && simulation.State is not (StepState.GOOD or StepState.EXCELLENT))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
@@ -55,7 +67,7 @@ internal class TricksOfTheTrade : CraftingAction
             return false;
         }
 
-        return simulation.State is StepState.GOOD or StepState.EXCELLENT;
+        return simulation.State is (StepState.GOOD or StepState.EXCELLENT);
     }
 
     /// <inheritdoc />

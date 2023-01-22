@@ -32,7 +32,7 @@ internal class ByregotsBlessing : QualityAction
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
-        if (simulation.Success is null or false && superCause is null && !simulation.HasBuff(Buffs.INNER_QUIET))
+        if (superCause is null && !simulation.HasBuff(Buffs.INNER_QUIET))
         {
             return SimulationFailCause.NO_INNER_QUIET;
         }

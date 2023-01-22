@@ -20,6 +20,18 @@ internal class IntensiveSynthesis : ProgressAction
     public override int GetBaseCPCost(Simulation simulation) => 6;
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && simulation.State is not (StepState.GOOD or StepState.EXCELLENT))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)

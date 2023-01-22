@@ -28,13 +28,25 @@ internal class CarefulObservation : CraftingAction
     }
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && !simulation.CurrentStats.Specialist)
+        {
+            return SimulationFailCause.NOT_SPECIALIST;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
     /// <inheritdoc />
     public override bool IsSkipsBuffTicks() => true;
 
     /// <inheritdoc />
-    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.CurrentStats?.Specialist ?? false ? false : true;
+    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.CurrentStats.Specialist ? false : true;
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

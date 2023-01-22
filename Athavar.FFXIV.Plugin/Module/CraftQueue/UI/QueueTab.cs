@@ -347,6 +347,8 @@ internal class QueueTab : Tab
             {
             }
 
+            ImGuiEx.TextTooltip("Try to find rotation with the best HQ percentage");
+
             for (var index = 0; index < this.rotations?.Length; ++index)
             {
                 var rotation = this.rotations[index];
@@ -515,8 +517,6 @@ internal class QueueTab : Tab
 
         // result
         ImGuiEx.TextColorCondition(this.simulationResult.FailCause == SimulationFailCause.DURABILITY_REACHED_ZERO, ImGuiColors.DalamudRed, $"{this.addonsSheet.GetRow(214)!.Text}: {this.craftingSimulation.Durability} / {this.craftingSimulation.Recipe.Durability}");
-        ImGui.SameLine();
-        ImGui.TextUnformatted($"Result {this.simulationResult.Success}. FailCause: {this.simulationResult.FailCause} ");
 
         // Progress line
         var progress = (float)this.craftingSimulation.Progression / this.craftingSimulation.Recipe.Progress;
@@ -541,38 +541,28 @@ internal class QueueTab : Tab
         ImGui.SetNextItemWidth(-1);
         ImGui.Separator();
 
-        var style = ImGui.GetStyle();
         var rotationSteps = this.simulationResult.Steps;
         {
+            const int borderSize = 2;
             var classIndex = (int)this.selectedRecipe.Class;
-            var size = new System.Numerics.Vector2(22, 22);
-            ImGui.GetWindowDrawList().AddRectFilled(new System.Numerics.Vector2(0f, 0f), new System.Numerics.Vector2(100f, 100f), ImGui.ColorConvertFloat4ToU32(ImGuiColors.DalamudRed));
             for (var index = 0; index < rotationSteps.Count; index++)
             {
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var actionResult = rotationSteps[index];
                 var tex = this.iconCacheManager.GetIcon(actionResult.Skill.IconIds[classIndex]);
-
-                ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 5);
-                if (actionResult.Success == false)
+                if (tex is null)
                 {
-                    ImGui.PushStyleColor(ImGuiCol.FrameBg, ImGuiColors.DalamudRed);
+                    continue;
                 }
 
-                ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
+                var iconSize = new System.Numerics.Vector2(tex.Height, tex.Width);
 
-                if (actionResult.Success == false)
-                {
-                    ImGui.PopStyleColor();
-                }
-
-                ImGui.PopStyleVar();
-
+                ImGui.Image(tex.ImGuiHandle, iconSize);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
-                    ImGui.TextUnformatted(actionResult.Skill.Name[this.ClientLanguage]);
+                    ImGui.TextUnformatted(actionResult.Skill.Name[this.ClientLanguage] + (actionResult.FailCause is not null ? ": " + actionResult.FailCause : string.Empty));
                     ImGui.EndTooltip();
                 }
 
@@ -659,6 +649,120 @@ internal class QueueTab : Tab
 
     private void DisplayQueueAndHistory()
     {
+        const int columnCount = 8;
+
+        void DrawQueueTable()
+        {
+            if (!ImGui.BeginTable("##queue-table", columnCount))
+            {
+                return;
+            }
+
+            DrawHeader();
+
+            var currentJob = this.craftQueue.CurrentJob;
+            if (currentJob != null)
+            {
+                DrawJobRow(currentJob, "current", "Cancel current Job", (Action)(() => this.craftQueue.CancelCurrentJob()));
+            }
+
+            var remove = -1;
+            for (var i = 0; i < this.craftQueue.Jobs.Count; i++)
+            {
+                var job2 = this.craftQueue.Jobs[i];
+                var index = i;
+                var cancel = (Action)(() => remove = index);
+                DrawJobRow(job2, "queued-" + i, "Cancel queued Job", cancel);
+            }
+
+            ImGui.EndTable();
+
+            if (remove != -1)
+            {
+                this.craftQueue.DequeueJob(remove);
+            }
+        }
+
+        void DrawHistoryTable()
+        {
+            if (!this.craftQueue.JobsCompleted.Any())
+            {
+                return;
+            }
+
+            if (!ImGui.BeginTable("##history-table", columnCount))
+            {
+                return;
+            }
+
+            DrawHeader();
+
+            var remove = -1;
+            for (var i = this.craftQueue.JobsCompleted.Count - 1; i > -1; --i)
+            {
+                var index = i;
+                var removeAction = (Action)(() => remove = index);
+                DrawJobRow(this.craftQueue.JobsCompleted[i], "history-" + i, "Remove History Entry", removeAction);
+            }
+
+            ImGui.EndTable();
+
+            if (remove != -1)
+            {
+                this.craftQueue.DeleteHistory(remove);
+            }
+        }
+
+        void DrawHeader()
+        {
+            ImGui.TableSetupColumn("Item", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Job", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Qty", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Step", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Per craft", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("##cancel", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableHeadersRow();
+        }
+
+        void DrawJobRow(CraftingJob drawnJob, string? id, string tooltip, Action? cancel)
+        {
+            if (drawnJob.Status == JobStatus.Failure)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+            }
+
+            ImGui.TableNextRow();
+            var timeSpan1 = drawnJob.Duration;
+            var timeSpan2 = drawnJob.LoopDuration;
+            var str1 = drawnJob.Recipe.GameRecipe.ItemResult.Value?.Name.RawString ?? "???";
+            var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
+            var values = new object[columnCount];
+            values[0] = str1;
+            values[1] = str2;
+            values[2] = drawnJob.CurrentLoop.ToString() + '/' + drawnJob.Loops;
+            values[3] = drawnJob.Status.ToString();
+            values[4] = $"{drawnJob.CurrentStep} {drawnJob.RotationCurrentStep}/{drawnJob.RotationMaxSteps}";
+            values[5] = timeSpan1.ToString("hh':'mm':'ss");
+            values[6] = "~" + timeSpan2.ToString("mm':'ss");
+            values[7] = (Action)(() =>
+            {
+                if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, tooltip, small: true))
+                {
+                    return;
+                }
+
+                cancel();
+            });
+            ImGuiEx.TableRow(values);
+
+            if (drawnJob.Status == JobStatus.Failure)
+            {
+                ImGui.PopStyleColor();
+            }
+        }
+
         using var raii = new ImGuiRaii();
 
 
@@ -720,74 +824,9 @@ internal class QueueTab : Tab
             return;
         }
 
-        const int columnCount = 8;
-        if (!raii.Begin(() => ImGui.BeginTable("##queue-and-history-table", columnCount), ImGui.EndTable))
-        {
-            return;
-        }
-
-        ImGui.TableSetupColumn("Item", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Job", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Qty", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Step", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("Per craft", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableSetupColumn("##cancel", ImGuiTableColumnFlags.WidthFixed);
-        ImGui.TableHeadersRow();
-
-        var currentJob = this.craftQueue.CurrentJob;
-        if (currentJob != null)
-        {
-            DrawRow(currentJob, "current", (Action)(() => this.craftQueue.CancelCurrentJob()));
-        }
-
-        var remove = -1;
-        for (var i = 0; i < this.craftQueue.Jobs.Count; i++)
-        {
-            var job2 = this.craftQueue.Jobs[i];
-            var index = i;
-            var cancel = (Action)(() => remove = index);
-            DrawRow(job2, "queued-" + i, cancel);
-        }
-
-        for (var index = this.craftQueue.JobsCompleted.Count - 1; index > -1; --index)
-        {
-            DrawRow(this.craftQueue.JobsCompleted[index], null, null);
-        }
-
-        if (remove != -1)
-        {
-            this.craftQueue.DequeueJob(remove);
-        }
-
-
-        void DrawRow(CraftingJob drawnJob, string? id, Action? cancel)
-        {
-            ImGui.TableNextRow();
-            var timeSpan1 = drawnJob.Duration;
-            var timeSpan2 = drawnJob.LoopDuration;
-            var str1 = drawnJob.Recipe.GameRecipe.ItemResult.Value?.Name.RawString ?? "???";
-            var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
-            var values = new object[columnCount];
-            values[0] = str1;
-            values[1] = str2;
-            values[2] = drawnJob.CurrentLoop.ToString() + '/' + drawnJob.Loops;
-            values[3] = drawnJob.Status.ToString();
-            values[4] = $"{drawnJob.CurrentStep} {drawnJob.RotationCurrentStep}/{drawnJob.RotationMaxSteps}";
-            values[5] = timeSpan1.ToString("hh':'mm':'ss");
-            values[6] = "~" + timeSpan2.ToString("mm':'ss");
-            values[7] = (Action)(() =>
-            {
-                if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, $"Cancel {id} Job", small: true))
-                {
-                    return;
-                }
-
-                cancel();
-            });
-            ImGuiEx.TableRow(values);
-        }
+        DrawQueueTable();
+        ImGui.Separator();
+        DrawHistoryTable();
     }
 
     private void SetSimulation()
@@ -807,11 +846,8 @@ internal class QueueTab : Tab
 
 
         this.craftingSimulation = new Simulation(
-            new CrafterStats(Constants.MaxLevel, gs.Control, gs.Craftsmanship, gs.CP, gs.HasSoulStone),
-            this.selectedRecipe)
-        {
-            Linear = true,
-        };
+            gs.ToCrafterStats(),
+            this.selectedRecipe);
     }
 
     private void RunSimulation()
@@ -821,7 +857,7 @@ internal class QueueTab : Tab
             this.craftingSimulation.CurrentStatModifiers = this.GetCurrentStatBuffs().ToArray();
             if (this.selectedRotation is not null)
             {
-                this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations);
+                this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations, true);
             }
             else
             {
@@ -984,7 +1020,7 @@ internal class QueueTab : Tab
         List<(RotationNode Node, SimulationResult Result)> success = new();
         foreach (var rotationNode in this.rotations)
         {
-            var result = this.craftingSimulation.Run(rotationNode.Rotations);
+            var result = this.craftingSimulation.Run(rotationNode.Rotations, true);
             if (result.Success)
             {
                 success.Add((rotationNode, result));

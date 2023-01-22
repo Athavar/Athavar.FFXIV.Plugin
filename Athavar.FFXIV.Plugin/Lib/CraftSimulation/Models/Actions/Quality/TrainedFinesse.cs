@@ -20,6 +20,18 @@ internal class TrainedFinesse : QualityAction
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && !this.BaseCanBeUsed(simulation))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.GetBuff(Buffs.INNER_QUIET)?.Stacks == 10)

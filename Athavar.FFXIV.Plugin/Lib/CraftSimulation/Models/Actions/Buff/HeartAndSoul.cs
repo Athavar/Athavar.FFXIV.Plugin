@@ -36,6 +36,18 @@ internal class HeartAndSoul : BuffAction
     public override int GetInitialStacks() => 0;
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && !simulation.CurrentStats.Specialist)
+        {
+            return SimulationFailCause.NOT_SPECIALIST;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override OnTick? GetOnTick() => this.OnTick;
 
     /// <inheritdoc />
@@ -43,7 +55,7 @@ internal class HeartAndSoul : BuffAction
 
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
-        if (!simulation.CurrentStats?.Specialist ?? false)
+        if (!simulation.CurrentStats.Specialist)
         {
             return false;
         }

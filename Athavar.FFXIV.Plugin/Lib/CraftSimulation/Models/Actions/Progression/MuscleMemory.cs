@@ -32,6 +32,18 @@ internal class MuscleMemory : ProgressAction
     }
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && !this.BaseCanBeUsed(simulation))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Steps.All(s => s.Skill.Action.IsSkipsBuffTicks()))

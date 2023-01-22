@@ -13,9 +13,9 @@ internal partial class Simulation
     public Recipe Recipe { get; }
 
     /// <summary>
-    ///     Gets the current crafting stats for the recipe to craft.
+    ///     Gets or sets the current crafting stats for the recipe to craft.
     /// </summary>
-    public CrafterStats CrafterStats { get; }
+    public CrafterStats CrafterStats { get; set; }
 
     /// <summary>
     ///     Gets the current crafting stats for the recipe to craft.
@@ -26,7 +26,7 @@ internal partial class Simulation
     ///     Gets or sets a value indicating whether everything should be linear (aka no fail on actions, Initial preparations
     ///     never procs).
     /// </summary>
-    public bool Linear { get; set; } = false;
+    public bool Linear { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether all the actions have a success chances &lt; 100.

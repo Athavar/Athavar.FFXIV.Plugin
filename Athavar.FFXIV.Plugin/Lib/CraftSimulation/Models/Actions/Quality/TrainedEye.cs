@@ -34,7 +34,19 @@ internal class TrainedEye : CraftingAction
     public override bool SkipOnFail() => true;
 
     /// <inheritdoc />
-    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.Recipe.Expert && simulation.CurrentStats?.Level - simulation.Recipe.Level >= 10 && !simulation.Steps.Any();
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && (simulation.Recipe.Expert || simulation.CurrentStats.Level - simulation.Recipe.Level < 10 || simulation.Steps.Any()))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
+    protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.Recipe.Expert && simulation.CurrentStats.Level - simulation.Recipe.Level >= 10 && !simulation.Steps.Any();
 
     /// <inheritdoc />
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;

@@ -20,6 +20,18 @@ internal class PrudentTouch : QualityAction
     public override int GetBaseCPCost(Simulation simulation) => 25;
 
     /// <inheritdoc />
+    public override SimulationFailCause? GetFailCause(Simulation simulation)
+    {
+        var superCause = base.GetFailCause(simulation);
+        if (superCause is null && !this.BaseCanBeUsed(simulation))
+        {
+            return SimulationFailCause.INVALID_ACTION;
+        }
+
+        return superCause;
+    }
+
+    /// <inheritdoc />
     protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.HasBuff(Buffs.WASTE_NOT) && !simulation.HasBuff(Buffs.WASTE_NOT_II);
 
     /// <inheritdoc />

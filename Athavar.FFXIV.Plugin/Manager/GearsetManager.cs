@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Utils;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -62,7 +63,14 @@ internal class GearsetManager : IGearsetManager, IDisposable
     public unsafe void UpdateGearsets()
     {
         this.Gearsets.Clear();
+
+        if (!this.dalamudServices.ClientState.IsLoggedIn)
+        {
+            return;
+        }
+
         var instance = RaptureGearsetModule.Instance();
+        var levelArray = PlayerState.Instance()->ClassJobLevelArray;
         for (var i = 0; i < 100; ++i)
         {
             var gearsetEntryPtr = instance->Gearset[i];
@@ -85,7 +93,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RightLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
-            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
+            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[gearsetEntryPtr->ClassJob], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
         }
     }
 
@@ -103,7 +111,9 @@ internal class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, inventoryItem);
         }
 
-        return new Gearset("<???>", 0, this.dalamudServices.ClientState.LocalPlayer?.ClassJob.Id ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0);
+        var player = this.dalamudServices.ClientState.LocalPlayer;
+
+        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0);
     }
 
     private unsafe InventoryItem[]? CurrentEquipment()
