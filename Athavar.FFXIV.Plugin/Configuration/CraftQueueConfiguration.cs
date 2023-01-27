@@ -14,6 +14,16 @@ internal class CraftQueueConfiguration : BasicModuleConfig
     public FolderNode RootFolder { get; } = new() { Name = "/" };
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to wait after a craft actions.
+    /// </summary>
+    public bool CraftWaitSkip { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
+    /// </summary>
+    public bool QualitySkip { get; set; } = false;
+
+    /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>

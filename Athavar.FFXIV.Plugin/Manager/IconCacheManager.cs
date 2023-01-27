@@ -16,7 +16,7 @@ using ImGuiScene;
 internal class IconCacheManager : IIconCacheManager, IDisposable
 {
     private readonly DataManager dataManager;
-    private readonly Dictionary<(uint, bool), TextureWrap> cache = new();
+    private readonly Dictionary<(uint, bool), TextureWrap?> cache = new();
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IconCacheManager" /> class.
@@ -33,11 +33,7 @@ internal class IconCacheManager : IIconCacheManager, IDisposable
         }
 
         tex = hq ? this.dataManager.GetImGuiTextureHqIcon(iconId) : this.dataManager.GetImGuiTextureIcon(iconId);
-        if (tex is not null)
-        {
-            this.cache.Add((iconId, hq), tex);
-        }
-
+        this.cache.Add((iconId, hq), tex);
         return tex;
     }
 
@@ -53,7 +49,7 @@ internal class IconCacheManager : IIconCacheManager, IDisposable
     {
         foreach (var textureWrap in this.cache)
         {
-            textureWrap.Value.Dispose();
+            textureWrap.Value?.Dispose();
         }
 
         this.cache.Clear();

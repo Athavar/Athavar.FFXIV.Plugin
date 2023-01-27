@@ -450,7 +450,18 @@ internal class CraftingJob
             return 0;
         }
 
+        var c = this.queue.Configuration;
+
+        // maxQuality check
+        if (ci.HasMaxQuality() && c.QualitySkip)
+        {
+            ++this.RotationCurrentStep;
+            return 0;
+        }
+
         var action = this.Steps[this.RotationCurrentStep];
+
+        // Byregots fail save
         if (this.RotationCurrentStep + 1 < this.rotation.Length &&
             this.rotation[this.RotationCurrentStep + 1] == CraftingSkills.ByregotsBlessing &&
             ci.HasCondition(this.localizedExcellent) &&
@@ -459,10 +470,12 @@ internal class CraftingJob
             return -1000;
         }
 
+        var simAction = action.Skill.Action;
 
-        if (!ci.UseAction(action.Skill.Action.GetId(this.Recipe.Class)))
+
+        if (!ci.UseAction(simAction.GetId(this.Recipe.Class)))
         {
-            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || action.Skill.Action.SkipOnFail())
+            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || simAction.SkipOnFail())
             {
                 ++this.RotationCurrentStep;
             }
@@ -471,7 +484,13 @@ internal class CraftingJob
         }
 
         ++this.RotationCurrentStep;
-        return -1000;
+
+        if (c.CraftWaitSkip)
+        {
+            return -1000;
+        }
+
+        return -1000 * simAction.GetWaitDuration();
     }
 
     private BuffApplyTest? TestStatModifier()

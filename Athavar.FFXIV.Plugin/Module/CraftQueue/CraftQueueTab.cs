@@ -5,6 +5,7 @@ namespace Athavar.FFXIV.Plugin.Module.CraftQueue;
 
 using System;
 using Athavar.FFXIV.Plugin.Manager.Interface;
+using Athavar.FFXIV.Plugin.Module.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud;
@@ -37,6 +38,7 @@ internal class CraftQueueTab
            .Register(new StatsTab(gearsetManager, dataManager))
            .Register(new RotationTab(this.Configuration, chatManager, iconCacheManager, this.ClientLanguage))
            .Register(new QueueTab(iconCacheManager, craftQueue, this.Configuration, this.ClientLanguage))
+           .Register(new ConfigTab(this.Configuration))
 #if DEBUG
            .Register(new DebugTab(gearsetManager, commandInterface, craftQueue))
 #endif

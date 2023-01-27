@@ -10,6 +10,8 @@ using Athavar.FFXIV.Plugin.Lib.ClickLib;
 using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Dalamud.Game;
+using Lumina.Excel.GeneratedSheets;
+using Recipe = Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models.Recipe;
 
 internal class CraftQueue : IDisposable
 {
@@ -17,7 +19,7 @@ internal class CraftQueue : IDisposable
     private readonly List<CraftingJob> completedJobs = new();
     private CraftingJob? currentJob;
 
-    public CraftQueue(IDalamudServices dalamudServices, ICommandInterface commandInterface, IGearsetManager gearsetManager, IChatManager chatManager, IClick click, CraftQueueData craftQueueData)
+    public CraftQueue(IDalamudServices dalamudServices, ICommandInterface commandInterface, IGearsetManager gearsetManager, IChatManager chatManager, IClick click, CraftQueueData craftQueueData, Configuration configuration)
     {
         this.DalamudServices = dalamudServices;
         this.CommandInterface = commandInterface;
@@ -25,6 +27,7 @@ internal class CraftQueue : IDisposable
         this.ChatManager = chatManager;
         this.Click = click;
         this.Data = craftQueueData;
+        this.Configuration = configuration.CraftQueue ?? throw new AthavarPluginException();
 
         this.DalamudServices.Framework.Update += this.FrameworkOnUpdate;
     }
@@ -37,6 +40,8 @@ internal class CraftQueue : IDisposable
 
     public IDalamudServices DalamudServices { get; }
 
+    public CraftQueueConfiguration Configuration { get; }
+
     public IClick Click { get; }
 
     public CraftQueueData Data { get; }
@@ -48,6 +53,15 @@ internal class CraftQueue : IDisposable
     internal CraftingJob? CurrentJob { get; private set; }
 
     internal QueueState Paused { get; set; } = QueueState.Paused;
+
+    public bool CreateJob(uint recipeId, RotationNode rotationNode, uint count, uint? foodId, uint? potionId, (uint ItemId, byte Amount)[] hqIngredients)
+    {
+        var recipe = this.Data.Recipes.SingleOrDefault(r => r.Recipe.RowId == recipeId);
+        var food = foodId is not null ? this.Data.Foods.SingleOrDefault(r => r.Item.RowId == foodId) : null;
+        var potion = potionId is not null ? this.Data.Potions.SingleOrDefault(r => r.Item.RowId == potionId) : null;
+
+        return this.CreateJob(new Recipe(recipe.Recipe, this.DalamudServices.DataManager.GetExcelSheet<Item>()!), rotationNode, count, food, potion, hqIngredients);
+    }
 
     public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
     {
