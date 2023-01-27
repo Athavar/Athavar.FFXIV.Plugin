@@ -5,9 +5,6 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Athavar.FFXIV.Plugin.Manager;
 using Athavar.FFXIV.Plugin.Manager.Interface;
 using Athavar.FFXIV.Plugin.Module.AutoSpear;
 using Athavar.FFXIV.Plugin.Module.Cheat;
@@ -19,18 +16,16 @@ using Athavar.FFXIV.Plugin.Module.Yes;
 using Athavar.FFXIV.Plugin.Utils;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
+using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 ///     Plugin Service.
 /// </summary>
-internal class PluginService : IHostedService
+internal class PluginService
 {
     private readonly IDalamudServices dalamudServices;
     private readonly Configuration configuration;
-    private readonly ILogger logger;
     private readonly PluginWindow pluginWindow;
 
     private readonly WindowSystem windowSystem;
@@ -49,22 +44,15 @@ internal class PluginService : IHostedService
     /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
     public PluginService(
-        ILogger<PluginService> logger,
-        IHostApplicationLifetime appLifetime,
         IDalamudServices dalamudServices,
         PluginWindow pluginWindow,
         Configuration configuration,
         WindowSystem windowSystem,
         IServiceProvider provider)
     {
-        this.logger = logger;
         this.dalamudServices = dalamudServices;
         this.pluginWindow = pluginWindow;
         this.configuration = configuration;
-
-        appLifetime.ApplicationStarted.Register(this.OnStarted);
-        appLifetime.ApplicationStopping.Register(this.OnStopping);
-        appLifetime.ApplicationStopped.Register(this.OnStopped);
 
         this.windowSystem = windowSystem;
         this.provider = provider;
@@ -80,11 +68,13 @@ internal class PluginService : IHostedService
 #endif
     }
 
-    /// <inheritdoc />
-    public Task StartAsync(CancellationToken cancellationToken)
+    /// <summary>
+    ///     Start the plugin.
+    /// </summary>
+    public void Start()
     {
         // 1.
-        this.logger.LogDebug("Service Start");
+        PluginLog.LogDebug("Service Start");
         this.windowSystem.AddWindow(this.pluginWindow);
 
         this.dalamudServices.CommandManager.AddHandler(Plugin.CommandName, new CommandInfo(this.OnCommand)
@@ -92,46 +82,22 @@ internal class PluginService : IHostedService
             HelpMessage =
                 "Open the Configuration of Athavar's ToolsBox.",
         });
-
-        var dal = this.dalamudServices as DalamudServices;
-
-        return Task.CompletedTask;
-    }
-
-    /// <inheritdoc />
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        // 4.
-        this.logger.LogDebug("Service Stop");
-
-        return Task.CompletedTask;
-    }
-
-    private void OnStarted()
-    {
-        // 2.
-        this.logger.LogDebug("Service Started");
         this.dalamudServices.PluginInterface.UiBuilder.Draw += this.windowSystem.Draw;
         this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi += this.OnOpenConfigUi;
+        PluginLog.LogDebug("Service Started");
     }
 
-    private void OnStopping()
+    /// <summary>
+    ///     Stop the plugin.
+    /// </summary>
+    public void Stop()
     {
-        // 3.
-        this.logger.LogDebug("Service Stopping");
-
-        this.dalamudServices.CommandManager.RemoveHandler(Plugin.CommandName);
+        PluginLog.LogDebug("Service Stop");
         this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi -= this.OnOpenConfigUi;
         this.dalamudServices.PluginInterface.UiBuilder.Draw -= this.windowSystem.Draw;
-    }
-
-    private void OnStopped()
-    {
-        // 5.
-        this.logger.LogDebug("Service Stopped");
-
-        // remove all remaining windows.
+        this.dalamudServices.CommandManager.RemoveHandler(Plugin.CommandName);
         this.windowSystem.RemoveAllWindows();
+        PluginLog.LogDebug("Service Stopped");
     }
 
     private void OnOpenConfigUi() => this.pluginWindow.Toggle();

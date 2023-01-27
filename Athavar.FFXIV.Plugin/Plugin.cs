@@ -5,8 +5,6 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Athavar.FFXIV.Plugin.Lib.ClickLib;
 using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
 using Athavar.FFXIV.Plugin.Manager;
@@ -18,8 +16,6 @@ using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 /// <summary>
 ///     Main plugin implementation.
@@ -38,11 +34,8 @@ public sealed class Plugin : IDalamudPlugin
 
     private readonly DalamudPluginInterface pluginInterface;
 
-    private readonly CancellationTokenSource tokenSource;
-
-    private IHostLifetime? hostLifetime;
-
-    private IHost? host;
+    private readonly ServiceProvider provider;
+    private readonly PluginService servive;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Plugin" /> class.
@@ -53,30 +46,10 @@ public sealed class Plugin : IDalamudPlugin
         DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
-        this.tokenSource = new CancellationTokenSource();
 
-        _ = Task.Run(
-            async () =>
-            {
-                /* Resolver.GetInstance.SetupSearchSpace();
-                Resolver.GetInstance.Resolve();*/
-
-                this.host = Host.CreateDefaultBuilder().ConfigureLogging(this.ConfigureLogging)
-                   .ConfigureServices(this.ConfigureServices)
-                   .Build();
-
-                this.hostLifetime = this.host.Services.GetRequiredService<IHostLifetime>();
-
-                try
-                {
-                    await this.host.StartAsync(this.tokenSource.Token);
-                }
-                catch (Exception ex)
-                {
-                    PluginLog.Error(ex, "Exception occured.");
-                }
-            },
-            this.tokenSource.Token);
+        this.provider = this.BuildProvider();
+        this.servive = this.provider.GetRequiredService<PluginService>();
+        this.servive.Start();
     }
 
     /// <inheritdoc />
@@ -85,21 +58,8 @@ public sealed class Plugin : IDalamudPlugin
     /// <inheritdoc />
     public void Dispose()
     {
-        this.tokenSource.Cancel();
-        if (this.hostLifetime is not null)
-        {
-            var task = this.hostLifetime.StopAsync(CancellationToken.None);
-            task.Wait();
-        }
-
-        if (this.host is not null)
-        {
-            var task = this.host.StopAsync(CancellationToken.None);
-            task.Wait();
-        }
-
-        this.host?.Dispose();
-        this.tokenSource.Dispose();
+        this.servive.Stop();
+        this.provider.DisposeAsync().GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -118,59 +78,44 @@ public sealed class Plugin : IDalamudPlugin
         }
     }
 
-    private void ConfigureLogging(HostBuilderContext context, ILoggingBuilder builder)
+    private ServiceProvider BuildProvider()
     {
-        builder.AddDalamudLogger();
-        builder.AddDebug();
-        builder.Configure(options =>
-        {
-            options.ActivityTrackingOptions =
-                ActivityTrackingOptions.SpanId |
-                ActivityTrackingOptions.TraceId |
-                ActivityTrackingOptions.ParentId;
-        });
-        builder.SetMinimumLevel(LogLevel.Debug);
-    }
+        return new ServiceCollection()
+           .AddSingleton(this.pluginInterface)
+           .AddSingleton<IDalamudServices, DalamudServices>()
+           .AddSingleton<IModuleManager, ModuleManager>()
+           .AddSingleton<ILocalizerManager, LocalizerManager>()
+           .AddSingleton<IIconCacheManager, IconCacheManager>()
+           .AddSingleton<IGearsetManager, GearsetManager>()
+           .AddSingleton<PluginWindow>()
+           .AddSingleton(o =>
+            {
+                var ser = o.GetRequiredService<IDalamudServices>();
+                CraftingSkill.Populate(ser.DataManager);
 
-    private void ConfigureServices(HostBuilderContext context, IServiceCollection service)
-    {
-        service.AddSingleton(this.pluginInterface);
-        service.AddSingleton<IDalamudServices, DalamudServices>();
-        service.AddSingleton<IModuleManager, ModuleManager>();
-        service.AddSingleton<ILocalizerManager, LocalizerManager>();
-        service.AddSingleton<IIconCacheManager, IconCacheManager>();
-        service.AddSingleton<IGearsetManager, GearsetManager>();
-        service.AddSingleton<PluginWindow>();
-        service.AddSingleton(o =>
-        {
-            var ser = o.GetRequiredService<IDalamudServices>();
-            CraftingSkill.Populate(ser.DataManager);
+                var pi = ser.PluginInterface;
 
-            var pi = ser.PluginInterface;
-
-            var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
-            c.Setup(this.pluginInterface);
-            return c;
-        });
-        service.AddSingleton(_ => new WindowSystem("Athavar's Toolbox"));
-
-        service.AddSingleton<IChatManager, ChatManager>();
-        service.AddSingleton<EquipmentScanner>();
-        service.AddSingleton<KeyStateExtended>();
-        service.AddSingleton<AutoTranslateWindow>();
-        service.AddSingleton<IClick, Click>();
-        service.AddSingleton<ICommandInterface, CommandInterface>();
-
-        service.AddMacroModule();
-        service.AddYesModule();
-        service.AddInstancinatorModule();
-        service.AddAutoSpearModule();
-        service.AddCheatModule();
-        service.AddCraftQueueModule();
+                var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
+                c.Setup(this.pluginInterface);
+                return c;
+            })
+           .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
+           .AddSingleton<IChatManager, ChatManager>()
+           .AddSingleton<EquipmentScanner>()
+           .AddSingleton<KeyStateExtended>()
+           .AddSingleton<AutoTranslateWindow>()
+           .AddSingleton<IClick, Click>()
+           .AddSingleton<ICommandInterface, CommandInterface>()
+           .AddMacroModule()
+           .AddYesModule()
+           .AddInstancinatorModule()
+           .AddAutoSpearModule()
+           .AddCheatModule()
+           .AddCraftQueueModule()
 #if DEBUG
-        service.AddItemInspectorModule();
+           .AddItemInspectorModule()
 #endif
-
-        service.AddHostedService<PluginService>();
+           .AddSingleton<PluginService>()
+           .BuildServiceProvider();
     }
 }
