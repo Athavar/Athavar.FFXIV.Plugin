@@ -21,6 +21,7 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
 using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 using Lumina;
 using Lumina.Data;
@@ -86,7 +87,6 @@ internal class InstancinatorModule : IModule, IDisposable
             ShowInHelp = false,
         });
         this.dalamudServices.Framework.Update += this.Tick;
-        // this.dalamudServices.ClientState.TerritoryChanged += ;
         moduleManager.Register(this, this.Configuration.Enabled);
         PluginLog.LogDebug("Module 'Instancinator' init");
     }
@@ -177,6 +177,17 @@ internal class InstancinatorModule : IModule, IDisposable
         this.dalamudServices.Framework.Update -= this.Tick;
     }
 
+    internal int GetNumberOfInstances()
+    {
+        switch (this.dalamudServices.ClientState.TerritoryType)
+        {
+            case 963:
+                return 2;
+            default:
+                return 3;
+        }
+    }
+
     internal void DisableAllAndCreateIfNotExists()
     {
         if (!this.DisableAllEntries())
@@ -231,7 +242,7 @@ internal class InstancinatorModule : IModule, IDisposable
         }
     }
 
-    // private unsafe bool IsInstanced() => UIState.Instance()->AreaInstance.Instance;
+    private unsafe bool IsInstanced() => UIState.Instance()->AreaInstance.IsInstancedArea();
 
     private void Tick(Framework framework)
     {
@@ -245,7 +256,7 @@ internal class InstancinatorModule : IModule, IDisposable
             }
         }
 
-        if (!this.Configuration.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !Territories.Contains(this.dalamudServices.ClientState.TerritoryType))
+        if (!this.Configuration.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
         {
             this.window.IsOpen = false;
             return;

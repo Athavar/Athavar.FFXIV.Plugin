@@ -8,6 +8,7 @@ using System.Numerics;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 
 internal class InstancinatorWindow : Window
@@ -25,28 +26,46 @@ internal class InstancinatorWindow : Window
         windowSystem.AddWindow(this);
     }
 
+    private unsafe int InstanceNumber => UIState.Instance()->AreaInstance.Instance;
+
     /// <inheritdoc />
     public override void Draw()
     {
         var selectedInst = this.module.SelectedInstance;
+        var currentInst = this.InstanceNumber;
+        var numInst = this.module.GetNumberOfInstances();
+
+        void DrawInstanceButton(FontAwesomeIcon icon, int index)
+        {
+            if (index > numInst)
+            {
+                return;
+            }
+
+            var current = currentInst == index;
+            if (current)
+            {
+                ImGui.BeginDisabled();
+            }
+
+            if (this.ImGuiColoredButton(icon, selectedInst == index))
+            {
+                this.module.EnableInstance(index);
+            }
+
+            if (current)
+            {
+                ImGui.EndDisabled();
+            }
+        }
+
         ImGui.SetWindowFontScale(1f);
         ImGui.Text($"Sel: {selectedInst}");
         ImGui.SetWindowFontScale(2f);
 
-        if (this.ImGuiColoredButton(FontAwesomeIcon.DiceOne, selectedInst == 1))
-        {
-            this.module.EnableInstance(1);
-        }
-
-        if (this.ImGuiColoredButton(FontAwesomeIcon.DiceTwo, selectedInst == 2))
-        {
-            this.module.EnableInstance(2);
-        }
-
-        if (this.ImGuiColoredButton(FontAwesomeIcon.DiceThree, selectedInst == 3))
-        {
-            this.module.EnableInstance(3);
-        }
+        DrawInstanceButton(FontAwesomeIcon.DiceOne, 1);
+        DrawInstanceButton(FontAwesomeIcon.DiceTwo, 2);
+        DrawInstanceButton(FontAwesomeIcon.DiceThree, 3);
 
         if (this.ImGuiIconButton(FontAwesomeIcon.TimesCircle))
         {
