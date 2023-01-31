@@ -60,7 +60,7 @@ internal class PluginWindow : Window, IDisposable
     /// <inheritdoc />
     public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
 
-    private void OnModuleStateChange(IModule module)
+    private void OnModuleStateChange(Module module)
     {
         if (module.Tab is null)
         {

@@ -22,11 +22,12 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
 using Microsoft.Extensions.DependencyInjection;
+using Module = Athavar.FFXIV.Plugin.Common.Module;
 
 /// <summary>
 ///     Implements the instancinator module.
 /// </summary>
-public class InstancinatorModule : IModule, IDisposable
+public class InstancinatorModule : Module, IDisposable
 {
     internal const string ModuleName = "Instancinator";
     private const string FolderName = "InstancinatorInternal";

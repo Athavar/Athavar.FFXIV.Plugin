@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.Common;
 using Dalamud.Logging;
 
-public class AutoSpearModule : IModule
+public class AutoSpearModule : Module
 {
     private const string ModuleName = "AutoSpear";
 

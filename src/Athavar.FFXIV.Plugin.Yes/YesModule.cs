@@ -21,7 +21,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     Main module implementation.
 /// </summary>
-public sealed class YesModule : IModule, IDisposable
+public sealed class YesModule : Module, IDisposable
 {
     /// <summary>
     ///     The name of the module.

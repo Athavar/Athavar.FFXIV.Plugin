@@ -12,11 +12,11 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-///     Manage instances of <see cref="IModule" />.
+///     Manage instances of <see cref="Module" />.
 /// </summary>
 internal class ModuleManager : IModuleManager
 {
-    private readonly Dictionary<string, IModule> modules = new();
+    private readonly Dictionary<string, Module> modules = new();
 
     private readonly Configuration configuration;
     private readonly IServiceProvider serviceProvider;
@@ -36,7 +36,7 @@ internal class ModuleManager : IModuleManager
 
     /// <inheritdoc />
     public bool Register<T>()
-        where T : IModule
+        where T : Module
     {
         var module = this.serviceProvider.GetRequiredService<T>();
         this.StateChange?.Invoke(module);

@@ -7,7 +7,7 @@ using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Logging;
 
-public class CraftQueueModule : IModule
+public class CraftQueueModule : Module
 {
     private const string ModuleName = "CraftQueue (Beta)";
 

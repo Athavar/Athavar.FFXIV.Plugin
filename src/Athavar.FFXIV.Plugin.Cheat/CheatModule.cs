@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements cheats.
 /// </summary>
-public class CheatModule : IModule, IDisposable
+public class CheatModule : Module, IDisposable
 {
     private const string ModuleName = "CheatModule";
 

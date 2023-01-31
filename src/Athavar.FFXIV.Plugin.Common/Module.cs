@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.UI;
 /// <summary>
 ///     Basic property and methods of a module.
 /// </summary>
-public abstract class IModule
+public abstract class Module
 {
     /// <summary>
     ///     Gets the name of the module.

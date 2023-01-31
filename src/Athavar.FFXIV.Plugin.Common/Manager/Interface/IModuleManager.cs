@@ -6,12 +6,12 @@ namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
 public interface IModuleManager
 {
-    public delegate void ModuleStateChange(IModule module);
+    public delegate void ModuleStateChange(Module module);
 
     event ModuleStateChange StateChange;
 
     bool Register<T>()
-        where T : IModule;
+        where T : Module;
 
     public IEnumerable<string> GetModuleNames();
 

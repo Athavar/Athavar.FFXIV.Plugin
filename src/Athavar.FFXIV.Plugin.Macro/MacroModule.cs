@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements the macro module.
 /// </summary>
-public sealed class MacroModule : IModule, IDisposable
+public sealed class MacroModule : Module, IDisposable
 {
     /// <summary>
     ///     The name of the module.
