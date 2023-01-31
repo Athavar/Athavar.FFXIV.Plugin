@@ -20,6 +20,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
     <Configurations>Debug;Release</Configurations>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
@@ -50,11 +51,13 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugType>embedded</DebugType>
+    <DocumentationFile>bin\Debug\Athavar.FFXIV.Plugin.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
+    <DocumentationFile>bin\Release\Athavar.FFXIV.Plugin.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -64,16 +67,11 @@
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.10" GeneratePathProperty="false" />
-    <PackageReference Include="ILRepack" Version="2.0.18" GeneratePathProperty="true" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="NLua" Version="1.6.0" />
-    <PackageReference Include="Reloaded.Memory" Version="8.0.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
     <!--ProjectReference Include="..\lib\FFXIVClientStructs\FFXIVClientStructs\FFXIVClientStructs.csproj" /-->
     <Reference Include="FFXIVClientStructs" Private="False" />
     <Reference Include="Newtonsoft.Json" Private="False" />
@@ -84,21 +82,15 @@
     <Reference Include="Lumina.Excel" Private="False" />
   </ItemGroup>
 
-  <!--Target Name="ILRepack" AfterTargets="Build" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
-    <ItemGroup>
-      <InputAssemblies Include="$(TargetPath)" />
-      <InputAssemblies Include="$(TargetDir)*.dll" Exclude="$(TargetPath);$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll;$(TargetDir)Serilog.dll" />
-    </ItemGroup>
-    <Exec Command="$(PkgILRepack)\tools\ILRepack.exe /parallel /union /lib:$(AdditionalLibPaths) /lib:$(DalamudLibPath) /out:$(TargetDir)$(TargetFileName) @(InputAssemblies, ' ')" />
-  </Target>
-
-  <Target Name="CleanOutDir" AfterTargets="ILRepack" Condition="'$(Configuration)'=='RELEASE' AND $([MSBuild]::IsOSPlatform('Windows'))">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)$(TargetName).dll;$(TargetDir)NLua.dll;$(TargetDir)KeraLua.dll;$(TargetDir)lua54.dll" />
-      <DeleteFiles Include="$(TargetDir)*.pdb" />
-      <DeleteFiles Include="$(TargetDir)*.xml" />
-    </ItemGroup>
-    <Message Text="Deleting @(DeleteFiles)" Importance="high" />
-    <Delete Files="@(DeleteFiles)" />
-  </Target-->
+  <ItemGroup>
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.AutoSpear\Athavar.FFXIV.Plugin.AutoSpear.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Cheat\Athavar.FFXIV.Plugin.Cheat.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Click\Athavar.FFXIV.Plugin.Click.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.CraftQueue\Athavar.FFXIV.Plugin.CraftQueue.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj" />
+    <ProjectReference Include="..\src\Athavar.FFXIV.Plugin.Yes\Athavar.FFXIV.Plugin.Yes.csproj" />
+  </ItemGroup>
 </Project>

@@ -4,16 +4,19 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using System;
-using Athavar.FFXIV.Plugin.Lib.ClickLib;
-using Athavar.FFXIV.Plugin.Lib.CraftSimulation.Models;
-using Athavar.FFXIV.Plugin.Manager;
-using Athavar.FFXIV.Plugin.Manager.Interface;
-using Athavar.FFXIV.Plugin.Module;
-using Athavar.FFXIV.Plugin.Utils;
+using Athavar.FFXIV.Plugin.AutoSpear;
+using Athavar.FFXIV.Plugin.Cheat;
+using Athavar.FFXIV.Plugin.Click;
+using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Instancinator;
+using Athavar.FFXIV.Plugin.Macro;
+using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -62,32 +65,12 @@ public sealed class Plugin : IDalamudPlugin
         this.provider.DisposeAsync().GetAwaiter().GetResult();
     }
 
-    /// <summary>
-    ///     Try to catch all exception.
-    /// </summary>
-    /// <param name="action">Action that can throw exception.</param>
-    internal static void CatchCrash(Action action)
-    {
-        try
-        {
-            action.Invoke();
-        }
-        catch (Exception ex)
-        {
-            PluginLog.Error(ex, "Don't crash the game");
-        }
-    }
-
     private ServiceProvider BuildProvider()
     {
         return new ServiceCollection()
            .AddSingleton(this.pluginInterface)
-           .AddSingleton<IDalamudServices, DalamudServices>()
-           .AddSingleton<IModuleManager, ModuleManager>()
-           .AddSingleton<ILocalizerManager, LocalizerManager>()
-           .AddSingleton<IIconCacheManager, IconCacheManager>()
-           .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<PluginWindow>()
+           .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(o =>
             {
                 var ser = o.GetRequiredService<IDalamudServices>();
@@ -95,17 +78,11 @@ public sealed class Plugin : IDalamudPlugin
 
                 var pi = ser.PluginInterface;
 
-                var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
-                c.Setup(this.pluginInterface);
-                return c;
+                return Configuration.Load(pi);
             })
            .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
-           .AddSingleton<IChatManager, ChatManager>()
-           .AddSingleton<EquipmentScanner>()
-           .AddSingleton<KeyStateExtended>()
-           .AddSingleton<AutoTranslateWindow>()
-           .AddSingleton<IClick, Click>()
-           .AddSingleton<ICommandInterface, CommandInterface>()
+           .AddCommon()
+           .AddClick()
            .AddMacroModule()
            .AddYesModule()
            .AddInstancinatorModule()
@@ -113,8 +90,8 @@ public sealed class Plugin : IDalamudPlugin
            .AddCheatModule()
            .AddCraftQueueModule()
 #if DEBUG
-           .AddItemInspectorModule()
 #endif
+           .AddSingleton<AutoTranslateWindow>()
            .AddSingleton<PluginService>()
            .BuildServiceProvider();
     }

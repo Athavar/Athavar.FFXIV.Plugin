@@ -5,15 +5,14 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System;
-using Athavar.FFXIV.Plugin.Manager.Interface;
-using Athavar.FFXIV.Plugin.Module.AutoSpear;
-using Athavar.FFXIV.Plugin.Module.Cheat;
-using Athavar.FFXIV.Plugin.Module.CraftQueue;
-using Athavar.FFXIV.Plugin.Module.Instancinator;
-using Athavar.FFXIV.Plugin.Module.ItemInspector;
-using Athavar.FFXIV.Plugin.Module.Macro;
-using Athavar.FFXIV.Plugin.Module.Yes;
-using Athavar.FFXIV.Plugin.Utils;
+using Athavar.FFXIV.Plugin.AutoSpear;
+using Athavar.FFXIV.Plugin.Cheat;
+using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.Instancinator;
+using Athavar.FFXIV.Plugin.Macro;
+using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Logging;
@@ -36,8 +35,6 @@ internal class PluginService
     /// <summary>
     ///     Initializes a new instance of the <see cref="PluginService" /> class.
     /// </summary>
-    /// <param name="logger"><see cref="ILogger{TCategoryName}" /> added by DI.</param>
-    /// <param name="appLifetime"><see cref="IHostApplicationLifetime" /> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="pluginWindow"><see cref="PluginWindow" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
@@ -48,7 +45,8 @@ internal class PluginService
         PluginWindow pluginWindow,
         Configuration configuration,
         WindowSystem windowSystem,
-        IServiceProvider provider)
+        IServiceProvider provider,
+        IModuleManager moduleManager)
     {
         this.dalamudServices = dalamudServices;
         this.pluginWindow = pluginWindow;
@@ -57,14 +55,13 @@ internal class PluginService
         this.windowSystem = windowSystem;
         this.provider = provider;
 
-        _ = provider.GetRequiredService<MacroModule>();
-        _ = provider.GetRequiredService<YesModule>();
-        _ = provider.GetRequiredService<InstancinatorModule>();
-        _ = provider.GetRequiredService<AutoSpearModule>();
-        _ = provider.GetRequiredService<CheatModule>();
-        _ = provider.GetRequiredService<CraftQueueModule>();
+        moduleManager.Register<MacroModule>();
+        moduleManager.Register<YesModule>();
+        moduleManager.Register<InstancinatorModule>();
+        moduleManager.Register<AutoSpearModule>();
+        moduleManager.Register<CheatModule>();
+        moduleManager.Register<CraftQueueModule>();
 #if DEBUG
-        _ = provider.GetRequiredService<ItemInspectorModule>();
 #endif
     }
 

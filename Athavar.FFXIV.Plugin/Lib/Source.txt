@@ -1,2 +1,0 @@
-﻿ClickLib: https://github.com/daemitus/ClickLib/tree/18156c00fe759e32552af8616254a304ef2d8f52/ClickLib
-CraftSimulator: inspired by https://github.com/ffxiv-teamcraft/simulator

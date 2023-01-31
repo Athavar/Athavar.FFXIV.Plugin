@@ -6,8 +6,9 @@ namespace Athavar.FFXIV.Plugin;
 
 using System;
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Manager.Interface;
-using Athavar.FFXIV.Plugin.Utils;
+using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Common.UI;
 using Dalamud.Game.Text;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
@@ -15,30 +16,32 @@ using ImGuiNET;
 /// <summary>
 ///     The main <see cref="Window" /> of the plugin.
 /// </summary>
-internal class PluginWindow : Window
+internal class PluginWindow : Window, IDisposable
 {
     private readonly IModuleManager manager;
-    private readonly ILocalizerManager localizerManager;
 
-    private readonly string[] languages = Enum.GetNames<Language>();
-    private readonly Configuration configuration;
+    private readonly TabBarHandler tabBarHandler = new("athavar-toolbox");
+
+    private readonly SettingsTab settingsTab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="PluginWindow" /> class.
     /// </summary>
-    /// <param name="localizerManager"><see cref="ILocalizerManager" /> added by DI.</param>
+    /// <param name="localizeManager"><see cref="ILocalizeManager" /> added by DI.</param>
     /// <param name="manager"><see cref="IModuleManager" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public PluginWindow(ILocalizerManager localizerManager, IModuleManager manager, Configuration configuration)
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration)
         : base($"{Plugin.PluginName}")
     {
         this.manager = manager;
-        this.localizerManager = localizerManager;
-        this.configuration = configuration;
+        this.settingsTab = new SettingsTab(this.manager, localizeManager, configuration);
+        this.tabBarHandler.Add(this.settingsTab);
 
         this.Size = new Vector2(525, 600);
         this.SizeCondition = ImGuiCond.FirstUseEver;
         this.RespectCloseHotkey = false;
+
+        this.manager.StateChange += this.OnModuleStateChange;
 
 #if DEBUG
         this.Toggle();
@@ -52,107 +55,130 @@ internal class PluginWindow : Window
     public override void PostDraw() => ImGui.PopStyleColor();
 
     /// <inheritdoc />
-    public override void Draw()
+    public override void Draw() => this.tabBarHandler.Draw();
+
+    /// <inheritdoc />
+    public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
+
+    private void OnModuleStateChange(IModule module)
     {
-        ImGui.BeginTabBar("##tabBar");
-
-        this.DrawSettingTab();
-
-        this.manager.Draw();
-
-        ImGui.EndTabBar();
-        ImGui.End();
-    }
-
-    private void DrawSettingTab()
-    {
-        using var raii = new ImGuiRaii();
-        if (!raii.Begin(() => ImGui.BeginTabItem(this.localizerManager.Localize("Settings")), ImGui.EndTabItem))
+        if (module.Tab is null)
         {
             return;
         }
 
-        var change = false;
-        var config = this.configuration;
-
-        // ToolTip setting
-        var value = config.ShowToolTips;
-        ImGui.TextUnformatted(this.localizerManager.Localize("Tooltips"));
-        ImGui.AlignTextToFramePadding();
-        ImGui.SameLine();
-        if (ImGui.Checkbox("##hideTooltipsOnOff", ref value))
+        if (module.Enabled)
         {
-            config.ShowToolTips = value;
-            change = true;
+            this.tabBarHandler.Add(module.Tab);
+        }
+        else
+        {
+            this.tabBarHandler.Remove(module.Tab);
+        }
+    }
+
+    private class SettingsTab : Tab
+    {
+        private readonly IModuleManager manager;
+        private readonly ILocalizeManager localizeManager;
+        private readonly string[] languages = Enum.GetNames<Language>();
+        private readonly Configuration configuration;
+
+        public SettingsTab(IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
+        {
+            this.manager = manager;
+            this.localizeManager = localizeManager;
+            this.configuration = configuration;
         }
 
-        /*
-        // Language setting
-        var selectedLanguage = (int)config.Language;
-        ImGui.TextUnformatted(this.localizerManager.Localize("Language:"));
-        if (config.ShowToolTips && ImGui.IsItemHovered())
-        {
-            ImGui.SetTooltip(this.localizerManager.Localize("Change the UI Language."));
-        }
+        public override string Name => "Settings";
 
-        ImGui.SameLine();
-        ImGui.SetNextItemWidth(200);
-        if (ImGui.Combo("##hideLangSetting", ref selectedLanguage, this.languages, this.languages.Length))
-        {
-            this.localizerManager.ChangeLanguage(config.Language = (Language)selectedLanguage);
-            change = true;
-        }*/
+        public override string Identifier => "settings";
 
-        if (ImGui.CollapsingHeader(this.localizerManager.Localize("Chat")))
+        public override void Draw()
         {
-            var names = Enum.GetNames<XivChatType>();
-            var chatTypes = Enum.GetValues<XivChatType>();
+            var change = false;
+            var config = this.configuration;
 
-            var current = Array.IndexOf(chatTypes, config.ChatType);
-            if (current == -1)
+            // ToolTip setting
+            var value = config.ShowToolTips;
+            ImGui.TextUnformatted(this.localizeManager.Localize("Tooltips"));
+            ImGui.AlignTextToFramePadding();
+            ImGui.SameLine();
+            if (ImGui.Checkbox("##hideTooltipsOnOff", ref value))
             {
-                current = Array.IndexOf(chatTypes, config.ChatType = XivChatType.Echo);
+                config.ShowToolTips = value;
                 change = true;
             }
 
-            ImGui.SetNextItemWidth(200f);
-            if (ImGui.Combo(this.localizerManager.Localize("Normal chat channel"), ref current, names, names.Length))
+            /*
+            // Language setting
+            var selectedLanguage = (int)config.Language;
+            ImGui.TextUnformatted(this.localizerManager.Localize("Language:"));
+            if (config.ShowToolTips && ImGui.IsItemHovered())
             {
-                config.ChatType = chatTypes[current];
-                change = true;
+                ImGui.SetTooltip(this.localizerManager.Localize("Change the UI Language."));
             }
 
-            var currentError = Array.IndexOf(chatTypes, config.ErrorChatType);
-            if (currentError == -1)
+            ImGui.SameLine();
+            ImGui.SetNextItemWidth(200);
+            if (ImGui.Combo("##hideLangSetting", ref selectedLanguage, this.languages, this.languages.Length))
             {
-                currentError = Array.IndexOf(chatTypes, config.ErrorChatType = XivChatType.Urgent);
+                this.localizerManager.ChangeLanguage(config.Language = (Language)selectedLanguage);
                 change = true;
-            }
+            }*/
 
-            ImGui.SetNextItemWidth(200f);
-            if (ImGui.Combo(this.localizerManager.Localize("Error chat channel"), ref currentError, names, names.Length))
+            if (ImGui.CollapsingHeader(this.localizeManager.Localize("Chat")))
             {
-                config.ChatType = chatTypes[currentError];
-                change = true;
-            }
-        }
+                var names = Enum.GetNames<XivChatType>();
+                var chatTypes = Enum.GetValues<XivChatType>();
 
-        if (ImGui.CollapsingHeader(this.localizerManager.Localize("Modules")))
-        {
-            foreach (var module in this.manager.GetModuleNames())
-            {
-                var val = this.manager.IsEnables(module);
-                if (ImGui.Checkbox(module, ref val))
+                var current = Array.IndexOf(chatTypes, config.ChatType);
+                if (current == -1)
                 {
-                    this.manager.Enable(module, val);
+                    current = Array.IndexOf(chatTypes, config.ChatType = XivChatType.Echo);
+                    change = true;
+                }
+
+                ImGui.SetNextItemWidth(200f);
+                if (ImGui.Combo(this.localizeManager.Localize("Normal chat channel"), ref current, names, names.Length))
+                {
+                    config.ChatType = chatTypes[current];
+                    change = true;
+                }
+
+                var currentError = Array.IndexOf(chatTypes, config.ErrorChatType);
+                if (currentError == -1)
+                {
+                    currentError = Array.IndexOf(chatTypes, config.ErrorChatType = XivChatType.Urgent);
+                    change = true;
+                }
+
+                ImGui.SetNextItemWidth(200f);
+                if (ImGui.Combo(this.localizeManager.Localize("Error chat channel"), ref currentError, names, names.Length))
+                {
+                    config.ChatType = chatTypes[currentError];
                     change = true;
                 }
             }
-        }
 
-        if (change)
-        {
-            this.configuration.Save();
+            if (ImGui.CollapsingHeader(this.localizeManager.Localize("Modules")))
+            {
+                foreach (var module in this.manager.GetModuleNames())
+                {
+                    var val = this.manager.IsEnables(module);
+                    if (ImGui.Checkbox(module, ref val))
+                    {
+                        this.manager.Enable(module, val);
+                        change = true;
+                    }
+                }
+            }
+
+            if (change)
+            {
+                this.configuration.Save();
+            }
         }
     }
 }

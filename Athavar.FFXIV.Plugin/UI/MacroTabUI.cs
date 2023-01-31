@@ -7,8 +7,8 @@ namespace Athavar.FFXIV.Plugin.UI;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Athavar.FFXIV.Plugin.Manager.Interface;
-using Athavar.FFXIV.Plugin.Utils;
+using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
