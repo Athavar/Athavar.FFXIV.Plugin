@@ -14,6 +14,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /recipe command.
 /// </summary>
+[MacroCommand("recipe", null, "Open the recipe book to a specific recipe.", new[] { "wait" }, new[] { "/recipe \"Tsai tou Vounou\"" })]
 internal class RecipeCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/recipe\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

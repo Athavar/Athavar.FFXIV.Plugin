@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
@@ -19,135 +20,7 @@ internal class MacroHelpWindow : Window
 {
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
 
-    private readonly (string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)[] commandData =
-    {
-        (
-            "action", "ac",
-            "Execute an action and wait for the server to respond.",
-            new[] { "wait", /*"unsafe",*/ "condition" },
-            new[]
-            {
-                "/ac Groundwork",
-                "/ac \"Tricks of the Trade\"",
-            }),
-        (
-            "click", null,
-            "Click a pre-defined button in an addon or window.",
-            new[] { "wait" },
-            new[]
-            {
-                "/click synthesize",
-            }),
-        (
-            "craft", "gate",
-            "Similar to loop but used at the start of a macro with an infinite /loop at the end. Allows a certain amount of executions before stopping the macro.",
-            new[] { "echo", "wait" },
-            new[]
-            {
-                "/craft 10",
-            }),
-        (
-            "loop", null,
-            "Loop the current macro forever, or a certain amount of times.",
-            new[] { "wait", "echo" },
-            new[]
-            {
-                "/loop",
-                "/loop 5",
-            }),
-        (
-            "recipe", null,
-            "Open the recipe book to a specific recipe.",
-            new[] { "wait" },
-            new[]
-            {
-                "/recipe \"Tsai tou Vounou\"",
-            }),
-        (
-            "require", null,
-            "Require a certain effect to be present before continuing.",
-            new[] { "wait", "maxwait" },
-            new[]
-            {
-                "/require \"Well Fed\"",
-            }),
-        (
-            "requirequality", null,
-            "Require a certain amount of quality be present before continuing.",
-            new[] { "wait", "maxwait" },
-            new[]
-            {
-                "/requirequality 3000",
-            }),
-        (
-            "requirerepair", null,
-            "Pause if an item is at zero durability.",
-            new[] { "wait" },
-            new[]
-            {
-                "/requirerepair",
-            }),
-        (
-            "requirespiritbond", null,
-            "Pause when an item is ready to have materia extracted. Optional argument to keep crafting if the next highest spiritbond is greater-than-or-equal to the argument value.",
-            new[] { "wait" },
-            new[]
-            {
-                "/requirespiritbond",
-                "/requirespiritbond 99.5",
-            }),
-        (
-            "requirestats", null,
-            "Require a certain amount of stats effect to be present before continuing. Syntax is Craftsmanship, Control, then CP.",
-            new[] { "wait", "maxwait" },
-            new[]
-            {
-                "/requirestats 2700 2600 500",
-            }),
-        (
-            "runmacro", null,
-            "Start a macro from within another macro.",
-            new[] { "wait" },
-            new[]
-            {
-                "/runmacro \"Sub macro\"",
-            }),
-        (
-            "send", null,
-            "Send an arbitrary keystroke with optional modifiers. Keys are pressed in the same order as the command",
-            new[] { "wait" },
-            new[]
-            {
-                "/send MULTIPLY",
-                "/send NUMPAD0",
-                "/send CONTROL+MENU+SHIFT+NUMPAD0",
-            }),
-        (
-            "target", null,
-            "Target anyone and anything that can be selected.",
-            new[] { "wait" },
-            new[]
-            {
-                "/target Eirikur",
-                "/target Moyce",
-            }),
-        (
-            "waitaddon", null,
-            "Wait for an addon, otherwise known as a UI component to be present. You can discover these names by using the \"Addon Inspector\" view inside the \"/xldata\" window.",
-            new[] { "wait", "maxwait" },
-            new[]
-            {
-                "/waitaddon RecipeNote",
-            }),
-        (
-            "wait", null,
-            "The same as the wait modifier, but as a command.",
-            Array.Empty<string>(),
-            new[]
-            {
-                "/wait 1-5",
-            }),
-    };
+    private readonly (string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)[] commandData = MacroParser.CommandData;
 
     private readonly (string Name, string Description, string[] Examples)[] modifierData =
     {

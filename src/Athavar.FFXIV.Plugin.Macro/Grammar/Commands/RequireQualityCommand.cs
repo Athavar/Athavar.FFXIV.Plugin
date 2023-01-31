@@ -14,6 +14,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /requirequality command.
 /// </summary>
+[MacroCommand("requirequality", null, "Require a certain amount of quality be present before continuing.", new[] { "wait", "maxwait" }, new[] { "/requirequality 3000" })]
 internal class RequireQualityCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/requirequality\s+(?<quality>\d+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

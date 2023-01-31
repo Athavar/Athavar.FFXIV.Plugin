@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     The /runmacro command.
 /// </summary>
+[MacroCommand("runmacro", null, "Start a macro from within another macro.", new[] { "wait" }, new[] { "/runmacro \"Sub macro\"" })]
 internal class RunMacroCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/runmacro\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

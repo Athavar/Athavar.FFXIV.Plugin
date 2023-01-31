@@ -12,6 +12,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /wait command.
 /// </summary>
+[MacroCommand("wait", null, "The same as the wait modifier, but as a command.", new string[0], new[] { "/wait 1-5" })]
 internal class WaitCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/wait\s+(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

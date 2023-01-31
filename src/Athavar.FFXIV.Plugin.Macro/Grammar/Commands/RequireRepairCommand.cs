@@ -13,6 +13,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /requirerepair command.
 /// </summary>
+[MacroCommand("requirerepair", null, "Pause if an item is at zero durability.", new[] { "wait" }, new[] { "/requirerepair" })]
 internal class RequireRepairCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/requirerepair\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

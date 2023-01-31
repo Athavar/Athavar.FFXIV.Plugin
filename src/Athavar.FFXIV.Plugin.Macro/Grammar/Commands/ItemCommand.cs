@@ -14,6 +14,7 @@ using Sheets = Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /item command.
 /// </summary>
+[MacroCommand("Item", null, "Use an item, stopping the macro if the item is not present.", new[] { "hq", "wait" }, new[] { "/item Calamari Ripieni", "/item Calamari Ripieni <hq> <wait.3>" })]
 internal class ItemCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/item\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

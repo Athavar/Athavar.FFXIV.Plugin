@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implement the check command.
 /// </summary>
+[MacroCommand("check")]
 internal class CheckCommand : MacroCommand
 {
     private const int StatusCheckMaxWait = 1000;

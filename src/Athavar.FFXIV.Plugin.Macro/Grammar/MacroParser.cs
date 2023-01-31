@@ -4,6 +4,7 @@
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar;
 
+using System.Reflection;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 /// <summary>
@@ -11,6 +12,35 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 /// </summary>
 internal static class MacroParser
 {
+    private static readonly Dictionary<string, Func<string, MacroCommand>> Commands = new();
+
+    static MacroParser()
+    {
+        List<(string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)> data = new();
+
+        var attribute = typeof(MacroCommandAttribute);
+        var commands = typeof(MacroCommand).Assembly.GetTypes().Where(t => !t.IsAbstract && t.IsDefined(attribute, false)).Select(t => (Command: t, Description: (MacroCommandAttribute)t.GetCustomAttribute(attribute)!));
+
+        foreach (var (command, description) in commands)
+        {
+            MacroCommand ParseAction(string t) => (MacroCommand)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, new[] { t });
+            Commands.Add(description.Name, ParseAction);
+            if (description.Alias is not null)
+            {
+                Commands.Add(description.Alias, ParseAction);
+            }
+
+            if (!description.Hidden)
+            {
+                data.Add((description.Name, description.Alias, description.Description, description.Modifiers, description.Examples));
+            }
+        }
+
+        CommandData = data.ToArray();
+    }
+
+    internal static (string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)[] CommandData { get; }
+
     /// <summary>
     ///     Parse a macro and return a series of executable statements.
     /// </summary>
@@ -53,6 +83,13 @@ internal static class MacroParser
             : line;
 
         commandText = commandText.ToLowerInvariant();
+
+        if (commandText[0] == '/' && Commands.TryGetValue(commandText[1..], out var parser))
+        {
+            return parser(line);
+        }
+
+        return NativeCommand.Parse(line);
         return commandText switch
                {
                    "/ac" => ActionCommand.Parse(line),

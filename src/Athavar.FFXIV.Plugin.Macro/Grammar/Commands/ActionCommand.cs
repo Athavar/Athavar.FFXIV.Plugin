@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     The /action command.
 /// </summary>
+[MacroCommand("action", "ac", "Execute an action and wait for the server to respond.", new[] { "wait", "unsafe", "condition" }, new[] { "/ac Groundwork", "/ac \"Tricks of the Trade\"" })]
 internal class ActionCommand : MacroCommand
 {
     private const int SafeCraftMaxWait = 5000;

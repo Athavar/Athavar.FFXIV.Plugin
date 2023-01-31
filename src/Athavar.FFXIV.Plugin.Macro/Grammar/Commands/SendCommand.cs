@@ -14,6 +14,7 @@ using static Common.Native;
 /// <summary>
 ///     The /send command.
 /// </summary>
+[MacroCommand("send", null, "Send an arbitrary keystroke with optional modifiers. Keys are pressed in the same order as the command.", new[] { "wait" }, new[] { "/send MULTIPLY", "/send NUMPAD0", "/send CONTROL+MENU+SHIFT+NUMPAD0" })]
 internal class SendCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/send\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

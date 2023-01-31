@@ -13,6 +13,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /loop command.
 /// </summary>
+[MacroCommand("loop", null, "Loop the current macro forever, or a certain amount of times.", new[] { "echo", "wait" }, new[] { "/loop", "/loop 5" })]
 internal class LoopCommand : MacroCommand
 {
     private const int MaxLoops = int.MaxValue;

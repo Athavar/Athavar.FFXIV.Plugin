@@ -13,6 +13,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// <summary>
 ///     The /waitaddon command.
 /// </summary>
+[MacroCommand("waitaddon", null, "Wait for an addon, otherwise known as a UI component to be present. You can discover these names by using the \"Addon Inspector\" view inside the \"/xldata\" window.", new[] { "wait", "maxwait" }, new[] { "/waitaddon RecipeNote" })]
 internal class WaitAddonCommand : MacroCommand
 {
     private const int AddonCheckMaxWait = 5000;

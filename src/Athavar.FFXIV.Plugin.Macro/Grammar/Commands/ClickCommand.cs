@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     The /click command.
 /// </summary>
+[MacroCommand("click", null, "Click a pre-defined button in an addon or window.", new[] { "wait" }, new[] { "/click synthesize" })]
 internal class ClickCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/click\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

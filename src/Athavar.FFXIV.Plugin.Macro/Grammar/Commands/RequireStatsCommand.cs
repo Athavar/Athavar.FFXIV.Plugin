@@ -14,6 +14,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /requirestats command.
 /// </summary>
+[MacroCommand("requirestats", null, "Require a certain amount of stats effect to be present before continuing. Syntax is Craftsmanship, Control, then CP.", new[] { "wait", "maxwait" }, new[] { "/requirestats 2700 2600 500" })]
 internal class RequireStatsCommand : MacroCommand
 {
     private const int StatusCheckMaxWait = 1000;

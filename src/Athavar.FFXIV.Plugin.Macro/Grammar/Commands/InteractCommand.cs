@@ -11,6 +11,7 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
+[MacroCommand("interact", null, "Interact with new nearest selectable target with the given name.", new[] { "wait" }, new[] { "/interact Summoning Bell" })]
 internal class InteractCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/interact\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
