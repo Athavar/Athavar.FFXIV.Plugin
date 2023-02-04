@@ -29,6 +29,14 @@ internal class Encounter
 
     public List<Combatant> AllyCombatants = new();
 
+    public DateTime Start = DateTime.MinValue;
+
+    public DateTime LastEvent;
+
+    public DateTime LastDamageEvent;
+
+    public DateTime? End;
+
     internal static ObjectTable objectTable;
 
     [JsonIgnore]
@@ -57,12 +65,6 @@ internal class Encounter
 
     public int Kills => this.AllyCombatants.Sum(c => c.Kills);
 
-    public DateTime Start { get; set; } = DateTime.MinValue;
-
-    public DateTime LastEvent { get; set; }
-
-    public DateTime? End { get; set; }
-
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 
     public Combatant? GetCombatant(uint objectId)
@@ -84,8 +86,8 @@ internal class Encounter
             {
                 ObjectId = objectId,
                 Name = name,
-                First_Name = nameSplits[0],
-                Last_Name = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
+                Name_First = nameSplits[0],
+                Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
                 Job = (Job)playerCharacter.ClassJob.Id,
                 Level = playerCharacter.Level,
                 WorldId = playerCharacter.HomeWorld.Id,
@@ -126,7 +128,7 @@ internal class Encounter
                     DataId = battleNpc.DataId,
                     OwnerId = ownerId,
                     Name = name,
-                    First_Name = name,
+                    Name_First = name,
                     Job = (Job)battleNpc.ClassJob.Id,
                     Level = battleNpc.Level,
                     WorldId = 0,

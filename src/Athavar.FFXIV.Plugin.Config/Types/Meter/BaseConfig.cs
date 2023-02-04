@@ -17,6 +17,11 @@ using Dalamud.Logging;
 [JsonDerivedType(typeof(MeterConfig), "MeterConfig")]
 public abstract class BaseConfig : IConfig
 {
+    private static JsonSerializerOptions options = new()
+    {
+        IncludeFields = true,
+    };
+
     public static BaseConfig? GetFromImportString(string importString)
     {
         if (string.IsNullOrEmpty(importString))
@@ -33,8 +38,7 @@ public abstract class BaseConfig : IConfig
             using var reader = new StreamReader(compressionStream, Encoding.UTF8);
             var decodedJsonString = reader.ReadToEnd();
 
-            var importedObj = JsonSerializer.Deserialize<BaseConfig>(decodedJsonString, new JsonSerializerOptions());
-            PluginLog.Information("{0} {1}", importedObj.GetType(), decodedJsonString);
+            var importedObj = JsonSerializer.Deserialize<BaseConfig>(decodedJsonString, options);
             return importedObj;
         }
         catch (Exception ex)
@@ -49,9 +53,8 @@ public abstract class BaseConfig : IConfig
     {
         try
         {
-            var jsonString = JsonSerializer.Serialize(this, new JsonSerializerOptions());
+            var jsonString = JsonSerializer.Serialize(this, options);
 
-            PluginLog.Information("{0}", jsonString);
             using var outputStream = new MemoryStream();
             using var compressionStream = new DeflateStream(outputStream, CompressionLevel.Optimal);
             using var writer = new StreamWriter(compressionStream, Encoding.UTF8);

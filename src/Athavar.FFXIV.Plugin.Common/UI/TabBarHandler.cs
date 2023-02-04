@@ -49,7 +49,7 @@ public class TabBarHandler
     {
         lock (this.lockObject)
         {
-            // this.tabs.Remove(tab);
+            this.tabs.RemoveAll(t => t.Identifier.Equals(tab.Identifier));
         }
 
         return this;

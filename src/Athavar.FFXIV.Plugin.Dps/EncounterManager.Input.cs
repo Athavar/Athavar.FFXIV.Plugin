@@ -120,7 +120,7 @@ internal partial class EncounterManager
                     source.DamageTotal += damageTakenEvent.Amount;
                 }
 
-                encounter.LastEvent = @event.Timestamp;
+                encounter.LastEvent = encounter.LastDamageEvent = @event.Timestamp;
 
                 this.Log.Add($"[{@event.Timestamp:O}] Damage: {source} -> {target} => {effectEvent.Amount}");
 

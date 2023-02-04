@@ -116,6 +116,7 @@ internal partial class EncounterManager : IDisposable
         {
             Start = start,
             LastEvent = start,
+            LastDamageEvent = start,
         };
     }
 
@@ -135,7 +136,7 @@ internal partial class EncounterManager : IDisposable
             return;
         }
 
-        if ((!this.ci.IsInCombat() && ce.LastEvent.AddSeconds(15) < now) || ce.Territory != this.ci.GetCurrentTerritory())
+        if ((!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now) || ce.Territory != this.ci.GetCurrentTerritory())
         {
             this.EndEncounter();
         }
