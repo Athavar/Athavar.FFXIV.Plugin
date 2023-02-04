@@ -76,11 +76,16 @@ internal class Encounter
 
         if (gameObject is PlayerCharacter playerCharacter)
         {
+            var name = playerCharacter.Name.ToString();
+            var nameSplits = name.Split(" ", 2);
+
             // create new battle player
             combatant = new Combatant(this)
             {
                 ObjectId = objectId,
-                Name = playerCharacter.Name.ToString(),
+                Name = name,
+                First_Name = nameSplits[0],
+                Last_Name = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
                 Job = (Job)playerCharacter.ClassJob.Id,
                 Level = playerCharacter.Level,
                 WorldId = playerCharacter.HomeWorld.Id,
@@ -121,6 +126,7 @@ internal class Encounter
                     DataId = battleNpc.DataId,
                     OwnerId = ownerId,
                     Name = name,
+                    First_Name = name,
                     Job = (Job)battleNpc.ClassJob.Id,
                     Level = battleNpc.Level,
                     WorldId = 0,

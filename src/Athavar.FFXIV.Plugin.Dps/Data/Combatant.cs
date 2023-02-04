@@ -39,6 +39,12 @@ internal class Combatant
 
     public string Name { get; init; } = string.Empty;
 
+    // ReSharper disable once InconsistentNaming
+    public string First_Name { get; init; } = string.Empty;
+
+    // ReSharper disable once InconsistentNaming
+    public string Last_Name { get; init; } = string.Empty;
+
     public Job Job { get; set; }
 
     public int Level { get; set; }

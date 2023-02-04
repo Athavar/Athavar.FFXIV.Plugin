@@ -16,7 +16,7 @@ using ImGuiNET;
 /// <summary>
 ///     The main <see cref="Window" /> of the plugin.
 /// </summary>
-internal class PluginWindow : Window, IDisposable
+internal class PluginWindow : Window, IDisposable, IPluginWindow
 {
     private readonly IModuleManager manager;
 

@@ -265,7 +265,8 @@ internal class MeterWindow : IConfigurable
             float top = dataType switch
                         {
                             MeterDataType.Damage => sortedCombatants[0].DamageTotal,
-                            MeterDataType.Healing => sortedCombatants[0].EffectiveHealing,
+                            MeterDataType.Healing => sortedCombatants[0].HealingTotal,
+                            MeterDataType.EffectiveHealing => sortedCombatants[0].EffectiveHealing,
                             MeterDataType.DamageTaken => sortedCombatants[0].DamageTaken,
                             _ => 0,
                         };
@@ -287,14 +288,15 @@ internal class MeterWindow : IConfigurable
                 float current = dataType switch
                                 {
                                     MeterDataType.Damage => combatant.DamageTotal,
-                                    MeterDataType.Healing => combatant.EffectiveHealing,
+                                    MeterDataType.Healing => combatant.HealingTotal,
+                                    MeterDataType.EffectiveHealing => combatant.EffectiveHealing,
                                     MeterDataType.DamageTaken => combatant.DamageTaken,
                                     _ => 0,
                                 };
 
                 var barColor = barConfig.BarColor;
                 var jobColor = this.BarColorsConfigPage.GetColor(combatant.Job);
-                localPos = this.BarConfigPage.DrawBar(drawList, localPos, size, combatant, jobColor, barColor, maxIndex, top, current);
+                localPos = this.BarConfigPage.DrawBar(drawList, localPos, size, combatant, jobColor, barColor, Math.Max(maxIndex, barConfig.MinBarCount), top, current);
             }
         }
     }
@@ -367,7 +369,8 @@ internal class MeterWindow : IConfigurable
             float xFloat = dataType switch
                            {
                                MeterDataType.Damage => x.DamageTotal,
-                               MeterDataType.Healing => x.EffectiveHealing,
+                               MeterDataType.Healing => x.HealingTotal,
+                               MeterDataType.EffectiveHealing => x.EffectiveHealing,
                                MeterDataType.DamageTaken => x.DamageTaken,
                                _ => 0,
                            };
@@ -375,7 +378,8 @@ internal class MeterWindow : IConfigurable
             float yFloat = dataType switch
                            {
                                MeterDataType.Damage => y.DamageTotal,
-                               MeterDataType.Healing => y.EffectiveHealing,
+                               MeterDataType.Healing => y.HealingTotal,
+                               MeterDataType.EffectiveHealing => x.EffectiveHealing,
                                MeterDataType.DamageTaken => y.DamageTaken,
                                _ => 0,
                            };

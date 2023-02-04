@@ -9,6 +9,8 @@ public class BarConfig : BaseConfig
 {
     public int BarCount { get; set; } = 10;
 
+    public int MinBarCount { get; set; } = 2;
+
     public int BarGaps { get; set; } = 1;
 
     public bool ShowJobIcon { get; set; } = true;

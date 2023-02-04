@@ -7,5 +7,6 @@ public enum MeterDataType
 {
     Damage,
     Healing,
+    EffectiveHealing,
     DamageTaken,
 }

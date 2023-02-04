@@ -10,11 +10,13 @@ internal class MeterManager
 {
     private readonly IServiceProvider provider;
     private readonly DpsConfiguration Configuration;
+    private readonly IPluginWindow pluginWindow;
     private Lazy<DpsTab>? tab;
 
-    public MeterManager(Configuration configuration, IServiceProvider provider)
+    public MeterManager(Configuration configuration, IServiceProvider provider, IPluginWindow pluginWindow)
     {
         this.provider = provider;
+        this.pluginWindow = pluginWindow;
         this.Configuration = configuration.Dps!;
         this.Load();
     }
@@ -35,7 +37,15 @@ internal class MeterManager
         this.Save();
     }
 
-    public void ConfigureMeter(MeterWindow meterWindow) => this.tab?.Value.PushConfig(meterWindow);
+    public void ConfigureMeter(MeterWindow meterWindow)
+    {
+        if (!this.pluginWindow.IsOpen)
+        {
+            this.pluginWindow.Toggle();
+        }
+
+        this.tab?.Value.PushConfig(meterWindow);
+    }
 
     public void Save() => this.Configuration.Save();
 

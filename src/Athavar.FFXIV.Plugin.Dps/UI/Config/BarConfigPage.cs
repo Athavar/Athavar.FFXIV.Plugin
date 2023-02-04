@@ -138,7 +138,8 @@ internal class BarConfigPage : IConfigPage
 
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
-            ImGuiEx.DragInt("Num Bars to Display", this.Config.BarCount, x => this.Config.BarCount = x, 1, 1, 48);
+            ImGuiEx.DragInt("Min Num Bars to Display", this.Config.MinBarCount, x => this.Config.MinBarCount = x, 1, 1, this.Config.BarCount);
+            ImGuiEx.DragInt("Max Num Bars to Display", this.Config.BarCount, x => this.Config.BarCount = x, 1, this.Config.MinBarCount, 48);
             ImGuiEx.DragInt("Bar Gap Size", this.Config.BarGaps, x => this.Config.BarGaps = x, 1, 0, 20);
 
             ImGuiEx.Checkbox("Show Job Icon", this.Config.ShowJobIcon, x => this.Config.ShowJobIcon = x);

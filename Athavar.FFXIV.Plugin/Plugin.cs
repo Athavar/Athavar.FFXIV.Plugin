@@ -71,7 +71,7 @@ public sealed class Plugin : IDalamudPlugin
     {
         return new ServiceCollection()
            .AddSingleton(this.pluginInterface)
-           .AddSingleton<PluginWindow>()
+           .AddSingleton<IPluginWindow, PluginWindow>()
            .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(o =>
             {

@@ -38,20 +38,21 @@ internal class PluginService
     ///     Initializes a new instance of the <see cref="PluginService" /> class.
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="pluginWindow"><see cref="PluginWindow" /> added by DI.</param>
+    /// <param name="pluginWindow"><see cref="IPluginWindow" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    /// <param name="moduleManager"><see cref="IModuleManager" /> added by DI.</param>
     public PluginService(
         IDalamudServices dalamudServices,
-        PluginWindow pluginWindow,
+        IPluginWindow pluginWindow,
         Configuration configuration,
         WindowSystem windowSystem,
         IServiceProvider provider,
         IModuleManager moduleManager)
     {
         this.dalamudServices = dalamudServices;
-        this.pluginWindow = pluginWindow;
+        this.pluginWindow = pluginWindow as PluginWindow ?? throw new InvalidOperationException();
         this.configuration = configuration;
 
         this.windowSystem = windowSystem;

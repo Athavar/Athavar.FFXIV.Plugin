@@ -9,12 +9,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dalamud.Logging;
 
-[JsonDerivedType(typeof(BarConfig), nameof(BarConfig))]
-[JsonDerivedType(typeof(BarColorsConfig), nameof(BarColorsConfig))]
-[JsonDerivedType(typeof(GeneralConfig), nameof(GeneralConfig))]
-[JsonDerivedType(typeof(HeaderConfig), nameof(HeaderConfig))]
-[JsonDerivedType(typeof(VisibilityConfig), nameof(VisibilityConfig))]
-[JsonDerivedType(typeof(MeterConfig), nameof(MeterConfig))]
+[JsonDerivedType(typeof(BarConfig), "BarConfig")]
+[JsonDerivedType(typeof(BarColorsConfig), "BarColorConfig")]
+[JsonDerivedType(typeof(GeneralConfig), "GeneralConfig")]
+[JsonDerivedType(typeof(HeaderConfig), "HeaderConfig")]
+[JsonDerivedType(typeof(VisibilityConfig), "VisibilityConfig")]
+[JsonDerivedType(typeof(MeterConfig), "MeterConfig")]
 public abstract class BaseConfig : IConfig
 {
     public static BaseConfig? GetFromImportString(string importString)
@@ -34,6 +34,7 @@ public abstract class BaseConfig : IConfig
             var decodedJsonString = reader.ReadToEnd();
 
             var importedObj = JsonSerializer.Deserialize<BaseConfig>(decodedJsonString, new JsonSerializerOptions());
+            PluginLog.Information("{0} {1}", importedObj.GetType(), decodedJsonString);
             return importedObj;
         }
         catch (Exception ex)
@@ -48,12 +49,14 @@ public abstract class BaseConfig : IConfig
     {
         try
         {
-            var jsonString = JsonSerializer.Serialize(this);
+            var jsonString = JsonSerializer.Serialize(this, new JsonSerializerOptions());
 
+            PluginLog.Information("{0}", jsonString);
             using var outputStream = new MemoryStream();
             using var compressionStream = new DeflateStream(outputStream, CompressionLevel.Optimal);
             using var writer = new StreamWriter(compressionStream, Encoding.UTF8);
             writer.Write(jsonString);
+            writer.Flush();
 
             return Convert.ToBase64String(outputStream.ToArray());
         }

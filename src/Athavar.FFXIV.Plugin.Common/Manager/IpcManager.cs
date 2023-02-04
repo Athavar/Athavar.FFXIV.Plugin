@@ -54,14 +54,12 @@ internal class IpcManager : IIpcManager, IDisposable
     {
         if (!this.PenumbraEnabled || this.penumbraResolveInterfacePathSubscriber is null)
         {
-            PluginLog.Information("Pen State {0} {1}", !this.PenumbraEnabled, this.penumbraResolveInterfacePathSubscriber is null);
             return path;
         }
 
         try
         {
             var resolvedPath = this.penumbraResolveInterfacePathSubscriber.InvokeFunc(path);
-            PluginLog.Information("Resolve Path {0} -> {1}", path, resolvedPath);
             return resolvedPath;
         }
         catch (IpcNotReadyError)
