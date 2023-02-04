@@ -91,9 +91,9 @@ public sealed class Plugin : IDalamudPlugin
            .AddAutoSpearModule()
            .AddCheatModule()
            .AddCraftQueueModule()
-#if DEBUG
            .AddDps()
            .AddOpcodeWizard()
+#if DEBUG
 #endif
            .AddSingleton<AutoTranslateWindow>()
            .AddSingleton<PluginService>()

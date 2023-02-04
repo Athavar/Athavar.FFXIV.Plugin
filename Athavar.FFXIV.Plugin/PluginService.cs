@@ -63,9 +63,9 @@ internal class PluginService
         moduleManager.Register<AutoSpearModule>();
         moduleManager.Register<CheatModule>();
         moduleManager.Register<CraftQueueModule>();
-#if DEBUG
         moduleManager.Register<DpsModule>();
         moduleManager.Register<OpcodeWizardModule>();
+#if DEBUG
 #endif
     }
 
