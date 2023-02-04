@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;

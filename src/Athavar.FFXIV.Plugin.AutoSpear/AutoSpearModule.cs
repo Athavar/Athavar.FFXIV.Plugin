@@ -5,21 +5,23 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.Common;
 using Dalamud.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 public class AutoSpearModule : Module
 {
     private const string ModuleName = "AutoSpear";
+    private readonly IServiceProvider provider;
+    private IAutoSpearTab? tab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AutoSpearModule" /> class.
     /// </summary>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="tab"><see cref="IAutoSpearTab" /> added by DI.</param>
-    public AutoSpearModule(Configuration configuration, IAutoSpearTab tab)
+    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    public AutoSpearModule(Configuration configuration, IServiceProvider provider)
+        : base(configuration)
     {
-        this.Configuration = configuration.AutoSpear!;
-
-        this.Tab = tab;
+        this.provider = provider;
         PluginLog.LogDebug("Module 'AutoSpear' init");
     }
 
@@ -30,16 +32,15 @@ public class AutoSpearModule : Module
     public override bool Hidden => false;
 
     /// <inheritdoc />
-    public override bool Enabled => this.Configuration.Enabled;
+    public override IAutoSpearTab Tab => this.tab ??= this.provider.GetRequiredService<IAutoSpearTab>();
 
     /// <inheritdoc />
-    public override IAutoSpearTab? Tab { get; }
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    {
+        bool Get(Configuration c) => c.AutoSpear!.Enabled;
 
-    /// <summary>
-    ///     Gets the configuration.
-    /// </summary>
-    internal AutoSpearConfiguration Configuration { get; }
+        void Set(bool state, Configuration c) => c.AutoSpear!.Enabled = state;
 
-    /// <inheritdoc />
-    public override void Enable(bool state = true) => this.Configuration.Enabled = state;
+        return (Get, Set);
+    }
 }

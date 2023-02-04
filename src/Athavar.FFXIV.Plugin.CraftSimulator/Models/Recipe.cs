@@ -3,7 +3,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 

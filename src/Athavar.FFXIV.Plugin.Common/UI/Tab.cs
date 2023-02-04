@@ -1,4 +1,4 @@
-// <copyright file="ITab.cs" company="Athavar">
+// <copyright file="Tab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.UI;
@@ -14,6 +14,11 @@ public abstract class Tab : IDisposable, ITab
     ///     Gets the identifier of the tab.
     /// </summary>
     public abstract string Identifier { get; }
+
+    /// <summary>
+    ///     Gets the title of the tab.
+    /// </summary>
+    public virtual string Title => this.Name;
 
     /// <inheritdoc />
     public virtual void Dispose()

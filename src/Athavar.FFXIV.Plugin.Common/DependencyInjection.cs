@@ -14,11 +14,14 @@ public static class DependencyInjection
     {
         services.AddSingleton<IDalamudServices, DalamudServices>()
            .AddSingleton<ILocalizeManager, LocalizeManager>()
-           .AddSingleton<IIconCacheManager, IconCacheManager>()
+           .AddSingleton<IIconManager, IconManager>()
            .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<IChatManager, ChatManager>()
            .AddSingleton<EquipmentScanner>()
            .AddSingleton<KeyStateExtended>()
+           .AddSingleton<IDefinitionManager, DefinitionManager>()
+           .AddSingleton<IFontsManager, FontsManager>()
+           .AddSingleton<IIpcManager, IpcManager>()
            .AddSingleton<ICommandInterface, CommandInterface>();
 
         return services;

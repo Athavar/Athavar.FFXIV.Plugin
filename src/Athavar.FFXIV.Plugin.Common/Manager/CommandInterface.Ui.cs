@@ -1,9 +1,10 @@
-// <copyright file="CommandInterface.CommandInterface.Ui.cs" company="Athavar">
+// <copyright file="CommandInterface.Ui.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;

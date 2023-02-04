@@ -31,7 +31,7 @@ internal class PluginWindow : Window, IDisposable
     /// <param name="manager"><see cref="IModuleManager" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration)
-        : base($"{Plugin.PluginName}")
+        : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
         this.settingsTab = new SettingsTab(this.manager, localizeManager, configuration);
@@ -39,6 +39,7 @@ internal class PluginWindow : Window, IDisposable
 
         this.Size = new Vector2(525, 600);
         this.SizeCondition = ImGuiCond.FirstUseEver;
+        this.PositionCondition = ImGuiCond.Appearing;
         this.RespectCloseHotkey = false;
 
         this.manager.StateChange += this.OnModuleStateChange;
@@ -49,10 +50,20 @@ internal class PluginWindow : Window, IDisposable
     }
 
     /// <inheritdoc />
-    public override void PreDraw() => ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
+    public override void PreDraw()
+    {
+        ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
+        this.WindowName = $"{Plugin.PluginName} - {this.tabBarHandler.GetTabTitle()}###mainWindow";
+        ImGui.SetNextWindowSize(this.Size.GetValueOrDefault());
+    }
 
     /// <inheritdoc />
-    public override void PostDraw() => ImGui.PopStyleColor();
+    public override void PostDraw()
+    {
+        ImGui.PopStyleColor();
+
+        this.Position = ImGui.GetWindowPos();
+    }
 
     /// <inheritdoc />
     public override void Draw() => this.tabBarHandler.Draw();
@@ -60,19 +71,24 @@ internal class PluginWindow : Window, IDisposable
     /// <inheritdoc />
     public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
 
-    private void OnModuleStateChange(Module module)
+    private void OnModuleStateChange(Module module, bool init)
     {
-        if (module.Tab is null)
-        {
-            return;
-        }
-
         if (module.Enabled)
         {
+            if (module.Tab is null)
+            {
+                return;
+            }
+
             this.tabBarHandler.Add(module.Tab);
         }
-        else
+        else if (!init)
         {
+            if (module.Tab is null)
+            {
+                return;
+            }
+
             this.tabBarHandler.Remove(module.Tab);
         }
     }

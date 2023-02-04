@@ -1,11 +1,12 @@
-// <copyright file="CraftingQueue.cs" company="Athavar">
+// <copyright file="CraftQueue.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
-using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game;
@@ -16,7 +17,6 @@ internal class CraftQueue : IDisposable
 {
     private readonly List<CraftingJob> queuedJobs = new();
     private readonly List<CraftingJob> completedJobs = new();
-    private CraftingJob? currentJob;
 
     public CraftQueue(IDalamudServices dalamudServices, ICommandInterface commandInterface, IGearsetManager gearsetManager, IChatManager chatManager, IClick click, CraftQueueData craftQueueData, Configuration configuration)
     {

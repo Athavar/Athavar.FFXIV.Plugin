@@ -3,7 +3,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Extension;
 
-using Athavar.FFXIV.Plugin.Common.Utils.Constants;
+using Athavar.FFXIV.Plugin.Config;
 using Lumina.Excel.GeneratedSheets;
 
 public static class RecipeExtensions

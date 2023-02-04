@@ -3,7 +3,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
-using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 
 internal class CraftingJobException : AthavarPluginException
 {

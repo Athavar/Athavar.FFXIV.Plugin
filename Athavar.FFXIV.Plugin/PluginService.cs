@@ -8,10 +8,12 @@ using System;
 using Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.Cheat;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.Dps;
 using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
+using Athavar.FFXIV.Plugin.OpcodeWizard;
+using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -62,6 +64,8 @@ internal class PluginService
         moduleManager.Register<CheatModule>();
         moduleManager.Register<CraftQueueModule>();
 #if DEBUG
+        moduleManager.Register<DpsModule>();
+        moduleManager.Register<OpcodeWizardModule>();
 #endif
     }
 

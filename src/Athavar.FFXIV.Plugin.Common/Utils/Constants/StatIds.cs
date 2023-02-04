@@ -1,4 +1,4 @@
-// <copyright file="Stats.cs" company="Athavar">
+// <copyright file="StatIds.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Utils.Constants;

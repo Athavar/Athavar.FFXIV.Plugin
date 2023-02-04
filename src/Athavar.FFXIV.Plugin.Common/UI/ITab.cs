@@ -16,6 +16,11 @@ public interface ITab
     string Identifier { get; }
 
     /// <summary>
+    ///     Gets the identifier of the tab.
+    /// </summary>
+    string Title { get; }
+
+    /// <summary>
     ///     Draw the content of the tab.
     /// </summary>
     void Draw();

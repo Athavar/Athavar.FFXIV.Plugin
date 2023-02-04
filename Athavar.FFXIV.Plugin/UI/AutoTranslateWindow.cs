@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Common.Utils;
+namespace Athavar.FFXIV.Plugin.UI;
 
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,4 @@
-// <copyright file="CraftAction.cs" company="Athavar">
+// <copyright file="CraftingAction.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;

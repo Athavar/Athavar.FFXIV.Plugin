@@ -8,5 +8,9 @@
   "IconUrl": "https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/plugins/Athavar.FFXIV.Plugin/images/icon.png",
   "Changelog": "Add CraftQueue Module",
   "AcceptsFeedback": false,
-  "IsThirdParty": true
+  "IsThirdParty": true,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "LoadPriority": 0,
+  "CanUnloadAsync": false
 }

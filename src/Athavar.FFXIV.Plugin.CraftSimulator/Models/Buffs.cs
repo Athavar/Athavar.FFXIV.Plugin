@@ -1,4 +1,4 @@
-// <copyright file="Buff.cs" company="Athavar">
+// <copyright file="Buffs.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 // ReSharper disable InconsistentNaming

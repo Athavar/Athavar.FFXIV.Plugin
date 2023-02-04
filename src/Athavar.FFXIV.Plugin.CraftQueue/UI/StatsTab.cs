@@ -1,4 +1,4 @@
-// <copyright file="CraftQueueTab.Stats.cs" company="Athavar">
+// <copyright file="StatsTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;

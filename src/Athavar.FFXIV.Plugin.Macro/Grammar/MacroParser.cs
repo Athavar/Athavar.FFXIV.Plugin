@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 /// </summary>
 internal static class MacroParser
 {
-    private static readonly Dictionary<string, Func<string, MacroCommand>> Commands = new();
+    private static readonly Dictionary<string, Func<string, MacroCommand?>> Commands = new();
 
     static MacroParser()
     {
@@ -23,7 +23,7 @@ internal static class MacroParser
 
         foreach (var (command, description) in commands)
         {
-            MacroCommand ParseAction(string t) => (MacroCommand)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, new[] { t });
+            MacroCommand? ParseAction(string t) => (MacroCommand?)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, new object?[] { t });
             Commands.Add(description.Name, ParseAction);
             if (description.Alias is not null)
             {
@@ -84,35 +84,12 @@ internal static class MacroParser
 
         commandText = commandText.ToLowerInvariant();
 
-        if (commandText[0] == '/' && Commands.TryGetValue(commandText[1..], out var parser))
+        MacroCommand? command;
+        if (commandText[0] == '/' && Commands.TryGetValue(commandText[1..], out var parser) && (command = parser(line)) is not null)
         {
-            return parser(line);
+            return command;
         }
 
         return NativeCommand.Parse(line);
-        return commandText switch
-               {
-                   "/ac" => ActionCommand.Parse(line),
-                   "/action" => ActionCommand.Parse(line),
-                   "/check" => CheckCommand.Parse(line),
-                   "/click" => ClickCommand.Parse(line),
-                   "/craft" => GateCommand.Parse(line),
-                   "/gate" => GateCommand.Parse(line),
-                   "/interact" => InteractCommand.Parse(line),
-                   "/item" => ItemCommand.Parse(line),
-                   "/loop" => LoopCommand.Parse(line),
-                   "/recipe" => RecipeCommand.Parse(line),
-                   "/require" => RequireCommand.Parse(line),
-                   "/requirequality" => RequireQualityCommand.Parse(line),
-                   "/requirerepair" => RequireRepairCommand.Parse(line),
-                   "/requirespiritbond" => RequireSpiritbondCommand.Parse(line),
-                   "/requirestats" => RequireStatsCommand.Parse(line),
-                   "/runmacro" => RunMacroCommand.Parse(line),
-                   "/send" => SendCommand.Parse(line),
-                   "/target" => TargetCommand.Parse(line),
-                   "/waitaddon" => WaitAddonCommand.Parse(line),
-                   "/wait" => WaitCommand.Parse(line),
-                   _ => NativeCommand.Parse(line),
-               };
     }
 }

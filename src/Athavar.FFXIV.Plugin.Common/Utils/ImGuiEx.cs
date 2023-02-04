@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using System.Numerics;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Dalamud.Interface;
 using ImGuiNET;
 
@@ -14,25 +15,61 @@ using ImGuiNET;
 public static class ImGuiEx
 {
     /// <summary>
+    ///     Create an icon.
+    /// </summary>
+    /// <param name="icon">Icon to display.</param>
+    /// <param name="tooltip">Tooltip to display.</param>
+    /// <param name="width">Width of the button.</param>
+    public static void Icon(FontAwesomeIcon icon, string? tooltip = null, int width = -1)
+    {
+        ImGui.PushFont(UiBuilder.IconFont);
+
+        if (width > 0)
+        {
+            ImGui.SetNextItemWidth(width);
+        }
+
+        var label = $"{icon.ToIconString()}";
+        ImGui.Text(label);
+        ImGui.PopFont();
+
+        if (tooltip != null)
+        {
+            TextTooltip(tooltip);
+        }
+    }
+
+    /// <summary>
     ///     Create an icon button.
     /// </summary>
     /// <param name="icon">Icon to display.</param>
     /// <param name="tooltip">Tooltip to display.</param>
     /// <param name="width">Width of the button.</param>
     /// <param name="small">Use the small button.</param>
+    /// <param name="disabled">Disable state of the button.</param>
     /// <returns>A value indicating whether the button has been pressed.</returns>
-    public static bool IconButton(FontAwesomeIcon icon, string? tooltip = null, int width = -1, bool small = false)
+    public static bool IconButton(FontAwesomeIcon icon, string? tooltip = null, int width = -1, bool small = false, bool disabled = false)
     {
+        if (disabled)
+        {
+            ImGui.BeginDisabled();
+        }
+
         ImGui.PushFont(UiBuilder.IconFont);
 
         if (width > 0)
         {
-            ImGui.SetNextItemWidth(32);
+            ImGui.SetNextItemWidth(width);
         }
 
         var label = $"{icon.ToIconString()}##{icon.ToIconString()}-{tooltip}";
         var result = small ? ImGui.SmallButton(label) : ImGui.Button(label);
         ImGui.PopFont();
+
+        if (disabled)
+        {
+            ImGui.EndDisabled();
+        }
 
         if (tooltip != null)
         {
@@ -168,5 +205,170 @@ public static class ImGuiEx
                     continue;
             }
         }
+    }
+
+    public static void DragFloat2(string label, Vector2 value, Action<Vector2> setter, float vSpeed = 1f, float vMin = 0f, float vMax = 0f)
+    {
+        if (ImGui.DragFloat2(label, ref value, vSpeed, vMin, vMax))
+        {
+            setter(value);
+        }
+    }
+
+    public static void Checkbox(string label, bool value, Action<bool> setter)
+    {
+        if (ImGui.Checkbox(label, ref value))
+        {
+            setter(value);
+        }
+    }
+
+    public static void ColorEdit4(string label, Vector4 value, Action<Vector4> setter, ImGuiColorEditFlags alphaPreview)
+    {
+        if (ImGui.ColorEdit4(label, ref value, alphaPreview))
+        {
+            setter(value);
+        }
+    }
+
+    public static void DragInt(string label, int value, Action<int> setter, int vSpeed, int vMin = 0, int vMax = 0)
+    {
+        if (ImGui.DragInt(label, ref value, vSpeed, vMin, vMax))
+        {
+            setter(value);
+        }
+    }
+
+    public static bool Combo<T>(string label, T selectedItem, Action<T> setter, string[] items)
+        where T : struct, Enum
+        => Combo(label, selectedItem.AsText(), x => setter(Enum.Parse<T>(items[x])), items);
+
+    public static bool Combo(string label, string selectedItem, Action<int> setter, string[] items) => Combo(label, Array.IndexOf(items, selectedItem), setter, items);
+
+    public static bool Combo(string label, int selectedIndex, Action<int> setter, string[] items)
+    {
+        if (!ImGui.Combo(label, ref selectedIndex, items, items.Length))
+        {
+            return false;
+        }
+
+        setter(selectedIndex);
+        return true;
+    }
+
+    public static void DrawNestIndicator(int depth)
+    {
+        // This draws the L shaped symbols and padding to the left of config items collapsible under a checkbox.
+        // Shift cursor to the right to pad for children with depth more than 1.
+        var oldCursor = ImGui.GetCursorPos();
+        var offset = new Vector2(26 * Math.Max(depth - 1, 0), 2);
+        ImGui.SetCursorPos(oldCursor + offset);
+        ImGui.TextColored(new Vector4(229f / 255f, 57f / 255f, 57f / 255f, 1f), "\u2002\u2514");
+        ImGui.SameLine();
+        ImGui.SetCursorPosY(oldCursor.Y);
+    }
+
+    public static void Spacing(int spacingSize)
+    {
+        for (var i = 0; i < spacingSize; i++)
+        {
+            ImGui.NewLine();
+        }
+    }
+
+    public static bool InputText(string label, string input, Action<string> setter, uint maxLength)
+    {
+        if (!ImGui.InputText(label, ref input, maxLength))
+        {
+            return false;
+        }
+
+        setter(input);
+        return true;
+    }
+
+    public static void DrawText(
+        ImDrawListPtr drawList,
+        string text,
+        Vector2 pos,
+        uint color,
+        bool outline,
+        uint outlineColor = 0xFF000000,
+        int thickness = 1)
+    {
+        // outline
+        if (outline)
+        {
+            for (var i = 1; i < thickness + 1; i++)
+            {
+                drawList.AddText(new Vector2(pos.X - i, pos.Y + i), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X, pos.Y + i), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X + i, pos.Y + i), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X - i, pos.Y), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X + i, pos.Y), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X - i, pos.Y - i), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X, pos.Y - i), outlineColor, text);
+                drawList.AddText(new Vector2(pos.X + i, pos.Y - i), outlineColor, text);
+            }
+        }
+
+        // text
+        drawList.AddText(new Vector2(pos.X, pos.Y), color, text);
+    }
+
+    public static void DrawInWindow(
+        string name,
+        Vector2 pos,
+        Vector2 size,
+        bool needsInput,
+        bool setPosition,
+        Action<ImDrawListPtr> drawAction)
+        => DrawInWindow(name, pos, size, needsInput, false, setPosition, drawAction);
+
+    public static void DrawInWindow(
+        string name,
+        Vector2 pos,
+        Vector2 size,
+        bool needsInput,
+        bool needsFocus,
+        bool locked,
+        Action<ImDrawListPtr> drawAction,
+        ImGuiWindowFlags extraFlags = ImGuiWindowFlags.None)
+    {
+        var windowFlags =
+            ImGuiWindowFlags.NoSavedSettings |
+            ImGuiWindowFlags.NoTitleBar |
+            ImGuiWindowFlags.NoScrollbar |
+            ImGuiWindowFlags.NoBackground |
+            extraFlags;
+
+        if (!needsInput)
+        {
+            windowFlags |= ImGuiWindowFlags.NoInputs;
+        }
+
+        if (!needsFocus)
+        {
+            windowFlags |= ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoBringToFrontOnFocus;
+        }
+
+        if (locked)
+        {
+            windowFlags |= ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoResize;
+            ImGui.SetNextWindowSize(size);
+            ImGui.SetNextWindowPos(pos);
+        }
+
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
+
+        if (ImGui.Begin(name, windowFlags))
+        {
+            drawAction(ImGui.GetWindowDrawList());
+        }
+
+        ImGui.PopStyleVar(3);
+        ImGui.End();
     }
 }

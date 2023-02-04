@@ -25,7 +25,7 @@ internal class CraftQueueTab : Tab, ICraftQueueTab
         var dataManager = dalamudServices.DataManager;
 
         var commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
-        var iconCacheManager = serviceProvider.GetRequiredService<IIconCacheManager>();
+        var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
         var chatManager = serviceProvider.GetRequiredService<IChatManager>();
         var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
 
@@ -44,9 +44,14 @@ internal class CraftQueueTab : Tab, ICraftQueueTab
             ;
     }
 
+    /// <inheritdoc />
     public override string Name => "CraftQueue";
 
+    /// <inheritdoc />
     public override string Identifier => "cq-tab";
+
+    /// <inheritdoc />
+    public override string Title => $"{this.Name} > {this.tabBarHandler.GetTabTitle()}";
 
     private ClientLanguage ClientLanguage { get; }
 

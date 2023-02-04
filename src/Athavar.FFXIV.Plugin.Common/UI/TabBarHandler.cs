@@ -1,8 +1,9 @@
-// <copyright file="TabHandler.cs" company="Athavar">
+// <copyright file="TabBarHandler.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.UI;
 
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using ImGuiNET;
 
 /// <summary>
@@ -10,15 +11,17 @@ using ImGuiNET;
 /// </summary>
 public class TabBarHandler
 {
-    private readonly List<ITab> tabs = new();
+    private readonly List<TabDefinition> tabs = new();
     private readonly string name;
     private readonly object lockObject = new();
+
+    private string lastSelectedTabTitle = string.Empty;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TabBarHandler" /> class.
     /// </summary>
     /// <param name="name">The name of the <see cref="TabBarHandler" />.</param>
-    public TabBarHandler(string name) => this.name = name;
+    public TabBarHandler(string name) => this.name = $"##{name}";
 
     /// <summary>
     ///     Add a tab.
@@ -29,11 +32,13 @@ public class TabBarHandler
     {
         lock (this.lockObject)
         {
-            this.tabs.Add(tab);
+            this.tabs.Add(new TabDefinition(tab, $"{tab.Name}##{tab.Identifier}", tab.Identifier));
         }
 
         return this;
     }
+
+    public string GetTabTitle() => this.lastSelectedTabTitle;
 
     /// <summary>
     ///     Remove a tab.
@@ -44,7 +49,7 @@ public class TabBarHandler
     {
         lock (this.lockObject)
         {
-            this.tabs.Remove(tab);
+            // this.tabs.Remove(tab);
         }
 
         return this;
@@ -57,7 +62,7 @@ public class TabBarHandler
     {
         if (ImGui.BeginTabBar(this.name))
         {
-            ITab[] tabs;
+            TabDefinition[] tabs;
             lock (this.lockObject)
             {
                 tabs = this.tabs.ToArray();
@@ -67,15 +72,17 @@ public class TabBarHandler
             {
                 var tab = tabs[index];
 
-                if (!ImGui.BeginTabItem(tab.Name))
+                if (!ImGui.BeginTabItem(tab.Title))
                 {
-                    tab.OnNotDraw();
+                    tab.Tab.OnNotDraw();
                     continue;
                 }
 
+                this.lastSelectedTabTitle = tab.Tab.Title;
+
                 ImGui.PushID(tab.Identifier);
 
-                AthavarPluginException.CatchCrash(() => tab.Draw());
+                AthavarPluginException.CatchCrash(() => tab.Tab.Draw());
 
                 ImGui.PopID();
 
@@ -85,4 +92,6 @@ public class TabBarHandler
             ImGui.EndTabBar();
         }
     }
+
+    private record TabDefinition(ITab Tab, string Title, string Identifier);
 }

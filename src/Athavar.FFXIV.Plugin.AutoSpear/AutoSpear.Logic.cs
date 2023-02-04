@@ -58,7 +58,6 @@ internal partial class AutoSpear
 
         var text = this.IdentifyFish(spot, info);
 
-
         var center = this.uiSize.X / 2;
         var posStart = node->X * this.uiScale;
         var fishWide = node->Width * node->ScaleX * this.uiScale;

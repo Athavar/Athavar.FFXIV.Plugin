@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.Click\Athavar.FFXIV.Plugin.Click.csproj" />
-    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Config\Athavar.FFXIV.Plugin.Config.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
   </ItemGroup>
 
 </Project>

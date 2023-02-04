@@ -21,10 +21,11 @@ public class CheatModule : Module, IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="CheatModule" /> class.
     /// </summary>
-    /// <param name="moduleManager"><see cref="IModuleManager" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    public CheatModule(IModuleManager moduleManager, IDalamudServices dalamudServices, IServiceProvider provider)
+    public CheatModule(Configuration configuration, IDalamudServices dalamudServices, IServiceProvider provider)
+        : base(configuration)
     {
         this.dalamudServices = dalamudServices;
 
@@ -42,11 +43,15 @@ public class CheatModule : Module, IDisposable
     public override bool Hidden => true;
 
     /// <inheritdoc />
-    public override bool Enabled => true;
-
-    /// <inheritdoc />
-    public override void Enable(bool state)
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
     {
+        bool Get(Configuration c) => true;
+
+        void Set(bool state, Configuration c)
+        {
+        }
+
+        return (Get, Set);
     }
 
     /// <inheritdoc />

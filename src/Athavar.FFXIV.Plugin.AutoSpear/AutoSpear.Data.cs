@@ -452,7 +452,7 @@ internal partial class AutoSpear
            .Spear(SpearfishSize.Average, SpearfishSpeed.Slow);
         data.Apply(36557, Patch.Endwalker) // Crown Fish
            .Spear(SpearfishSize.Average, SpearfishSpeed.Fast);
-        data.Apply(36558, Patch.Endwalker) // Sword of Isari 
+        data.Apply(36558, Patch.Endwalker) // Sword of Isari
            .Spear(SpearfishSize.Large, SpearfishSpeed.VerySlow);
         data.Apply(36559, Patch.Endwalker) // Blue Shark
            .Spear(SpearfishSize.Large, SpearfishSpeed.Average);

@@ -39,7 +39,7 @@ internal class ModuleManager : IModuleManager
         where T : Module
     {
         var module = this.serviceProvider.GetRequiredService<T>();
-        this.StateChange?.Invoke(module);
+        this.StateChange?.Invoke(module, true);
         return this.modules.TryAdd(module.Name, module);
     }
 
@@ -57,7 +57,7 @@ internal class ModuleManager : IModuleManager
             mod.Enable(state);
             this.configuration.Save();
 
-            this.StateChange?.Invoke(mod);
+            this.StateChange?.Invoke(mod, false);
         }
     }
 }

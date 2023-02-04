@@ -15,7 +15,7 @@ using Athavar.FFXIV.Plugin.Click.Exceptions;
 /// </summary>
 public class Click : IClick
 {
-    private readonly Dictionary<string, PrecompiledDelegate> AvailableClicks = new();
+    private readonly Dictionary<string, PrecompiledDelegate> availableClicks = new();
     private bool initialized;
 
     /// <summary>
@@ -58,7 +58,7 @@ public class Click : IClick
             var lambdaExpr = Expression.Lambda<PrecompiledDelegate>(blockExpr, param);
             var compiled = lambdaExpr.Compile()!;
 
-            this.AvailableClicks.Add(click.Name!, compiled);
+            this.availableClicks.Add(click.Name!, compiled);
         }
     }
 
@@ -66,7 +66,7 @@ public class Click : IClick
     ///     Get a list of available click strings that can be used with SendClick.
     /// </summary>
     /// <returns>A list of click names.</returns>
-    public IList<string> GetClickNames() => this.AvailableClicks.Keys.ToList();
+    public IList<string> GetClickNames() => this.availableClicks.Keys.ToList();
 
     /// <summary>
     ///     Send a click by the name of the individual click.
@@ -80,7 +80,7 @@ public class Click : IClick
             throw new InvalidClickException("Not initialized yet");
         }
 
-        if (!this.AvailableClicks.TryGetValue(name, out var clickDelegate))
+        if (!this.availableClicks.TryGetValue(name, out var clickDelegate))
         {
             throw new ClickNotFoundError($"Click \"{name}\" does not exist");
         }

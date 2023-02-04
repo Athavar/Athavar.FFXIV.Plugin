@@ -16,6 +16,7 @@ public partial class Simulation
     public Simulation(CrafterStats crafterStats, Recipe recipe, int startingQuality = 0)
     {
         this.CrafterStats = crafterStats;
+        this.CurrentStats = crafterStats;
         this.Recipe = recipe;
         this.startingQuality = startingQuality;
         this.Reset();
@@ -108,12 +109,10 @@ public partial class Simulation
 
         simulationFailCause ??= this.Steps.FirstOrDefault(step => step.FailCause != null)?.FailCause ?? null;
 
-        var res = new SimulationResult
-        (
+        var res = new SimulationResult(
             this.Steps,
             this.GetHqPercent(),
-            this
-        )
+            this)
         {
             Success = this.Progression >= this.Recipe.Progress,
         };
@@ -338,7 +337,6 @@ public partial class Simulation
                 action.OnFail(this);
             }
         }
-
 
         // Even if the action failed, we have to remove the durability cost
         this.Durability -= action.GetDurabilityCost(this);

@@ -103,6 +103,6 @@ public partial class Simulation
             return 100;
         }
 
-        return Tables.HQ_TABLE[qualityPercent];
+        return Tables.HqTable[qualityPercent];
     }
 }

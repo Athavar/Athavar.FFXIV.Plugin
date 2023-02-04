@@ -26,29 +26,25 @@ public sealed class MacroModule : Module, IDisposable
 
     private const string MacroCommandName = "/pmacro";
 
+    private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
-    private readonly MacroManager macroManager;
-    private readonly MacroHelpWindow helpWindow;
+    private IMacroConfigTab? tab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroModule" /> class.
     /// </summary>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
     public MacroModule(IServiceProvider provider)
+        : base(provider.GetRequiredService<Configuration>())
     {
+        this.provider = provider;
         MacroCommand.SetServiceProvider(provider);
         MacroModifier.SetServiceProvider(provider);
         ActiveMacro.SetServiceProvider(provider);
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
-        this.macroManager = provider.GetRequiredService<MacroManager>();
-        this.Tab = provider.GetRequiredService<IMacroConfigTab>();
-        this.Configuration = provider.GetRequiredService<Configuration>().Macro!;
 
-        this.helpWindow = provider.GetRequiredService<MacroHelpWindow>();
-
-        PluginLog.LogDebug("Module 'Macro' add command");
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
         {
             HelpMessage = "Commands of the macro module.",
@@ -64,16 +60,17 @@ public sealed class MacroModule : Module, IDisposable
     public override bool Hidden => false;
 
     /// <inheritdoc />
-    public override bool Enabled => this.Configuration.Enabled;
+    public override IMacroConfigTab Tab => this.tab ??= this.provider.GetRequiredService<IMacroConfigTab>();
 
-    public override IMacroConfigTab? Tab { get; }
+    /// <inheritdoc />
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    {
+        bool Get(Configuration c) => c.Macro!.Enabled;
 
-    /// <summary>
-    ///     Gets the configuration.
-    /// </summary>
-    private MacroConfiguration Configuration { get; }
+        void Set(bool state, Configuration c) => c.Macro!.Enabled = state;
 
-    public override void Enable(bool state = true) => this.Configuration.Enabled = state;
+        return (Get, Set);
+    }
 
     /// <inheritdoc />
     public void Dispose() => this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
@@ -81,6 +78,7 @@ public sealed class MacroModule : Module, IDisposable
     private void OnChatCommand(string command, string arguments)
     {
         arguments = arguments.Trim();
+        var macroManager = this.provider.GetRequiredService<MacroManager>();
 
         if (arguments == string.Empty)
         {
@@ -120,7 +118,7 @@ public sealed class MacroModule : Module, IDisposable
             }
 
             var macroName = arguments.Trim('"');
-            var nodes = this.Configuration.GetAllNodes()
+            var nodes = this.Configuration.Macro!.GetAllNodes()
                .OfType<MacroNode>()
                .Where(node => node.Name.Trim() == macroName)
                .ToArray();
@@ -171,7 +169,7 @@ public sealed class MacroModule : Module, IDisposable
                 this.chatManager.PrintChat($"Running macro \"{macroName}\"");
             }
 
-            this.macroManager.EnqueueMacro(node);
+            macroManager.EnqueueMacro(node);
         }
         else
         {
@@ -179,26 +177,26 @@ public sealed class MacroModule : Module, IDisposable
             {
                 case "pause":
                     this.chatManager.PrintChat("Pausing");
-                    this.macroManager.Pause();
+                    macroManager.Pause();
                     break;
                 case "pause loop":
                     this.chatManager.PrintChat("Pausing at next /loop");
-                    this.macroManager.Pause(true);
+                    macroManager.Pause(true);
                     return;
                 case "resume":
                     this.chatManager.PrintChat("Resuming");
-                    this.macroManager.Resume();
+                    macroManager.Resume();
                     break;
                 case "stop":
                     this.chatManager.PrintChat("Stopping");
-                    this.macroManager.Stop();
+                    macroManager.Stop();
                     break;
                 case "stop loop":
                     this.chatManager.PrintChat("Stopping at next /loop");
-                    this.macroManager.Stop(true);
+                    macroManager.Stop(true);
                     return;
                 case "help":
-                    this.helpWindow.Toggle();
+                    this.provider.GetRequiredService<MacroHelpWindow>().Toggle();
                     break;
             }
         }

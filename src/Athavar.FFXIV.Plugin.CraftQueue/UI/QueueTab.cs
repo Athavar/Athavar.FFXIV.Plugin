@@ -1,15 +1,15 @@
-// <copyright file="CraftQueueTab.Queue.cs" company="Athavar">
+// <copyright file="QueueTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using System.Diagnostics.CodeAnalysis;
-using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.Common.Utils.Constants;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -29,15 +29,15 @@ internal class QueueTab : Tab
 {
     private readonly CraftQueue craftQueue;
     private readonly CraftQueueData craftQueueData;
-    private readonly IIconCacheManager iconCacheManager;
+    private readonly IIconManager iconManager;
     private readonly IGearsetManager gearsetManager;
     private readonly ICommandInterface ci;
     private readonly ExcelSheet<Item> itemsSheet;
     private readonly ExcelSheet<ClassJob> classJobsSheet;
     private readonly ExcelSheet<BaseParam> baseParamsSheet;
     private readonly ExcelSheet<Addon> addonsSheet;
-    private readonly string PotionLabel;
-    private readonly string FoodLabel;
+    private readonly string potionLabel;
+    private readonly string foodLabel;
     private readonly List<(int Index, Recipe Recipe, Job Job)> filteredRecipes = new();
 
     private int craftCount = 1;
@@ -69,13 +69,13 @@ internal class QueueTab : Tab
     private bool init;
     private uint updateTick;
 
-    public QueueTab(IIconCacheManager iconCacheManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
+    public QueueTab(IIconManager iconManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
     {
         this.craftQueue = craftQueue;
         this.craftQueueData = craftQueue.Data;
         this.ci = craftQueue.CommandInterface;
         this.gearsetManager = craftQueue.GearsetManager;
-        this.iconCacheManager = iconCacheManager;
+        this.iconManager = iconManager;
         this.Configuration = configuration;
         this.ClientLanguage = clientLanguage;
         var dataManager = craftQueue.DalamudServices.DataManager;
@@ -85,8 +85,8 @@ internal class QueueTab : Tab
         this.baseParamsSheet = dataManager.GetExcelSheet<BaseParam>() ?? throw new AthavarPluginException();
         this.addonsSheet = dataManager.GetExcelSheet<Addon>() ?? throw new AthavarPluginException();
         var sheet = dataManager.GetExcelSheet<ItemSearchCategory>();
-        this.FoodLabel = sheet?.GetRow(45)?.Name ?? string.Empty;
-        this.PotionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
+        this.foodLabel = sheet?.GetRow(45)?.Name ?? string.Empty;
+        this.potionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
     }
 
     /// <inheritdoc />
@@ -223,7 +223,7 @@ internal class QueueTab : Tab
                             ImGui.CloseCurrentPopup();
                         }
 
-                        if (obj is not null && this.iconCacheManager.TryGetIcon(obj.Icon, false, out var textureWrap))
+                        if (obj is not null && this.iconManager.TryHqGetIcon(obj.Icon, false, out var textureWrap))
                         {
                             ImGui.SetCursorPos(cursorPos);
                             ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
@@ -250,9 +250,9 @@ internal class QueueTab : Tab
         }
     }
 
-    private void DisplayFoodSelect() => this.DisplayItemPicker(this.FoodLabel, "food", this.craftQueueData.Foods, ref this.foodIdx, ref this.selectedFood);
+    private void DisplayFoodSelect() => this.DisplayItemPicker(this.foodLabel, "food", this.craftQueueData.Foods, ref this.foodIdx, ref this.selectedFood);
 
-    private void DisplayPotionSelect() => this.DisplayItemPicker(this.PotionLabel, "potion", this.craftQueueData.Potions, ref this.potionIdx, ref this.selectedPotion);
+    private void DisplayPotionSelect() => this.DisplayItemPicker(this.potionLabel, "potion", this.craftQueueData.Potions, ref this.potionIdx, ref this.selectedPotion);
 
     private void DisplayItemPicker(
         string label,
@@ -303,7 +303,7 @@ internal class QueueTab : Tab
                         }
 
                         ImGui.SetCursorPos(cursorPos1);
-                        var icon = this.iconCacheManager.GetIcon(item.Icon, buffInfo.IsHq);
+                        var icon = this.iconManager.GetHqIcon(item.Icon, buffInfo.IsHq);
                         if (icon != null)
                         {
                             ImGuiEx.ScaledImageY(icon.ImGuiHandle, icon.Width, icon.Height, ImGui.GetTextLineHeight());
@@ -421,7 +421,7 @@ internal class QueueTab : Tab
                 if (ingredient.ItemId != 0)
                 {
                     ImGui.TableNextRow();
-                    if (ImGui.TableSetColumnIndex(0) && this.iconCacheManager.TryGetIcon(ingredient.Icon, false, out var textureWrap))
+                    if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryHqGetIcon(ingredient.Icon, false, out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                         ImGuiEx.TextTooltip(this.itemsSheet.GetRow(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
@@ -541,14 +541,13 @@ internal class QueueTab : Tab
 
         var rotationSteps = this.simulationResult.Steps;
         {
-            const int borderSize = 2;
             var classIndex = (int)this.selectedRecipe.Class;
             for (var index = 0; index < rotationSteps.Count; index++)
             {
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var actionResult = rotationSteps[index];
-                var tex = this.iconCacheManager.GetIcon(actionResult.Skill.IconIds[classIndex]);
+                var tex = this.iconManager.GetIcon(actionResult.Skill.IconIds[classIndex], false);
                 if (tex is null)
                 {
                     continue;
@@ -609,7 +608,7 @@ internal class QueueTab : Tab
                     ImGui.TableSetColumnIndex(0);
                     ImGui.TextUnformatted($"{index}");
                     ImGui.TableSetColumnIndex(1);
-                    if (this.iconCacheManager.TryGetIcon(step.Skill.IconIds[classIndex], false, out var textureWrap))
+                    if (this.iconManager.TryGetIcon(step.Skill.IconIds[classIndex], false, out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                     }
@@ -763,7 +762,6 @@ internal class QueueTab : Tab
 
         using var raii = new ImGuiRaii();
 
-
         if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history"), ImGui.EndChild))
         {
             return;
@@ -775,6 +773,7 @@ internal class QueueTab : Tab
                             QueueState.Paused => "Paused",
                             QueueState.Running => "Running",
                             QueueState.PausedSoon => "Pausing Soon",
+                            _ => throw new ArgumentOutOfRangeException(),
                         };
 
         var buttonCol = ImGuiEx.GetStyleColorVec4(ImGuiCol.Button);
@@ -783,7 +782,6 @@ internal class QueueTab : Tab
         ImGui.Button($"{stateName}##LoopState", new Vector2(100, 0));
         ImGui.PopStyleColor();
         ImGui.PopStyleColor();
-
 
         switch (queueState)
         {
@@ -841,7 +839,6 @@ internal class QueueTab : Tab
         {
             return;
         }
-
 
         this.craftingSimulation = new Simulation(
             gs.ToCrafterStats(),

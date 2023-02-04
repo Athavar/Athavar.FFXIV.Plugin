@@ -1,4 +1,4 @@
-﻿// <copyright file="LocalizerManager.cs" company="Athavar">
+﻿// <copyright file="LocalizeManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 

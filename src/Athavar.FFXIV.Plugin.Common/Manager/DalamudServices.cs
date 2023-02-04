@@ -11,6 +11,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Network;
@@ -111,9 +112,9 @@ internal class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public PartyFinderGui PartyFinder { get; private set; } = null!;*/
 
-    /*[PluginService]
+    [PluginService]
     [RequiredVersion("1.0")]
-    public PartyList PartyList { get; private set; } = null!;*/
+    public PartyList PartyList { get; init; } = null!;
 
     /// <inheritdoc />
     [PluginService]

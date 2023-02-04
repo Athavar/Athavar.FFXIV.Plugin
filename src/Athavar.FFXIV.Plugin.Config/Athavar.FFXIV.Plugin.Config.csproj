@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -9,10 +9,6 @@
   <ItemGroup>
     <None Include="..\..\.editorconfig" Link=".editorconfig" />
     <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
   </ItemGroup>
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
@@ -31,9 +27,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="Lumina" Private="False" />
     <Reference Include="Newtonsoft.Json" Private="False" />
+    <Reference Include="Lumina" Private="False" />
     <Reference Include="Dalamud" Private="False" />
+    <Reference Include="ImGui.NET" Private="False" />
   </ItemGroup>
 
   <ItemGroup>

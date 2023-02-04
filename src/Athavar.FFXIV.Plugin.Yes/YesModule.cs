@@ -17,6 +17,7 @@ using Dalamud.Logging;
 using Dalamud.Memory;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 ///     Main module implementation.
@@ -31,20 +32,23 @@ public sealed class YesModule : Module, IDisposable
     private const int CurrentConfigVersion = 2;
     private const string Command = "/pyes";
 
+    private readonly IServiceProvider provider;
     private readonly List<IBaseFeature> features;
+    private IYesConfigTab? tab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="YesModule" /> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    /// <param name="configTab"><see cref="IYesConfigTab" /> added by DI.</param>
-    public YesModule(IDalamudServices dalamudServices, Configuration configuration, IChatManager chatManager, IYesConfigTab configTab)
+    public YesModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
+        : base(configuration)
     {
+        this.provider = provider;
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
-        this.Tab = configTab;
 
         this.Configuration = configuration.Yes ??= new YesConfiguration();
 
@@ -63,7 +67,6 @@ public sealed class YesModule : Module, IDisposable
             ShowInHelp = true,
         });
 
-        this.Tab.Setup(this);
         PluginLog.LogDebug("Module 'Yes' init");
     }
 
@@ -71,10 +74,7 @@ public sealed class YesModule : Module, IDisposable
     public override string Name => ModuleName;
 
     /// <inheritdoc />
-    public override IYesConfigTab? Tab { get; }
-
-    /// <inheritdoc />
-    public override bool Enabled => this.Configuration.ModuleEnabled;
+    public override IYesConfigTab Tab => this.tab ??= this.GetTab();
 
     /// <summary>
     ///     Gets the <see cref="IDalamudServices" />.
@@ -84,7 +84,7 @@ public sealed class YesModule : Module, IDisposable
     /// <summary>
     ///     Gets the yes module configuration.
     /// </summary>
-    internal YesConfiguration Configuration { get; }
+    internal new YesConfiguration Configuration { get; }
 
     /// <summary>
     ///     Gets the <see cref="IChatManager" />.
@@ -150,7 +150,15 @@ public sealed class YesModule : Module, IDisposable
         this.features.ForEach(feature => feature?.Dispose());
     }
 
-    public override void Enable(bool state = true) => this.Configuration.ModuleEnabled = state;
+    /// <inheritdoc />
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    {
+        bool Get(Configuration c) => c.Yes!.Enabled;
+
+        void Set(bool state, Configuration c) => c.Yes!.ModuleEnabled = state;
+
+        return (Get, Set);
+    }
 
     /// <summary>
     ///     Create a new node with various options.
@@ -234,6 +242,13 @@ public sealed class YesModule : Module, IDisposable
         var pieces = seString.Payloads.OfType<TextPayload>().Select(t => t.Text);
         var text = string.Join(string.Empty, pieces).Replace('\n', ' ').Trim();
         return text;
+    }
+
+    private IYesConfigTab GetTab()
+    {
+        var t = this.provider.GetRequiredService<IYesConfigTab>();
+        t.Setup(this);
+        return t;
     }
 
     private void LoadTerritories()

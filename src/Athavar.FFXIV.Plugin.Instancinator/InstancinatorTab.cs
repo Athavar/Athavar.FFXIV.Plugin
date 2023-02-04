@@ -24,8 +24,10 @@ internal class InstancinatorTab : Tab, IInstancinatorTab
     public override void Draw()
     {
         ImGui.SetNextItemWidth(100f);
-        if (ImGui.InputText("Interact keycode", ref this.Configuration.KeyCode, 64))
+        var keyCode = this.Configuration.KeyCode;
+        if (ImGui.InputText("Interact keycode", ref keyCode, 64))
         {
+            this.Configuration.KeyCode = keyCode;
             if (this.Configuration.KeyCode.Length == 0)
             {
                 this.Configuration.KeyCode = Native.KeyCode.NumPad0.ToString();
@@ -35,8 +37,10 @@ internal class InstancinatorTab : Tab, IInstancinatorTab
         }
 
         ImGui.SetNextItemWidth(100f);
-        if (ImGui.DragInt("Extra delay, MS", ref this.Configuration.ExtraDelay, 1f, 0, 2000))
+        var delay = this.Configuration.ExtraDelay;
+        if (ImGui.DragInt("Extra delay, MS", ref delay, 1f, 0, 2000))
         {
+            this.Configuration.ExtraDelay = delay;
             if (this.Configuration.ExtraDelay < 0)
             {
                 this.Configuration.ExtraDelay = 0;

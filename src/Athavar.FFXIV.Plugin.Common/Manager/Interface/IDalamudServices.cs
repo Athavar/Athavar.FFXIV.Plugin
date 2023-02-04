@@ -10,6 +10,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Network;
@@ -40,6 +41,8 @@ public interface IDalamudServices
     KeyState KeyState { get; }
 
     ObjectTable ObjectTable { get; }
+
+    PartyList PartyList { get; }
 
     SigScanner SigScanner { get; }
 

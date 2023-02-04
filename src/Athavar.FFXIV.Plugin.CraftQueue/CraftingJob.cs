@@ -6,8 +6,8 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Click.Clicks;
-using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Utils.Constants;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -468,7 +468,6 @@ internal class CraftingJob
         }
 
         var simAction = action.Skill.Action;
-
 
         if (!ci.UseAction(simAction.GetId(this.Recipe.Class)))
         {

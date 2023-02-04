@@ -15,9 +15,10 @@ internal partial class AutoSpear
 
     public override void Draw()
     {
-        this.configuration.FishMatchText ??= string.Empty;
-        if (ImGui.InputText("Spear Fish Name Matcher", ref this.configuration.FishMatchText, 1024))
+        var text = this.configuration.FishMatchText ??= string.Empty;
+        if (ImGui.InputText("Spear Fish Name Matcher", ref text, 1024))
         {
+            this.configuration.FishMatchText = text;
             this.configuration.Save();
         }
 

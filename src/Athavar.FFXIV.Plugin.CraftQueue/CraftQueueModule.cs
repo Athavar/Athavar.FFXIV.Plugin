@@ -4,32 +4,29 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 public class CraftQueueModule : Module
 {
-    private const string ModuleName = "CraftQueue (Beta)";
+    private const string ModuleName = "CraftQueue";
 
-    private readonly IDalamudServices dalamudServices;
+    private readonly IServiceProvider provider;
+
+    private ICraftQueueTab? tab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CraftQueueModule" /> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="tab"><see cref="ICraftQueueTab" /> added by DI.</param>
-    public CraftQueueModule(IDalamudServices dalamudServices, Configuration configuration, ICraftQueueTab tab)
+    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    public CraftQueueModule(Configuration configuration, IServiceProvider provider)
+        : base(configuration)
     {
-        this.dalamudServices = dalamudServices;
-        this.Tab = tab;
-        this.Configuration = configuration.CraftQueue!;
+        this.provider = provider;
 
         PluginLog.LogDebug("Module 'CraftQueue' init");
     }
-
-    /// <inheritdoc />
-    public override bool Enabled => this.Configuration.Enabled;
 
     /// <inheritdoc />
     public override string Name => ModuleName;
@@ -38,10 +35,15 @@ public class CraftQueueModule : Module
     public override bool Hidden => false;
 
     /// <inheritdoc />
-    public override ICraftQueueTab? Tab { get; }
-
-    private CraftQueueConfiguration Configuration { get; }
+    public override ICraftQueueTab Tab => this.tab ??= this.provider.GetRequiredService<ICraftQueueTab>();
 
     /// <inheritdoc />
-    public override void Enable(bool state = true) => this.Configuration.Enabled = state;
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    {
+        bool Get(Configuration c) => c.CraftQueue!.Enabled;
+
+        void Set(bool state, Configuration configuration) => configuration.CraftQueue!.Enabled = state;
+
+        return (Get, Set);
+    }
 }

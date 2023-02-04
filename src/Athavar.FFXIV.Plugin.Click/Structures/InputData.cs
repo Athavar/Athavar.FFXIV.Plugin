@@ -1,3 +1,7 @@
+// <copyright file="InputData.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// </copyright>
+
 namespace Athavar.FFXIV.Plugin.Click.Structures;
 
 using FFXIVClientStructs.FFXIV.Client.UI;

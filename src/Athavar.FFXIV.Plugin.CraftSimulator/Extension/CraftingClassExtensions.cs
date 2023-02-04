@@ -1,9 +1,9 @@
-// <copyright file="JobExtensions.cs" company="Athavar">
+// <copyright file="CraftingClassExtensions.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 
-using Athavar.FFXIV.Plugin.Common.Utils.Constants;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 public static class CraftingClassExtensions

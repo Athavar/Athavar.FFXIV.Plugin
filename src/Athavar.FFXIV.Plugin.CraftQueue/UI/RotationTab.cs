@@ -1,4 +1,4 @@
-// <copyright file="CraftQueueTab.Rotations.cs" company="Athavar">
+// <copyright file="RotationTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
@@ -19,7 +19,7 @@ internal class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
     private readonly IChatManager chatManager;
-    private readonly IIconCacheManager iconCacheManager;
+    private readonly IIconManager iconManager;
     private INode? draggedNode;
     private RotationNode? activeRotationNode;
     private CraftingMacro? activeRotationMacro;
@@ -27,11 +27,11 @@ internal class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconCacheManager iconCacheManager, ClientLanguage clientLanguage)
+    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ClientLanguage clientLanguage)
     {
         this.Configuration = configuration;
         this.chatManager = chatManager;
-        this.iconCacheManager = iconCacheManager;
+        this.iconManager = iconManager;
         this.ClientLanguage = clientLanguage;
     }
 
@@ -90,7 +90,7 @@ internal class RotationTab : Tab
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var action = rotations[index];
-                var tex = this.iconCacheManager.GetIcon(action.IconIds[0]);
+                var tex = this.iconManager.GetIcon(action.IconIds[0], false);
                 ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
                 if (ImGui.IsItemHovered())
                 {

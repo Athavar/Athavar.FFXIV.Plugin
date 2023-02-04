@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud;
 using Dalamud.Game;
@@ -46,31 +47,28 @@ public class InstancinatorModule : Module, IDisposable
         // 961, /* Elpis */
     };
 
+    private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
-    private readonly Configuration configuration;
-    private readonly InstancinatorWindow window;
     private readonly string travelToInstancedArea;
     private readonly string aetheryteTarget;
+
+    private InstancinatorWindow? window;
+    private IInstancinatorTab? tab;
 
     private long nextKeypress;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InstancinatorModule" /> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="tab"><see cref="IInstancinatorTab" /> added by DI.</param>
-    public InstancinatorModule(IDalamudServices dalamudServices, Configuration configuration, IServiceProvider provider, IInstancinatorTab tab)
+    public InstancinatorModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices)
+        : base(configuration)
     {
+        this.provider = provider;
         this.dalamudServices = dalamudServices;
-        this.configuration = configuration;
-        this.window = provider.GetRequiredService<InstancinatorWindow>();
-        this.Tab = tab;
-
-        this.Configuration = configuration.Instancinator!;
-
-        this.window.Setup(this);
 
         var aetheryteSheet = this.GetSubSheet<AetheryteString>("transport/Aetheryte") ?? throw new Exception("Sheet Aetheryte missing");
         var text = aetheryteSheet.GetRow(10)!.String.RawString;
@@ -93,14 +91,7 @@ public class InstancinatorModule : Module, IDisposable
     public override bool Hidden => false;
 
     /// <inheritdoc />
-    public override bool Enabled => this.Configuration.Enabled;
-
-    public override IInstancinatorTab? Tab { get; }
-
-    /// <summary>
-    ///     Gets the configuration.
-    /// </summary>
-    internal InstancinatorConfiguration Configuration { get; }
+    public override IInstancinatorTab Tab => this.tab ??= this.provider.GetRequiredService<IInstancinatorTab>();
 
     /// <summary>
     ///     Gets current selected Instance.
@@ -108,7 +99,14 @@ public class InstancinatorModule : Module, IDisposable
     internal int SelectedInstance { get; private set; }
 
     /// <inheritdoc />
-    public override void Enable(bool state = true) => this.Configuration.Enabled = state;
+    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    {
+        bool Get(Configuration c) => c.Instancinator!.Enabled;
+
+        void Set(bool state, Configuration c) => c.Instancinator!.Enabled = state;
+
+        return (Get, Set);
+    }
 
     /// <summary>
     ///     Enable instance for switch for selected instance.
@@ -119,7 +117,7 @@ public class InstancinatorModule : Module, IDisposable
         this.DisableAllAndCreateIfNotExists();
         this.SelectedInstance = instance;
 
-        foreach (var e in this.configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {
@@ -160,7 +158,7 @@ public class InstancinatorModule : Module, IDisposable
     {
         if (!this.DisableAllEntries())
         {
-            var rootChildren = this.configuration.Yes!.ListRootFolder.Children;
+            var rootChildren = this.Configuration.Yes!.ListRootFolder.Children;
             var instance = new TextFolderNode
             {
                 Name = FolderName,
@@ -172,6 +170,13 @@ public class InstancinatorModule : Module, IDisposable
             children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[2]));
             rootChildren.Add(instance);
         }
+    }
+
+    private InstancinatorWindow GetWindow()
+    {
+        var w = this.provider.GetRequiredService<InstancinatorWindow>();
+        w.Setup(this);
+        return w;
     }
 
     private ExcelSheet<T>? GetSubSheet<T>(string path)
@@ -224,9 +229,14 @@ public class InstancinatorModule : Module, IDisposable
             }
         }
 
-        if (!this.Configuration.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
+        var config = this.Configuration.Instancinator;
+        if (config is null || !config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
         {
-            this.window.IsOpen = false;
+            if (this.window != null)
+            {
+                this.window.IsOpen = false;
+            }
+
             return;
         }
 
@@ -234,11 +244,15 @@ public class InstancinatorModule : Module, IDisposable
 
         if (aetheryte == null)
         {
-            this.window.IsOpen = false;
+            if (this.window != null)
+            {
+                this.window.IsOpen = false;
+            }
+
             return;
         }
 
-        this.window.IsOpen = true;
+        (this.window ??= this.GetWindow()).IsOpen = true;
 
         if (this.SelectedInstance == 0 || Environment.TickCount64 <= this.nextKeypress)
         {
@@ -247,7 +261,7 @@ public class InstancinatorModule : Module, IDisposable
 
         if (this.dalamudServices.Condition[ConditionFlag.OccupiedInQuestEvent])
         {
-            this.nextKeypress = Environment.TickCount64 + 1000 + this.Configuration.ExtraDelay;
+            this.nextKeypress = Environment.TickCount64 + 1000 + config.ExtraDelay;
         }
 
         var target = this.dalamudServices.TargetManager.Target;
@@ -262,7 +276,7 @@ public class InstancinatorModule : Module, IDisposable
             Task.Run(async () =>
             {
                 List<Native.KeyCode> vkCodes = new();
-                foreach (var nameValue in this.Configuration.KeyCode.Split(' ', ','))
+                foreach (var nameValue in config.KeyCode.Split(' ', ','))
                 {
                     if (!Enum.TryParse<Native.KeyCode>(nameValue, true, out var vkCode))
                     {
@@ -306,7 +320,7 @@ public class InstancinatorModule : Module, IDisposable
     private bool DisableAllEntries()
     {
         this.SelectedInstance = 0;
-        foreach (var e in this.configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {

@@ -4,11 +4,11 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Status = Lumina.Excel.GeneratedSheets.Status;
 
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
@@ -22,36 +22,6 @@ internal partial class CommandInterface : ICommandInterface
     /// </summary>
     /// <param name="dalamudServices"><see cref="dalamudServices" /> added by DI.</param>
     public CommandInterface(IDalamudServices dalamudServices) => this.dalamudServices = dalamudServices;
-
-    /// <inheritdoc />
-    public bool HasStatus(string statusName)
-    {
-        statusName = statusName.ToLowerInvariant();
-        var sheet = this.dalamudServices.DataManager.GetExcelSheet<Status>()!;
-        var statusIDs = sheet
-           .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
-           .Select(row => row.RowId)
-           .ToArray()!;
-
-        return this.HasStatusId(statusIDs);
-    }
-
-    /// <inheritdoc />
-    public bool HasStatusId(params uint[] statusIDs)
-    {
-        var statusID = this.dalamudServices.ClientState.LocalPlayer!.StatusList
-           .Select(se => se.StatusId)
-           .ToList().Intersect(statusIDs)
-           .FirstOrDefault();
-
-        return statusID != default;
-    }
-
-    /// <inheritdoc />
-    public string? GetCurrentTarget() => this.dalamudServices.TargetManager.Target?.Name.ToString();
-
-    /// <inheritdoc />
-    public string? GetCurrentFocusTarget() => this.dalamudServices.TargetManager.FocusTarget?.Name.ToString();
 
     /// <inheritdoc />
     public unsafe bool CanUseAction(uint actionId)
