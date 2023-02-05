@@ -7,9 +7,9 @@ using System.Numerics;
 
 public class BarConfig : BaseConfig
 {
-    public int BarCount { get; set; } = 10;
+    public int BarCount { get; set; } = 9;
 
-    public int MinBarCount { get; set; } = 2;
+    public int MinBarCount { get; set; } = 4;
 
     public int BarGaps { get; set; } = 1;
 

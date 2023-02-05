@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System;
+using System.Diagnostics;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
@@ -99,6 +100,13 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
         private readonly ILocalizeManager localizeManager;
         private readonly string[] languages = Enum.GetNames<Language>();
         private readonly Configuration configuration;
+
+#if DEBUG
+        private readonly Stopwatch stopwatch = new();
+
+        private long totalCount;
+        private int totalLoop;
+#endif
 
         public SettingsTab(IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
         {
@@ -195,6 +203,27 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
             {
                 this.configuration.Save();
             }
+
+#if DEBUG
+            if (ImGui.CollapsingHeader(this.localizeManager.Localize("Test")))
+            {
+                this.stopwatch.Restart();
+
+                for (var i = 0; i < 100; i++)
+                {
+                    ImGui.TextUnformatted("Hallo World");
+                }
+
+                if (this.totalLoop > 1)
+                {
+                    this.totalCount += this.stopwatch.ElapsedTicks;
+
+                    ImGui.TextUnformatted($"{this.totalCount / (this.totalLoop - 1)}ticks");
+                }
+
+                this.totalLoop++;
+            }
+#endif
         }
     }
 }

@@ -29,13 +29,15 @@ internal class Combatant
 
     internal Combatant(Encounter encounter) => this.encounter = encounter;
 
-    public double Dps => this.encounter.Duration.TotalSeconds == 0 ? this.DamageTotal : Math.Round(this.DamageTotal / this.encounter.Duration.TotalSeconds, 2);
+    public double Dps { get; private set; }
 
-    public double Hps => this.encounter.Duration.TotalSeconds == 0 ? this.HealingTotal : Math.Round(this.HealingTotal / this.encounter.Duration.TotalSeconds, 2);
+    public double Hps { get; private set; }
 
-    public double OverHealPct => this.HealingTotal == 0 ? 0 : Math.Round(((double)this.OverHealTotal / this.HealingTotal) * 100, 2);
+    public double OverHealPct { get; private set; }
 
-    public ulong EffectiveHealing => this.HealingTotal - this.OverHealTotal;
+    public double DamagePct { get; private set; }
+
+    public ulong EffectiveHealing { get; private set; }
 
     public string Name { get; init; } = string.Empty;
 
@@ -80,4 +82,24 @@ internal class Combatant
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 
     public string ToString(uint objectId) => $"'{this.Name}' <{objectId:X}> {this.Kind.AsText()}";
+
+    public float GetMeterData(MeterDataType type)
+        => type switch
+           {
+               MeterDataType.Damage => this.DamageTotal,
+               MeterDataType.Healing => this.HealingTotal,
+               MeterDataType.EffectiveHealing => this.EffectiveHealing,
+               MeterDataType.DamageTaken => this.DamageTaken,
+               _ => 0,
+           };
+
+    public void CalcPreCombatantStats()
+    {
+        this.Dps = this.encounter.Duration.TotalSeconds == 0 ? this.DamageTotal : Math.Round(this.DamageTotal / this.encounter.Duration.TotalSeconds, 2);
+        this.Hps = this.encounter.Duration.TotalSeconds == 0 ? this.HealingTotal : Math.Round(this.HealingTotal / this.encounter.Duration.TotalSeconds, 2);
+        this.EffectiveHealing = this.HealingTotal - this.OverHealTotal;
+        this.OverHealPct = this.HealingTotal == 0 ? 0 : Math.Round(((double)this.OverHealTotal / this.HealingTotal) * 100, 2);
+    }
+
+    public void CalcCombatantStats() => this.DamagePct = this.DamageTotal == 0 ? 0 : Math.Round(((double)this.DamageTotal / this.encounter.DamageTotal) * 100, 2);
 }

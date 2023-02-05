@@ -219,7 +219,6 @@ internal class DpsTab : Tab, IDpsTab
         if ((this.home || this.back) && this.configStack.Count > 1)
         {
             this.inputName = this.configStack.Peek().Name;
-            this.meterManager.Save();
         }
 
         this.home = false;
@@ -264,6 +263,7 @@ internal class DpsTab : Tab, IDpsTab
         if (page is not null)
         {
             this.configStack.Peek().ImportConfig(page);
+            this.meterManager.Save();
         }
     }
 
@@ -272,6 +272,7 @@ internal class DpsTab : Tab, IDpsTab
         if (this.configStack.Any())
         {
             this.configStack.Peek().Name = name;
+            this.meterManager.Save();
         }
     }
 }

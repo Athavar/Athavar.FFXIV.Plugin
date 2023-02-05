@@ -11,7 +11,6 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
-using Dalamud.Game.ClientState.Objects.Enums;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -76,11 +75,11 @@ internal class MeterWindow : IConfigurable
         var fontManager = provider.GetRequiredService<IFontsManager>();
         var iconManager = provider.GetRequiredService<IIconManager>();
 
-        this.GeneralConfigPage = new GeneralConfigPage(config);
-        this.HeaderConfigPage = new HeaderConfigPage(config, fontManager);
-        this.BarConfigPage = new BarConfigPage(config, fontManager, iconManager);
-        this.BarColorsConfigPage = new BarColorsConfigPage(config);
-        this.VisibilityConfigPage = new VisibilityConfigPage(config, this.ci);
+        this.GeneralConfigPage = new GeneralConfigPage(this);
+        this.HeaderConfigPage = new HeaderConfigPage(this, fontManager);
+        this.BarConfigPage = new BarConfigPage(this, fontManager, iconManager);
+        this.BarColorsConfigPage = new BarColorsConfigPage(this);
+        this.VisibilityConfigPage = new VisibilityConfigPage(this, this.ci);
     }
 
     public MeterConfig Config { get; }
@@ -152,12 +151,12 @@ internal class MeterWindow : IConfigurable
         this.lastSortedTimestamp = null;
     }
 
+    public void Save() => this.meterManager.Save();
+
     public void Draw(Vector2 pos)
     {
         if (!this.GeneralConfigPage.Preview && !this.VisibilityConfigPage.IsVisible())
-        {
             return;
-        }
 
         var generalConfig = this.Config.GeneralConfig;
         var localPos = pos + generalConfig.Position;
@@ -168,9 +167,7 @@ internal class MeterWindow : IConfigurable
             this.scrollPosition -= (int)ImGui.GetIO().MouseWheel;
 
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right) && !generalConfig.Preview)
-            {
                 ImGui.OpenPopup($"{this.ID}_ContextMenu", ImGuiPopupFlags.MouseButtonRight);
-            }
         }
 
         if (this.DrawContextMenu($"{this.ID}_ContextMenu", out var index))
@@ -183,9 +180,7 @@ internal class MeterWindow : IConfigurable
 
         var combat = this.ci.IsInCombat();
         if (generalConfig.ReturnToCurrent && !this.lastFrameWasCombat && combat)
-        {
             this.eventIndex = -1;
-        }
 
         this.UpdateDragData(localPos, size, generalConfig.Lock);
         var needsInput = !generalConfig.ClickThrough;
@@ -259,44 +254,29 @@ internal class MeterWindow : IConfigurable
     {
         if (actEvent?.AllyCombatants is not null && actEvent.AllyCombatants.Any())
         {
+            var barConfig = this.Config.BarConfig;
+
             var dataType = this.Config.GeneralConfig.DataType;
             var sortedCombatants = this.GetSortedCombatants(actEvent, dataType);
 
-            float top = dataType switch
-                        {
-                            MeterDataType.Damage => sortedCombatants[0].DamageTotal,
-                            MeterDataType.Healing => sortedCombatants[0].HealingTotal,
-                            MeterDataType.EffectiveHealing => sortedCombatants[0].EffectiveHealing,
-                            MeterDataType.DamageTaken => sortedCombatants[0].DamageTaken,
-                            _ => 0,
-                        };
+            var barCount = Math.Clamp(sortedCombatants.Count, barConfig.MinBarCount, barConfig.BarCount);
 
-            var i = 0;
-            var barConfig = this.Config.BarConfig;
-            if (sortedCombatants.Count > barConfig.BarCount)
-            {
-                i = Math.Clamp(this.scrollPosition, 0, sortedCombatants.Count - barConfig.BarCount);
-                this.scrollPosition = i;
-            }
+            var top = sortedCombatants.FirstOrDefault()?.GetMeterData(dataType) ?? 0;
 
-            var maxIndex = Math.Min(i + barConfig.BarCount, sortedCombatants.Count);
-            for (; i < maxIndex; i++)
+            // check and set limits of scrollPosition
+            this.scrollPosition = Math.Clamp(this.scrollPosition, 0, Math.Max(0, sortedCombatants.Count - barCount - 1));
+
+            var maxIndex = Math.Min(this.scrollPosition + barCount, sortedCombatants.Count);
+            for (var i = this.scrollPosition; i < maxIndex; i++)
             {
                 var combatant = sortedCombatants[i];
                 combatant.Rank = (i + 1).ToString();
 
-                float current = dataType switch
-                                {
-                                    MeterDataType.Damage => combatant.DamageTotal,
-                                    MeterDataType.Healing => combatant.HealingTotal,
-                                    MeterDataType.EffectiveHealing => combatant.EffectiveHealing,
-                                    MeterDataType.DamageTaken => combatant.DamageTaken,
-                                    _ => 0,
-                                };
+                var current = combatant.GetMeterData(dataType);
 
                 var barColor = barConfig.BarColor;
                 var jobColor = this.BarColorsConfigPage.GetColor(combatant.Job);
-                localPos = this.BarConfigPage.DrawBar(drawList, localPos, size, combatant, jobColor, barColor, Math.Max(maxIndex, barConfig.MinBarCount), top, current);
+                localPos = this.BarConfigPage.DrawBar(drawList, localPos, size, combatant, jobColor, barColor, barCount, top, current);
             }
         }
     }
@@ -309,20 +289,14 @@ internal class MeterWindow : IConfigurable
         if (ImGui.BeginPopup(popupId))
         {
             if (!ImGui.IsAnyItemActive() && !ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-            {
                 ImGui.SetKeyboardFocusHere(0);
-            }
 
             if (ImGui.Selectable("Current Data"))
-            {
                 selected = true;
-            }
 
             var events = this.encounterManager.EncounterHistory;
             if (events.Count > 0)
-            {
                 ImGui.Separator();
-            }
 
             for (var i = events.Count - 1; i >= 0; i--)
             {
@@ -356,36 +330,13 @@ internal class MeterWindow : IConfigurable
     {
         if (this.lastSortedTimestamp.HasValue && this.lastSortedTimestamp.Value == actEvent.LastEvent &&
             !this.GeneralConfigPage.Preview)
-        {
             return this.lastSortedCombatants;
-        }
 
         var sortedCombatants = actEvent.AllyCombatants
-           .Where(c => c.Kind != BattleNpcSubKind.Enemy)
+           .Where(c => c.GetMeterData(dataType) > 0)
            .ToList();
 
-        sortedCombatants.Sort((x, y) =>
-        {
-            float xFloat = dataType switch
-                           {
-                               MeterDataType.Damage => x.DamageTotal,
-                               MeterDataType.Healing => x.HealingTotal,
-                               MeterDataType.EffectiveHealing => x.EffectiveHealing,
-                               MeterDataType.DamageTaken => x.DamageTaken,
-                               _ => 0,
-                           };
-
-            float yFloat = dataType switch
-                           {
-                               MeterDataType.Damage => y.DamageTotal,
-                               MeterDataType.Healing => y.HealingTotal,
-                               MeterDataType.EffectiveHealing => x.EffectiveHealing,
-                               MeterDataType.DamageTaken => y.DamageTaken,
-                               _ => 0,
-                           };
-
-            return (int)(yFloat - xFloat);
-        });
+        sortedCombatants.Sort((x, y) => (int)(y.GetMeterData(dataType) - x.GetMeterData(dataType)));
 
         this.lastSortedTimestamp = actEvent.LastEvent;
         this.lastSortedCombatants = sortedCombatants;

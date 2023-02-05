@@ -5,6 +5,7 @@ namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Definitions;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
@@ -13,6 +14,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
+using Action = Lumina.Excel.GeneratedSheets.Action;
 
 internal partial class EncounterManager : IDisposable
 {
@@ -28,9 +30,11 @@ internal partial class EncounterManager : IDisposable
     private readonly uint[] healCastHealProcs;
 
     private readonly uint[] damageReceivedProcs;
+    private readonly uint[] limitBreaks;
     private readonly RollingList<Encounter> encounterHistory = new(20, true);
 
     private DateTime nextUpdate = DateTime.MinValue;
+    private DateTime nextStatUpdate = DateTime.MinValue;
 
     public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, Configuration configuration)
     {
@@ -42,6 +46,8 @@ internal partial class EncounterManager : IDisposable
 
         this.objectTable = services.ObjectTable;
         Encounter.objectTable = services.ObjectTable;
+
+        this.limitBreaks = services.DataManager.GetExcelSheet<Action>()?.Where(a => a.ActionCategory.Row == 9).Select(a => a.RowId).ToArray() ?? throw new AthavarPluginException();
 
         this.damageDealtHealProcs = definitions.GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType.HealOnDamageDealt);
         this.damageReceivedHealProcs = definitions.GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType.HealOnDamageReceived);
@@ -86,13 +92,14 @@ internal partial class EncounterManager : IDisposable
             return;
         }
 
-        if (!inValid && this.CurrentEncounter.IsValid())
-        {
-            this.CurrentEncounter.End = this.CurrentEncounter.LastEvent;
-            this.encounterHistory.Add(this.CurrentEncounter);
-        }
-
+        var ce = this.CurrentEncounter;
         this.CurrentEncounter = new Encounter();
+
+        if (!inValid && ce.IsValid())
+        {
+            ce.End = ce.LastEvent;
+            this.encounterHistory.Add(ce);
+        }
     }
 
     public void Clear()
@@ -123,12 +130,6 @@ internal partial class EncounterManager : IDisposable
     private void Update(Framework framework)
     {
         var now = DateTime.UtcNow;
-        if (now < this.nextUpdate)
-        {
-            return;
-        }
-
-        this.nextUpdate = now.AddSeconds(2);
 
         var ce = this.CurrentEncounter;
         if (ce is null || ce.Start == DateTime.MinValue)
@@ -136,16 +137,27 @@ internal partial class EncounterManager : IDisposable
             return;
         }
 
-        if ((!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now) || ce.Territory != this.ci.GetCurrentTerritory())
+        if (now >= this.nextStatUpdate)
         {
-            this.EndEncounter();
+            this.nextStatUpdate = now.AddMilliseconds(100);
+            ce.CalcEncounterStats();
         }
 
-        ce.UpdateParty(this.configuration, this.services);
-
-        if (!ce.IsValid())
+        if (now >= this.nextUpdate)
         {
-            this.EndEncounter(true);
+            this.nextUpdate = now.AddSeconds(1);
+
+            if ((!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now) || ce.Territory != this.ci.GetCurrentTerritory())
+            {
+                this.EndEncounter();
+            }
+
+            ce.UpdateParty(this.configuration, this.services);
+
+            if (!ce.IsValid())
+            {
+                this.EndEncounter(true);
+            }
         }
     }
 }

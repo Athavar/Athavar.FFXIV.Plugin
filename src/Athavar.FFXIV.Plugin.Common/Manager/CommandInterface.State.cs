@@ -35,6 +35,9 @@ internal partial class CommandInterface
     public bool IsInGoldenSaucer() => GoldenSaucerIDs.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
 
     /// <inheritdoc />
+    public bool IsPvP() => this.dalamudServices.ClientState.IsPvP;
+
+    /// <inheritdoc />
     public bool HasStatus(string statusName)
     {
         statusName = statusName.ToLowerInvariant();

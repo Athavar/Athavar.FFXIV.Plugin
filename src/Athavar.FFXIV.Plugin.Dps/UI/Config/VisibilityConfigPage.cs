@@ -13,22 +13,22 @@ using ImGuiNET;
 
 internal class VisibilityConfigPage : IConfigPage
 {
-    private readonly MeterConfig config;
+    private readonly MeterWindow window;
 
     private readonly ICommandInterface ci;
 
     [JsonIgnore]
     private string customJobInput = string.Empty;
 
-    public VisibilityConfigPage(MeterConfig config, ICommandInterface ci)
+    public VisibilityConfigPage(MeterWindow window, ICommandInterface ci)
     {
-        this.config = config;
+        this.window = window;
         this.ci = ci;
     }
 
     public string Name => "Visibility";
 
-    private VisibilityConfig Config => this.config.VisibilityConfig;
+    private VisibilityConfig Config => this.window.Config.VisibilityConfig;
 
     public IConfig GetDefault() => new VisibilityConfig();
 
@@ -74,17 +74,44 @@ internal class VisibilityConfigPage : IConfigPage
     {
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
+            var change = false;
             var c = this.Config;
-            ImGuiEx.Checkbox("Always Hide", c.AlwaysHide, x => c.AlwaysHide = x);
-            ImGuiEx.Checkbox("Hide In Combat", c.HideInCombat, x => c.HideInCombat = x);
-            ImGuiEx.Checkbox("Hide Outside Combat", c.HideOutsideCombat, x => c.HideOutsideCombat = x);
-            ImGuiEx.Checkbox("Hide Outside Duty", c.HideOutsideDuty, x => c.HideOutsideDuty = x);
-            ImGuiEx.Checkbox("Hide While Performing", c.HideWhilePerforming, x => c.HideWhilePerforming = x);
-            ImGuiEx.Checkbox("Hide In Golden Saucer", c.HideInGoldenSaucer, x => c.HideInGoldenSaucer = x);
+            if (ImGuiEx.Checkbox("Always Hide", c.AlwaysHide, x => c.AlwaysHide = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Hide In Combat", c.HideInCombat, x => c.HideInCombat = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Hide Outside Combat", c.HideOutsideCombat, x => c.HideOutsideCombat = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Hide Outside Duty", c.HideOutsideDuty, x => c.HideOutsideDuty = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Hide While Performing", c.HideWhilePerforming, x => c.HideWhilePerforming = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Hide In Golden Saucer", c.HideInGoldenSaucer, x => c.HideInGoldenSaucer = x))
+            {
+                change = true;
+            }
 
             ImGuiEx.Spacing(1);
             var jobTypeOptions = Enum.GetNames(typeof(JobType));
-            ImGuiEx.Combo("Show for Jobs", c.ShowForJobTypes.AsText(), x => c.ShowForJobTypes = Enum.Parse<JobType>(jobTypeOptions[x]), jobTypeOptions);
+            if (ImGuiEx.Combo("Show for Jobs", c.ShowForJobTypes.AsText(), x => c.ShowForJobTypes = Enum.Parse<JobType>(jobTypeOptions[x]), jobTypeOptions))
+            {
+                change = true;
+            }
 
             if (c.ShowForJobTypes == JobType.Custom)
             {
@@ -114,10 +141,17 @@ internal class VisibilityConfigPage : IConfigPage
                     this.customJobInput = this.customJobInput.ToUpper();
                     c.CustomJobString = this.customJobInput;
                     c.CustomJobList = jobList;
+                    change = true;
                 }
             }
-        }
 
-        ImGui.EndChild();
+            // Save if changed
+            if (change)
+            {
+                this.window.Save();
+            }
+
+            ImGui.EndChild();
+        }
     }
 }

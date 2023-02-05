@@ -18,18 +18,18 @@ internal class HeaderConfigPage : IConfigPage
     [JsonIgnore]
     private static readonly string[] AnchorOptions = Enum.GetNames(typeof(DrawAnchor));
 
-    private readonly MeterConfig config;
+    private readonly MeterWindow window;
     private readonly IFontsManager fontsManager;
 
-    public HeaderConfigPage(MeterConfig config, IFontsManager fontsManager)
+    public HeaderConfigPage(MeterWindow window, IFontsManager fontsManager)
     {
-        this.config = config;
+        this.window = window;
         this.fontsManager = fontsManager;
     }
 
     public string Name => "Header";
 
-    private HeaderConfig Config => this.config.HeaderConfig;
+    private HeaderConfig Config => this.window.Config.HeaderConfig;
 
     public IConfig GetDefault()
     {
@@ -125,24 +125,42 @@ internal class HeaderConfigPage : IConfigPage
             return;
         }
 
+        var change = false;
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
-            ImGuiEx.Checkbox("Show Header", this.Config.ShowHeader, x => this.Config.ShowHeader = x);
+            if (ImGuiEx.Checkbox("Show Header", this.Config.ShowHeader, x => this.Config.ShowHeader = x))
+            {
+                change = true;
+            }
+
             if (this.Config.ShowHeader)
             {
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.DragInt("Header Height", this.Config.HeaderHeight, x => this.Config.HeaderHeight = x, 1, 0, 100);
+                if (ImGuiEx.DragInt("Header Height", this.Config.HeaderHeight, x => this.Config.HeaderHeight = x, 1, 0, 100))
+                {
+                    change = true;
+                }
 
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.ColorEdit4("Background Color", this.Config.BackgroundColor.Vector, x => this.Config.BackgroundColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                if (ImGuiEx.ColorEdit4("Background Color", this.Config.BackgroundColor.Vector, x => this.Config.BackgroundColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                {
+                    change = true;
+                }
 
                 ImGui.NewLine();
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.Checkbox("Show Encounter Duration", this.Config.ShowEncounterDuration, x => this.Config.ShowEncounterDuration = x);
+                if (ImGuiEx.Checkbox("Show Encounter Duration", this.Config.ShowEncounterDuration, x => this.Config.ShowEncounterDuration = x))
+                {
+                    change = true;
+                }
+
                 if (this.Config.ShowEncounterDuration)
                 {
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.DragFloat2("Position Offset##Duration", this.Config.DurationOffset, x => this.Config.DurationOffset = x);
+                    if (ImGuiEx.DragFloat2("Position Offset##Duration", this.Config.DurationOffset, x => this.Config.DurationOffset = x))
+                    {
+                        change = true;
+                    }
 
                     if (!FontsManager.ValidateFont(fontOptions, this.Config.DurationFontId, this.Config.DurationFontKey))
                     {
@@ -152,6 +170,7 @@ internal class HeaderConfigPage : IConfigPage
                             if (this.Config.DurationFontKey.Equals(fontOptions[i]))
                             {
                                 this.Config.DurationFontId = i;
+                                change = true;
                             }
                         }
                     }
@@ -160,30 +179,51 @@ internal class HeaderConfigPage : IConfigPage
                     if (ImGuiEx.Combo("Font##Duration", this.Config.DurationFontId, x => this.Config.DurationFontId = x, fontOptions))
                     {
                         this.Config.DurationFontKey = fontOptions[this.Config.DurationFontId];
+                        change = true;
                     }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Combo("Text Align##Duration", this.Config.DurationAlign, x => this.Config.DurationAlign = x, AnchorOptions);
+                    if (ImGuiEx.Combo("Text Align##Duration", this.Config.DurationAlign, x => this.Config.DurationAlign = x, AnchorOptions))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.ColorEdit4("Text Color##Duration", this.Config.DurationColor.Vector, x => this.Config.DurationColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                    if (ImGuiEx.ColorEdit4("Text Color##Duration", this.Config.DurationColor.Vector, x => this.Config.DurationColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Checkbox("Show Outline##Duration", this.Config.DurationShowOutline, x => this.Config.DurationShowOutline = x);
+                    if (ImGuiEx.Checkbox("Show Outline##Duration", this.Config.DurationShowOutline, x => this.Config.DurationShowOutline = x))
+                    {
+                        change = true;
+                    }
+
                     if (this.Config.DurationShowOutline)
                     {
                         ImGuiEx.DrawNestIndicator(3);
-                        ImGuiEx.ColorEdit4("Outline Color##Duration", this.Config.DurationOutlineColor.Vector, x => this.Config.DurationOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                        if (ImGuiEx.ColorEdit4("Outline Color##Duration", this.Config.DurationOutlineColor.Vector, x => this.Config.DurationOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                        {
+                            change = true;
+                        }
                     }
                 }
 
                 ImGui.NewLine();
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.Checkbox("Show Encounter Name", this.Config.ShowEncounterName, x => this.Config.ShowEncounterName = x);
+                if (ImGuiEx.Checkbox("Show Encounter Name", this.Config.ShowEncounterName, x => this.Config.ShowEncounterName = x))
+                {
+                    change = true;
+                }
+
                 if (this.Config.ShowEncounterName)
                 {
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.DragFloat2("Position Offset##Name", this.Config.NameOffset, x => this.Config.NameOffset = x);
+                    if (ImGuiEx.DragFloat2("Position Offset##Name", this.Config.NameOffset, x => this.Config.NameOffset = x))
+                    {
+                        change = true;
+                    }
 
                     if (!FontsManager.ValidateFont(fontOptions, this.Config.NameFontId, this.Config.NameFontKey))
                     {
@@ -193,6 +233,7 @@ internal class HeaderConfigPage : IConfigPage
                             if (this.Config.NameFontKey.Equals(fontOptions[i]))
                             {
                                 this.Config.NameFontId = i;
+                                change = true;
                             }
                         }
                     }
@@ -201,40 +242,68 @@ internal class HeaderConfigPage : IConfigPage
                     if (ImGuiEx.Combo("Font##Name", this.Config.NameFontId, x => this.Config.NameFontId = x, fontOptions))
                     {
                         this.Config.NameFontKey = fontOptions[this.Config.NameFontId];
+                        change = true;
                     }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Combo("Text Align##Name", this.Config.NameAlign, x => this.Config.NameAlign = x, AnchorOptions);
+                    if (ImGuiEx.Combo("Text Align##Name", this.Config.NameAlign, x => this.Config.NameAlign = x, AnchorOptions))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.ColorEdit4("Text Color##Name", this.Config.NameColor.Vector, x => this.Config.NameColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                    if (ImGuiEx.ColorEdit4("Text Color##Name", this.Config.NameColor.Vector, x => this.Config.NameColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Checkbox("Show Outline##Name", this.Config.NameShowOutline, x => this.Config.NameShowOutline = x);
+                    if (ImGuiEx.Checkbox("Show Outline##Name", this.Config.NameShowOutline, x => this.Config.NameShowOutline = x))
+                    {
+                        change = true;
+                    }
+
                     if (this.Config.NameShowOutline)
                     {
                         ImGuiEx.DrawNestIndicator(3);
-                        ImGuiEx.ColorEdit4("Outline Color##Name", this.Config.NameOutlineColor.Vector, x => this.Config.NameOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                        if (ImGuiEx.ColorEdit4("Outline Color##Name", this.Config.NameOutlineColor.Vector, x => this.Config.NameOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                        {
+                            change = true;
+                        }
                     }
                 }
 
                 ImGui.NewLine();
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.Checkbox("Show Raid Stats", this.Config.ShowRaidStats, x => this.Config.ShowRaidStats = x);
+                if (ImGuiEx.Checkbox("Show Raid Stats", this.Config.ShowRaidStats, x => this.Config.ShowRaidStats = x))
+                {
+                    change = true;
+                }
+
                 if (this.Config.ShowRaidStats)
                 {
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.InputText("Raid Stats Format", this.Config.RaidStatsFormat, x => this.Config.RaidStatsFormat = x, 128);
+                    if (ImGuiEx.InputText("Raid Stats Format", this.Config.RaidStatsFormat, x => this.Config.RaidStatsFormat = x, 128))
+                    {
+                        change = true;
+                    }
+
                     if (ImGui.IsItemHovered())
                     {
                         ImGui.SetTooltip(Utils.GetTagsTooltip(Encounter.TextTags));
                     }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Checkbox("Use Thousands Separators for Numbers", this.Config.ThousandsSeparators, x => this.Config.ThousandsSeparators = x);
+                    if (ImGuiEx.Checkbox("Use Thousands Separators for Numbers", this.Config.ThousandsSeparators, x => this.Config.ThousandsSeparators = x))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.DragFloat2("Position Offset##Stats", this.Config.StatsOffset, x => this.Config.StatsOffset = x);
+                    if (ImGuiEx.DragFloat2("Position Offset##Stats", this.Config.StatsOffset, x => this.Config.StatsOffset = x))
+                    {
+                        change = true;
+                    }
 
                     if (!FontsManager.ValidateFont(fontOptions, this.Config.StatsFontId, this.Config.StatsFontKey))
                     {
@@ -244,6 +313,7 @@ internal class HeaderConfigPage : IConfigPage
                             if (this.Config.StatsFontKey.Equals(fontOptions[i]))
                             {
                                 this.Config.StatsFontId = i;
+                                change = true;
                             }
                         }
                     }
@@ -252,25 +322,45 @@ internal class HeaderConfigPage : IConfigPage
                     if (ImGuiEx.Combo("Font##Stats", this.Config.StatsFontId, x => this.Config.StatsFontId = x, fontOptions))
                     {
                         this.Config.StatsFontKey = fontOptions[this.Config.StatsFontId];
+                        change = true;
                     }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Combo("Text Align##Stats", this.Config.StatsAlign, x => this.Config.StatsAlign = x, AnchorOptions);
+                    if (ImGuiEx.Combo("Text Align##Stats", this.Config.StatsAlign, x => this.Config.StatsAlign = x, AnchorOptions))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.ColorEdit4("Text Color##Stats", this.Config.RaidStatsColor.Vector, x => this.Config.RaidStatsColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                    if (ImGuiEx.ColorEdit4("Text Color##Stats", this.Config.RaidStatsColor.Vector, x => this.Config.RaidStatsColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                    {
+                        change = true;
+                    }
 
                     ImGuiEx.DrawNestIndicator(2);
-                    ImGuiEx.Checkbox("Show Outline##Stats", this.Config.StatsShowOutline, x => this.Config.StatsShowOutline = x);
+                    if (ImGuiEx.Checkbox("Show Outline##Stats", this.Config.StatsShowOutline, x => this.Config.StatsShowOutline = x))
+                    {
+                        change = true;
+                    }
+
                     if (this.Config.StatsShowOutline)
                     {
                         ImGuiEx.DrawNestIndicator(3);
-                        ImGuiEx.ColorEdit4("Outline Color##Stats", this.Config.StatsOutlineColor.Vector, x => this.Config.StatsOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                        if (ImGuiEx.ColorEdit4("Outline Color##Stats", this.Config.StatsOutlineColor.Vector, x => this.Config.StatsOutlineColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                        {
+                            change = true;
+                        }
                     }
                 }
             }
-        }
 
-        ImGui.EndChild();
+            // Save if changed
+            if (change)
+            {
+                this.window.Save();
+            }
+
+            ImGui.EndChild();
+        }
     }
 }

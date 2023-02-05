@@ -17,13 +17,13 @@ internal class GeneralConfigPage : IConfigPage
     [JsonIgnore]
     private static readonly string[] MeterTypeOptions = Enum.GetNames(typeof(MeterDataType));
 
-    private readonly MeterConfig config;
+    private readonly MeterWindow window;
 
-    public GeneralConfigPage(MeterConfig config) => this.config = config;
+    public GeneralConfigPage(MeterWindow window) => this.window = window;
 
     public string Name => "General";
 
-    private GeneralConfig Config => this.config.GeneralConfig;
+    private GeneralConfig Config => this.window.Config.GeneralConfig;
 
     public IConfig GetDefault() => new GeneralConfig();
 
@@ -33,37 +33,81 @@ internal class GeneralConfigPage : IConfigPage
     {
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
+            var change = false;
             var screenSize = ImGui.GetMainViewport().Size;
             var c = this.Config;
-            ImGuiEx.DragFloat2("Position", c.Position, x => c.Position = x, 1, -screenSize.X / 2, screenSize.X / 2);
-            ImGuiEx.DragFloat2("Size", c.Size, x => c.Size = x, 1, 0, screenSize.Y);
-            ImGuiEx.Checkbox("Lock", c.Lock, x => c.Lock = x);
-            ImGuiEx.Checkbox("Click Through", c.ClickThrough, x => c.ClickThrough = x);
-            ImGuiEx.Checkbox("Preview", c.Preview, x => c.Preview = x);
+            if (ImGuiEx.DragFloat2("Position", c.Position, x => c.Position = x, 1, -screenSize.X / 2, screenSize.X / 2))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.DragFloat2("Size", c.Size, x => c.Size = x, 1, 0, screenSize.Y))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Lock", c.Lock, x => c.Lock = x))
+            {
+                change = true;
+            }
+
+            if (ImGuiEx.Checkbox("Click Through", c.ClickThrough, x => c.ClickThrough = x))
+            {
+                change = true;
+            }
+            // ImGuiEx.Checkbox("Preview", c.Preview, x => c.Preview = x);
 
             ImGui.NewLine();
 
-            ImGuiEx.ColorEdit4("Background Color", c.BackgroundColor.Vector, x => c.BackgroundColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+            if (ImGuiEx.ColorEdit4("Background Color", c.BackgroundColor.Vector, x => c.BackgroundColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+            {
+                change = true;
+            }
 
-            ImGuiEx.Checkbox("Show Border", c.ShowBorder, x => c.ShowBorder = x);
+            if (ImGuiEx.Checkbox("Show Border", c.ShowBorder, x => c.ShowBorder = x))
+            {
+                change = true;
+            }
+
             if (c.ShowBorder)
             {
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.DragInt("Border Thickness", c.BorderThickness, x => c.BorderThickness = x, 1, 1, 20);
+                if (ImGuiEx.DragInt("Border Thickness", c.BorderThickness, x => c.BorderThickness = x, 1, 1, 20))
+                {
+                    change = true;
+                }
 
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.ColorEdit4("Border Color", c.BorderColor.Vector, x => c.BorderColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+                if (ImGuiEx.ColorEdit4("Border Color", c.BorderColor.Vector, x => c.BorderColor.Vector = x, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar))
+                {
+                    change = true;
+                }
 
                 ImGuiEx.DrawNestIndicator(1);
-                ImGuiEx.Checkbox("Hide border around Header", c.BorderAroundBars, x => c.BorderAroundBars = x);
+                if (ImGuiEx.Checkbox("Hide border around Header", c.BorderAroundBars, x => c.BorderAroundBars = x))
+                {
+                    change = true;
+                }
             }
 
             ImGui.NewLine();
-            ImGuiEx.Combo("Sort Type", c.DataType, x => c.DataType = x, MeterTypeOptions);
+            if (ImGuiEx.Combo("Sort Type", c.DataType, x => c.DataType = x, MeterTypeOptions))
+            {
+                change = true;
+            }
 
-            ImGuiEx.Checkbox("Return to Current Data when entering combat", c.ReturnToCurrent, x => c.ReturnToCurrent = x);
+            if (ImGuiEx.Checkbox("Return to Current Data when entering combat", c.ReturnToCurrent, x => c.ReturnToCurrent = x))
+            {
+                change = true;
+            }
+
+            // Save if changed
+            if (change)
+            {
+                this.window.Save();
+            }
+
+            ImGui.EndChild();
         }
-
-        ImGui.EndChild();
     }
 }

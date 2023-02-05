@@ -27,8 +27,16 @@ internal partial class EncounterManager
         {
             case CombatEvent.Action action:
             {
+                var overWriteSource = action.ActorId;
+                if (!this.ci.IsPvP() && this.limitBreaks.Contains(action.ActionId.Id))
+                {
+                    actor = encounter.GetCombatant(uint.MaxValue);
+                    overWriteSource = uint.MaxValue;
+                }
+
                 foreach (var effectEvent in action.Effects)
                 {
+                    effectEvent.SourceId = overWriteSource;
                     this.HandleActionEffect(encounter, actor, action, effectEvent);
                 }
 
@@ -96,13 +104,13 @@ internal partial class EncounterManager
                 {
                     if (damageTakenEvent.IsSourceEntry)
                     {
-                        target = encounter.GetCombatant(effectEvent.TargetId);
+                        target = encounter.GetCombatant(damageTakenEvent.TargetId);
                         var effect = target?.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
-                            effectEvent.ActionName = this.utils.StatusString(effect.StatusId);
-                            effectEvent.SourceId = effect.SourceId;
-                            effectEvent.TargetId = action.ActorId;
+                            damageTakenEvent.ActionName = this.utils.StatusString(effect.StatusId);
+                            damageTakenEvent.SourceId = effect.SourceId;
+                            damageTakenEvent.TargetId = action.ActorId;
                         }
                     }
                 }
@@ -122,13 +130,13 @@ internal partial class EncounterManager
 
                 encounter.LastEvent = encounter.LastDamageEvent = @event.Timestamp;
 
-                this.Log.Add($"[{@event.Timestamp:O}] Damage: {source} -> {target} => {effectEvent.Amount}");
+                this.Log.Add($"[{@event.Timestamp:O}] Damage: {source} -> {target} => {damageTakenEvent.Amount}");
 
                 break;
             }
             case CombatEvent.DoT dotEvent:
             {
-                target = encounter.GetCombatant(effectEvent.TargetId);
+                target = encounter.GetCombatant(dotEvent.TargetId);
                 if (target != null)
                 {
                     target.DamageTaken += dotEvent.Amount;
@@ -137,27 +145,27 @@ internal partial class EncounterManager
                 source.DamageTotal += dotEvent.Amount;
                 encounter.LastEvent = @event.Timestamp;
 
-                this.Log.Add($"[{@event.Timestamp:O}] Dot: {source} -> {target} => {effectEvent.Amount}");
+                this.Log.Add($"[{@event.Timestamp:O}] Dot: {source} -> {target} => {dotEvent.Amount}");
                 break;
             }
             case CombatEvent.HoT hotEvent:
             {
-                target = encounter.GetCombatant(effectEvent.TargetId);
-                this.ApplyHeal(source, target, effectEvent.TargetId, hotEvent.Amount);
+                target = encounter.GetCombatant(hotEvent.TargetId);
+                this.ApplyHeal(source, target, hotEvent.TargetId, hotEvent.Amount);
                 encounter.LastEvent = @event.Timestamp;
 
-                this.Log.Add($"[{@event.Timestamp:O}] Hot: {source} -> {target} => {effectEvent.Amount}");
+                this.Log.Add($"[{@event.Timestamp:O}] Hot: {source} -> {target} => {hotEvent.Amount}");
                 break;
             }
             case CombatEvent.Healed healEvent:
             {
-                var targetId = effectEvent.TargetId;
+                var targetId = healEvent.TargetId;
                 if (action is not null)
                 {
                     var indexOfHealEffects = Array.IndexOf(action.Effects.OfType<CombatEvent.Healed>().ToArray(), healEvent);
 
                     // check heal proc
-                    if (effectEvent.IsSourceEntry)
+                    if (healEvent.IsSourceEntry)
                     {
                         var status = source.StatusList.LastOrDefault(x => this.damageDealtHealProcs.Contains(x.StatusId));
                         this.Log.Add($"Prop Prog? {status} {status?.Timestamp.AddSeconds(status.Duration + 1):T} {action.Timestamp:T}");
@@ -177,9 +185,9 @@ internal partial class EncounterManager
                             var effect = source.StatusList.LastOrDefault(x => (this.damageReceivedHealProcs.Contains(x.StatusId) || this.healCastHealProcs.Contains(x.StatusId)) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                             if (effect is not null)
                             {
-                                effectEvent.ActionName = this.utils.StatusString(effect.StatusId);
-                                effectEvent.SourceId = effect.SourceId;
-                                effectEvent.TargetId = action.TargetId;
+                                healEvent.ActionName = this.utils.StatusString(effect.StatusId);
+                                healEvent.SourceId = effect.SourceId;
+                                healEvent.TargetId = action.TargetId;
                                 targetId = action.TargetId;
                             }
                         }
@@ -188,17 +196,17 @@ internal partial class EncounterManager
                     // check Clemency
                     if (action.ActionId == ActionId.Clemency && indexOfHealEffects == 1)
                     {
-                        effectEvent.TargetId = action.ActorId;
+                        healEvent.TargetId = action.ActorId;
                         targetId = action.ActorId;
                     }
                 }
 
-                source = encounter.GetCombatant(effectEvent.SourceId);
-                target = encounter.GetCombatant(effectEvent.TargetId);
-                this.ApplyHeal(source, target, targetId, effectEvent.Amount);
+                source = encounter.GetCombatant(healEvent.SourceId);
+                target = encounter.GetCombatant(healEvent.TargetId);
+                this.ApplyHeal(source, target, targetId, healEvent.Amount);
                 encounter.LastEvent = @event.Timestamp;
 
-                this.Log.Add($"[{@event.Timestamp:O}] Heal: {source} -> {target} => {effectEvent.Amount}");
+                this.Log.Add($"[{@event.Timestamp:O}] Heal: {source} -> {target} => {healEvent.Amount}");
 
                 break;
             }

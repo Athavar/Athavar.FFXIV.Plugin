@@ -4,6 +4,7 @@
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
@@ -11,6 +12,7 @@ using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Logging;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 
@@ -57,13 +59,15 @@ internal class Encounter
 
     public TimeSpan Duration => this.End is null ? this.LastEvent - this.Start : this.End.Value - this.Start;
 
-    public double Dps => Math.Round(this.AllyCombatants.Sum(c => c.Dps), 2);
+    public double Dps { get; private set; }
 
-    public double Hps => Math.Round(this.AllyCombatants.Sum(c => c.Hps), 2);
+    public double Hps { get; private set; }
 
-    public int Deaths => this.AllyCombatants.Sum(c => c.Deaths);
+    public ulong DamageTotal { get; private set; }
 
-    public int Kills => this.AllyCombatants.Sum(c => c.Kills);
+    public int Deaths { get; private set; }
+
+    public int Kills { get; private set; }
 
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 
@@ -72,6 +76,19 @@ internal class Encounter
         if (this.combatantMapping.TryGetValue(objectId, out var combatant))
         {
             return combatant;
+        }
+
+        if (objectId == uint.MaxValue)
+        {
+            combatant = new Combatant(this)
+            {
+                Name = "Limit Break",
+                Level = 9999,
+                PartyType = PartyType.Party,
+            };
+            this.Combatants.Add(combatant);
+
+            goto end;
         }
 
         var gameObject = objectTable.SearchById(objectId);
@@ -180,9 +197,40 @@ internal class Encounter
 
         var filter = configuration.PartyFilter;
         this.AllyCombatants = combatants
-           .Where(c => c is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 })
+           .Where(c => c is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 } && c.Kind != BattleNpcSubKind.Enemy)
            .Where(c => c.PartyType <= filter)
            .ToList();
+
+        PluginLog.Information(string.Join(',', this.Combatants.Select(c => $"{c.Name} -> {c.PartyType}")));
+    }
+
+    public void CalcEncounterStats()
+    {
+        var combatants = this.AllyCombatants;
+        double dps = 0;
+        double hps = 0;
+        ulong damageTotal = 0;
+        var deaths = 0;
+        var kills = 0;
+        foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
+        {
+            combatant.CalcPreCombatantStats();
+            dps += combatant.Dps;
+            hps += combatant.Hps;
+            damageTotal += combatant.DamageTotal;
+            deaths += combatant.Deaths;
+            kills += combatant.Kills;
+        }
+
+        this.Dps = Math.Round(dps, 2);
+        this.Hps = Math.Round(hps, 2);
+        this.DamageTotal = damageTotal;
+        this.Deaths = deaths;
+        this.Kills = kills;
+        foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
+        {
+            combatant.CalcCombatantStats();
+        }
     }
 
     public bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);

@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Dalamud.Interface;
 using ImGuiNET;
@@ -20,6 +21,7 @@ public static class ImGuiEx
     /// <param name="icon">Icon to display.</param>
     /// <param name="tooltip">Tooltip to display.</param>
     /// <param name="width">Width of the button.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Icon(FontAwesomeIcon icon, string? tooltip = null, int width = -1)
     {
         ImGui.PushFont(UiBuilder.IconFont);
@@ -48,6 +50,7 @@ public static class ImGuiEx
     /// <param name="small">Use the small button.</param>
     /// <param name="disabled">Disable state of the button.</param>
     /// <returns>A value indicating whether the button has been pressed.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IconButton(FontAwesomeIcon icon, string? tooltip = null, int width = -1, bool small = false, bool disabled = false)
     {
         if (disabled)
@@ -84,6 +87,7 @@ public static class ImGuiEx
     /// </summary>
     /// <param name="icon">Icon to measure.</param>
     /// <returns>The size of the icon.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float GetIconWidth(FontAwesomeIcon icon)
     {
         ImGui.PushFont(UiBuilder.IconFont);
@@ -100,6 +104,7 @@ public static class ImGuiEx
     /// </summary>
     /// <param name="icon">Icon to measure.</param>
     /// <returns>The size of the icon.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float GetIconButtonWidth(FontAwesomeIcon icon)
     {
         var style = ImGui.GetStyle();
@@ -111,6 +116,7 @@ public static class ImGuiEx
     ///     Creates a simple text tooltip.
     /// </summary>
     /// <param name="text">Text to display.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void TextTooltip(string text)
     {
         if (ImGui.IsItemHovered())
@@ -139,6 +145,7 @@ public static class ImGuiEx
     /// </summary>
     /// <param name="itemsCount">Amount of items in the list.</param>
     /// <returns>A RGBA vec4.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ImGuiListClipperPtr Clipper(int itemsCount)
     {
         unsafe
@@ -156,6 +163,7 @@ public static class ImGuiEx
     /// <param name="iconWidth">Image width.</param>
     /// <param name="iconHeight">Image height.</param>
     /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ScaledImageY(nint handle, int iconWidth, int iconHeight, float scaledHeight)
     {
         var num = scaledHeight / iconHeight;
@@ -169,6 +177,7 @@ public static class ImGuiEx
     /// <param name="condition">The condition.</param>
     /// <param name="color">The color.</param>
     /// <param name="text">The text.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void TextColorCondition(bool condition, Vector4 color, string text)
     {
         if (condition)
@@ -185,6 +194,7 @@ public static class ImGuiEx
     ///     Draw a table row based on the input values.
     /// </summary>
     /// <param name="values">The input values.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void TableRow(object[] values)
     {
         for (var columnIndex = 0; columnIndex < values.Length; ++columnIndex)
@@ -207,44 +217,76 @@ public static class ImGuiEx
         }
     }
 
-    public static void DragFloat2(string label, Vector2 value, Action<Vector2> setter, float vSpeed = 1f, float vMin = 0f, float vMax = 0f)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool DragFloat2(string label, Vector2 value, Action<Vector2> setter, float vSpeed = 1f, float vMin = 0f, float vMax = 0f)
     {
-        if (ImGui.DragFloat2(label, ref value, vSpeed, vMin, vMax))
+        if (!ImGui.DragFloat2(label, ref value, vSpeed, vMin, vMax))
         {
-            setter(value);
+            return false;
         }
+
+        setter(value);
+        return true;
     }
 
-    public static void Checkbox(string label, bool value, Action<bool> setter)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool Checkbox(string label, bool value, Action<bool> setter)
     {
-        if (ImGui.Checkbox(label, ref value))
+        if (!ImGui.Checkbox(label, ref value))
         {
-            setter(value);
+            return false;
         }
+
+        setter(value);
+        return true;
     }
 
-    public static void ColorEdit4(string label, Vector4 value, Action<Vector4> setter, ImGuiColorEditFlags alphaPreview)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ColorEdit4(string label, Vector4 value, Action<Vector4> setter, ImGuiColorEditFlags alphaPreview)
     {
-        if (ImGui.ColorEdit4(label, ref value, alphaPreview))
+        if (!ImGui.ColorEdit4(label, ref value, alphaPreview))
         {
-            setter(value);
+            return false;
         }
+
+        setter(value);
+        return true;
     }
 
-    public static void DragInt(string label, int value, Action<int> setter, int vSpeed, int vMin = 0, int vMax = 0)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool DragInt(string label, int value, Action<int> setter, int vSpeed, int vMin = 0, int vMax = 0)
     {
-        if (ImGui.DragInt(label, ref value, vSpeed, vMin, vMax))
+        if (!ImGui.DragInt(label, ref value, vSpeed, vMin, vMax))
         {
-            setter(value);
+            return false;
         }
+
+        setter(value);
+        return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool DragIntRange2(string label, int vCurrentMin, Action<int> minSetter, int vCurrentMax, Action<int> maxSetter, int vSpeed, int vMin = 0, int vMax = 0, string format = "%d")
+    {
+        if (!ImGui.DragIntRange2(label, ref vCurrentMin, ref vCurrentMax, vSpeed, vMin, vMax, format))
+        {
+            return false;
+        }
+
+        minSetter(vCurrentMin);
+        maxSetter(vCurrentMax);
+        return true;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Combo<T>(string label, T selectedItem, Action<T> setter, string[] items)
         where T : struct, Enum
         => Combo(label, selectedItem.AsText(), x => setter(Enum.Parse<T>(items[x])), items);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Combo(string label, string selectedItem, Action<int> setter, string[] items) => Combo(label, Array.IndexOf(items, selectedItem), setter, items);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool Combo(string label, int selectedIndex, Action<int> setter, string[] items)
     {
         if (!ImGui.Combo(label, ref selectedIndex, items, items.Length))
@@ -256,6 +298,7 @@ public static class ImGuiEx
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawNestIndicator(int depth)
     {
         // This draws the L shaped symbols and padding to the left of config items collapsible under a checkbox.
@@ -268,6 +311,7 @@ public static class ImGuiEx
         ImGui.SetCursorPosY(oldCursor.Y);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Spacing(int spacingSize)
     {
         for (var i = 0; i < spacingSize; i++)
@@ -276,6 +320,7 @@ public static class ImGuiEx
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool InputText(string label, string input, Action<string> setter, uint maxLength)
     {
         if (!ImGui.InputText(label, ref input, maxLength))
@@ -287,6 +332,7 @@ public static class ImGuiEx
         return true;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawText(
         ImDrawListPtr drawList,
         string text,
@@ -316,6 +362,7 @@ public static class ImGuiEx
         drawList.AddText(new Vector2(pos.X, pos.Y), color, text);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawInWindow(
         string name,
         Vector2 pos,
@@ -325,6 +372,7 @@ public static class ImGuiEx
         Action<ImDrawListPtr> drawAction)
         => DrawInWindow(name, pos, size, needsInput, false, setPosition, drawAction);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void DrawInWindow(
         string name,
         Vector2 pos,

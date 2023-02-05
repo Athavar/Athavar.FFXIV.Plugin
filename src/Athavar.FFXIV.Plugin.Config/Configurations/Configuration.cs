@@ -11,6 +11,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Config.Extensions;
 using Dalamud.Configuration;
 using Dalamud.Game.Text;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using Lumina.Data;
 using Newtonsoft.Json;
@@ -76,7 +77,10 @@ public class Configuration : IPluginConfiguration
         if (this.saveTimer is null)
         {
             this.saveTimer = new Timer();
+            this.saveTimer.Interval = 10000;
+#if DEBUG
             this.saveTimer.Interval = 2500;
+#endif
             this.saveTimer.AutoReset = false;
             this.saveTimer.Elapsed += (_, _) => this.Save(true);
         }
@@ -85,10 +89,16 @@ public class Configuration : IPluginConfiguration
         {
             this.saveTimer.Stop();
             this.pi?.SavePluginConfig(this);
+#if DEBUG
+            PluginLog.Information("Save Successful");
+#endif
         }
         else if (!this.saveTimer.Enabled)
         {
             this.saveTimer.Start();
+#if DEBUG
+            PluginLog.Information("Save Triggered");
+#endif
         }
     }
 

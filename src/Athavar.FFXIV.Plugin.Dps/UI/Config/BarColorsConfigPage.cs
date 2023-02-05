@@ -10,13 +10,13 @@ using ImGuiNET;
 
 internal class BarColorsConfigPage : IConfigPage
 {
-    private readonly MeterConfig config;
+    private readonly MeterWindow window;
 
-    public BarColorsConfigPage(MeterConfig config) => this.config = config;
+    public BarColorsConfigPage(MeterWindow window) => this.window = window;
 
     public string Name => "Colors";
 
-    private BarColorsConfig Config => this.config.BarColorsConfig;
+    private BarColorsConfig Config => this.window.Config.BarColorsConfig;
 
     public IConfig GetDefault() => new BarColorsConfig();
 
@@ -63,79 +63,173 @@ internal class BarColorsConfigPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
+        var change = false;
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
-            this.ColorPick("PLD", this.Config.PLDColor.Vector, x => this.Config.PLDColor.Vector = x);
+            if (this.ColorPick("PLD", this.Config.PLDColor.Vector, x => this.Config.PLDColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("WAR", this.Config.WARColor.Vector, x => this.Config.WARColor.Vector = x);
+            if (this.ColorPick("WAR", this.Config.WARColor.Vector, x => this.Config.WARColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("DRK", this.Config.DRKColor.Vector, x => this.Config.DRKColor.Vector = x);
+            if (this.ColorPick("DRK", this.Config.DRKColor.Vector, x => this.Config.DRKColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("GNB", this.Config.GNBColor.Vector, x => this.Config.GNBColor.Vector = x);
-
-            ImGui.NewLine();
-
-            this.ColorPick("SCH", this.Config.SCHColor.Vector, x => this.Config.SCHColor.Vector = x);
-
-            this.ColorPick("WHM", this.Config.WHMColor.Vector, x => this.Config.WHMColor.Vector = x);
-
-            this.ColorPick("AST", this.Config.ASTColor.Vector, x => this.Config.ASTColor.Vector = x);
-
-            this.ColorPick("SGE", this.Config.SGEColor.Vector, x => this.Config.SGEColor.Vector = x);
-
-            ImGui.NewLine();
-
-            this.ColorPick("MNK", this.Config.MNKColor.Vector, x => this.Config.MNKColor.Vector = x);
-
-            this.ColorPick("NIN", this.Config.NINColor.Vector, x => this.Config.NINColor.Vector = x);
-
-            this.ColorPick("DRG", this.Config.DRGColor.Vector, x => this.Config.DRGColor.Vector = x);
-
-            this.ColorPick("SAM", this.Config.SAMColor.Vector, x => this.Config.SAMColor.Vector = x);
-
-            this.ColorPick("RPR", this.Config.RPRColor.Vector, x => this.Config.RPRColor.Vector = x);
+            if (this.ColorPick("GNB", this.Config.GNBColor.Vector, x => this.Config.GNBColor.Vector = x))
+            {
+                change = true;
+            }
 
             ImGui.NewLine();
 
-            this.ColorPick("BRD", this.Config.BRDColor.Vector, x => this.Config.BRDColor.Vector = x);
+            if (this.ColorPick("SCH", this.Config.SCHColor.Vector, x => this.Config.SCHColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("MCH", this.Config.MCHColor.Vector, x => this.Config.MCHColor.Vector = x);
+            if (this.ColorPick("WHM", this.Config.WHMColor.Vector, x => this.Config.WHMColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("DNC", this.Config.DNCColor.Vector, x => this.Config.DNCColor.Vector = x);
+            if (this.ColorPick("AST", this.Config.ASTColor.Vector, x => this.Config.ASTColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("SGE", this.Config.SGEColor.Vector, x => this.Config.SGEColor.Vector = x))
+            {
+                change = true;
+            }
 
             ImGui.NewLine();
 
-            this.ColorPick("BLM", this.Config.BLMColor.Vector, x => this.Config.BLMColor.Vector = x);
+            if (this.ColorPick("MNK", this.Config.MNKColor.Vector, x => this.Config.MNKColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("SMN", this.Config.SMNColor.Vector, x => this.Config.SMNColor.Vector = x);
+            if (this.ColorPick("NIN", this.Config.NINColor.Vector, x => this.Config.NINColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("RDM", this.Config.RDMColor.Vector, x => this.Config.RDMColor.Vector = x);
+            if (this.ColorPick("DRG", this.Config.DRGColor.Vector, x => this.Config.DRGColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("BLU", this.Config.BLUColor.Vector, x => this.Config.BLUColor.Vector = x);
+            if (this.ColorPick("SAM", this.Config.SAMColor.Vector, x => this.Config.SAMColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("RPR", this.Config.RPRColor.Vector, x => this.Config.RPRColor.Vector = x))
+            {
+                change = true;
+            }
 
             ImGui.NewLine();
 
-            this.ColorPick("GLA", this.Config.GLAColor.Vector, x => this.Config.GLAColor.Vector = x);
+            if (this.ColorPick("BRD", this.Config.BRDColor.Vector, x => this.Config.BRDColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("MRD", this.Config.MRDColor.Vector, x => this.Config.MRDColor.Vector = x);
+            if (this.ColorPick("MCH", this.Config.MCHColor.Vector, x => this.Config.MCHColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("CNJ", this.Config.CNJColor.Vector, x => this.Config.CNJColor.Vector = x);
+            if (this.ColorPick("DNC", this.Config.DNCColor.Vector, x => this.Config.DNCColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("PGL", this.Config.PGLColor.Vector, x => this.Config.PGLColor.Vector = x);
+            ImGui.NewLine();
 
-            this.ColorPick("ROG", this.Config.ROGColor.Vector, x => this.Config.ROGColor.Vector = x);
+            if (this.ColorPick("BLM", this.Config.BLMColor.Vector, x => this.Config.BLMColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("LNC", this.Config.LNCColor.Vector, x => this.Config.LNCColor.Vector = x);
+            if (this.ColorPick("SMN", this.Config.SMNColor.Vector, x => this.Config.SMNColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("ARC", this.Config.ARCColor.Vector, x => this.Config.ARCColor.Vector = x);
+            if (this.ColorPick("RDM", this.Config.RDMColor.Vector, x => this.Config.RDMColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("THM", this.Config.THMColor.Vector, x => this.Config.THMColor.Vector = x);
+            if (this.ColorPick("BLU", this.Config.BLUColor.Vector, x => this.Config.BLUColor.Vector = x))
+            {
+                change = true;
+            }
 
-            this.ColorPick("ACN", this.Config.ACNColor.Vector, x => this.Config.ACNColor.Vector = x);
+            ImGui.NewLine();
+
+            if (this.ColorPick("GLA", this.Config.GLAColor.Vector, x => this.Config.GLAColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("MRD", this.Config.MRDColor.Vector, x => this.Config.MRDColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("CNJ", this.Config.CNJColor.Vector, x => this.Config.CNJColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("PGL", this.Config.PGLColor.Vector, x => this.Config.PGLColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("ROG", this.Config.ROGColor.Vector, x => this.Config.ROGColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("LNC", this.Config.LNCColor.Vector, x => this.Config.LNCColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("ARC", this.Config.ARCColor.Vector, x => this.Config.ARCColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("THM", this.Config.THMColor.Vector, x => this.Config.THMColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("ACN", this.Config.ACNColor.Vector, x => this.Config.ACNColor.Vector = x))
+            {
+                change = true;
+            }
+
+            // Save if changed
+            if (change)
+            {
+                this.window.Save();
+            }
+
+            ImGui.EndChild();
         }
-
-        ImGui.EndChild();
     }
 
-    private void ColorPick(string label, Vector4 current, Action<Vector4> setter) => ImGuiEx.ColorEdit4(label, current, setter, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
+    private bool ColorPick(string label, Vector4 current, Action<Vector4> setter) => ImGuiEx.ColorEdit4(label, current, setter, ImGuiColorEditFlags.AlphaPreview | ImGuiColorEditFlags.AlphaBar);
 }
