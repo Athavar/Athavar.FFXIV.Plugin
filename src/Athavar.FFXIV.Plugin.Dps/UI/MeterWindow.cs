@@ -4,7 +4,6 @@
 namespace Athavar.FFXIV.Plugin.Dps.UI;
 
 using System.Numerics;
-using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
@@ -20,44 +19,33 @@ internal class MeterWindow : IConfigurable
     private readonly ICommandInterface ci;
     private readonly EncounterManager encounterManager;
 
-    [JsonIgnore]
     private readonly Encounter? previewEvent = null;
 
-    [JsonIgnore]
     private bool lastFrameWasUnlocked;
 
-    [JsonIgnore]
     private bool lastFrameWasDragging;
 
-    [JsonIgnore]
     private bool lastFrameWasPreview;
 
-    [JsonIgnore]
     private bool lastFrameWasCombat;
 
-    [JsonIgnore]
     private bool unlocked;
 
-    [JsonIgnore]
     private bool hovered;
 
-    [JsonIgnore]
     private bool dragging;
 
-    [JsonIgnore]
     private bool locked;
 
-    [JsonIgnore]
-    private int eventIndex = -1;
+    private int territoryIndex = -2;
 
-    [JsonIgnore]
+    private int encounterIndex = -1;
+
     private int scrollPosition;
 
-    [JsonIgnore]
     private DateTime? lastSortedTimestamp;
 
-    [JsonIgnore]
-    private List<Combatant> lastSortedCombatants = new();
+    private List<BaseCombatant> lastSortedCombatants = new();
 
     public MeterWindow(MeterConfig config, IServiceProvider provider)
         : this(config, provider, provider.GetRequiredService<MeterManager>())
@@ -84,7 +72,8 @@ internal class MeterWindow : IConfigurable
 
     public MeterConfig Config { get; }
 
-    [JsonIgnore]
+    public bool Enabled => this.Config.GeneralConfig.Enabled;
+
     public string ID { get; init; }
 
     public string Name
@@ -147,7 +136,7 @@ internal class MeterWindow : IConfigurable
 
     public void Clear()
     {
-        this.lastSortedCombatants = new List<Combatant>();
+        this.lastSortedCombatants = new List<BaseCombatant>();
         this.lastSortedTimestamp = null;
     }
 
@@ -156,7 +145,9 @@ internal class MeterWindow : IConfigurable
     public void Draw(Vector2 pos)
     {
         if (!this.GeneralConfigPage.Preview && !this.VisibilityConfigPage.IsVisible())
+        {
             return;
+        }
 
         var generalConfig = this.Config.GeneralConfig;
         var localPos = pos + generalConfig.Position;
@@ -167,20 +158,26 @@ internal class MeterWindow : IConfigurable
             this.scrollPosition -= (int)ImGui.GetIO().MouseWheel;
 
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right) && !generalConfig.Preview)
+            {
                 ImGui.OpenPopup($"{this.ID}_ContextMenu", ImGuiPopupFlags.MouseButtonRight);
+            }
         }
 
-        if (this.DrawContextMenu($"{this.ID}_ContextMenu", out var index))
+        if (this.DrawContextMenu($"{this.ID}_ContextMenu", out var territory, out var encounter))
         {
-            this.eventIndex = index;
+            this.territoryIndex = territory;
+            this.encounterIndex = encounter;
             this.lastSortedTimestamp = null;
-            this.lastSortedCombatants = new List<Combatant>();
+            this.lastSortedCombatants = new List<BaseCombatant>();
             this.scrollPosition = 0;
         }
 
         var combat = this.ci.IsInCombat();
         if (generalConfig.ReturnToCurrent && !this.lastFrameWasCombat && combat)
-            this.eventIndex = -1;
+        {
+            this.territoryIndex = -1;
+            this.encounterIndex = -1;
+        }
 
         this.UpdateDragData(localPos, size, generalConfig.Lock);
         var needsInput = !generalConfig.ClickThrough;
@@ -191,12 +188,19 @@ internal class MeterWindow : IConfigurable
                 if (this.lastFrameWasDragging)
                 {
                     localPos = ImGui.GetWindowPos();
-                    generalConfig.Position = localPos - pos;
+                    var newPos = localPos - pos;
+                    if (generalConfig.Position != newPos)
+                    {
+                        generalConfig.Position = newPos;
+                        this.meterManager.Save();
+                    }
 
                     size = ImGui.GetWindowSize();
-                    generalConfig.Size = size;
-
-                    this.meterManager.Save();
+                    if (generalConfig.Size != size)
+                    {
+                        generalConfig.Size = size;
+                        this.meterManager.Save();
+                    }
                 }
             }
 
@@ -228,7 +232,7 @@ internal class MeterWindow : IConfigurable
                 this.GeneralConfigPage.Preview = false;
             }
 
-            var encounter = this.GeneralConfigPage.Preview ? this.previewEvent : this.encounterManager.GetEncounter(this.eventIndex);
+            var encounter = this.GeneralConfigPage.Preview ? this.previewEvent : this.encounterManager.GetEncounter(this.territoryIndex, this.encounterIndex);
 
             (localPos, size) = this.HeaderConfigPage.DrawHeader(localPos, size, encounter, drawList);
             drawList.AddRectFilled(localPos, localPos + size, generalConfig.BackgroundColor.Base);
@@ -250,14 +254,19 @@ internal class MeterWindow : IConfigurable
         this.lastFrameWasDragging = this.hovered || this.dragging;
     }
 
-    private void DrawBars(ImDrawListPtr drawList, Vector2 localPos, Vector2 size, Encounter? actEvent)
+    private void DrawBars(ImDrawListPtr drawList, Vector2 localPos, Vector2 size, BaseEncounter? actEvent)
     {
-        if (actEvent?.AllyCombatants is not null && actEvent.AllyCombatants.Any())
+        if (actEvent is null)
+        {
+            return;
+        }
+
+        var dataType = this.Config.GeneralConfig.DataType;
+        var sortedCombatants = this.GetSortedCombatants(actEvent, dataType);
+
+        if (sortedCombatants.Any())
         {
             var barConfig = this.Config.BarConfig;
-
-            var dataType = this.Config.GeneralConfig.DataType;
-            var sortedCombatants = this.GetSortedCombatants(actEvent, dataType);
 
             var barCount = Math.Clamp(sortedCombatants.Count, barConfig.MinBarCount, barConfig.BarCount);
 
@@ -281,29 +290,56 @@ internal class MeterWindow : IConfigurable
         }
     }
 
-    private bool DrawContextMenu(string popupId, out int selectedIndex)
+    private bool DrawContextMenu(string popupId, out int selectedTerritoryIndex, out int selectedEncounterIndex)
     {
-        selectedIndex = -1;
+        selectedTerritoryIndex = -1;
+        selectedEncounterIndex = -1;
         var selected = false;
 
         if (ImGui.BeginPopup(popupId))
         {
-            if (!ImGui.IsAnyItemActive() && !ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+            /*if (!ImGui.IsAnyItemActive() && !ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+            {
                 ImGui.SetKeyboardFocusHere(0);
+            }*/
 
             if (ImGui.Selectable("Current Data"))
-                selected = true;
-
-            var events = this.encounterManager.EncounterHistory;
-            if (events.Count > 0)
-                ImGui.Separator();
-
-            for (var i = events.Count - 1; i >= 0; i--)
             {
-                if (ImGui.Selectable($"{events[i].Start:T}\t—\t{events[i].Title}"))
+                selected = true;
+            }
+
+            var territories = this.encounterManager.EncounterHistory;
+            if (territories.Count > 0)
+            {
+                ImGui.Separator();
+            }
+
+            for (var i = 0; i < territories.Count; i++)
+            {
+                var territory = territories[i];
+                if (ImGui.BeginMenu($"{territory.Start:T} — {territory.Title}"))
                 {
-                    selectedIndex = i;
-                    selected = true;
+                    if (ImGui.Selectable($"All — {territory.Duration:hh\\mm\\:ss\\.ff}"))
+                    {
+                        ImGui.CloseCurrentPopup();
+                        selectedTerritoryIndex = i;
+                        selected = true;
+                    }
+
+                    var encounters = territory.Encounters;
+                    for (var j = 0; j < encounters.Count; j++)
+                    {
+                        var encounter = encounters[j];
+                        if (ImGui.Selectable($"{encounter.Title} — {encounter.Duration:mm\\:ss\\.ff}"))
+                        {
+                            ImGui.CloseCurrentPopup();
+                            selectedTerritoryIndex = i;
+                            selectedEncounterIndex = j;
+                            selected = true;
+                        }
+                    }
+
+                    ImGui.EndMenu();
                 }
             }
 
@@ -326,19 +362,21 @@ internal class MeterWindow : IConfigurable
         return selected;
     }
 
-    private List<Combatant> GetSortedCombatants(Encounter actEvent, MeterDataType dataType)
+    private List<BaseCombatant> GetSortedCombatants(BaseEncounter encounter, MeterDataType dataType)
     {
-        if (this.lastSortedTimestamp.HasValue && this.lastSortedTimestamp.Value == actEvent.LastEvent &&
+        if (this.lastSortedTimestamp.HasValue && this.lastSortedTimestamp.Value == encounter.LastEvent &&
             !this.GeneralConfigPage.Preview)
+        {
             return this.lastSortedCombatants;
+        }
 
-        var sortedCombatants = actEvent.AllyCombatants
+        var sortedCombatants = encounter.GetAllyCombatants()
            .Where(c => c.GetMeterData(dataType) > 0)
            .ToList();
 
         sortedCombatants.Sort((x, y) => (int)(y.GetMeterData(dataType) - x.GetMeterData(dataType)));
 
-        this.lastSortedTimestamp = actEvent.LastEvent;
+        this.lastSortedTimestamp = encounter.LastEvent;
         this.lastSortedCombatants = sortedCombatants;
         return sortedCombatants;
     }

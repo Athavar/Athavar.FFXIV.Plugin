@@ -13,7 +13,24 @@ internal partial class IconManager
 
     public TextureWrap? GetJobIcon(Job job, JobIconStyle style = JobIconStyle.Normal, bool hr = false)
     {
-        uint ResolveJobIconId(Job j, JobIconStyle s) => JobIconStyleOffset[(int)s] + ResolveJobOrder(j, s);
+        uint ResolveJobIconId(Job j, JobIconStyle s)
+        {
+            switch (j)
+            {
+                case Job.LimitBreak:
+                    return 103;
+                default:
+                {
+                    var id = ResolveJobOrder(j, s);
+                    if (id == 0)
+                    {
+                        id = ResolveJobOrder(j, JobIconStyle.Normal);
+                    }
+
+                    return JobIconStyleOffset[(int)s] + id;
+                }
+            }
+        }
 
         uint ResolveJobOrder(Job j, JobIconStyle s)
             => s switch
@@ -27,6 +44,14 @@ internal partial class IconManager
                    JobIconStyle.Blue => FancyJobOrder(j),
                    JobIconStyle.Purple => FancyJobOrder(j),
                    JobIconStyle.Green => FancyJobOrder(j),
+                   _ => NormalJobOrder(j),
+               };
+
+        uint NormalJobOrder(Job j)
+            => j switch
+               {
+                   Job.Chocobo => 41,
+                   Job.Pets => 42,
                    _ => (uint)j,
                };
 
@@ -74,7 +99,9 @@ internal partial class IconManager
                    Job.Dancer => 118,
                    Job.Reaper => 119,
                    Job.Sage => 120,
+                   Job.Pets => 0,
                    Job.Chocobo => 0,
+                   Job.LimitBreak => 0,
                    _ => throw new ArgumentOutOfRangeException(nameof(job), job, null),
                };
 
@@ -123,6 +150,8 @@ internal partial class IconManager
                    Job.Reaper => 132,
                    Job.Sage => 133,
                    Job.Chocobo => 42,
+                   Job.Pets => 98,
+                   Job.LimitBreak => 0,
                    _ => throw new ArgumentOutOfRangeException(nameof(job), job, null),
                };
 

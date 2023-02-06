@@ -16,6 +16,8 @@ public class GeneralConfig : BaseConfig
 
     public Vector2 Size { get; set; } = new((ImGui.GetMainViewport().Size.Y * 16) / 90, ImGui.GetMainViewport().Size.Y / 10);
 
+    public bool Enabled { get; set; } = true;
+
     public bool Lock { get; set; }
 
     public bool ClickThrough { get; set; }

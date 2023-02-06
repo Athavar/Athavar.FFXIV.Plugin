@@ -3,7 +3,6 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps;
 
-using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
@@ -12,14 +11,12 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
-using Dalamud.Utility;
-using Lumina.Excel.GeneratedSheets;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
 internal partial class EncounterManager : IDisposable
 {
     private readonly IDalamudServices services;
-    private readonly ObjectTable objectTable;
+    private readonly ObjectTable? objectTable;
     private readonly NetworkHandler networkHandler;
     private readonly ICommandInterface ci;
     private readonly Utils utils;
@@ -31,7 +28,7 @@ internal partial class EncounterManager : IDisposable
 
     private readonly uint[] damageReceivedProcs;
     private readonly uint[] limitBreaks;
-    private readonly RollingList<Encounter> encounterHistory = new(20, true);
+    private readonly RollingList<TerritoryEncounter> encounterHistory = new(20, true);
 
     private DateTime nextUpdate = DateTime.MinValue;
     private DateTime nextStatUpdate = DateTime.MinValue;
@@ -45,7 +42,7 @@ internal partial class EncounterManager : IDisposable
         this.configuration = configuration.Dps!;
 
         this.objectTable = services.ObjectTable;
-        Encounter.objectTable = services.ObjectTable;
+        Encounter.ObjectTable = services.ObjectTable;
 
         this.limitBreaks = services.DataManager.GetExcelSheet<Action>()?.Where(a => a.ActionCategory.Row == 9).Select(a => a.RowId).ToArray() ?? throw new AthavarPluginException();
 
@@ -60,9 +57,21 @@ internal partial class EncounterManager : IDisposable
 
     public RollingList<string> Log { get; } = new(100, true);
 
-    public IReadOnlyList<Encounter> EncounterHistory => this.encounterHistory;
+    public IReadOnlyList<TerritoryEncounter> EncounterHistory => this.encounterHistory;
 
     public Encounter? CurrentEncounter { get; private set; } = new();
+
+    public TerritoryEncounter? CurrentTerritoryEncounter { get; private set; }
+
+    public void ResizeHistory(int max)
+    {
+        if (max <= 1)
+        {
+            throw new ArgumentException(null, nameof(max));
+        }
+
+        this.encounterHistory.Resize(max);
+    }
 
     public void Dispose()
     {
@@ -70,61 +79,42 @@ internal partial class EncounterManager : IDisposable
         this.networkHandler.CombatEvent -= this.OnCombatEvent;
     }
 
-    public Encounter? GetEncounter(int index = -1)
+    public BaseEncounter? GetEncounter(int territoryIndex = -1, int encounterIndex = -1)
     {
-        if (index >= 0 && index < this.encounterHistory.Count)
+        TerritoryEncounter? territory;
+        var historyCount = this.encounterHistory.Count;
+        if (0 <= territoryIndex && territoryIndex < historyCount)
         {
-            return this.encounterHistory[index];
+            territory = this.encounterHistory[territoryIndex];
         }
-
-        if (this.CurrentEncounter?.IsValid() == true)
+        else if (this.CurrentEncounter?.IsValid() == true)
         {
             return this.CurrentEncounter;
         }
-
-        return this.encounterHistory.Count > 0 ? this.encounterHistory[0] : null;
-    }
-
-    public void EndEncounter(bool inValid = false)
-    {
-        if (this.CurrentEncounter is null)
+        else if (this.encounterHistory.Count > 0)
         {
-            return;
+            territory = this.encounterHistory.First();
+            encounterIndex = territory.Encounters.Count - 1;
+        }
+        else
+        {
+            return null;
         }
 
-        var ce = this.CurrentEncounter;
-        this.CurrentEncounter = new Encounter();
-
-        if (!inValid && ce.IsValid())
+        var encounterCount = territory.Encounters.Count;
+        if (0 <= encounterIndex && encounterIndex < encounterCount)
         {
-            ce.End = ce.LastEvent;
-            this.encounterHistory.Add(ce);
+            return territory.Encounters[encounterIndex];
         }
+
+        return territory;
     }
 
     public void Clear()
     {
         this.encounterHistory.Clear();
         this.CurrentEncounter = new Encounter();
-    }
-
-    [MemberNotNull(nameof(CurrentEncounter))]
-    private void StartEncounter(DateTime? time = null)
-    {
-        if (this.CurrentEncounter is not null)
-        {
-            this.EndEncounter();
-        }
-
-        var territory = this.services.ClientState.TerritoryType;
-        var territoryName = this.services.DataManager.GetExcelSheet<TerritoryType>()?.GetRow(territory)?.PlaceName.Value?.Name.ToDalamudString();
-        var start = time ?? DateTime.Now;
-        this.CurrentEncounter = new Encounter(territoryName?.ToString() ?? string.Empty, territory)
-        {
-            Start = start,
-            LastEvent = start,
-            LastDamageEvent = start,
-        };
+        this.CurrentTerritoryEncounter = null;
     }
 
     private void Update(Framework framework)
@@ -140,24 +130,38 @@ internal partial class EncounterManager : IDisposable
         if (now >= this.nextStatUpdate)
         {
             this.nextStatUpdate = now.AddMilliseconds(100);
-            ce.CalcEncounterStats();
+            ce.CalcStats(this.configuration.PartyFilter);
+
+            if (!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now)
+            {
+                this.EndEncounter();
+                this.UpdateCurrentTerritoryEncounter();
+            }
+            else if (this.CurrentTerritoryEncounter is not null && this.CurrentTerritoryEncounter.Territory != this.ci.GetCurrentTerritory())
+            {
+                this.EndEncounter();
+                this.EndCurrentTerritoryEncounter();
+            }
         }
 
         if (now >= this.nextUpdate)
         {
             this.nextUpdate = now.AddSeconds(1);
 
-            if ((!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now) || ce.Territory != this.ci.GetCurrentTerritory())
-            {
-                this.EndEncounter();
-            }
-
             ce.UpdateParty(this.configuration, this.services);
 
             if (!ce.IsValid())
             {
                 this.EndEncounter(true);
+                return;
             }
+
+            if (!ce.AddedToTerritoryEncounter)
+            {
+                this.AddEncounterToCurrentTerritoryEncounter(ce);
+            }
+
+            this.UpdateCurrentTerritoryEncounter();
         }
     }
 }

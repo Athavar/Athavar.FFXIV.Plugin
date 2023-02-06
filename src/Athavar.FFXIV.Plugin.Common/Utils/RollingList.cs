@@ -21,9 +21,9 @@ public class RollingList<T> : IReadOnlyList<T>
         this.MaximumCount = maximumCount;
     }
 
-    public int MaximumCount { get; }
-
     public int Count => this.list.Count;
+
+    public int MaximumCount { get; private set; }
 
     public T this[int index]
     {
@@ -57,6 +57,27 @@ public class RollingList<T> : IReadOnlyList<T>
             }
 
             this.list.AddLast(value);
+        }
+    }
+
+    public void Resize(int newMaximumCount)
+    {
+        if (newMaximumCount <= 0)
+        {
+            throw new ArgumentException(null, nameof(newMaximumCount));
+        }
+
+        this.MaximumCount = newMaximumCount;
+        while (this.Count > this.MaximumCount)
+        {
+            if (this.reversed)
+            {
+                this.list.RemoveLast();
+            }
+            else
+            {
+                this.list.RemoveFirst();
+            }
         }
     }
 

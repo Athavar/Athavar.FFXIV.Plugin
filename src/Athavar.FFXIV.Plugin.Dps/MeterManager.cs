@@ -95,7 +95,7 @@ internal class MeterManager : IDisposable
         ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
         if (ImGui.Begin("DpsModule_Root", MainWindowFlags))
         {
-            foreach (var meter in this.Meters)
+            foreach (var meter in this.Meters.Where(m => m.Enabled))
             {
                 meter.Draw(this.origin);
             }

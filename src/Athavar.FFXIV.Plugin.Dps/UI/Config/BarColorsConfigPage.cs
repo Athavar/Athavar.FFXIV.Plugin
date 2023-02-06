@@ -58,6 +58,7 @@ internal class BarColorsConfigPage : IConfigPage
                Job.Summoner => this.Config.SMNColor,
                Job.RedMage => this.Config.RDMColor,
                Job.BlueMage => this.Config.BLUColor,
+
                _ => this.Config.UKNColor,
            };
 
@@ -217,6 +218,12 @@ internal class BarColorsConfigPage : IConfigPage
             }
 
             if (this.ColorPick("ACN", this.Config.ACNColor.Vector, x => this.Config.ACNColor.Vector = x))
+            {
+                change = true;
+            }
+
+            ImGui.NewLine();
+            if (this.ColorPick("Other", this.Config.UKNColor.Vector, x => this.Config.UKNColor.Vector = x))
             {
                 change = true;
             }

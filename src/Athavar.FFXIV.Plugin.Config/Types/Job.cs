@@ -46,5 +46,9 @@ public enum Job : uint
     Dancer = 38,
     Reaper = 39,
     Sage = 40,
-    Chocobo = 41,
+
+    // non existing Jobs.
+    Pets = 89,
+    Chocobo = 99,
+    LimitBreak = 100,
 }

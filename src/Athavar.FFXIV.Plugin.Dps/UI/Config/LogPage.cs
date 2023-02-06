@@ -6,6 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Dps.Data;
 using ImGuiNET;
 
 internal class LogPage : IConfigPage
@@ -27,9 +28,50 @@ internal class LogPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
+        this.DrawHistory();
+        return;
         this.DrawDpsTable();
         ImGui.Separator();
         this.DrawLogs();
+    }
+
+    private void DrawHistory()
+    {
+        void DrawEncounter(BaseEncounter? encounter, int level = 1)
+        {
+            if (encounter is null || !encounter.IsValid())
+            {
+                return;
+            }
+
+            var ally = encounter.GetAllyCombatants().ToList();
+            ImGuiEx.DrawNestIndicator(level);
+            ImGui.SameLine();
+            ImGui.TextUnformatted($"{encounter.Start:t} {encounter.Duration:t}  {encounter.Title} Ally:{ally.Count} Combatant:{encounter.GetCombatants().Count()}");
+            foreach (var combatant in ally)
+            {
+                ImGuiEx.DrawNestIndicator(level + 1);
+                ImGui.SameLine();
+                ImGui.TextUnformatted($"{combatant.Name} - {combatant.DamageTotal}");
+            }
+
+            if (encounter is TerritoryEncounter territoryEncounter)
+            {
+                ImGuiEx.DrawNestIndicator(level);
+                ImGui.SameLine();
+                ImGui.TextUnformatted("Encounter:");
+                foreach (var territoryEncounterEncounter in territoryEncounter.Encounters)
+                {
+                    DrawEncounter(territoryEncounterEncounter, level + 1);
+                }
+            }
+        }
+
+        ImGui.TextUnformatted("Current Encounter:");
+        DrawEncounter(this.encounterManager.CurrentEncounter);
+
+        ImGui.TextUnformatted("Current Territory:");
+        DrawEncounter(this.encounterManager.CurrentTerritoryEncounter);
     }
 
     private void DrawDpsTable()
@@ -57,7 +99,7 @@ internal class LogPage : IConfigPage
             ImGui.TableSetupScrollFreeze(0, 1);
             ImGui.TableHeadersRow();
 
-            foreach (var combatant in encounter.AllyCombatants)
+            foreach (var combatant in encounter.GetAllyCombatants())
             {
                 ImGui.TableNextRow();
                 var row = new object[8];

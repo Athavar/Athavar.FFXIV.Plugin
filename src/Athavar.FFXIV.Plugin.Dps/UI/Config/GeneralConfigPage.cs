@@ -46,6 +46,11 @@ internal class GeneralConfigPage : IConfigPage
                 change = true;
             }
 
+            if (ImGuiEx.Checkbox("Enable", c.Enabled, x => c.Enabled = x))
+            {
+                change = true;
+            }
+
             if (ImGuiEx.Checkbox("Lock", c.Lock, x => c.Lock = x))
             {
                 change = true;

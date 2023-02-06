@@ -56,7 +56,7 @@ internal class BarConfigPage : IConfigPage
         ImDrawListPtr drawList,
         Vector2 localPos,
         Vector2 size,
-        Combatant combatant,
+        BaseCombatant baseCombatant,
         ConfigColor jobColor,
         ConfigColor barColor,
         int barCount,
@@ -69,19 +69,19 @@ internal class BarConfigPage : IConfigPage
         drawList.AddRectFilled(localPos, localPos + barFillSize, this.Config.UseJobColor ? jobColor.Base : barColor.Base);
 
         var textOffset = 5f;
-        if (this.Config.ShowJobIcon && combatant.Job != Job.Adventurer)
+        if (this.Config.ShowJobIcon && baseCombatant.Job != Job.Adventurer)
         {
             var iconSize = Math.Min(barHeight, size.X / 4);
             var iconTopOffset = (barHeight - iconSize) / 2;
             var iconPos = localPos with { Y = localPos.Y + iconTopOffset };
             var jobIconSize = Vector2.One * iconSize;
-            this.DrawJobIcon(combatant.Job, (JobIconStyle)this.Config.JobIconStyle, iconPos + this.Config.JobIconOffset, jobIconSize, drawList);
+            this.DrawJobIcon(baseCombatant.Job, (JobIconStyle)this.Config.JobIconStyle, iconPos + this.Config.JobIconOffset, jobIconSize, drawList);
             textOffset = iconSize;
         }
 
         if (this.Config.ShowRankText)
         {
-            var rankText = combatant.GetFormattedString($"{this.Config.RankTextFormat}", this.Config.ThousandsSeparators ? "N" : "F");
+            var rankText = baseCombatant.GetFormattedString($"{this.Config.RankTextFormat}", this.Config.ThousandsSeparators ? "N" : "F");
             using (FontsManager.PushFont(this.Config.RankTextFontKey))
             {
                 textOffset += ImGui.CalcTextSize("00.").X;
@@ -100,7 +100,7 @@ internal class BarConfigPage : IConfigPage
 
         using (FontsManager.PushFont(this.Config.BarNameFontKey))
         {
-            var leftText = combatant.GetFormattedString($" {this.Config.LeftTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
+            var leftText = baseCombatant.GetFormattedString($" {this.Config.LeftTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
             var nameTextSize = ImGui.CalcTextSize(leftText);
             var namePos = Utils.GetAnchoredPosition(localPos, -barSize, DrawAnchor.Left);
             namePos = Utils.GetAnchoredPosition(namePos, nameTextSize, DrawAnchor.Left) + this.Config.LeftTextOffset;
@@ -115,7 +115,7 @@ internal class BarConfigPage : IConfigPage
 
         using (FontsManager.PushFont(this.Config.BarDataFontKey))
         {
-            var rightText = combatant.GetFormattedString($" {this.Config.RightTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
+            var rightText = baseCombatant.GetFormattedString($" {this.Config.RightTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
             var dataTextSize = ImGui.CalcTextSize(rightText);
             var dataPos = Utils.GetAnchoredPosition(localPos, -barSize, DrawAnchor.Right);
             dataPos = Utils.GetAnchoredPosition(dataPos, dataTextSize, DrawAnchor.Right) + this.Config.RightTextOffset;
@@ -135,7 +135,9 @@ internal class BarConfigPage : IConfigPage
     {
         var fontOptions = FontsManager.GetFontList();
         if (fontOptions.Length == 0)
+        {
             return;
+        }
 
         if (ImGui.BeginChild($"##{this.Name}", new Vector2(size.X, size.Y), true))
         {
@@ -204,7 +206,9 @@ internal class BarConfigPage : IConfigPage
                 }
 
                 if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip(Utils.GetTagsTooltip(Combatant.TextTags));
+                {
+                    ImGui.SetTooltip(Utils.GetTagsTooltip(BaseCombatant.TextTags));
+                }
 
                 ImGuiEx.DrawNestIndicator(1);
                 if (ImGuiEx.Combo("Rank Text Align", this.Config.RankTextAlign, x => this.Config.RankTextAlign = x, AnchorOptions))
@@ -276,7 +280,9 @@ internal class BarConfigPage : IConfigPage
             }
 
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip(Utils.GetTagsTooltip(Combatant.TextTags));
+            {
+                ImGui.SetTooltip(Utils.GetTagsTooltip(BaseCombatant.TextTags));
+            }
 
             if (ImGuiEx.DragFloat2("Left Text Offset", this.Config.LeftTextOffset, x => this.Config.LeftTextOffset = x))
             {
@@ -334,7 +340,9 @@ internal class BarConfigPage : IConfigPage
             }
 
             if (ImGui.IsItemHovered())
-                ImGui.SetTooltip(Utils.GetTagsTooltip(Combatant.TextTags));
+            {
+                ImGui.SetTooltip(Utils.GetTagsTooltip(BaseCombatant.TextTags));
+            }
 
             if (ImGuiEx.DragFloat2("Right Text Offset", this.Config.RightTextOffset, x => this.Config.RightTextOffset = x))
             {
@@ -401,7 +409,9 @@ internal class BarConfigPage : IConfigPage
     private void DrawJobIcon(Job job, JobIconStyle style, Vector2 position, Vector2 size, ImDrawListPtr drawList)
     {
         if (!this.iconManager.TryGetJobIcon(job, style, true, out var tex))
+        {
             return;
+        }
 
         drawList.AddImage(tex.ImGuiHandle, position, position + size, Vector2.Zero, Vector2.One);
     }

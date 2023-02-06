@@ -3,73 +3,34 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Logging;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 
-internal class Encounter
+internal class Encounter : BaseEncounter<Combatant>
 {
-    [JsonIgnore]
-    public static readonly string[] TextTags = typeof(Encounter).GetProperties().Select(x => $"[{x.Name.ToLower()}]").ToArray();
-
-    public readonly List<Combatant> Combatants = new();
-
-    public readonly ushort Territory;
-
-    public readonly string TerritoryName;
-
-    public string? Title;
-
-    public List<Combatant> AllyCombatants = new();
-
-    public DateTime Start = DateTime.MinValue;
-
-    public DateTime LastEvent;
-
-    public DateTime LastDamageEvent;
-
-    public DateTime? End;
-
-    internal static ObjectTable objectTable;
-
-    [JsonIgnore]
-    private static readonly Dictionary<string, PropertyInfo> Fields = typeof(Encounter).GetProperties().ToDictionary(x => x.Name.ToLower());
+    internal static ObjectTable? ObjectTable;
 
     private readonly Dictionary<uint, Combatant> combatantMapping = new();
 
     public Encounter()
-        : this(string.Empty, 0)
     {
     }
 
-    public Encounter(string territoryName, ushort territory)
+    public Encounter(string territoryName, ushort territory, DateTime start)
+        : base(territoryName, territory, start)
     {
-        this.TerritoryName = territoryName;
-        this.Territory = territory;
     }
 
-    public TimeSpan Duration => this.End is null ? this.LastEvent - this.Start : this.End.Value - this.Start;
+    public override string Name => $"{this.TerritoryName.AsSpan()} — {this.Title}";
 
-    public double Dps { get; private set; }
-
-    public double Hps { get; private set; }
-
-    public ulong DamageTotal { get; private set; }
-
-    public int Deaths { get; private set; }
-
-    public int Kills { get; private set; }
-
-    public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
+    public bool AddedToTerritoryEncounter { get; private set; }
 
     public Combatant? GetCombatant(uint objectId)
     {
@@ -80,18 +41,19 @@ internal class Encounter
 
         if (objectId == uint.MaxValue)
         {
-            combatant = new Combatant(this)
+            combatant = new Combatant(this, uint.MaxValue, 0)
             {
                 Name = "Limit Break",
                 Level = 9999,
                 PartyType = PartyType.Party,
+                Job = Job.LimitBreak,
             };
             this.Combatants.Add(combatant);
 
             goto end;
         }
 
-        var gameObject = objectTable.SearchById(objectId);
+        var gameObject = ObjectTable.SearchById(objectId);
 
         if (gameObject is PlayerCharacter playerCharacter)
         {
@@ -99,9 +61,8 @@ internal class Encounter
             var nameSplits = name.Split(" ", 2);
 
             // create new battle player
-            combatant = new Combatant(this)
+            combatant = new Combatant(this, objectId, 0)
             {
-                ObjectId = objectId,
                 Name = name,
                 Name_First = nameSplits[0],
                 Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
@@ -130,7 +91,7 @@ internal class Encounter
                 uint oid = 0;
                 uint ownerId = 0;
                 var name = battleNpc.Name.ToString();
-                var ownerObject = objectTable.SearchById(battleNpc.OwnerId);
+                var ownerObject = ObjectTable.SearchById(battleNpc.OwnerId);
                 if (ownerObject is not null)
                 {
                     name = $"{name} ({ownerObject.Name})";
@@ -139,14 +100,12 @@ internal class Encounter
                 }
 
                 // create new battle npc
-                combatant = new Combatant(this)
+                combatant = new Combatant(this, oid, battleNpc.DataId)
                 {
-                    ObjectId = oid,
-                    DataId = battleNpc.DataId,
                     OwnerId = ownerId,
                     Name = name,
                     Name_First = name,
-                    Job = (Job)battleNpc.ClassJob.Id,
+                    Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
                     Level = battleNpc.Level,
                     WorldId = 0,
                     WorldName = string.Empty,
@@ -177,7 +136,7 @@ internal class Encounter
 
         // PluginLog.LogInformation($"UpdateParty: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
         var combatants = this.Combatants;
-        this.Title = $"{this.TerritoryName} - {combatants.Where(c => c.Kind == BattleNpcSubKind.Enemy).MaxBy(c => c.DamageTotal)?.Name}";
+        this.Title = $"{combatants.Where(c => c.Kind == BattleNpcSubKind.Enemy).MaxBy(c => c.DamageTotal)?.Name}";
         foreach (var combatant in combatants.Where(c => c.ObjectId != 0))
         {
             if (combatant.ObjectId == player)
@@ -194,18 +153,14 @@ internal class Encounter
         {
             chocobo.PartyType = combatants.Find(c => c.ObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;
         }
-
-        var filter = configuration.PartyFilter;
-        this.AllyCombatants = combatants
-           .Where(c => c is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 } && c.Kind != BattleNpcSubKind.Enemy)
-           .Where(c => c.PartyType <= filter)
-           .ToList();
-
-        PluginLog.Information(string.Join(',', this.Combatants.Select(c => $"{c.Name} -> {c.PartyType}")));
     }
 
-    public void CalcEncounterStats()
+    public override bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);
+
+    public override void CalcStats(PartyType filter)
     {
+        this.AllyCombatants = this.GetFilteredCombatants(filter);
+
         var combatants = this.AllyCombatants;
         double dps = 0;
         double hps = 0;
@@ -214,7 +169,7 @@ internal class Encounter
         var kills = 0;
         foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
         {
-            combatant.CalcPreCombatantStats();
+            combatant.CalcStats();
             dps += combatant.Dps;
             hps += combatant.Hps;
             damageTotal += combatant.DamageTotal;
@@ -229,9 +184,15 @@ internal class Encounter
         this.Kills = kills;
         foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
         {
-            combatant.CalcCombatantStats();
+            combatant.PostCalcStats();
         }
     }
 
-    public bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);
+    public void SetTerritoryEncounter()
+    {
+        if (this.AddedToTerritoryEncounter is false)
+        {
+            this.AddedToTerritoryEncounter = true;
+        }
+    }
 }

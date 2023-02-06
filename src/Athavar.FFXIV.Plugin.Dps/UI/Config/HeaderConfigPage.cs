@@ -47,7 +47,7 @@ internal class HeaderConfigPage : IConfigPage
 
     public IConfig GetConfig() => this.Config;
 
-    public (Vector2, Vector2) DrawHeader(Vector2 pos, Vector2 size, Encounter? encounter, ImDrawListPtr drawList)
+    public (Vector2, Vector2) DrawHeader(Vector2 pos, Vector2 size, BaseEncounter? encounter, ImDrawListPtr drawList)
     {
         if (!this.Config.ShowHeader)
         {
@@ -92,7 +92,7 @@ internal class HeaderConfigPage : IConfigPage
         {
             using (FontsManager.PushFont(this.Config.NameFontKey))
             {
-                var name = $" {encounter.Title}";
+                var name = $" {encounter.Name}";
                 var nameSize = ImGui.CalcTextSize(name);
 
                 if (durationSize.X + raidStatsSize.X + nameSize.X > size.X)
@@ -290,7 +290,7 @@ internal class HeaderConfigPage : IConfigPage
 
                     if (ImGui.IsItemHovered())
                     {
-                        ImGui.SetTooltip(Utils.GetTagsTooltip(Encounter.TextTags));
+                        ImGui.SetTooltip(Utils.GetTagsTooltip(BaseEncounter.TextTags));
                     }
 
                     ImGuiEx.DrawNestIndicator(2);

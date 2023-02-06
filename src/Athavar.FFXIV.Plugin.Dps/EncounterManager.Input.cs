@@ -45,6 +45,11 @@ internal partial class EncounterManager
             case CombatEvent.DeferredEvent deferredEvent:
             {
                 var effect = deferredEvent.EffectEvent;
+                if (effect is null)
+                {
+                    return;
+                }
+
                 actor = encounter.GetCombatant(effect.SourceId);
                 if (actor is null)
                 {
@@ -128,7 +133,7 @@ internal partial class EncounterManager
                     source.DamageTotal += damageTakenEvent.Amount;
                 }
 
-                encounter.LastEvent = encounter.LastDamageEvent = @event.Timestamp;
+                this.UpdateLastEvent(encounter, @event.Timestamp, true);
 
                 this.Log.Add($"[{@event.Timestamp:O}] Damage: {source} -> {target} => {damageTakenEvent.Amount}");
 
@@ -143,7 +148,7 @@ internal partial class EncounterManager
                 }
 
                 source.DamageTotal += dotEvent.Amount;
-                encounter.LastEvent = @event.Timestamp;
+                this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"[{@event.Timestamp:O}] Dot: {source} -> {target} => {dotEvent.Amount}");
                 break;
@@ -152,7 +157,7 @@ internal partial class EncounterManager
             {
                 target = encounter.GetCombatant(hotEvent.TargetId);
                 this.ApplyHeal(source, target, hotEvent.TargetId, hotEvent.Amount);
-                encounter.LastEvent = @event.Timestamp;
+                this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"[{@event.Timestamp:O}] Hot: {source} -> {target} => {hotEvent.Amount}");
                 break;
@@ -167,8 +172,6 @@ internal partial class EncounterManager
                     // check heal proc
                     if (healEvent.IsSourceEntry)
                     {
-                        var status = source.StatusList.LastOrDefault(x => this.damageDealtHealProcs.Contains(x.StatusId));
-                        this.Log.Add($"Prop Prog? {status} {status?.Timestamp.AddSeconds(status.Duration + 1):T} {action.Timestamp:T}");
                         var effect = source.StatusList.LastOrDefault(x => this.damageDealtHealProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
@@ -204,7 +207,7 @@ internal partial class EncounterManager
                 source = encounter.GetCombatant(healEvent.SourceId);
                 target = encounter.GetCombatant(healEvent.TargetId);
                 this.ApplyHeal(source, target, targetId, healEvent.Amount);
-                encounter.LastEvent = @event.Timestamp;
+                this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"[{@event.Timestamp:O}] Heal: {source} -> {target} => {healEvent.Amount}");
 
@@ -226,11 +229,20 @@ internal partial class EncounterManager
             target.HealingTaken += healAmount;
         }
 
-        var gameObject = this.objectTable.SearchById(targetId);
+        var gameObject = this.objectTable?.SearchById(targetId);
         if (gameObject is BattleChara battleChara)
         {
             var missingHp = battleChara.CurrentHp > battleChara.MaxHp ? 0U : battleChara.MaxHp - battleChara.CurrentHp;
             source.OverHealTotal += healAmount < missingHp ? 0U : healAmount - missingHp;
+        }
+    }
+
+    private void UpdateLastEvent(Encounter encounter, DateTime time, bool isDamage = false)
+    {
+        encounter.LastEvent = time;
+        if (isDamage)
+        {
+            encounter.LastDamageEvent = time;
         }
     }
 }
