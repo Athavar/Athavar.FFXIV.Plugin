@@ -38,6 +38,8 @@ internal abstract class BaseEncounter
 
     public DateTime Start { get; }
 
+    public string? TitleStart => $"{this.Start:T} — {this.Title}";
+
     public virtual string? Title { get; set; }
 
     public DateTime LastEvent { get; set; }

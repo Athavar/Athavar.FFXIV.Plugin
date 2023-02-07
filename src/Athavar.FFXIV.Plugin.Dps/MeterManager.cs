@@ -45,8 +45,6 @@ internal class MeterManager : IDisposable
         this.services.PluginInterface.UiBuilder.Draw += this.Draw;
     }
 
-    public bool MetersDisabled { get; private set; } = true;
-
     public Opcode[] MissingOpCodes { get; private set; } = Array.Empty<Opcode>();
 
     public List<MeterWindow> Meters { get; private set; } = new();
@@ -115,7 +113,7 @@ internal class MeterManager : IDisposable
 
     private bool CheckRequiredOpcodes()
     {
-        if (!this.MetersDisabled)
+        if (this.MissingOpCodes.Length == 0)
         {
             return true;
         }
@@ -132,9 +130,8 @@ internal class MeterManager : IDisposable
 
         this.MissingOpCodes = missing.ToArray();
 
-        if (!missing.Any())
+        if (this.MissingOpCodes.Length == 0)
         {
-            this.MetersDisabled = false;
             return true;
         }
 

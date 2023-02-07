@@ -42,7 +42,7 @@ internal class DpsTab : Tab, IDpsTab
 
     public override void Draw()
     {
-        if (this.meterManager.MetersDisabled)
+        if (this.meterManager.MissingOpCodes.Length != 0)
         {
             ImGui.Text("Missing Opcodes. Please use the OpcodeWizard-Module do find following opcode:");
             foreach (var opcode in this.meterManager.MissingOpCodes)

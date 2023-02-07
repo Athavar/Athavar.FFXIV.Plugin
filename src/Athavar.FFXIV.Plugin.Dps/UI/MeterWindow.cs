@@ -317,7 +317,7 @@ internal class MeterWindow : IConfigurable
             for (var i = 0; i < territories.Count; i++)
             {
                 var territory = territories[i];
-                if (ImGui.BeginMenu($"{territory.Start:T} — {territory.Title}"))
+                if (ImGui.BeginMenu(territory.TitleStart))
                 {
                     if (ImGui.Selectable($"All — {territory.Duration:hh\\mm\\:ss\\.ff}"))
                     {

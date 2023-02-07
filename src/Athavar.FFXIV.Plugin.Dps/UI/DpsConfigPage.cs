@@ -11,6 +11,7 @@ internal class DpsConfigPage : IConfigurable
     public DpsConfigPage(IServiceProvider provider, MeterManager meterManager, Configuration configuration, EncounterManager encounterManager, NetworkHandler networkHandler)
     {
         this.ProfileListConfigPage = new ProfileListConfigPage(meterManager, provider);
+        this.HistoryPage = new HistoryPage(encounterManager);
         this.SettingsConfigPage = new SettingsConfigPage(configuration.Dps!);
 
 #if DEBUG
@@ -26,6 +27,8 @@ internal class DpsConfigPage : IConfigurable
 
     private ProfileListConfigPage ProfileListConfigPage { get; }
 
+    private HistoryPage HistoryPage { get; }
+
     private SettingsConfigPage SettingsConfigPage { get; }
 
 #if DEBUG
@@ -35,6 +38,7 @@ internal class DpsConfigPage : IConfigurable
     public IEnumerable<IConfigPage> GetConfigPages()
     {
         yield return this.ProfileListConfigPage;
+        yield return this.HistoryPage;
         yield return this.SettingsConfigPage;
 #if DEBUG
         yield return this.LogPage;

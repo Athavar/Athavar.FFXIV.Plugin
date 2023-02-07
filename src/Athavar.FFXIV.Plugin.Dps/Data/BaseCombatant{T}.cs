@@ -21,8 +21,9 @@ internal abstract class BaseCombatant<T> : BaseCombatant
 
     public override void CalcStats()
     {
-        this.Dps = this.Encounter.Duration.TotalSeconds == 0 ? this.DamageTotal : Math.Round(this.DamageTotal / this.Encounter.Duration.TotalSeconds, 2);
-        this.Hps = this.Encounter.Duration.TotalSeconds == 0 ? this.HealingTotal : Math.Round(this.HealingTotal / this.Encounter.Duration.TotalSeconds, 2);
+        var duration = this.Encounter.Duration.TotalSeconds >= 1 ? this.Encounter.Duration.TotalSeconds : 1;
+        this.Dps = Math.Round(this.DamageTotal / duration, 2);
+        this.Hps = Math.Round(this.HealingTotal / duration, 2);
         this.EffectiveHealing = this.HealingTotal - this.OverHealTotal;
         this.OverHealPct = this.HealingTotal == 0 ? 0 : Math.Round(((double)this.OverHealTotal / this.HealingTotal) * 100, 2);
     }
