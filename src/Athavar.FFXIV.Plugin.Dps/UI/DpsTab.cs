@@ -10,7 +10,6 @@ using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
-using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;
@@ -22,23 +21,16 @@ internal class DpsTab : Tab, IDpsTab
     private const float NavBarHeight = 40;
     private readonly MeterManager meterManager;
     private readonly IDalamudServices dalamudServices;
-    private readonly IOpcodeManager opcodeManager;
 
     private readonly Stack<IConfigurable> configStack = new();
-
-    private readonly Opcode[] requiredOpcodes = { Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl };
-
     private bool back;
     private bool home;
     private string inputName = string.Empty;
 
-    private bool verifyOpcodes;
-
-    public DpsTab(IServiceProvider provider, IDalamudServices dalamudServices, MeterManager meterManager, IOpcodeManager opcodeManager)
+    public DpsTab(IServiceProvider provider, IDalamudServices dalamudServices, MeterManager meterManager)
     {
         this.meterManager = meterManager;
         this.dalamudServices = dalamudServices;
-        this.opcodeManager = opcodeManager;
         this.configStack.Push(ActivatorUtilities.CreateInstance<DpsConfigPage>(provider));
     }
 
@@ -50,8 +42,14 @@ internal class DpsTab : Tab, IDpsTab
 
     public override void Draw()
     {
-        if (!this.CheckRequiredOpcodes())
+        if (this.meterManager.MetersDisabled)
         {
+            ImGui.Text("Missing Opcodes. Please use the OpcodeWizard-Module do find following opcode:");
+            foreach (var opcode in this.meterManager.MissingOpCodes)
+            {
+                ImGui.TextColored(ImGuiColors.DalamudRed, opcode.AsText());
+            }
+
             return;
         }
 
@@ -98,38 +96,6 @@ internal class DpsTab : Tab, IDpsTab
     {
         this.configStack.Push(configItem);
         this.inputName = configItem.Name;
-    }
-
-    private bool CheckRequiredOpcodes()
-    {
-        if (this.verifyOpcodes)
-        {
-            return true;
-        }
-
-        List<Opcode> missing = new();
-        foreach (var requiredOpcode in this.requiredOpcodes)
-        {
-            var code = this.opcodeManager.GetOpcode(requiredOpcode);
-            if (code == default)
-            {
-                missing.Add(requiredOpcode);
-            }
-        }
-
-        if (!missing.Any())
-        {
-            this.verifyOpcodes = true;
-            return true;
-        }
-
-        ImGui.Text("Missing Opcodes. Please use the OpcodeWizard-Module do find following opcode:");
-        foreach (var opcode in missing)
-        {
-            ImGui.TextColored(ImGuiColors.DalamudRed, opcode.AsText());
-        }
-
-        return false;
     }
 
     private void DrawNavBar(IConfigPage? openPage, Vector2 size, float padX)

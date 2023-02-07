@@ -111,4 +111,6 @@ internal abstract class BaseCombatant
            };
 
     public abstract void CalcStats();
+
+    public bool IsEnemy() => this.Kind is BattleNpcSubKind.Enemy or (BattleNpcSubKind)1;
 }

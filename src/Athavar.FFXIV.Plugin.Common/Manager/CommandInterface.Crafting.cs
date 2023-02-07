@@ -143,6 +143,11 @@ internal partial class CommandInterface
     public unsafe int GetPercentHQ()
     {
         var addon = this.GetSynthesisAddon();
+        if (addon->AtkUnitBase.UldManager.NodeList[33]->IsVisible)
+        {
+            return 100;
+        }
+
         var step = this.GetNodeTextAsInt(addon->HQPercentage, "Could not parse percent hq number in the Synthesis addon");
         return step;
     }

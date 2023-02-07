@@ -25,14 +25,14 @@ internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
     public override string Name => this.TerritoryName;
 
     public override TimeSpan Duration => this.duration;
-    
+
     public TimeSpan DurationTotal => this.End is null ? this.LastEvent - this.Start : this.End.Value - this.Start;
 
     public override string? Title => this.TerritoryName;
 
     public void AddEncounter(Encounter encounter)
     {
-        encounter.SetTerritoryEncounter();
+        encounter.SetTerritoryEncounter(this);
         this.Encounters.Add(encounter);
         foreach (var combatant in encounter.Combatants)
         {
@@ -58,7 +58,6 @@ internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
         this.closed = true;
         this.End = this.Encounters.Last().End;
     }
-    
 
     public override void CalcStats(PartyType filter)
     {
@@ -79,7 +78,7 @@ internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
             deaths += encounter.Deaths;
             kills += encounter.Kills;
 
-            duration = duration.Add(this.Duration);
+            duration += encounter.Duration;
             this.LastEvent = encounter.LastEvent;
         }
 

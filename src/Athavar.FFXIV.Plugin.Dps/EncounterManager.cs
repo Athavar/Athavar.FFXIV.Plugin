@@ -134,6 +134,7 @@ internal partial class EncounterManager : IDisposable
 
             if (!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now)
             {
+                // if encounter is not valid, it will not life for 10 seconds because of nextUpdate
                 this.EndEncounter();
                 this.UpdateCurrentTerritoryEncounter();
             }
@@ -156,7 +157,7 @@ internal partial class EncounterManager : IDisposable
                 return;
             }
 
-            if (!ce.AddedToTerritoryEncounter)
+            if (ce.TerritoryEncounter is null)
             {
                 this.AddEncounterToCurrentTerritoryEncounter(ce);
             }

@@ -12,4 +12,6 @@ public class OpcodeWizardConfiguration : BasicModuleConfig
 
     [JsonPropertyName("GameVersion")]
     public string GameVersion { get; set; } = string.Empty;
+
+    public bool RemoteUpdate { get; set; }
 }

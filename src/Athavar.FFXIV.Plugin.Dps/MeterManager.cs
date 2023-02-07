@@ -7,6 +7,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
+using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Interface;
 using ImGuiNET;
 
@@ -25,22 +26,30 @@ internal class MeterManager : IDisposable
     private readonly DpsConfiguration configuration;
     private readonly IDalamudServices services;
     private readonly IPluginWindow pluginWindow;
+    private readonly IOpcodeManager opcodeManager;
 
     private readonly Vector2 origin = ImGui.GetMainViewport().Size / 2f;
+
+    private readonly Opcode[] requiredOpcodes = { Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl };
     private Lazy<DpsTab>? tab;
 
-    public MeterManager(Configuration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow)
+    public MeterManager(Configuration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow, IOpcodeManager opcodeManager)
     {
         this.configuration = configuration.Dps!;
         this.provider = provider;
         this.services = services;
         this.pluginWindow = pluginWindow;
+        this.opcodeManager = opcodeManager;
         this.Load();
 
         this.services.PluginInterface.UiBuilder.Draw += this.Draw;
     }
 
-    public List<MeterWindow> Meters { get; set; } = new();
+    public bool MetersDisabled { get; private set; } = true;
+
+    public Opcode[] MissingOpCodes { get; private set; } = Array.Empty<Opcode>();
+
+    public List<MeterWindow> Meters { get; private set; } = new();
 
     public void DeleteMeter(MeterWindow meter)
     {
@@ -85,7 +94,7 @@ internal class MeterManager : IDisposable
 
     private void Draw()
     {
-        if (!this.services.ClientState.IsLoggedIn)
+        if (!this.services.ClientState.IsLoggedIn || !this.CheckRequiredOpcodes())
         {
             return;
         }
@@ -102,5 +111,33 @@ internal class MeterManager : IDisposable
         }
 
         ImGui.End();
+    }
+
+    private bool CheckRequiredOpcodes()
+    {
+        if (!this.MetersDisabled)
+        {
+            return true;
+        }
+
+        List<Opcode> missing = new();
+        foreach (var requiredOpcode in this.requiredOpcodes)
+        {
+            var code = this.opcodeManager.GetOpcode(requiredOpcode);
+            if (code == default)
+            {
+                missing.Add(requiredOpcode);
+            }
+        }
+
+        this.MissingOpCodes = missing.ToArray();
+
+        if (!missing.Any())
+        {
+            this.MetersDisabled = false;
+            return true;
+        }
+
+        return false;
     }
 }

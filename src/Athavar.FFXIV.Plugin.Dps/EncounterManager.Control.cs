@@ -32,7 +32,7 @@ internal partial class EncounterManager
         {
             return;
         }
-        
+
         this.UpdateCurrentTerritoryEncounter();
         this.CurrentTerritoryEncounter.EndEncounter();
         this.CurrentTerritoryEncounter = null;
@@ -42,7 +42,7 @@ internal partial class EncounterManager
 
     private void AddEncounterToCurrentTerritoryEncounter(Encounter ce)
     {
-        if (ce.AddedToTerritoryEncounter)
+        if (ce.TerritoryEncounter is not null)
         {
             return;
         }

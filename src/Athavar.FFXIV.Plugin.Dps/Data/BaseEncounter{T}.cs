@@ -4,7 +4,6 @@
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Game.ClientState.Objects.Enums;
 
 internal abstract class BaseEncounter<T> : BaseEncounter
     where T : BaseCombatant
@@ -30,7 +29,7 @@ internal abstract class BaseEncounter<T> : BaseEncounter
 
     protected List<T> GetFilteredCombatants(PartyType filter)
         => this.Combatants
-           .Where(c => c is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 } && c.Kind != BattleNpcSubKind.Enemy)
+           .Where(c => c is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 } && !c.IsEnemy())
            .Where(c => c.PartyType <= filter)
            .ToList();
 }

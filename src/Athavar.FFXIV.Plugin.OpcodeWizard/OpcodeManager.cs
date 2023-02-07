@@ -1,7 +1,10 @@
 ﻿namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Dalamud.Logging;
 using Machina.FFXIV;
 
 internal class OpcodeManager : IOpcodeManager
@@ -15,7 +18,7 @@ internal class OpcodeManager : IOpcodeManager
     {
         this.configuration = configuration.OpcodeWizard!;
         this.definitionManager = definitionManager;
-        this.Populate();
+        _ = this.Populate();
     }
 
     public IReadOnlyDictionary<ushort, Opcode> Opcodes => this.opcodes;
@@ -48,18 +51,44 @@ internal class OpcodeManager : IOpcodeManager
         }
     }
 
-    private void Populate()
+    private async Task Populate()
     {
         void Add(Opcode opcode, ushort code) => this.opcodes.TryAdd(code, opcode);
+        void AddKeyValuePair(KeyValuePair<Opcode, ushort> keyValue) => Add(keyValue.Key, keyValue.Value);
 
         if (this.configuration.GameVersion != this.definitionManager.StartInfo.GameVersion?.ToString())
         {
             // reset
             this.configuration.Opcodes.Clear();
+            this.configuration.RemoteUpdate = false;
             this.configuration.GameVersion = this.definitionManager.StartInfo.GameVersion?.ToString() ?? string.Empty;
-
-            // TODO: download from repo.
             this.configuration.Save();
+        }
+
+        if (!this.configuration.RemoteUpdate)
+        {
+            try
+            {
+                var updateConfigString = await Dalamud.Utility.Util.HttpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
+                var updateConfig = JsonSerializer.Deserialize<UpdateConfig>(updateConfigString);
+                if (updateConfig?.GameVersion == this.configuration.GameVersion)
+                {
+                    foreach (var (key, value) in updateConfig.Opcodes)
+                    {
+                        this.configuration.Opcodes.TryAdd(key, value);
+                        Add(key, value);
+                    }
+
+                    PluginLog.LogInformation("Opcodes updated from Remote");
+
+                    this.configuration.RemoteUpdate = true;
+                    this.configuration.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                PluginLog.LogError(ex, "Fail to update Opcodes from Remote");
+            }
         }
 
         foreach (var (opcode, value) in this.configuration.Opcodes)
@@ -74,5 +103,14 @@ internal class OpcodeManager : IOpcodeManager
         // Add(Opcode.StatusEffectListPlayer, codes["StatusEffectList3"]);
         // Add(Opcode.StatusEffectListDouble, codes["BossStatusEffectList"]);
         // Add(Opcode.SpawnBoss, codes["NpcSpawn2"]);
+    }
+
+    private class UpdateConfig
+    {
+        [JsonPropertyName("Opcodes")]
+        public Dictionary<Opcode, ushort> Opcodes { get; set; } = new();
+
+        [JsonPropertyName("GameVersion")]
+        public string GameVersion { get; set; } = string.Empty;
     }
 }

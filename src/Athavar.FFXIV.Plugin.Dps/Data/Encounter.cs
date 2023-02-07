@@ -30,7 +30,7 @@ internal class Encounter : BaseEncounter<Combatant>
 
     public override string Name => $"{this.TerritoryName.AsSpan()} — {this.Title}";
 
-    public bool AddedToTerritoryEncounter { get; private set; }
+    public TerritoryEncounter? TerritoryEncounter { get; private set; }
 
     public Combatant? GetCombatant(uint objectId)
     {
@@ -53,7 +53,7 @@ internal class Encounter : BaseEncounter<Combatant>
             goto end;
         }
 
-        var gameObject = ObjectTable.SearchById(objectId);
+        var gameObject = ObjectTable?.SearchById(objectId);
 
         if (gameObject is PlayerCharacter playerCharacter)
         {
@@ -74,7 +74,6 @@ internal class Encounter : BaseEncounter<Combatant>
                 PartyType = PartyType.None,
                 Kind = BattleNpcSubKind.None,
             };
-            this.Combatants.Add(combatant);
         }
         else if (gameObject is BattleNpc battleNpc)
         {
@@ -91,7 +90,7 @@ internal class Encounter : BaseEncounter<Combatant>
                 uint oid = 0;
                 uint ownerId = 0;
                 var name = battleNpc.Name.ToString();
-                var ownerObject = ObjectTable.SearchById(battleNpc.OwnerId);
+                var ownerObject = ObjectTable?.SearchById(battleNpc.OwnerId);
                 if (ownerObject is not null)
                 {
                     name = $"{name} ({ownerObject.Name})";
@@ -113,10 +112,16 @@ internal class Encounter : BaseEncounter<Combatant>
                     PartyType = PartyType.None,
                     Kind = battleNpc.BattleNpcKind,
                 };
-
-                this.Combatants.Add(combatant);
             }
         }
+        else
+        {
+            // no known type. ignore.
+            return null;
+        }
+
+        this.Combatants.Add(combatant);
+        this.TerritoryEncounter?.AddCombatant(combatant);
 
         end:
 
@@ -153,6 +158,8 @@ internal class Encounter : BaseEncounter<Combatant>
         {
             chocobo.PartyType = combatants.Find(c => c.ObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;
         }
+
+        this.AllyCombatants = this.GetFilteredCombatants(configuration.PartyFilter);
     }
 
     public override bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);
@@ -188,11 +195,5 @@ internal class Encounter : BaseEncounter<Combatant>
         }
     }
 
-    public void SetTerritoryEncounter()
-    {
-        if (this.AddedToTerritoryEncounter is false)
-        {
-            this.AddedToTerritoryEncounter = true;
-        }
-    }
+    public void SetTerritoryEncounter(TerritoryEncounter encounter) => this.TerritoryEncounter ??= encounter;
 }
