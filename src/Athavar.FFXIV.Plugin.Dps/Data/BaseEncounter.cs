@@ -5,6 +5,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Athavar.FFXIV.Plugin.Config;
 
 internal abstract class BaseEncounter
 {
@@ -54,9 +55,15 @@ internal abstract class BaseEncounter
 
     public ulong DamageTotal { get; protected set; }
 
+    public ulong HealingTotal { get; protected set; }
+
+    public ulong DamageTaken { get; protected set; }
+
     public int Deaths { get; protected set; }
 
     public int Kills { get; protected set; }
+
+    public PartyType Filter { get; set; }
 
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 

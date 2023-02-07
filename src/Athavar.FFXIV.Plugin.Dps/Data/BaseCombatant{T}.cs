@@ -28,7 +28,7 @@ internal abstract class BaseCombatant<T> : BaseCombatant
         this.OverHealPct = this.HealingTotal == 0 ? 0 : Math.Round(((double)this.OverHealTotal / this.HealingTotal) * 100, 2);
     }
 
-    public virtual void PostCalcStats() => this.DamagePct = this.DamageTotal == 0 ? 0 : Math.Round(((double)this.DamageTotal / this.Encounter.DamageTotal) * 100, 2);
+    public override void PostCalcStats() => this.DamagePct = this.DamageTotal == 0 ? 0 : Math.Round(((double)this.DamageTotal / this.Encounter.DamageTotal) * 100, 2);
 
     public bool Equals(Combatant other)
     {

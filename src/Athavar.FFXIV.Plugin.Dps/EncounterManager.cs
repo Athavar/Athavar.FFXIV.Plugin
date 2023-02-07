@@ -130,7 +130,8 @@ internal partial class EncounterManager : IDisposable
         if (now >= this.nextStatUpdate)
         {
             this.nextStatUpdate = now.AddMilliseconds(100);
-            ce.CalcStats(this.configuration.PartyFilter);
+            ce.Filter = this.configuration.PartyFilter;
+            ce.CalcStats();
 
             if (!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now)
             {
@@ -149,7 +150,8 @@ internal partial class EncounterManager : IDisposable
         {
             this.nextUpdate = now.AddSeconds(1);
 
-            ce.UpdateParty(this.configuration, this.services);
+            ce.Filter = this.configuration.PartyFilter;
+            ce.UpdateParty(this.services);
 
             if (!ce.IsValid())
             {

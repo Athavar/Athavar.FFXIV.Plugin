@@ -38,7 +38,15 @@ internal partial class EncounterManager
         this.CurrentTerritoryEncounter = null;
     }
 
-    private void UpdateCurrentTerritoryEncounter() => this.CurrentTerritoryEncounter?.CalcStats(this.configuration.PartyFilter);
+    private void UpdateCurrentTerritoryEncounter()
+    {
+        var currentTerritoryEncounter = this.CurrentTerritoryEncounter;
+        if (currentTerritoryEncounter != null)
+        {
+            currentTerritoryEncounter.Filter = this.configuration.PartyFilter;
+            currentTerritoryEncounter.CalcStats();
+        }
+    }
 
     private void AddEncounterToCurrentTerritoryEncounter(Encounter ce)
     {

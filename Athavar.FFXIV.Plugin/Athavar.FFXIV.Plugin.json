@@ -6,7 +6,7 @@
   "RepoUrl": "https://github.com/Athavar/Athavar.FFXIV.Plugin",
   "ImageUrls": [],
   "IconUrl": "https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/plugins/Athavar.FFXIV.Plugin/images/icon.png",
-  "Changelog": "Version 2.0.7\n[dps] Add History Tab\n[dps] Limit dps/hps calculation in the first second\n\nVersion 2.0.6\n[opcodewizard] Add remote pull of opcodes\n[dps] fix duration of TerritoryEncounter\n[dps] fix that encounter is detected as invalid for filter set\nfix GetPercentHq for crafts without Hq possibility",
+  "Changelog": "Version 2.0.8\n[dps] fix multiple adding of Combatant in a singe encounter\n[dps] improve encounter stat calculation's\n\nVersion 2.0.7\n[dps] Add History Tab\n[dps] Limit dps/hps calculation in the first second\n\nVersion 2.0.6\n[opcodewizard] Add remote pull of opcodes\n[dps] fix duration of TerritoryEncounter\n[dps] fix that encounter is detected as invalid for filter set\nfix GetPercentHq for crafts without Hq possibility",
   "AcceptsFeedback": false,
   "IsThirdParty": true,
   "LoadRequiredState": 0,

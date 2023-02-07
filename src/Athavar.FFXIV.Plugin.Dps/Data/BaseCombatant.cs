@@ -112,5 +112,11 @@ internal abstract class BaseCombatant
 
     public abstract void CalcStats();
 
+    public abstract void PostCalcStats();
+
     public bool IsEnemy() => this.Kind is BattleNpcSubKind.Enemy or (BattleNpcSubKind)1;
+
+    public bool IsAlly(PartyType filter) => this.PartyType <= filter;
+
+    public bool IsActive() => this is not { DamageTaken: 0, HealingTotal: 0, DamageTotal: 0 };
 }

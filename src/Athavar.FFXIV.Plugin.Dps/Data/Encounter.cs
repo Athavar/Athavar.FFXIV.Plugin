@@ -3,7 +3,6 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
-using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.ClientState.Objects;
@@ -78,41 +77,43 @@ internal class Encounter : BaseEncounter<Combatant>
         else if (gameObject is BattleNpc battleNpc)
         {
             combatant = this.Combatants.FirstOrDefault(c => c.DataId == battleNpc.DataId);
-            if (combatant is null)
+            if (combatant is not null)
             {
-                if (battleNpc.BattleNpcKind == BattleNpcSubKind.Pet && battleNpc.OwnerId != battleNpc.ObjectId)
-                {
-                    // don't have health -> map to owner for effects.
-                    combatant = this.GetCombatant(battleNpc.OwnerId);
-                    goto end;
-                }
-
-                uint oid = 0;
-                uint ownerId = 0;
-                var name = battleNpc.Name.ToString();
-                var ownerObject = ObjectTable?.SearchById(battleNpc.OwnerId);
-                if (ownerObject is not null)
-                {
-                    name = $"{name} ({ownerObject.Name})";
-                    oid = battleNpc.ObjectId;
-                    ownerId = battleNpc.OwnerId;
-                }
-
-                // create new battle npc
-                combatant = new Combatant(this, oid, battleNpc.DataId)
-                {
-                    OwnerId = ownerId,
-                    Name = name,
-                    Name_First = name,
-                    Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
-                    Level = battleNpc.Level,
-                    WorldId = 0,
-                    WorldName = string.Empty,
-                    CurrentWorldId = 0,
-                    PartyType = PartyType.None,
-                    Kind = battleNpc.BattleNpcKind,
-                };
+                goto end;
             }
+
+            if (battleNpc.BattleNpcKind == BattleNpcSubKind.Pet && battleNpc.OwnerId != battleNpc.ObjectId)
+            {
+                // don't have health -> map to owner for effects.
+                combatant = this.GetCombatant(battleNpc.OwnerId);
+                goto end;
+            }
+
+            uint oid = 0;
+            uint ownerId = 0;
+            var name = battleNpc.Name.ToString();
+            var ownerObject = ObjectTable?.SearchById(battleNpc.OwnerId);
+            if (ownerObject is not null)
+            {
+                name = $"{name} ({ownerObject.Name})";
+                oid = battleNpc.ObjectId;
+                ownerId = battleNpc.OwnerId;
+            }
+
+            // create new battle npc
+            combatant = new Combatant(this, oid, battleNpc.DataId)
+            {
+                OwnerId = ownerId,
+                Name = name,
+                Name_First = name,
+                Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
+                Level = battleNpc.Level,
+                WorldId = 0,
+                WorldName = string.Empty,
+                CurrentWorldId = 0,
+                PartyType = PartyType.None,
+                Kind = battleNpc.BattleNpcKind,
+            };
         }
         else
         {
@@ -133,7 +134,7 @@ internal class Encounter : BaseEncounter<Combatant>
         return combatant;
     }
 
-    public unsafe void UpdateParty(DpsConfiguration configuration, IDalamudServices services)
+    public unsafe void UpdateParty(IDalamudServices services)
     {
         var groupManager = GroupManager.Instance();
         var player = services.ClientState.LocalPlayer?.ObjectId;
@@ -159,40 +160,15 @@ internal class Encounter : BaseEncounter<Combatant>
             chocobo.PartyType = combatants.Find(c => c.ObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;
         }
 
-        this.AllyCombatants = this.GetFilteredCombatants(configuration.PartyFilter);
+        this.AllyCombatants = combatants.Where(c => !c.IsEnemy() && c.IsActive() && c.IsAlly(this.Filter)).ToList();
     }
 
     public override bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);
 
-    public override void CalcStats(PartyType filter)
+    public void CalcAllStats()
     {
-        this.AllyCombatants = this.GetFilteredCombatants(filter);
-
-        var combatants = this.AllyCombatants;
-        double dps = 0;
-        double hps = 0;
-        ulong damageTotal = 0;
-        var deaths = 0;
-        var kills = 0;
-        foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
-        {
-            combatant.CalcStats();
-            dps += combatant.Dps;
-            hps += combatant.Hps;
-            damageTotal += combatant.DamageTotal;
-            deaths += combatant.Deaths;
-            kills += combatant.Kills;
-        }
-
-        this.Dps = Math.Round(dps, 2);
-        this.Hps = Math.Round(hps, 2);
-        this.DamageTotal = damageTotal;
-        this.Deaths = deaths;
-        this.Kills = kills;
-        foreach (var combatant in CollectionsMarshal.AsSpan(combatants))
-        {
-            combatant.PostCalcStats();
-        }
+        this.CalcStats();
+        this.CalcPostStats();
     }
 
     public void SetTerritoryEncounter(TerritoryEncounter encounter) => this.TerritoryEncounter ??= encounter;

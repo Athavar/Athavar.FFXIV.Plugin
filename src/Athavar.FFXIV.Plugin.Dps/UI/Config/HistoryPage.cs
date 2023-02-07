@@ -107,7 +107,7 @@ internal class HistoryPage : IConfigPage
             var combatants = e.GetCombatants().OrderBy(this.GetSortKey()).ToList();
             foreach (var t in combatants)
             {
-                this.DrawBaseCombatant(t);
+                this.DrawBaseCombatant(e, t);
             }
 
             ImGui.TreePop();
@@ -155,13 +155,22 @@ internal class HistoryPage : IConfigPage
         return open;
     }
 
-    private void DrawBaseCombatant(BaseCombatant combatant)
+    private void DrawBaseCombatant(BaseEncounter encounter, BaseCombatant combatant)
     {
         ImGui.TableNextRow();
         ImGui.TableNextColumn();
+        var colorPushed = true;
         if (combatant.IsEnemy())
         {
             ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+        }
+        else if (combatant.PartyType > encounter.Filter)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
+        }
+        else
+        {
+            colorPushed = false;
         }
 
         ImGui.TreeNodeEx(combatant.Name, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanFullWidth);
@@ -175,7 +184,7 @@ internal class HistoryPage : IConfigPage
         ImGui.TextUnformatted(combatant.Kills.ToString(CultureInfo.InvariantCulture));
         ImGui.TableNextColumn();
         ImGui.TextUnformatted(combatant.Deaths.ToString(CultureInfo.InvariantCulture));
-        if (combatant.IsEnemy())
+        if (colorPushed)
         {
             ImGui.PopStyleColor();
         }

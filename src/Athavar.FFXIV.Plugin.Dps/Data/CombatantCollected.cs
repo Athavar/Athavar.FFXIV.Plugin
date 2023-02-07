@@ -44,8 +44,8 @@ internal class CombatantCollected : BaseCombatant<CombatantCollected>
             healingTotal += combatant.HealingTotal;
             healingTaken += combatant.HealingTaken;
 
-            this.Deaths += combatant.Deaths;
-            this.Kills += combatant.Kills;
+            deaths += combatant.Deaths;
+            kills += combatant.Kills;
         }
 
         this.DamageTotal = damageTotal;

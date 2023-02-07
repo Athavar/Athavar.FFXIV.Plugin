@@ -3,8 +3,6 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
-using Athavar.FFXIV.Plugin.Config;
-
 internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
 {
     public List<Encounter> Encounters = new();
@@ -59,43 +57,24 @@ internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
         this.End = this.Encounters.Last().End;
     }
 
-    public override void CalcStats(PartyType filter)
+    public override void CalcStats()
     {
+        base.CalcStats();
+        
         var encounters = this.Encounters;
 
-        double dps = 0;
-        double hps = 0;
-        ulong damageTotal = 0;
-        var deaths = 0;
-        var kills = 0;
         var duration = TimeSpan.Zero;
         foreach (var encounter in encounters)
         {
-            encounter.CalcStats(filter);
-            dps += encounter.Dps;
-            hps += encounter.Hps;
-            damageTotal += encounter.DamageTotal;
-            deaths += encounter.Deaths;
-            kills += encounter.Kills;
-
+            encounter.CalcStats();
             duration += encounter.Duration;
             this.LastEvent = encounter.LastEvent;
+            encounter.CalcPostStats();
         }
 
-        this.Dps = Math.Round(dps, 2);
-        this.Hps = Math.Round(hps, 2);
-        this.DamageTotal = damageTotal;
-        this.Deaths = deaths;
-        this.Kills = kills;
         this.duration = duration;
 
-        // PluginLog.LogInformation($"UpdateAllies: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
-        foreach (var combatant in this.Combatants)
-        {
-            combatant.CalcStats();
-        }
-
-        this.AllyCombatants = this.GetFilteredCombatants(filter);
+        //  PluginLog.LogInformation($"UpdateAllies: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
     }
 
     public override bool IsValid() => true;
