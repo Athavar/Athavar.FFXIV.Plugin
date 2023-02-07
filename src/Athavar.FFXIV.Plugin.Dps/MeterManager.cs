@@ -33,6 +33,8 @@ internal class MeterManager : IDisposable
     private readonly Opcode[] requiredOpcodes = { Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl };
     private Lazy<DpsTab>? tab;
 
+    private DateTime nextCacheReset = DateTime.MinValue;
+
     public MeterManager(Configuration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow, IOpcodeManager opcodeManager)
     {
         this.configuration = configuration.Dps!;
@@ -97,6 +99,14 @@ internal class MeterManager : IDisposable
             return;
         }
 
+        var needReset = false;
+        var now = DateTime.UtcNow;
+        if (this.nextCacheReset < now)
+        {
+            this.nextCacheReset = now.AddMilliseconds(this.configuration.TextRefreshInterval);
+            needReset = true;
+        }
+
         ImGuiHelpers.ForceNextWindowMainViewport();
         ImGui.SetNextWindowPos(Vector2.Zero);
         ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
@@ -105,6 +115,10 @@ internal class MeterManager : IDisposable
             foreach (var meter in this.Meters.Where(m => m.Enabled))
             {
                 meter.Draw(this.origin);
+                if (needReset)
+                {
+                    meter.CacheReset();
+                }
             }
         }
 

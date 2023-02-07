@@ -8,4 +8,6 @@ public class DpsConfiguration : BasicModuleConfig
     public List<MeterConfig> Meters { get; set; } = new();
 
     public PartyType PartyFilter { get; set; } = PartyType.Alliance;
+
+    public int TextRefreshInterval { get; set; } = 200;
 }

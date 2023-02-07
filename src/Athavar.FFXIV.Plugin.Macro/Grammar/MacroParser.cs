@@ -85,7 +85,7 @@ internal static class MacroParser
         commandText = commandText.ToLowerInvariant();
 
         MacroCommand? command;
-        if (commandText[0] == '/' && Commands.TryGetValue(commandText[1..], out var parser) && (command = parser(line)) is not null)
+        if (commandText.Length > 0 && commandText[0] == '/' && Commands.TryGetValue(commandText[1..], out var parser) && (command = parser(line)) is not null)
         {
             return command;
         }

@@ -27,6 +27,8 @@ internal class SettingsConfigPage : IConfigPage
         {
             ImGuiEx.Combo("Party Filter", this.c.PartyFilter, x => this.c.PartyFilter = x, PartyTypeOptions);
 
+            ImGuiEx.DragInt("Text Refresh Interval", this.c.TextRefreshInterval, x => this.c.TextRefreshInterval = x, 100, 1, 5000);
+
             ImGui.EndChild();
         }
     }

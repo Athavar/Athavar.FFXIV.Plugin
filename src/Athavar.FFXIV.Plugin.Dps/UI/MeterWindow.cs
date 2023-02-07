@@ -140,6 +140,8 @@ internal class MeterWindow : IConfigurable
         this.lastSortedTimestamp = null;
     }
 
+    public void CacheReset() => this.BarConfigPage.CacheReset();
+
     public void Save() => this.meterManager.Save();
 
     public void Draw(Vector2 pos)
