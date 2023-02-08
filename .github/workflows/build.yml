@@ -91,7 +91,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{ env.SEMVER }}",
+              ref: "refs/tags/v${{ env.SEMVER }}",
               sha: context.sha
             })
           
@@ -99,7 +99,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GIT_SECRET }}
-          tag_name: ${{ env.SEMVER  }}
+          tag_name: "v${{ env.SEMVER  }}"
           repository: Athavar/Athavar.FFXIV.Plugin.Release
           files: |
             latest.zip
