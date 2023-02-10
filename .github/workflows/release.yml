@@ -25,6 +25,9 @@ jobs:
   Release:
     if: github.event.pull_request.draft == false # Ignore draft PRs
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     env:
       IsCI: true
     steps:
@@ -80,6 +83,9 @@ jobs:
   Deploy:
     needs: [ Release ]
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v3
         with:
@@ -97,9 +103,9 @@ jobs:
           cp /tmp/${{ env.INTERNAL_NAME }}.json plugins/${{ env.INTERNAL_NAME }}/${{ env.INTERNAL_NAME }}.json -f
           release_version=$(echo ${{ github.ref_name }} | sed 's/^v//')
           repo_url=$(echo ${{ github.server_url }}/${{ github.repository }} | sed 's/#/\\#/g')
-          sed -i plugins/${{ env.INTERNAL_NAME }}/${{ env.INTERNAL_NAME }}.json -E \          
+          sed -i plugins/${{ env.INTERNAL_NAME }}/${{ env.INTERNAL_NAME }}.json -E \
               -e 's#"AssemblyVersion": "([0-9]*\.){2,3}[0-9]*"#"AssemblyVersion": "'"$release_version"'"#g' \
-              -e 's#"DownloadLinkInstall": "[^"]*"#"DownloadLinkInstall": "'"$repo_url/releases/download/${{ github.ref_name }}/latest.zip"'"#g'
+              -e 's#"FeedbackMessage": "[^"]*"#"DownloadLinkInstall": "'"$repo_url/releases/download/${{ github.ref_name }}/latest.zip"'"#g'
 
       - uses: EndBug/add-and-commit@v9
         with:

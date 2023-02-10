@@ -1,5 +1,6 @@
 ﻿// <copyright file="PluginWindow.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
+// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin;
@@ -100,13 +101,6 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
         private readonly ILocalizeManager localizeManager;
         private readonly string[] languages = Enum.GetNames<Language>();
         private readonly Configuration configuration;
-
-#if DEBUG
-        private readonly Stopwatch stopwatch = new();
-
-        private long totalCount;
-        private int totalLoop;
-#endif
 
         public SettingsTab(IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
         {
@@ -225,5 +219,12 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
             }
 #endif
         }
+
+#if DEBUG
+        private readonly Stopwatch stopwatch = new();
+
+        private long totalCount;
+        private int totalLoop;
+#endif
     }
 }

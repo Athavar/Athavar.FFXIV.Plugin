@@ -17,6 +17,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     env:
       IsCI: true
     steps:
@@ -55,6 +58,9 @@ jobs:
     needs: build
     if: "contains(toJSON(github.event.commits.*.message), '[PUSH]')"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v3
         with:

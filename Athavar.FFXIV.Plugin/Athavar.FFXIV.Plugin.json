@@ -10,8 +10,8 @@
   "AcceptsFeedback": false,
   "IsThirdParty": true,
   "LoadRequiredState": 0,
+  "FeedbackMessage": "https://github.com/Athavar/Athavar.FFXIV.Plugin/releases/download/latest/latest.zip",
   "LoadSync": false,
   "LoadPriority": 0,
-  "CanUnloadAsync": false,
-  "DownloadLinkInstall": "https://github.com/Athavar/Athavar.FFXIV.Plugin/releases/download/latest/latest.zip"
+  "CanUnloadAsync": false
 }

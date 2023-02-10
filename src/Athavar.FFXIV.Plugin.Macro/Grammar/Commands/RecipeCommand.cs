@@ -1,5 +1,6 @@
 // <copyright file="RecipeCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
+// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -96,8 +97,10 @@ internal class RecipeCommand : MacroCommand
         var founds = recipes.Where(r => r.ItemResult.Value?.Name.ToString() == recipeName).ToList();
         switch (founds.Count)
         {
-            case 0: throw new MacroCommandError("Recipe not found");
-            case 1: return founds.First().RowId;
+            case 0:
+                throw new MacroCommandError("Recipe not found");
+            case 1:
+                return founds.First().RowId;
             default:
                 var jobId = DalamudServices.ClientState.LocalPlayer?.ClassJob.Id;
 
