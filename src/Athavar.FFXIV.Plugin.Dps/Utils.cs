@@ -6,6 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Dps.Data;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using Lumina.Excel;
@@ -82,6 +83,15 @@ internal class Utils
         var name = statusData?.Name ?? "<not found>";
         return $"{statusId} '{name}'";
     }
+
+    public string ActionString(uint actionId)
+    {
+        var statusData = this.dalamudServices.DataManager.GetExcelSheet<Action>()?.GetRow(actionId);
+        var name = statusData?.Name ?? "<not found>";
+        return $"{actionId} '{name}'";
+    }
+
+    public string ActionString(ActionId actionId) => this.ActionString(actionId.Id);
 
     public string JobName(Job input) => this.jobsSheet.GetRow((uint)input)?.Name.ToDalamudString().ToString() ?? string.Empty;
 

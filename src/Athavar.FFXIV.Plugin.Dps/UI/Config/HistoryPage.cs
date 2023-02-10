@@ -99,6 +99,7 @@ internal class HistoryPage : IConfigPage
             if (ImGui.TreeNodeEx("Combatants##combatants", ImGuiTreeNodeFlags.SpanFullWidth))
             {
                 DrawCombatants(e);
+                ImGui.TreePop();
             }
         }
 
@@ -109,8 +110,6 @@ internal class HistoryPage : IConfigPage
             {
                 this.DrawBaseCombatant(e, t);
             }
-
-            ImGui.TreePop();
         }
 
         if (encounter is null)
@@ -133,6 +132,8 @@ internal class HistoryPage : IConfigPage
             {
                 DrawCombatants(encounter);
             }
+
+            ImGui.TreePop();
         }
     }
 

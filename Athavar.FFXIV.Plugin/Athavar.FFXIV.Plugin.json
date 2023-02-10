@@ -12,5 +12,6 @@
   "LoadRequiredState": 0,
   "LoadSync": false,
   "LoadPriority": 0,
-  "CanUnloadAsync": false
+  "CanUnloadAsync": false,
+  "DownloadLinkInstall": "https://github.com/Athavar/Athavar.FFXIV.Plugin/releases/download/latest/latest.zip"
 }

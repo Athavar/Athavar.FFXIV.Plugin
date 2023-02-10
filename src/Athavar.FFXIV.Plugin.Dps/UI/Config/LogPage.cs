@@ -28,8 +28,6 @@ internal class LogPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
-        this.DrawHistory();
-        return;
         this.DrawDpsTable();
         ImGui.Separator();
         this.DrawLogs();

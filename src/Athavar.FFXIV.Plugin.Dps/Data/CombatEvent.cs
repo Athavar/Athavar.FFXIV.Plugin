@@ -49,7 +49,7 @@ internal abstract record CombatEvent
 
     public abstract record ActionEffectEvent
     {
-        public string ActionName { get; set; } = string.Empty;
+        public string? ActionName { get; set; } = string.Empty;
 
         public bool IsSourceEntry => (this.Flags2 & 128U) > 0U;
 
@@ -57,21 +57,25 @@ internal abstract record CombatEvent
 
         public uint SourceId { get; set; }
 
-        public uint TargetId { get; set; }
+        public uint EffectTargetId { get; init; }
 
-        public byte Param0 { get; set; }
+        public uint TargetId => this.IsSourceTarget ? this.SourceId : this.EffectTargetId;
+
+        public byte HitSeverity { get; set; }
 
         public byte Param1 { get; set; }
 
-        public byte Param2 { get; set; }
+        public byte Percentage { get; set; }
 
         public byte Flags2 { get; set; }
 
-        public byte Flags1 { get; set; }
+        public byte Multiplier { get; set; }
 
         public ushort Value { get; set; }
 
-        public virtual uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) != 0x40 ? this.Flags1 << 16 : 0));
+        public bool IsSourceTarget => (this.Flags2 & 0x80) != 0;
+
+        public virtual uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
     }
 
     public abstract record Heal : ActionEffectEvent
@@ -100,11 +104,11 @@ internal abstract record CombatEvent
     {
         public ActionType ActionType { get; init; }
 
-        public uint ComboAmount => this.Param2;
+        public uint ComboAmount => this.Percentage;
 
-        public bool IsCrit => (this.Param0 & 1) == 1;
+        public bool IsCrit => (this.HitSeverity & 1) == 1;
 
-        public bool IsDirectHit => (this.Param0 & 2) == 1;
+        public bool IsDirectHit => (this.HitSeverity & 2) == 1;
 
         public DamageElementType DamageElementType => (DamageElementType)(this.Param1 >> 4);
 
@@ -121,6 +125,6 @@ internal abstract record CombatEvent
 
         public ActionType ActionType { get; init; }
 
-        public bool IsCrit => (this.Param0 & 1) == 1;
+        public bool IsCrit => (this.HitSeverity & 1) == 1;
     }
 }

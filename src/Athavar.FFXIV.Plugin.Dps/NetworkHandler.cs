@@ -213,14 +213,14 @@ internal partial class NetworkHandler : IDisposable
                     {
                         actionEffects.Add(new CombatEvent.DamageTaken
                         {
-                            Param0 = actionEffect.Param0,
+                            HitSeverity = actionEffect.Param0,
                             Param1 = actionEffect.Param1,
-                            Param2 = actionEffect.Param2,
-                            Flags1 = actionEffect.Param3,
+                            Percentage = actionEffect.Param2,
+                            Multiplier = actionEffect.Param3,
                             Flags2 = actionEffect.Param4,
                             Value = actionEffect.Value,
 
-                            TargetId = targetId,
+                            EffectTargetId = targetId,
                             SourceId = casterId,
                             ActionType = actionType,
                         });
@@ -229,14 +229,14 @@ internal partial class NetworkHandler : IDisposable
                     case ActionEffectType.Heal:
                         actionEffects.Add(new CombatEvent.Healed
                         {
-                            Param0 = actionEffect.Param0,
+                            HitSeverity = actionEffect.Param0,
                             Param1 = actionEffect.Param1,
-                            Param2 = actionEffect.Param2,
-                            Flags1 = actionEffect.Param3,
+                            Percentage = actionEffect.Param2,
+                            Multiplier = actionEffect.Param3,
                             Flags2 = actionEffect.Param4,
                             Value = actionEffect.Value,
 
-                            TargetId = targetId,
+                            EffectTargetId = targetId,
                             SourceId = casterId,
                             ActionId = actionId,
                             ActionType = actionType,
@@ -330,9 +330,9 @@ internal partial class NetworkHandler : IDisposable
                     {
                         Value = (ushort)(p->param2 & ushort.MaxValue),
                         Flags2 = p->param2 > ushort.MaxValue ? (byte)64 : (byte)0,
-                        Flags1 = (byte)(p->param2 / 0x10000),
+                        Multiplier = (byte)(p->param2 / 0x10000),
 
-                        TargetId = actorId,
+                        EffectTargetId = actorId,
                         StatusId = p->param1,
                         SourceId = p->param3,
                     },
@@ -346,9 +346,9 @@ internal partial class NetworkHandler : IDisposable
                     {
                         Value = (ushort)(p->param2 & ushort.MaxValue),
                         Flags2 = p->param2 > ushort.MaxValue ? (byte)64 : (byte)0,
-                        Flags1 = (byte)(p->param2 / 0x10000),
+                        Multiplier = (byte)(p->param2 / 0x10000),
 
-                        TargetId = actorId,
+                        EffectTargetId = actorId,
                         StatusId = p->param1,
                         SourceId = p->param3,
                     },

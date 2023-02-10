@@ -275,7 +275,7 @@ internal class MeterWindow : IConfigurable
             var top = sortedCombatants.FirstOrDefault()?.GetMeterData(dataType) ?? 0;
 
             // check and set limits of scrollPosition
-            this.scrollPosition = Math.Clamp(this.scrollPosition, 0, Math.Max(0, sortedCombatants.Count - barCount - 1));
+            this.scrollPosition = Math.Clamp(this.scrollPosition, 0, Math.Max(0, sortedCombatants.Count - barCount));
 
             var maxIndex = Math.Min(this.scrollPosition + barCount, sortedCombatants.Count);
             for (var i = this.scrollPosition; i < maxIndex; i++)
