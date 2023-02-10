@@ -243,6 +243,9 @@ internal class QueueTab : Tab
                     }
                 }
 
+                guiListClipperPtr.End();
+                guiListClipperPtr.Destroy();
+
                 ImGui.EndTable();
                 ImGui.EndChild();
             }
@@ -321,6 +324,9 @@ internal class QueueTab : Tab
                         }
                     }
                 }
+
+                guiListClipperPtr.End();
+                guiListClipperPtr.Destroy();
 
                 ImGui.EndTable();
             }
@@ -640,6 +646,9 @@ internal class QueueTab : Tab
                     }
                 }
             }
+
+            guiListClipperPtr.End();
+            guiListClipperPtr.Destroy();
 
             ImGui.EndTable();
         }
@@ -993,13 +1002,13 @@ internal class QueueTab : Tab
 
     private IEnumerable<StatModifiers> GetCurrentStatBuffs()
     {
-        if (this.foodIdx > 0)
+        if (this.foodIdx >= 0)
         {
             var food = this.craftQueueData.Foods[this.foodIdx];
             yield return food.Stats;
         }
 
-        if (this.potionIdx > 0)
+        if (this.potionIdx >= 0)
         {
             var potion = this.craftQueueData.Potions[this.potionIdx];
             yield return potion.Stats;
