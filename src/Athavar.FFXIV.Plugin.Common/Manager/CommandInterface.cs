@@ -7,9 +7,11 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Dalamud;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using Lumina.Excel.GeneratedSheets;
 
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
@@ -22,7 +24,12 @@ internal partial class CommandInterface : ICommandInterface
     ///     Initializes a new instance of the <see cref="CommandInterface" /> class.
     /// </summary>
     /// <param name="dalamudServices"><see cref="dalamudServices" /> added by DI.</param>
-    public CommandInterface(IDalamudServices dalamudServices) => this.dalamudServices = dalamudServices;
+    public CommandInterface(IDalamudServices dalamudServices)
+    {
+        this.dalamudServices = dalamudServices;
+        var mainSheet = dalamudServices.DataManager.GetExcelSheet<MainCommand>(ClientLanguage.English)!;
+        this.logOutId = mainSheet.FirstOrDefault(c => c.Name?.RawString == "Log Out")?.RowId ?? 0u;
+    }
 
     /// <inheritdoc />
     public unsafe bool CanUseAction(uint actionId)
@@ -76,5 +83,20 @@ internal partial class CommandInterface : ICommandInterface
         }
 
         return (AddonSynthesis*)ptr;
+    }
+
+    /// <summary>
+    ///     Execute a main command.
+    /// </summary>
+    private unsafe bool ExecuteMainCommand(uint mainCommandId)
+    {
+        if (!this.dalamudServices.ClientState.IsLoggedIn)
+        {
+            return false;
+        }
+
+        var module = (UIModule*)this.dalamudServices.GameGui.GetUIModule();
+        module->ExecuteMainCommand(mainCommandId);
+        return true;
     }
 }

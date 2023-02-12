@@ -27,7 +27,7 @@ internal class ClickGrandCompanySupplyList : ClickBase<ClickGrandCompanySupplyLi
     /// </summary>
     /// <param name="addon">Addon to reference.</param>
     /// <returns>A click instance.</returns>
-    public static ClickRetainerList Using(nint addon) => new(addon);
+    public static ClickGrandCompanySupplyList Using(nint addon) => new(addon);
 
     /// <summary>
     ///     Click a Supply.

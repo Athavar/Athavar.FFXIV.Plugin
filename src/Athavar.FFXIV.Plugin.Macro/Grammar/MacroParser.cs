@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 internal static class MacroParser
 {
     private static readonly Dictionary<string, Func<string, MacroCommand?>> Commands = new();
+    private static readonly Dictionary<Type, bool> MacroRequireLoggedIn = new();
 
     static MacroParser()
     {
@@ -26,6 +27,7 @@ internal static class MacroParser
         {
             MacroCommand? ParseAction(string t) => (MacroCommand?)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, new object?[] { t });
             Commands.Add(description.Name, ParseAction);
+            MacroRequireLoggedIn.Add(command, description.RequireLogin);
             if (description.Alias is not null)
             {
                 Commands.Add(description.Alias, ParseAction);
@@ -69,6 +71,13 @@ internal static class MacroParser
             yield return ParseLine(line);
         }
     }
+
+    /// <summary>
+    ///     Checks if a <see cref="MacroCommand" /> requires a logged in user.
+    /// </summary>
+    /// <param name="command">The macro command.</param>
+    /// <returns>An value indicating if the macro can only executed in the user is logged in.</returns>
+    public static bool RequireLoggedIn(MacroCommand command) => !MacroRequireLoggedIn.TryGetValue(command.GetType(), out var value) || value;
 
     /// <summary>
     ///     Parse a single macro line and return the appropriate command.

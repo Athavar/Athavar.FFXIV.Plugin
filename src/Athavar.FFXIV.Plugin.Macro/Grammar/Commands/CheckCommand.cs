@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implement the check command.
 /// </summary>
-[MacroCommand("check")]
+[MacroCommand("check", RequireLogin = true)]
 internal class CheckCommand : MacroCommand
 {
     private const int StatusCheckMaxWait = 1000;

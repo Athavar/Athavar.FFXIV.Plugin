@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro.Managers;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
+using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using Dalamud.Logging;
 using NLua.Exceptions;
@@ -22,7 +23,6 @@ internal partial class MacroManager : IDisposable
     private readonly CancellationTokenSource eventLoopTokenSource = new();
     private readonly Stack<ActiveMacro> macroStack = new();
 
-    private readonly ManualResetEvent loggedInWaiter = new(false);
     private readonly ManualResetEvent pausedWaiter = new(true);
     private CancellationTokenSource? stepTokenSource;
 
@@ -37,14 +37,6 @@ internal partial class MacroManager : IDisposable
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
         this.configuration = configuration.Macro!;
-
-        this.dalamudServices.ClientState.Login += this.OnLogin;
-        this.dalamudServices.ClientState.Logout += this.OnLogout;
-
-        if (this.dalamudServices.ClientState.LocalPlayer != null)
-        {
-            this.loggedInWaiter.Set();
-        }
 
         // Start the loop.
         Task.Factory.StartNew(this.EventLoop, TaskCreationOptions.LongRunning);
@@ -70,26 +62,10 @@ internal partial class MacroManager : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
-        this.dalamudServices.ClientState.Login -= this.OnLogin;
-        this.dalamudServices.ClientState.Logout -= this.OnLogout;
-
         this.eventLoopTokenSource.Cancel();
         this.eventLoopTokenSource.Dispose();
 
-        this.loggedInWaiter.Dispose();
         this.pausedWaiter.Dispose();
-    }
-
-    private void OnLogin(object? sender, EventArgs e)
-    {
-        this.loggedInWaiter.Set();
-        this.State = LoopState.Waiting;
-    }
-
-    private void OnLogout(object? sender, EventArgs e)
-    {
-        this.loggedInWaiter.Reset();
-        this.State = LoopState.NotLoggedIn;
     }
 
     private async Task EventLoop()
@@ -100,17 +76,6 @@ internal partial class MacroManager : IDisposable
         {
             try
             {
-                // Check if the logged in waiter is set
-                if (!this.loggedInWaiter.WaitOne(0))
-                {
-                    this.State = LoopState.NotLoggedIn;
-
-                    this.macroStack.Clear();
-                }
-
-                // Wait to be logged in
-                this.loggedInWaiter.WaitOne();
-
                 // Check if the paused waiter has been set
                 if (!this.pausedWaiter.WaitOne(0))
                 {
@@ -173,6 +138,12 @@ internal partial class MacroManager : IDisposable
 
             if (step == null)
             {
+                return true;
+            }
+
+            if (!this.dalamudServices.ClientState.IsLoggedIn && MacroParser.RequireLoggedIn(step))
+            {
+                // skip step.
                 return true;
             }
 

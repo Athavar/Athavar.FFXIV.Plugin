@@ -15,7 +15,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /requiremateria command.
 /// </summary>
-[MacroCommand("requirespiritbond", null, "Pause when an item is ready to have materia extracted. Optional argument to keep crafting if the next highest spiritbond is greater-than-or-equal to the argument value.", new[] { "wait" }, new[] { "/requirespiritbond", "/requirespiritbond 99.5" })]
+[MacroCommand("requirespiritbond", null, "Pause when an item is ready to have materia extracted. Optional argument to keep crafting if the next highest spiritbond is greater-than-or-equal to the argument value.", new[] { "wait" }, new[] { "/requirespiritbond", "/requirespiritbond 99.5" }, RequireLogin = true)]
 internal class RequireSpiritbondCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/requirespiritbond(\s+(?<within>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

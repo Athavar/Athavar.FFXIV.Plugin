@@ -13,7 +13,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /target command.
 /// </summary>
-[MacroCommand("target", null, "Target anyone and anything that can be selected.", new[] { "wait" }, new[] { "/target Eirikur", "/target Moyce" })]
+[MacroCommand("target", null, "Target anyone and anything that can be selected.", new[] { "wait" }, new[] { "/target Eirikur", "/target Moyce" }, RequireLogin = true)]
 internal class TargetCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/target\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

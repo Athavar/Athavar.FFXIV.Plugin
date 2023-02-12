@@ -73,4 +73,16 @@ public partial interface ICommandInterface
     /// </summary>
     /// <returns>A value indication whether the player is in a pvp area.</returns>
     bool IsPvP();
+
+    /// <summary>
+    ///     Log the current logged in character out.
+    /// </summary>
+    /// <returns>A value indication whether the logout command could be executed.</returns>
+    bool LogOut();
+
+    /// <summary>
+    ///     Checks if the player character is ready and not moving between zones.
+    /// </summary>
+    /// <returns>A value indication whether the player character is ready.</returns>
+    bool IsPlayerCharacterReady();
 }

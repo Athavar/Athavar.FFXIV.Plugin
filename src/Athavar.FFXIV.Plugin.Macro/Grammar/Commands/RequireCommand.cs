@@ -15,7 +15,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /require command.
 /// </summary>
-[MacroCommand("require", null, "Require a certain effect to be present before continuing.", new[] { "wait", "maxwait" }, new[] { "/require \"Well Fed\"" })]
+[MacroCommand("require", null, "Require a certain effect to be present before continuing.", new[] { "wait", "maxwait" }, new[] { "/require \"Well Fed\"" }, RequireLogin = true)]
 internal class RequireCommand : MacroCommand
 {
     private const int StatusCheckMaxWait = 1000;

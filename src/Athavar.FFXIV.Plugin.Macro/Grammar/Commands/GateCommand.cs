@@ -14,7 +14,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     The /craft command.
 /// </summary>
-[MacroCommand("craft", "gate", "Similar to loop but used at the start of a macro with an infinite /loop at the end. Allows a certain amount of executions before stopping the macro.", new[] { "echo", "wait" }, new[] { "/craft 10" })]
+[MacroCommand("craft", "gate", "Similar to loop but used at the start of a macro with an infinite /loop at the end. Allows a certain amount of executions before stopping the macro.", new[] { "echo", "wait" }, new[] { "/craft 10" }, RequireLogin = true)]
 internal class GateCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/(craft|gate)(?:\s+(?<count>\d+))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

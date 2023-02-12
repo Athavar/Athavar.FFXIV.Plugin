@@ -171,7 +171,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
         var targetList = (AtkComponentList*)node->Component;
         if (index >= targetList->ListLength)
         {
-            throw new ArgumentOutOfRangeException(nameof(index), "List index is out of range");
+            throw new ArgumentOutOfRangeException(nameof(index), $"List index {index} is out of range {targetList->ListLength}");
         }
 
         var eventData = EventData.ForNormalTarget(targetList->AtkComponentBase.OwnerNode, node);

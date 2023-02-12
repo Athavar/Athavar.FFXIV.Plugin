@@ -30,4 +30,6 @@ internal class MacroCommandAttribute : Attribute
     public string[] Examples { get; }
 
     public bool Hidden { get; }
+
+    public bool RequireLogin { get; set; } = false;
 }

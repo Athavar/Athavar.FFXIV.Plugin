@@ -10,6 +10,7 @@ using Lumina.Excel.GeneratedSheets;
 internal partial class CommandInterface
 {
     private static readonly uint[] GoldenSaucerIDs = { 144, 388, 389, 390, 391, 579, 792, 899, 941 };
+    private readonly uint logOutId;
 
     /// <inheritdoc />
     public ushort GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
@@ -37,6 +38,12 @@ internal partial class CommandInterface
 
     /// <inheritdoc />
     public bool IsPvP() => this.dalamudServices.ClientState.IsPvP;
+
+    /// <inheritdoc />
+    public bool IsPlayerCharacterReady() => this.dalamudServices.Condition[ConditionFlag.NormalConditions] && !this.dalamudServices.Condition[ConditionFlag.BetweenAreas] && !this.dalamudServices.Condition[ConditionFlag.BetweenAreas51];
+
+    /// <inheritdoc />
+    public bool LogOut() => this.ExecuteMainCommand(this.logOutId);
 
     /// <inheritdoc />
     public bool HasStatus(string statusName)
