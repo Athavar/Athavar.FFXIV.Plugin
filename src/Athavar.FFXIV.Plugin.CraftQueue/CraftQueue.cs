@@ -11,6 +11,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game;
+using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
@@ -143,58 +144,65 @@ internal class CraftQueue : IDisposable
 
     private void FrameworkOnUpdate(Framework framework)
     {
-        if (this.Paused == QueueState.Paused)
+        try
         {
-            if (this.CurrentJob is null)
+            if (this.Paused == QueueState.Paused)
             {
+                if (this.CurrentJob is null)
+                {
+                    return;
+                }
+
+                this.CurrentJob.Pause();
                 return;
             }
 
-            this.CurrentJob.Pause();
-            return;
-        }
+            if (this.CurrentJob is null)
+            {
+                if (this.queuedJobs.Count == 0)
+                {
+                    this.Paused = QueueState.Paused;
+                    return;
+                }
 
-        if (this.CurrentJob is null)
-        {
-            if (this.queuedJobs.Count == 0)
+                this.CurrentJob = this.queuedJobs[0];
+                this.queuedJobs.RemoveAt(0);
+            }
+
+            if (this.Paused == QueueState.PausedSoon && this.CurrentJob.CurrentStep == 0)
             {
                 this.Paused = QueueState.Paused;
                 return;
             }
 
-            this.CurrentJob = this.queuedJobs[0];
-            this.queuedJobs.RemoveAt(0);
-        }
+            bool finish, error = false;
+            try
+            {
+                finish = this.CurrentJob.Tick();
+            }
+            catch (CraftingJobException ex)
+            {
+                this.ChatManager.PrintErrorMessage(ex.Message);
+                error = finish = true;
+            }
 
-        if (this.Paused == QueueState.PausedSoon && this.CurrentJob.CurrentStep == 0)
-        {
-            this.Paused = QueueState.Paused;
-            return;
-        }
+            if (!finish)
+            {
+                return;
+            }
 
-        bool finish, error = false;
-        try
-        {
-            finish = this.CurrentJob.Tick();
-        }
-        catch (CraftingJobException ex)
-        {
-            this.ChatManager.PrintErrorMessage(ex.Message);
-            error = finish = true;
-        }
+            var job = this.CurrentJob;
+            this.CurrentJob = null;
+            if (error)
+            {
+                job.Failure();
+            }
 
-        if (!finish)
-        {
-            return;
+            this.completedJobs.Add(job);
         }
-
-        var job = this.CurrentJob;
-        this.CurrentJob = null;
-        if (error)
+        catch (AthavarPluginException ex)
         {
-            job.Failure();
+            PluginLog.LogError(ex, ex.Message);
         }
-
-        this.completedJobs.Add(job);
     }
 }

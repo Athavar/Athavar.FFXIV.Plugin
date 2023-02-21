@@ -8,6 +8,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.AutoSpear.SeFunctions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
+using Dalamud.Game;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
@@ -79,9 +80,17 @@ internal partial class AutoSpear : Tab, IAutoSpearTab
 
             this.spearfishingSpots.Add(point.RowId, node);
         }
+
+        this.dalamudServices.Framework.Update += this.Tick;
     }
 
-    public unsafe void Tick()
+    public override void Dispose()
+    {
+        this.dalamudServices.Framework.Update -= this.Tick;
+        base.Dispose();
+    }
+
+    public unsafe void Tick(Framework framework)
     {
         var oldOpen = this.isOpen;
         this.addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing");

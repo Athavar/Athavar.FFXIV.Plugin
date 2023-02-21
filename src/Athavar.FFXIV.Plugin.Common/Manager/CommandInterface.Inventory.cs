@@ -4,6 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
@@ -23,14 +24,14 @@ internal partial class CommandInterface
     public unsafe bool CanUseItem(uint itemId, bool hq = false)
     {
         var actionId = itemId + (hq ? 1000000U : 0U);
-        return ActionManager.Instance()->GetActionStatus(ActionType.Item, actionId, 3758096384L, true, true, null) == 0U;
+        return ActionManager.Instance()->GetActionStatus(ActionType.Item, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
     /// <inheritdoc />
     public unsafe bool UseItem(uint itemId, bool hq = false)
     {
         var actionId = itemId + (hq ? 1000000U : 0U);
-        return this.CanUseItem(itemId, hq) && ActionManager.Instance()->UseAction(ActionType.Item, actionId, 3758096384L, ushort.MaxValue, 0U, 0U, null);
+        return this.CanUseItem(itemId, hq) && ActionManager.Instance()->UseAction(ActionType.Item, actionId, Constants.PlayerId, ushort.MaxValue, 0U, 0U, null);
     }
 
     /// <inheritdoc />

@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config;
 using Dalamud;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -35,21 +36,21 @@ internal partial class CommandInterface : ICommandInterface
     public unsafe bool CanUseAction(uint actionId)
     {
         var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
-        return ActionManager.Instance()->GetActionStatus(actionType, actionId, 3758096384L, true, true, null) == 0U;
+        return ActionManager.Instance()->GetActionStatus(actionType, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
     /// <inheritdoc />
     public unsafe bool UseAction(uint actionId)
     {
         var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
-        return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(actionType, actionId, 3758096384L, 0U, 0U, 0U, null);
+        return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(actionType, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
     /// <inheritdoc />
-    public unsafe bool CanUseGeneralAction(uint actionId) => ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, 3758096384L, true, true, null) == 0U;
+    public unsafe bool CanUseGeneralAction(uint actionId) => ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, Constants.PlayerId, true, true, null) == 0U;
 
     /// <inheritdoc />
-    public unsafe bool UseGeneralAction(uint actionId) => this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, 3758096384L, 0U, 0U, 0U, null);
+    public unsafe bool UseGeneralAction(uint actionId) => this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
     {
