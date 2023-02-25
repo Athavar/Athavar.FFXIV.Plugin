@@ -49,6 +49,7 @@ public record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiSt
            .Add(CraftingSkills.Manipulation, new Manipulation())
            .Add(CraftingSkills.PrudentTouch, new PrudentTouch())
            .Add(CraftingSkills.FocusedSynthesis, new FocusedSynthesis())
+           .Add(CraftingSkills.FocusedTouch, new FocusedTouch())
            .Add(CraftingSkills.Reflect, new Reflect())
            .Add(CraftingSkills.PreparatoryTouch, new PreparatoryTouch())
            .Add(CraftingSkills.Groundwork, new Groundwork())
