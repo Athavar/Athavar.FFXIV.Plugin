@@ -27,6 +27,7 @@ public enum CraftingSkills
     Manipulation,
     PrudentTouch,
     FocusedSynthesis,
+    FocusedTouch,
     Reflect,
     PreparatoryTouch,
     Groundwork,
