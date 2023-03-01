@@ -17,7 +17,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class DpsTab : Tab, IDpsTab
+internal class DpsTab : Tab
 {
     private const float NavBarHeight = 40;
     private readonly MeterManager meterManager;
@@ -32,7 +32,7 @@ internal class DpsTab : Tab, IDpsTab
     {
         this.meterManager = meterManager;
         this.dalamudServices = dalamudServices;
-        this.configStack.Push(ActivatorUtilities.CreateInstance<DpsConfigPage>(provider));
+        this.configStack.Push(ActivatorUtilities.CreateInstance<DpsConfigPage>(provider, meterManager));
     }
 
     public override string Name => DpsModule.ModuleName;

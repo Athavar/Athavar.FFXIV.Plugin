@@ -42,7 +42,7 @@ internal abstract class UpdateFeature : IBaseFeature
     /// <summary>
     ///     Gets the <see cref="YesConfiguration" />.
     /// </summary>
-    protected YesConfiguration Configuration => this.module.Configuration;
+    protected YesConfiguration Configuration => this.module.MC;
 
     /// <summary>
     ///     Gets the name of the addon being hooked.

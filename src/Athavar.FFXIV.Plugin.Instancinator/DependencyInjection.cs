@@ -10,9 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInstancinatorModule(this IServiceCollection services)
     {
-        services.AddSingleton<InstancinatorModule>();
-        services.AddSingleton<InstancinatorWindow>();
-        services.AddSingleton<IInstancinatorTab, InstancinatorTab>();
+        services.AddTransient<InstancinatorModule>();
 
         return services;
     }

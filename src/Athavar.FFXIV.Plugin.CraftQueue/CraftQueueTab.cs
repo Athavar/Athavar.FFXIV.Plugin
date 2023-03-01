@@ -12,13 +12,13 @@ using Dalamud;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class CraftQueueTab : Tab, ICraftQueueTab
+internal class CraftQueueTab : Tab
 {
     private readonly TabBarHandler tabBarHandler = new("CraftQueueTabBar");
 
     private string debugInput = string.Empty;
 
-    public CraftQueueTab(IServiceProvider serviceProvider, Configuration configuration)
+    public CraftQueueTab(IServiceProvider serviceProvider, CraftQueue craftQueue, Configuration configuration)
     {
         this.BaseConfiguration = configuration;
 
@@ -29,9 +29,6 @@ internal class CraftQueueTab : Tab, ICraftQueueTab
         var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
         var chatManager = serviceProvider.GetRequiredService<IChatManager>();
         var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
-
-        var craftQueue = serviceProvider.GetRequiredService<CraftQueue>();
-
         this.ClientLanguage = dalamudServices.ClientState.ClientLanguage;
 
         this.tabBarHandler

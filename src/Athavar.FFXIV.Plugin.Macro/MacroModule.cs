@@ -18,7 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements the macro module.
 /// </summary>
-public sealed class MacroModule : Module, IDisposable
+[Module(ModuleName, ModuleConfigurationType = typeof(MacroConfiguration))]
+internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
 {
     /// <summary>
     ///     The name of the module.
@@ -30,14 +31,14 @@ public sealed class MacroModule : Module, IDisposable
     private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
-    private IMacroConfigTab? tab;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroModule" /> class.
     /// </summary>
     /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    public MacroModule(IServiceProvider provider)
-        : base(provider.GetRequiredService<Configuration>())
+    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
+    public MacroModule(IServiceProvider provider, Configuration configuration)
+        : base(configuration, configuration.Macro!)
     {
         this.provider = provider;
         MacroCommand.SetServiceProvider(provider);
@@ -61,20 +62,13 @@ public sealed class MacroModule : Module, IDisposable
     public override bool Hidden => false;
 
     /// <inheritdoc />
-    public override IMacroConfigTab Tab => this.tab ??= this.provider.GetRequiredService<IMacroConfigTab>();
-
-    /// <inheritdoc />
-    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    public override void Dispose()
     {
-        bool Get(Configuration c) => c.Macro!.Enabled;
-
-        void Set(bool state, Configuration c) => c.Macro!.Enabled = state;
-
-        return (Get, Set);
+        this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
+        base.Dispose();
     }
 
-    /// <inheritdoc />
-    public void Dispose() => this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
+    protected override MacroConfigTab InitTab() => ActivatorUtilities.CreateInstance<MacroConfigTab>(this.provider);
 
     private void OnChatCommand(string command, string arguments)
     {

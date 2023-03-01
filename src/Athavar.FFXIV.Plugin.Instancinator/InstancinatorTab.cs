@@ -8,9 +8,9 @@ using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.UI;
 using ImGuiNET;
 
-internal class InstancinatorTab : Tab, IInstancinatorTab
+internal class InstancinatorTab : Tab
 {
-    public InstancinatorTab(Configuration configuration) => this.Configuration = configuration.Instancinator!;
+    public InstancinatorTab(InstancinatorConfiguration configuration) => this.Configuration = configuration;
 
     public override string Name => InstancinatorModule.ModuleName;
 

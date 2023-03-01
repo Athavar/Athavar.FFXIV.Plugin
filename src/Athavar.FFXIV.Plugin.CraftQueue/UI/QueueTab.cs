@@ -754,14 +754,14 @@ internal class QueueTab : Tab
             values[5] = timeSpan1.ToString("hh':'mm':'ss");
             values[6] = "~" + timeSpan2.ToString("mm':'ss");
             values[7] = (Action)(() =>
-            {
-                if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, tooltip, small: true))
-                {
-                    return;
-                }
+                                    {
+                                        if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, tooltip, small: true))
+                                        {
+                                            return;
+                                        }
 
-                cancel();
-            });
+                                        cancel();
+                                    });
             ImGuiEx.TableRow(values);
 
             if (drawnJob.Status == JobStatus.Failure)

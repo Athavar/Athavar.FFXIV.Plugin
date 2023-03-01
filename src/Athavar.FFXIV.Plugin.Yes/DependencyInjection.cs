@@ -10,8 +10,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddYesModule(this IServiceCollection services)
     {
-        services.AddSingleton<YesModule>();
-        services.AddSingleton<IYesConfigTab, YesConfigTab>();
         services.AddSingleton<ZoneListWindow>();
 
         return services;

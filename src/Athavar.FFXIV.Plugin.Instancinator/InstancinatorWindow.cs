@@ -12,17 +12,20 @@ using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 
-internal class InstancinatorWindow : Window
+internal class InstancinatorWindow : Window, IDisposable
 {
-    private InstancinatorModule module = null!;
+    private readonly InstancinatorModule module;
+    private readonly WindowSystem windowSystem;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InstancinatorWindow" /> class.
     /// </summary>
     /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
-    public InstancinatorWindow(WindowSystem windowSystem)
+    public InstancinatorWindow(WindowSystem windowSystem, InstancinatorModule module)
         : base("Instancinator")
     {
+        this.module = module;
+        this.windowSystem = windowSystem;
         this.Flags = ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoTitleBar;
         windowSystem.AddWindow(this);
     }
@@ -74,11 +77,14 @@ internal class InstancinatorWindow : Window
         }
     }
 
-    /// <summary>
-    ///     Setup the <see cref="InstancinatorWindow" />.
-    /// </summary>
-    /// <param name="m">The <see cref="InstancinatorModule" />.</param>
-    internal void Setup(InstancinatorModule m) => this.module = m;
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (this.windowSystem.Windows.Contains(this))
+        {
+            this.windowSystem.RemoveWindow(this);
+        }
+    }
 
     private bool ImGuiColoredButton(FontAwesomeIcon icon, bool colored)
     {

@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Action = Lumina.Excel.GeneratedSheets.Action;
@@ -56,7 +56,7 @@ internal partial class EncounterManager : IDisposable
         services.Framework.Update += this.Update;
     }
 
-    public RollingList<string> Log { get; } = new(100, true);
+    public List<string> Log { get; } = new(); //new(100, true);
 
     public IReadOnlyList<TerritoryEncounter> EncounterHistory => this.encounterHistory;
 
@@ -152,6 +152,7 @@ internal partial class EncounterManager : IDisposable
             this.nextUpdate = now.AddSeconds(1);
 
             ce.Filter = this.configuration.PartyFilter;
+            ce.CalcStats();
             ce.UpdateParty(this.services);
 
             if (!ce.IsValid())

@@ -19,7 +19,7 @@ using ImGuiNET;
 /// <summary>
 ///     Yes Module configuration Tab.
 /// </summary>
-internal class YesConfigTab : Tab, IYesConfigTab
+internal class YesConfigTab : Tab
 {
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
@@ -43,7 +43,7 @@ internal class YesConfigTab : Tab, IYesConfigTab
         VirtualKey.SHIFT,
     };
 
-    private YesModule module = null!;
+    private readonly YesModule module;
     private INode? draggedNode;
     private string debugClickName = string.Empty;
 
@@ -55,8 +55,9 @@ internal class YesConfigTab : Tab, IYesConfigTab
     /// <param name="click"><see cref="IClick" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
     /// <param name="zoneListWindow"><see cref="ZoneListWindow" /> added by DI.</param>
-    public YesConfigTab(IDalamudServices dalamudServices, IChatManager chatManager, IClick click, Configuration configuration, ZoneListWindow zoneListWindow)
+    public YesConfigTab(YesModule module, IDalamudServices dalamudServices, IChatManager chatManager, IClick click, Configuration configuration, ZoneListWindow zoneListWindow)
     {
+        this.module = module;
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
         this.click = click;
@@ -98,16 +99,6 @@ internal class YesConfigTab : Tab, IYesConfigTab
 
             ImGui.EndTabBar();
         }
-    }
-
-    /// <summary>
-    ///     Setup the <see cref="YesConfigTab" />.
-    /// </summary>
-    /// <param name="m">The <see cref="YesModule" />.</param>
-    public void Setup(YesModule m)
-    {
-        this.module = m;
-        this.zoneListWindow.Setup(m);
     }
 
     private void UiBuilder_TestButton()

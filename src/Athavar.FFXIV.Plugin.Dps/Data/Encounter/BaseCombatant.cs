@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
-namespace Athavar.FFXIV.Plugin.Dps.Data;
+namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -14,29 +14,29 @@ internal abstract class BaseCombatant
 {
     [JsonIgnore]
     public static readonly string[] TextTags = new[]
-    {
-        nameof(Dps),
-        nameof(Hps),
-        nameof(Name),
-        nameof(Name_First),
-        nameof(Name_Last),
-        nameof(Job),
-        nameof(CurrentWorldId),
-        nameof(WorldId),
-        nameof(PartyType),
-        nameof(Kind),
-        nameof(Deaths),
-        nameof(Kills),
-        nameof(HealingTotal),
-        nameof(HealingTaken),
-        nameof(OverHealTotal),
-        nameof(OverHealPct),
-        nameof(EffectiveHealing),
-        nameof(DamageTotal),
-        nameof(DamageTaken),
-        nameof(DamagePct),
-        nameof(Rank),
-    }.Select(x => $"[{x.ToLower()}]").ToArray();
+                                               {
+                                                   nameof(Dps),
+                                                   nameof(Hps),
+                                                   nameof(Name),
+                                                   nameof(Name_First),
+                                                   nameof(Name_Last),
+                                                   nameof(Job),
+                                                   nameof(CurrentWorldId),
+                                                   nameof(WorldId),
+                                                   nameof(PartyType),
+                                                   nameof(Kind),
+                                                   nameof(Deaths),
+                                                   nameof(Kills),
+                                                   nameof(HealingTotal),
+                                                   nameof(HealingTaken),
+                                                   nameof(OverHealTotal),
+                                                   nameof(OverHealPct),
+                                                   nameof(EffectiveHealing),
+                                                   nameof(DamageTotal),
+                                                   nameof(DamageTaken),
+                                                   nameof(DamagePct),
+                                                   nameof(Rank),
+                                               }.Select(x => $"[{x.ToLower()}]").ToArray();
 
     [JsonIgnore]
     private static readonly Dictionary<string, PropertyInfo> Fields = typeof(BaseCombatant).GetProperties().ToDictionary(x => x.Name.ToLower());
@@ -79,21 +79,21 @@ internal abstract class BaseCombatant
 
     public ushort Kills { get; set; }
 
-    public ulong HealingTotal { get; set; }
+    public ulong HealingTotal { get; protected set; }
 
-    public ulong HealingTaken { get; set; }
+    public ulong HealingTaken { get; protected set; }
 
-    public ulong OverHealTotal { get; set; }
+    public ulong OverHealTotal { get; protected set; }
 
-    public ulong DamageTotal { get; set; }
+    public ulong DamageTotal { get; protected set; }
 
-    public ulong DamageTaken { get; set; }
+    public ulong DamageTaken { get; protected set; }
 
     public PartyType PartyType { get; set; }
 
     public uint OwnerId { get; init; }
 
-    public string Rank { get; set; }
+    public string Rank { get; set; } = string.Empty;
 
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 

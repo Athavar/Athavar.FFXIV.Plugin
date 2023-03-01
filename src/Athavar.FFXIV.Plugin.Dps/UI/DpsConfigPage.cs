@@ -9,10 +9,10 @@ using Athavar.FFXIV.Plugin.Dps.UI.Config;
 
 internal class DpsConfigPage : IConfigurable
 {
-    public DpsConfigPage(IServiceProvider provider, MeterManager meterManager, Configuration configuration, EncounterManager encounterManager, NetworkHandler networkHandler)
+    public DpsConfigPage(IServiceProvider provider, Utils utils, MeterManager meterManager, Configuration configuration, EncounterManager encounterManager, NetworkHandler networkHandler)
     {
         this.ProfileListConfigPage = new ProfileListConfigPage(meterManager, provider);
-        this.HistoryPage = new HistoryPage(encounterManager);
+        this.HistoryPage = new HistoryPage(encounterManager, utils);
         this.SettingsConfigPage = new SettingsConfigPage(configuration.Dps!);
 
 #if DEBUG

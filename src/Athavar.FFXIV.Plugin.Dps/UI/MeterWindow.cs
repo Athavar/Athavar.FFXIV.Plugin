@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
@@ -48,11 +48,6 @@ internal class MeterWindow : IConfigurable
 
     private List<BaseCombatant> lastSortedCombatants = new();
 
-    public MeterWindow(MeterConfig config, IServiceProvider provider)
-        : this(config, provider, provider.GetRequiredService<MeterManager>())
-    {
-    }
-
     public MeterWindow(MeterConfig config, IServiceProvider provider, MeterManager meterManager)
     {
         this.ID = $"DpsModule_MeterWindow_{Guid.NewGuid()}";
@@ -61,12 +56,14 @@ internal class MeterWindow : IConfigurable
         this.encounterManager = provider.GetRequiredService<EncounterManager>();
         this.meterManager = meterManager;
 
+        var utils = provider.GetRequiredService<Utils>();
         var fontManager = provider.GetRequiredService<IFontsManager>();
         var iconManager = provider.GetRequiredService<IIconManager>();
+        var dalamudServices = provider.GetRequiredService<IDalamudServices>();
 
         this.GeneralConfigPage = new GeneralConfigPage(this);
         this.HeaderConfigPage = new HeaderConfigPage(this, fontManager);
-        this.BarConfigPage = new BarConfigPage(this, fontManager, iconManager);
+        this.BarConfigPage = new BarConfigPage(this, dalamudServices, utils, fontManager, iconManager);
         this.BarColorsConfigPage = new BarColorsConfigPage(this);
         this.VisibilityConfigPage = new VisibilityConfigPage(this, this.ci);
     }
@@ -93,14 +90,14 @@ internal class MeterWindow : IConfigurable
 
     private VisibilityConfigPage VisibilityConfigPage { get; }
 
-    public static MeterWindow GetDefaultMeter(string name, IServiceProvider provider)
+    public static MeterWindow GetDefaultMeter(string name, IServiceProvider provider, MeterManager meterManager)
     {
         var config = new MeterConfig
-        {
-            Name = name,
-        };
+                     {
+                         Name = name,
+                     };
 
-        var newMeter = new MeterWindow(config, provider);
+        var newMeter = new MeterWindow(config, provider, meterManager);
         return newMeter;
     }
 

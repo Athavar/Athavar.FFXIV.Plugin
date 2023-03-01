@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Diagnostics.CodeAnalysis;
-using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 
@@ -24,7 +24,7 @@ internal partial class EncounterManager
         if (!inValid && ce.IsValid())
         {
             ce.End = ce.LastEvent;
-            // File.WriteAllText($"Z:\\home\\athavar\\.xlcore\\logs\\dps\\{ce.TitleStart}.log", string.Join('\n', this.Log));
+            File.WriteAllText($"Z:\\home\\athavar\\.xlcore\\logs\\dps\\{ce.TitleStart}.log", string.Join('\n', this.Log));
         }
     }
 

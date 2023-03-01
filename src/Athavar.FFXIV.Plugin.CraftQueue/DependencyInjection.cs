@@ -10,10 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCraftQueueModule(this IServiceCollection services)
     {
-        services.AddSingleton<CraftQueueModule>();
-        services.AddSingleton<ICraftQueueTab, CraftQueueTab>();
-        services.AddSingleton<CraftQueueData>();
-        services.AddSingleton<CraftQueue>();
+        services.AddTransient<CraftQueueModule>();
 
         return services;
     }

@@ -4,12 +4,16 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps;
 
+using System.Globalization;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
+using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
@@ -17,11 +21,15 @@ internal class Utils
 {
     private readonly IDalamudServices dalamudServices;
     private readonly ExcelSheet<ClassJob> jobsSheet;
+    private readonly ExcelSheet<Status> statusTable;
+    private readonly ExcelSheet<Action> actionTable;
 
     public Utils(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
         this.jobsSheet = this.dalamudServices.DataManager.GetExcelSheet<ClassJob>()!;
+        this.statusTable = this.dalamudServices.DataManager.GetExcelSheet<Status>()!;
+        this.actionTable = this.dalamudServices.DataManager.GetExcelSheet<Action>()!;
     }
 
     public static Vector2 GetAnchoredPosition(Vector2 position, Vector2 size, DrawAnchor anchor)
@@ -97,4 +105,82 @@ internal class Utils
     public string JobName(Job input) => this.jobsSheet.GetRow((uint)input)?.Name.ToDalamudString().ToString() ?? string.Empty;
 
     public string Vec3String(Vector3 pos) => $"[{pos.X:f2}, {pos.Y:f2}, {pos.Z:f2}]";
+
+    public void DrawActionSummaryTooltip(BaseCombatant combatant, bool force = false)
+    {
+        const string defaultActionName = "Dot/Hot";
+        if (!force && !ImGui.IsItemHovered())
+        {
+            return;
+        }
+
+        if (combatant is not Combatant c)
+        {
+            return;
+        }
+
+        string GetSummaryName(ActionSummary actionSummary)
+        {
+            if (actionSummary.Id == 0)
+            {
+                return defaultActionName;
+            }
+
+            if (actionSummary.IsStatus)
+            {
+                return this.statusTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+            }
+
+            return this.actionTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+        }
+
+        var actionSummaries = c.Actions.Where(a => a.DamageDone is not null || a.HealingDone is not null).ToList();
+        if (actionSummaries.Count == 0)
+        {
+            return;
+        }
+
+        ImGui.BeginTooltip();
+
+        if (ImGui.BeginTable("actionsummary", 6, ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.RowBg))
+        {
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide, 150f);
+            ImGui.TableSetupColumn("Casts", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
+            ImGui.TableSetupColumn("Damage", ImGuiTableColumnFlags.WidthStretch, 5 * 12.0f);
+            ImGui.TableSetupColumn("D. Hits", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
+            ImGui.TableSetupColumn("Heal", ImGuiTableColumnFlags.WidthStretch, 5 * 12.0f);
+            ImGui.TableSetupColumn("H. Hits", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
+            ImGui.TableSetupScrollFreeze(0, 1);
+            ImGui.TableHeadersRow();
+
+            foreach (var summary in actionSummaries)
+            {
+                ImGui.TableNextRow();
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted(GetSummaryName(summary));
+                ImGui.TableNextColumn();
+                ImGui.TextDisabled(summary.Casts.ToString());
+                ImGui.TableNextColumn();
+                if (summary.DamageDone is { } damageDone)
+                {
+                    ImGui.TextUnformatted($"{damageDone.TotalAmount.ToString(CultureInfo.InvariantCulture)} (avg {damageDone.TotalAmount / (ulong)damageDone.Hits})");
+                }
+
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted(summary.DamageDone?.Hits.ToString());
+                ImGui.TableNextColumn();
+                if (summary.HealingDone is { } healingDone)
+                {
+                    ImGui.TextUnformatted($"{healingDone.TotalAmount.ToString(CultureInfo.InvariantCulture)} (avg {healingDone.TotalAmount / (ulong)healingDone.Hits})");
+                }
+
+                ImGui.TableNextColumn();
+                ImGui.TextUnformatted(summary.HealingDone?.Hits.ToString());
+            }
+
+            ImGui.EndTable();
+        }
+
+        ImGui.EndTooltip();
+    }
 }

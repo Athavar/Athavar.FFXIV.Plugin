@@ -16,6 +16,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
+using Dalamud.Interface.Windowing;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina;
@@ -24,12 +25,12 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
 using Microsoft.Extensions.DependencyInjection;
-using Module = Athavar.FFXIV.Plugin.Common.Module;
 
 /// <summary>
 ///     Implements the instancinator module.
 /// </summary>
-public class InstancinatorModule : Module, IDisposable
+[Module(ModuleName, ModuleConfigurationType = typeof(InstancinatorConfiguration))]
+internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfiguration>
 {
     internal const string ModuleName = "Instancinator";
     private const string FolderName = "InstancinatorInternal";
@@ -54,7 +55,6 @@ public class InstancinatorModule : Module, IDisposable
     private readonly string aetheryteTarget;
 
     private InstancinatorWindow? window;
-    private IInstancinatorTab? tab;
 
     private long nextKeypress;
 
@@ -66,7 +66,7 @@ public class InstancinatorModule : Module, IDisposable
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="tab"><see cref="IInstancinatorTab" /> added by DI.</param>
     public InstancinatorModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices)
-        : base(configuration)
+        : base(configuration, configuration.Instancinator!)
     {
         this.provider = provider;
         this.dalamudServices = dalamudServices;
@@ -91,23 +91,10 @@ public class InstancinatorModule : Module, IDisposable
     /// <inheritdoc />
     public override bool Hidden => false;
 
-    /// <inheritdoc />
-    public override IInstancinatorTab Tab => this.tab ??= this.provider.GetRequiredService<IInstancinatorTab>();
-
     /// <summary>
     ///     Gets current selected Instance.
     /// </summary>
     internal int SelectedInstance { get; private set; }
-
-    /// <inheritdoc />
-    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
-    {
-        bool Get(Configuration c) => c.Instancinator!.Enabled;
-
-        void Set(bool state, Configuration c) => c.Instancinator!.Enabled = state;
-
-        return (Get, Set);
-    }
 
     /// <summary>
     ///     Enable instance for switch for selected instance.
@@ -138,10 +125,12 @@ public class InstancinatorModule : Module, IDisposable
     }
 
     /// <inheritdoc />
-    public void Dispose()
+    public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
         this.dalamudServices.Framework.Update -= this.Tick;
+        base.Dispose();
+        this.window?.Dispose();
     }
 
     internal int GetNumberOfInstances()
@@ -173,12 +162,10 @@ public class InstancinatorModule : Module, IDisposable
         }
     }
 
-    private InstancinatorWindow GetWindow()
-    {
-        var w = this.provider.GetRequiredService<InstancinatorWindow>();
-        w.Setup(this);
-        return w;
-    }
+    /// <inheritdoc />
+    protected override InstancinatorTab InitTab() => new(this.ModuleConfig);
+
+    private InstancinatorWindow CreateWindow() => new(this.provider.GetRequiredService<WindowSystem>(), this);
 
     private ExcelSheet<T>? GetSubSheet<T>(string path)
         where T : ExcelRow
@@ -243,7 +230,7 @@ public class InstancinatorModule : Module, IDisposable
 
         var aetheryte = this.dalamudServices.ObjectTable.FirstOrDefault(o => o.ObjectKind == ObjectKind.Aetheryte && Vector3.Distance(o.Position, this.dalamudServices.ClientState.LocalPlayer.Position) < 10f);
 
-        if (aetheryte == null)
+        if (aetheryte == null || !aetheryte.Name.ToString().Equals(this.aetheryteTarget, StringComparison.OrdinalIgnoreCase))
         {
             if (this.window != null)
             {
@@ -253,7 +240,7 @@ public class InstancinatorModule : Module, IDisposable
             return;
         }
 
-        (this.window ??= this.GetWindow()).IsOpen = true;
+        (this.window ??= this.CreateWindow()).IsOpen = true;
 
         if (this.SelectedInstance == 0 || Environment.TickCount64 <= this.nextKeypress)
         {

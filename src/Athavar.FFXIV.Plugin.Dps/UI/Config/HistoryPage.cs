@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 using System.Globalization;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Interface.Colors;
 using ImGuiNET;
 
@@ -19,11 +19,16 @@ internal class HistoryPage : IConfigPage
     private static readonly string[] ColumnNames = { "Name", "Duration", "Dps" };
 
     private readonly EncounterManager encounterManager;
+    private readonly Utils utils;
 
     private Columns sortColumn;
     private ImGuiSortDirection sortDirection;
 
-    public HistoryPage(EncounterManager encounterManager) => this.encounterManager = encounterManager;
+    public HistoryPage(EncounterManager encounterManager, Utils utils)
+    {
+        this.encounterManager = encounterManager;
+        this.utils = utils;
+    }
 
     private enum Columns
     {
@@ -106,7 +111,7 @@ internal class HistoryPage : IConfigPage
 
         void DrawCombatants(BaseEncounter e)
         {
-            var combatants = e.GetCombatants().OrderBy(this.GetSortKey()).ToList();
+            var combatants = e.GetCombatants().Where(c => c.IsActive()).OrderBy(this.GetSortKey()).ToList();
             foreach (var t in combatants)
             {
                 this.DrawBaseCombatant(e, t);
@@ -176,6 +181,8 @@ internal class HistoryPage : IConfigPage
         }
 
         ImGui.TreeNodeEx(combatant.Name, ImGuiTreeNodeFlags.Leaf | ImGuiTreeNodeFlags.Bullet | ImGuiTreeNodeFlags.NoTreePushOnOpen | ImGuiTreeNodeFlags.SpanFullWidth);
+        this.utils.DrawActionSummaryTooltip(combatant);
+
         ImGui.TableNextColumn();
         ImGui.TextDisabled("--");
         ImGui.TableNextColumn();

@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 using Dalamud.Interface;
 using ImGuiNET;
 
-internal class OpcodeWizardTab : Tab, IOpcodeWizardTab
+internal class OpcodeWizardTab : Tab
 {
     private readonly ScannerRegistry scannerRegistry;
     private readonly DetectionProgram detectionProgram;

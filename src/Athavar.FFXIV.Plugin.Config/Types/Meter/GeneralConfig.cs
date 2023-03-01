@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
+using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 using Newtonsoft.Json;
 
@@ -34,6 +35,10 @@ public class GeneralConfig : BaseConfig
     public int BorderThickness { get; set; } = 2;
 
     public MeterDataType DataType { get; set; } = MeterDataType.Damage;
+
+    public bool ShowActionSummaryTooltip { get; set; } = true;
+
+    public VirtualKey ShowActionSummaryModifyKey { get; set; } = VirtualKey.NO_KEY;
 
     public bool ReturnToCurrent { get; set; } = true;
 }

@@ -6,47 +6,58 @@ namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
+using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-public class DpsModule : Module
+[Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration))]
+internal class DpsModule : Module<DpsTab, DpsConfiguration>
 {
     internal const string ModuleName = "DPS (Test)";
 
     private readonly IServiceProvider provider;
     private readonly IDalamudServices services;
     private readonly NetworkHandler networkHandler;
-    private readonly MeterManager meterManager;
-    private IDpsTab? tab;
+    private MeterManager? meterManager;
 
     public DpsModule(Configuration configuration, IServiceProvider provider, IDalamudServices services)
-        : base(configuration)
+        : base(configuration, configuration.Dps!)
     {
         this.services = services;
         this.provider = provider;
 
         this.networkHandler = provider.GetRequiredService<NetworkHandler>();
         this.networkHandler.Enable = this.Enabled;
-
-        this.meterManager = provider.GetRequiredService<MeterManager>();
-        this.meterManager.Setup(new Lazy<DpsTab>(() => this.Tab as DpsTab ?? throw new InvalidOperationException()));
     }
-
-    public override IDpsTab Tab => this.tab ??= this.provider.GetRequiredService<IDpsTab>();
 
     public override string Name => ModuleName;
 
     /// <inheritdoc />
-    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
-        bool Get(Configuration c) => this.Configuration.Dps!.Enabled;
+        bool Get() => this.Configuration.Dps!.Enabled;
 
-        void Set(bool state, Configuration c)
+        void Set(bool state)
         {
             this.Configuration.Dps!.Enabled = state;
             this.networkHandler.Enable = state;
         }
 
         return (Get, Set);
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        this.meterManager?.Dispose();
+        PluginLog.LogInformation("Dispose Dps");
+    }
+
+    protected override DpsTab InitTab()
+    {
+        this.meterManager = ActivatorUtilities.CreateInstance<MeterManager>(this.provider);
+        this.meterManager.Setup(new Lazy<DpsTab>(() => this.Tab ?? throw new InvalidOperationException()));
+        return new DpsTab(this.provider, this.services, this.meterManager);
     }
 }
