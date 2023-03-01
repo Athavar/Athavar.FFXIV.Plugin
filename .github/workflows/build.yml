@@ -25,9 +25,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GIT_SECRET }}
-          submodules: recursive
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
@@ -53,27 +50,3 @@ jobs:
           name: PluginRepoZip
           path: ./bin/Release/${{ env.INTERNAL_NAME }}
           if-no-files-found: error
-
-  deploy:
-    needs: build
-    if: "contains(toJSON(github.event.commits.*.message), '[PUSH]')"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: false
-          repository: ${{ env.PERSONAL_PLUGIN_REPO }}
-          token: ${{ secrets.PAT }}
-      - uses: actions/download-artifact@v3
-        with:
-          name: PluginRepoZip
-          path: plugins/${{ env.INTERNAL_NAME }}
-      - uses: EndBug/add-and-commit@v9
-        with:
-          add: --all
-          author_name: GitHub Action
-          author_email: action@github.com
-          message: Update ${{ env.INTERNAL_NAME }}
