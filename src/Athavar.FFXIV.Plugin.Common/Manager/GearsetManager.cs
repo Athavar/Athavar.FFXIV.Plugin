@@ -23,6 +23,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
     private readonly ExcelSheet<Materia> materiaSheet;
     private readonly ExcelSheet<BaseParam> baseParamSheet;
     private readonly ExcelSheet<ItemLevel> itemLevelSheet;
+    private readonly ExcelSheet<ClassJob> classJobSheet;
 
     public GearsetManager(IDalamudServices dalamudServices)
     {
@@ -34,6 +35,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
         this.materiaSheet = dataManager.GetExcelSheet<Materia>() ?? throw new AthavarPluginException();
         this.baseParamSheet = dataManager.GetExcelSheet<BaseParam>() ?? throw new AthavarPluginException();
         this.itemLevelSheet = dataManager.GetExcelSheet<ItemLevel>() ?? throw new AthavarPluginException();
+        this.classJobSheet = dataManager.GetExcelSheet<ClassJob>() ?? throw new AthavarPluginException();
 
         clientState.Login += this.ClientStateOnLogin;
         clientState.Logout += this.ClientStateOnLogout;
@@ -74,7 +76,13 @@ internal class GearsetManager : IGearsetManager, IDisposable
         for (var i = 0; i < 100; ++i)
         {
             var gearsetEntryPtr = instance->Gearset[i];
-            if ((nint)gearsetEntryPtr == nint.Zero)
+            if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0)
+            {
+                continue;
+            }
+
+            var expArrayIndex = this.classJobSheet.GetRow(gearsetEntryPtr->ClassJob)?.ExpArrayIndex;
+            if (expArrayIndex is not { } levelArrayIndex || levelArray[levelArrayIndex] == 0)
             {
                 continue;
             }
@@ -93,7 +101,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RightLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
-            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[gearsetEntryPtr->ClassJob], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
+            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
         }
     }
 
