@@ -6,6 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
+using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 internal abstract record CombatEvent
@@ -50,11 +51,9 @@ internal abstract record CombatEvent
 
     public abstract record ActionEffectEvent
     {
-        public string? ActionName { get; set; } = string.Empty;
-
         public bool IsSourceEntry => (this.Flags2 & 128U) > 0U;
 
-        public ActionEffectType EffectType { get; init; }
+        protected ActionEffectType EffectType { get; init; }
 
         public uint SourceId { get; set; }
 
@@ -76,7 +75,27 @@ internal abstract record CombatEvent
 
         public bool IsSourceTarget => (this.Flags2 & 0x80) != 0;
 
-        public virtual uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
+        public bool IsCrit => (this.HitSeverity & 0x1) == 0x1;
+
+        public bool IsDirectHit => (this.HitSeverity & 0x2) == 0x2;
+
+        public uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
+
+        public ActionEventModifier GetModifier()
+        {
+            var flag = ActionEventModifier.Normal;
+            if (this.IsCrit)
+            {
+                flag |= ActionEventModifier.CritHit;
+            }
+
+            if (this.IsDirectHit)
+            {
+                flag |= ActionEventModifier.DirectHit;
+            }
+
+            return flag;
+        }
     }
 
     public abstract record Heal : ActionEffectEvent
@@ -103,13 +122,11 @@ internal abstract record CombatEvent
 
     public record DamageTaken : Damage
     {
+        public uint ActionId { get; set; }
+
         public ActionType ActionType { get; init; }
 
         public uint ComboAmount => this.Percentage;
-
-        public bool IsCrit => (this.HitSeverity & 1) == 1;
-
-        public bool IsDirectHit => (this.HitSeverity & 2) == 1;
 
         public DamageElementType DamageElementType => (DamageElementType)(this.Param1 >> 4);
 
@@ -122,10 +139,8 @@ internal abstract record CombatEvent
 
     public record Healed : Heal
     {
-        public uint ActionId { get; init; }
+        public uint ActionId { get; set; }
 
         public ActionType ActionType { get; init; }
-
-        public bool IsCrit => (this.HitSeverity & 1) == 1;
     }
 }

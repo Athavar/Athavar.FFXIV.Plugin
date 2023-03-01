@@ -8,6 +8,7 @@ using System.Numerics;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
 internal class GeneralConfigPage : IConfigPage
@@ -17,6 +18,22 @@ internal class GeneralConfigPage : IConfigPage
 
     [JsonIgnore]
     private static readonly string[] MeterTypeOptions = Enum.GetNames(typeof(MeterDataType));
+
+    private readonly string[] hotkeyChoices =
+    {
+        "None",
+        "Control",
+        "Alt",
+        "Shift",
+    };
+
+    private readonly VirtualKey[] hotkeyValues =
+    {
+        VirtualKey.NO_KEY,
+        VirtualKey.CONTROL,
+        VirtualKey.MENU,
+        VirtualKey.SHIFT,
+    };
 
     private readonly MeterWindow window;
 
@@ -101,6 +118,33 @@ internal class GeneralConfigPage : IConfigPage
             {
                 change = true;
             }
+
+            if (c.DataType != MeterDataType.DamageTaken)
+            {
+                ImGuiEx.DrawNestIndicator(1);
+                if (ImGuiEx.Checkbox("Show action summary on mouse over", c.ShowActionSummaryTooltip, x => c.ShowActionSummaryTooltip = x))
+                {
+                    change = true;
+                }
+
+                if (c.ShowActionSummaryTooltip)
+                {
+                    var onHotkeyIndex = Array.IndexOf(this.hotkeyValues, c.ShowActionSummaryModifyKey);
+                    ImGuiEx.DrawNestIndicator(2);
+                    if (ImGui.Combo("On Hotkey", ref onHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
+                    {
+                        c.ShowActionSummaryModifyKey = this.hotkeyValues[onHotkeyIndex];
+                        change = true;
+                    }
+                }
+            }
+            else if (c.ShowActionSummaryTooltip)
+            {
+                c.ShowActionSummaryTooltip = false;
+                change = true;
+            }
+
+            ImGui.NewLine();
 
             if (ImGuiEx.Checkbox("Return to Current Data when entering combat", c.ReturnToCurrent, x => c.ReturnToCurrent = x))
             {

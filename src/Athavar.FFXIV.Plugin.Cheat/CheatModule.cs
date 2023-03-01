@@ -12,7 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements cheats.
 /// </summary>
-public class CheatModule : Module, IDisposable
+[Module(ModuleName, Hidden = true)]
+internal class CheatModule : Module, IDisposable
 {
     private const string ModuleName = "CheatModule";
 
@@ -44,11 +45,11 @@ public class CheatModule : Module, IDisposable
     public override bool Hidden => true;
 
     /// <inheritdoc />
-    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
-        bool Get(Configuration c) => true;
+        bool Get() => true;
 
-        void Set(bool state, Configuration c)
+        void Set(bool state)
         {
         }
 

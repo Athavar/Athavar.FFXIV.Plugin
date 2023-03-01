@@ -8,16 +8,19 @@ namespace Athavar.FFXIV.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Module = Athavar.FFXIV.Plugin.Common.Module;
 
 /// <summary>
-///     Manage instances of <see cref="Module" />.
+///     Manage instances of <see cref="Common.Module" />.
 /// </summary>
-internal class ModuleManager : IModuleManager
+internal class ModuleManager : IModuleManager, IDisposable
 {
-    private readonly Dictionary<string, Module> modules = new();
+    private readonly Dictionary<string, ModuleDef> modules = new();
 
     private readonly Configuration configuration;
     private readonly IServiceProvider serviceProvider;
@@ -35,13 +38,58 @@ internal class ModuleManager : IModuleManager
 
     public event IModuleManager.ModuleStateChange? StateChange;
 
-    /// <inheritdoc />
-    public bool Register<T>()
-        where T : Module
+    public void LoadModules()
     {
-        var module = this.serviceProvider.GetRequiredService<T>();
-        this.StateChange?.Invoke(module, true);
-        return this.modules.TryAdd(module.Name, module);
+        var moduleType = typeof(Module);
+
+        foreach (var mType in AppDomain.CurrentDomain.GetAssemblies()
+           .Where(a => !a.IsDynamic)
+           .Where(a => a.GetName().Name?.StartsWith("Athavar.FFXIV.Plugin") ?? false)
+           .SelectMany(a => a.GetTypes())
+           .Where(t => !t.IsAbstract && t.IsSubclassOf(moduleType)))
+        {
+            var attribute = mType.GetCustomAttribute<ModuleAttribute>();
+            if (attribute is null)
+            {
+                continue;
+            }
+
+            if (attribute.Debug)
+            {
+#if !DEBUG
+                continue;
+#endif
+            }
+
+            var enabled = true;
+            if (attribute.ModuleConfigurationType is not null)
+            {
+                var config = this.configuration.GetBasicModuleConfig(attribute.ModuleConfigurationType);
+                enabled = config?.Enabled ?? enabled;
+            }
+
+            var definition = new ModuleDef(attribute.Hidden, mType)
+                             {
+                                 Enabled = enabled,
+                             };
+
+            if (this.modules.TryAdd(attribute.Name, definition))
+            {
+                if (enabled)
+                {
+                    var m = ActivatorUtilities.CreateInstance(this.serviceProvider, mType);
+                    if (m is Module module)
+                    {
+                        definition.Instance = module;
+                        this.StateChange?.Invoke(module);
+                    }
+                }
+            }
+            else
+            {
+                PluginLog.LogVerbose("{0} was already added", attribute.Name);
+            }
+        }
     }
 
     /// <inheritdoc />
@@ -55,10 +103,54 @@ internal class ModuleManager : IModuleManager
     {
         if (this.modules.TryGetValue(moduleName, out var mod))
         {
-            mod.Enable(state);
-            this.configuration.Save();
+            if (mod.Instance is null)
+            {
+                var instance = ActivatorUtilities.CreateInstance(this.serviceProvider, mod.Type);
+                if (instance is not Module module)
+                {
+                    return;
+                }
 
-            this.StateChange?.Invoke(mod, false);
+                mod.Instance = module;
+            }
+
+            mod.Enabled = state;
+            mod.Instance.Enable(state);
+            this.configuration.Save();
+            if (state)
+            {
+                mod.Instance.Init();
+            }
+
+            this.StateChange?.Invoke(mod.Instance);
+            if (!state)
+            {
+                if (mod.Instance is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+
+                mod.Instance = null;
+            }
         }
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        foreach (var moduleDef in this.modules)
+        {
+            if (moduleDef.Value.Instance is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+    }
+
+    private record ModuleDef(bool Hidden, Type Type)
+    {
+        public bool Enabled { get; set; }
+
+        public Module? Instance { get; set; }
     }
 }

@@ -76,7 +76,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
         for (var i = 0; i < 100; ++i)
         {
             var gearsetEntryPtr = instance->Gearset[i];
-            if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0)
+            if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0 || (gearsetEntryPtr->Flags & RaptureGearsetModule.GearsetFlag.Exists) == 0)
             {
                 continue;
             }

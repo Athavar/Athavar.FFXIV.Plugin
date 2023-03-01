@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game.ClientState.Objects.Types;
 
 internal partial class EncounterManager
@@ -35,6 +36,8 @@ internal partial class EncounterManager
                     overWriteSource = uint.MaxValue;
                 }
 
+                actor?.CastAction(action.ActionId.Id);
+
                 foreach (var effectEvent in action.Effects)
                 {
                     effectEvent.SourceId = overWriteSource;
@@ -62,14 +65,15 @@ internal partial class EncounterManager
             }
             case CombatEvent.StatusEffect statusEffect:
             {
+                var source = encounter.GetCombatant(statusEffect.SourceId);
                 if (statusEffect.Grain)
                 {
-                    this.Log.Add($"[{@event.Timestamp:O}] EffectGrain: {actor} -> {this.utils.StatusString(statusEffect.StatusId)}");
+                    this.Log.Add($"{@event.Timestamp:O}|EffectGrain|{source?.Name}|{actor.Name}|{this.utils.StatusString(statusEffect.StatusId)}|");
                     actor.StatusList.Add(statusEffect);
                 }
                 else
                 {
-                    this.Log.Add($"[{@event.Timestamp:O}] EffectRemove: {actor} -> {this.utils.StatusString(statusEffect.StatusId)}");
+                    this.Log.Add($"{@event.Timestamp:O}|EffectRemove|{source?.Name}|{actor.Name}|{this.utils.StatusString(statusEffect.StatusId)}|");
                     actor.StatusList.RemoveAll(e => e.StatusId == statusEffect.StatusId && e.SourceId == statusEffect.SourceId);
                 }
 
@@ -93,11 +97,19 @@ internal partial class EncounterManager
     private void HandleActionEffect(Encounter encounter, Combatant? source, CombatEvent @event, CombatEvent.ActionEffectEvent effectEvent)
     {
         var target = encounter.GetCombatant(effectEvent.TargetId);
-        ;
-
         if (source is null)
         {
             return;
+        }
+
+        if (effectEvent is CombatEvent.Heal heal)
+        {
+            var gameObject = this.objectTable?.SearchById(heal.TargetId);
+            if (gameObject is BattleChara battleChara)
+            {
+                var missingHp = battleChara.CurrentHp > battleChara.MaxHp ? 0U : battleChara.MaxHp - battleChara.CurrentHp;
+                heal.Overheal += heal.Amount < missingHp ? 0U : heal.Amount - missingHp;
+            }
         }
 
         var action = @event as CombatEvent.Action;
@@ -106,6 +118,7 @@ internal partial class EncounterManager
         {
             case CombatEvent.DamageTaken damageTakenEvent:
             {
+                var isStatus = false;
                 if (action is not null)
                 {
                     if (damageTakenEvent.IsSourceEntry)
@@ -113,18 +126,14 @@ internal partial class EncounterManager
                         var effect = target?.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
-                            damageTakenEvent.ActionName = this.utils.StatusString(effect.StatusId);
+                            damageTakenEvent.ActionId = effect.StatusId;
+                            isStatus = true;
                         }
                     }
                 }
 
-                if (target != null)
-                {
-                    target.DamageTaken += damageTakenEvent.Amount;
-                }
-
-                source.DamageTotal += damageTakenEvent.Amount;
-
+                source.AddActionDone(@event.Timestamp, damageTakenEvent, isStatus);
+                target?.AddActionTaken(@event.Timestamp, damageTakenEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp, true);
 
                 this.Log.Add($"{@event.Timestamp:O}|Damage|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{damageTakenEvent.Amount}");
@@ -133,13 +142,8 @@ internal partial class EncounterManager
             }
             case CombatEvent.DoT dotEvent:
             {
-                target = encounter.GetCombatant(dotEvent.TargetId);
-                if (target != null)
-                {
-                    target.DamageTaken += dotEvent.Amount;
-                }
-
-                source.DamageTotal += dotEvent.Amount;
+                source.AddActionDone(@event.Timestamp, dotEvent);
+                target?.AddActionTaken(@event.Timestamp, dotEvent);
                 this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"{@event.Timestamp:O}|DoT|{source.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
@@ -147,8 +151,8 @@ internal partial class EncounterManager
             }
             case CombatEvent.HoT hotEvent:
             {
-                target = encounter.GetCombatant(hotEvent.TargetId);
-                this.ApplyHeal(source, target, hotEvent.TargetId, hotEvent.Amount);
+                source.AddActionDone(@event.Timestamp, hotEvent);
+                target?.AddActionTaken(@event.Timestamp, hotEvent);
                 this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"{@event.Timestamp:O}|HoT|{source.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount}");
@@ -156,7 +160,7 @@ internal partial class EncounterManager
             }
             case CombatEvent.Healed healEvent:
             {
-                var targetId = healEvent.TargetId;
+                var isStatus = false;
                 if (action is not null)
                 {
                     var indexOfHealEffects = Array.IndexOf(action.Effects.OfType<CombatEvent.Healed>().ToArray(), healEvent);
@@ -167,7 +171,8 @@ internal partial class EncounterManager
                         var effect = source.StatusList.LastOrDefault(x => this.damageDealtHealProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
-                            healEvent.ActionName = this.utils.StatusString(effect.StatusId);
+                            healEvent.ActionId = effect.StatusId;
+                            isStatus = true;
                         }
                     }
                     else
@@ -177,40 +182,20 @@ internal partial class EncounterManager
                             var effect = source.StatusList.LastOrDefault(x => (this.damageReceivedHealProcs.Contains(x.StatusId) || this.healCastHealProcs.Contains(x.StatusId)) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                             if (effect is not null)
                             {
-                                healEvent.ActionName = this.utils.StatusString(effect.StatusId);
+                                healEvent.ActionId = effect.StatusId;
+                                isStatus = true;
                             }
                         }
                     }
                 }
 
-                target = encounter.GetCombatant(healEvent.TargetId);
-                this.ApplyHeal(source, target, targetId, healEvent.Amount);
+                source.AddActionDone(@event.Timestamp, healEvent, isStatus);
+                target?.AddActionTaken(@event.Timestamp, healEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp);
 
                 this.Log.Add($"{@event.Timestamp:O}|Heal|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{healEvent.Amount}");
                 break;
             }
-        }
-    }
-
-    private void ApplyHeal(Combatant? source, Combatant? target, uint targetId, uint healAmount)
-    {
-        if (source == null)
-        {
-            return;
-        }
-
-        source.HealingTotal += healAmount;
-        if (target != null)
-        {
-            target.HealingTaken += healAmount;
-        }
-
-        var gameObject = this.objectTable?.SearchById(targetId);
-        if (gameObject is BattleChara battleChara)
-        {
-            var missingHp = battleChara.CurrentHp > battleChara.MaxHp ? 0U : battleChara.MaxHp - battleChara.CurrentHp;
-            source.OverHealTotal += healAmount < missingHp ? 0U : healAmount - missingHp;
         }
     }
 

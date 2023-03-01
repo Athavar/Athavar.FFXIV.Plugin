@@ -13,10 +13,11 @@ using ImGuiNET;
 /// <summary>
 ///     Zone list window.
 /// </summary>
-internal class ZoneListWindow : Window
+internal class ZoneListWindow : Window, IDisposable
 {
+    private readonly YesModule module;
     private readonly IDalamudServices dalamudServices;
-    private YesModule? module;
+    private readonly WindowSystem windowSystem;
     private bool sortZoneByName;
 
     /// <summary>
@@ -24,14 +25,17 @@ internal class ZoneListWindow : Window
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
-    public ZoneListWindow(IDalamudServices dalamudServices, WindowSystem windowSystem)
+    public ZoneListWindow(YesModule module, IDalamudServices dalamudServices, WindowSystem windowSystem)
         : base("Zone List")
     {
+        this.module = module;
         this.dalamudServices = dalamudServices;
+        this.windowSystem = windowSystem;
+
         this.Size = new Vector2(525, 600);
         this.SizeCondition = ImGuiCond.FirstUseEver;
 
-        windowSystem.AddWindow(this);
+        this.windowSystem.AddWindow(this);
     }
 
     /// <inheritdoc />
@@ -81,9 +85,12 @@ internal class ZoneListWindow : Window
         ImGui.Columns(1);
     }
 
-    /// <summary>
-    ///     Setup the <see cref="ZoneListWindow" />.
-    /// </summary>
-    /// <param name="m">The <see cref="YesModule" />.</param>
-    internal void Setup(YesModule m) => this.module = m;
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        if (this.windowSystem.Windows.Contains(this))
+        {
+            this.windowSystem.RemoveWindow(this);
+        }
+    }
 }

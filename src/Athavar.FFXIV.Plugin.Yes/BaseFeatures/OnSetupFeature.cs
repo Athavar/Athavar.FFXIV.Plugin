@@ -41,7 +41,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <summary>
     ///     Gets the <see cref="YesConfiguration" />.
     /// </summary>
-    protected YesConfiguration Configuration => this.module.Configuration;
+    protected YesConfiguration Configuration => this.module.MC;
 
     /// <summary>
     ///     Gets the name of the addon being hooked.
@@ -73,7 +73,7 @@ internal abstract class OnSetupFeature : IBaseFeature
         PluginLog.Debug($"Addon{this.AddonName}.OnSetup");
         var result = this.onSetupHook.Original(addon, a2, data);
 
-        if (!this.module.Configuration.Enabled || this.module.DisableKeyPressed)
+        if (!this.module.MC.Enabled || this.module.DisableKeyPressed)
         {
             return result;
         }

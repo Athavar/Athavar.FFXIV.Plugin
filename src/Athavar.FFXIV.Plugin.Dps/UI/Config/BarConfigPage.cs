@@ -11,7 +11,8 @@ using Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Dps.Data;
+using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
+using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
 internal class BarConfigPage : IConfigPage
@@ -22,16 +23,20 @@ internal class BarConfigPage : IConfigPage
     private static readonly string[] JobIconStyleOptions = Enum.GetNames(typeof(JobIconStyle)).Select(s => $"Style {s}").ToArray();
 
     private readonly MeterWindow window;
+    private readonly IDalamudServices services;
+    private readonly Utils utils;
     private readonly IFontsManager fontsManager;
     private readonly IIconManager iconManager;
 
     private readonly Dictionary<string, Cache> cache = new();
 
-    public BarConfigPage(MeterWindow window, IFontsManager fontsManager, IIconManager iconManager)
+    public BarConfigPage(MeterWindow window, IDalamudServices services, Utils utils, IFontsManager fontsManager, IIconManager iconManager)
     {
         this.window = window;
+        this.services = services;
         this.fontsManager = fontsManager;
         this.iconManager = iconManager;
+        this.utils = utils;
     }
 
     public string Name => "Bars";
@@ -41,14 +46,14 @@ internal class BarConfigPage : IConfigPage
     public IConfig GetDefault()
     {
         var c = new BarConfig
-        {
-            BarNameFontKey = FontsManager.DefaultSmallFontKey,
-            BarNameFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-            BarDataFontKey = FontsManager.DefaultSmallFontKey,
-            BarDataFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-            RankTextFontKey = FontsManager.DefaultSmallFontKey,
-            RankTextFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-        };
+                {
+                    BarNameFontKey = FontsManager.DefaultSmallFontKey,
+                    BarNameFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+                    BarDataFontKey = FontsManager.DefaultSmallFontKey,
+                    BarDataFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+                    RankTextFontKey = FontsManager.DefaultSmallFontKey,
+                    RankTextFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+                };
 
         return c;
     }
@@ -70,6 +75,13 @@ internal class BarConfigPage : IConfigPage
         var barSize = size with { Y = barHeight };
         var barFillSize = new Vector2(size.X * (current / top), barHeight);
         drawList.AddRectFilled(localPos, localPos + barFillSize, this.Config.UseJobColor ? jobColor.Base : barColor.Base);
+
+        var general = this.window.Config.GeneralConfig;
+        var keyState = this.services.KeyState;
+        if (general.ShowActionSummaryTooltip && (general.ShowActionSummaryModifyKey == VirtualKey.NO_KEY || keyState[general.ShowActionSummaryModifyKey]) && ImGui.IsMouseHoveringRect(localPos, localPos + barFillSize))
+        {
+            this.utils.DrawActionSummaryTooltip(baseCombatant, true);
+        }
 
         if (!this.cache.TryGetValue(baseCombatant.Name, out var cache))
         {

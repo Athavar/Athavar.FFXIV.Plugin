@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
-namespace Athavar.FFXIV.Plugin.Dps.Data;
+namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
@@ -42,12 +42,12 @@ internal class Encounter : BaseEncounter<Combatant>
         if (objectId == uint.MaxValue)
         {
             combatant = new Combatant(this, uint.MaxValue, 0)
-            {
-                Name = "Limit Break",
-                Level = 9999,
-                PartyType = PartyType.Party,
-                Job = Job.LimitBreak,
-            };
+                        {
+                            Name = "Limit Break",
+                            Level = 9999,
+                            PartyType = PartyType.Party,
+                            Job = Job.LimitBreak,
+                        };
             this.Combatants.Add(combatant);
 
             goto end;
@@ -62,18 +62,18 @@ internal class Encounter : BaseEncounter<Combatant>
 
             // create new battle player
             combatant = new Combatant(this, objectId, 0)
-            {
-                Name = name,
-                Name_First = nameSplits[0],
-                Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
-                Job = (Job)playerCharacter.ClassJob.Id,
-                Level = playerCharacter.Level,
-                WorldId = playerCharacter.HomeWorld.Id,
-                WorldName = playerCharacter.HomeWorld.GameData?.Name.ToDalamudString().ToString() ?? "<Unknown>",
-                CurrentWorldId = playerCharacter.CurrentWorld.Id,
-                PartyType = PartyType.None,
-                Kind = BattleNpcSubKind.None,
-            };
+                        {
+                            Name = name,
+                            Name_First = nameSplits[0],
+                            Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
+                            Job = (Job)playerCharacter.ClassJob.Id,
+                            Level = playerCharacter.Level,
+                            WorldId = playerCharacter.HomeWorld.Id,
+                            WorldName = playerCharacter.HomeWorld.GameData?.Name.ToDalamudString().ToString() ?? "<Unknown>",
+                            CurrentWorldId = playerCharacter.CurrentWorld.Id,
+                            PartyType = PartyType.None,
+                            Kind = BattleNpcSubKind.None,
+                        };
         }
         else if (gameObject is BattleNpc battleNpc)
         {
@@ -103,18 +103,18 @@ internal class Encounter : BaseEncounter<Combatant>
 
             // create new battle npc
             combatant = new Combatant(this, oid, battleNpc.DataId)
-            {
-                OwnerId = ownerId,
-                Name = name,
-                Name_First = name,
-                Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
-                Level = battleNpc.Level,
-                WorldId = 0,
-                WorldName = string.Empty,
-                CurrentWorldId = 0,
-                PartyType = PartyType.None,
-                Kind = battleNpc.BattleNpcKind,
-            };
+                        {
+                            OwnerId = ownerId,
+                            Name = name,
+                            Name_First = name,
+                            Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
+                            Level = battleNpc.Level,
+                            WorldId = 0,
+                            WorldName = string.Empty,
+                            CurrentWorldId = 0,
+                            PartyType = PartyType.None,
+                            Kind = battleNpc.BattleNpcKind,
+                        };
         }
         else
         {

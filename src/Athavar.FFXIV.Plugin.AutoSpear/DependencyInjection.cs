@@ -10,8 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAutoSpearModule(this IServiceCollection services)
     {
-        services.AddSingleton<AutoSpearModule>();
-        services.AddSingleton<IAutoSpearTab, AutoSpear>();
+        services.AddTransient<AutoSpearModule>();
 
         return services;
     }

@@ -223,6 +223,7 @@ internal partial class NetworkHandler : IDisposable
 
                             EffectTargetId = targetId,
                             SourceId = casterId,
+                            ActionId = actionId,
                             ActionType = actionType,
                         });
                     }
@@ -316,7 +317,7 @@ internal partial class NetworkHandler : IDisposable
 
     private unsafe void HandleActorControl(Server_ActorControl* p, uint actorId)
     {
-        if (this.Debug)
+        if (this.Debug /*|| p->category is Server_ActorControlCategory.HoT or Server_ActorControlCategory.DoT*/)
         {
             this.Log($"[Network] {this.utils.ObjectString(actorId)} - cat={p->category.AsText()}|{((ActorControlCategory)p->category).AsText()}, params={p->param1:X8} {p->param2:X8} {p->param3:X8} {p->param4:X8} {p->padding1:X8}, unk={p->padding:X4}");
         }

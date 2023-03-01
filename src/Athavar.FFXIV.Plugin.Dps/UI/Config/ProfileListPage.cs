@@ -171,7 +171,7 @@ internal class ProfileListConfigPage : IConfigPage
     {
         if (!string.IsNullOrEmpty(name))
         {
-            this.meterManager.AddMeter(MeterWindow.GetDefaultMeter(name, this.provider));
+            this.meterManager.AddMeter(MeterWindow.GetDefaultMeter(name, this.provider, this.meterManager));
         }
 
         this.input = string.Empty;
@@ -192,7 +192,7 @@ internal class ProfileListConfigPage : IConfigPage
         var newMeter = BaseConfig.GetFromImportString(importString);
         if (newMeter is not null && newMeter is MeterConfig meterConfig)
         {
-            this.meterManager.AddMeter(new MeterWindow(meterConfig, this.provider));
+            this.meterManager.AddMeter(new MeterWindow(meterConfig, this.provider, this.meterManager));
         }
         else
         {

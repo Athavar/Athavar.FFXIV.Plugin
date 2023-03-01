@@ -2,7 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
-namespace Athavar.FFXIV.Plugin.Dps.Data;
+namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 internal abstract class BaseCombatant<T> : BaseCombatant
     where T : BaseCombatant
@@ -19,6 +19,26 @@ internal abstract class BaseCombatant<T> : BaseCombatant
     public static bool operator==(BaseCombatant<T>? left, BaseCombatant<T>? right) => Equals(left, right);
 
     public static bool operator!=(BaseCombatant<T>? left, BaseCombatant<T>? right) => !Equals(left, right);
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != this.GetType())
+        {
+            return false;
+        }
+
+        return this.Equals((BaseCombatant<T>)obj);
+    }
 
     public override void CalcStats()
     {
@@ -47,4 +67,6 @@ internal abstract class BaseCombatant<T> : BaseCombatant
     }
 
     public override int GetHashCode() => HashCode.Combine(this.ObjectId, this.DataId);
+
+    protected bool Equals(BaseCombatant<T> other) => this.Encounter.Equals(other.Encounter);
 }

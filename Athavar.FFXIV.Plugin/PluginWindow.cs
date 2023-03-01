@@ -45,6 +45,7 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
         this.RespectCloseHotkey = false;
 
         this.manager.StateChange += this.OnModuleStateChange;
+        this.manager.LoadModules();
 
 #if DEBUG
         this.Toggle();
@@ -73,7 +74,7 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
     /// <inheritdoc />
     public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
 
-    private void OnModuleStateChange(Module module, bool init)
+    private void OnModuleStateChange(Module module)
     {
         if (module.Enabled)
         {
@@ -84,7 +85,7 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
 
             this.tabBarHandler.Add(module.Tab);
         }
-        else if (!init)
+        else
         {
             if (module.Tab is null)
             {

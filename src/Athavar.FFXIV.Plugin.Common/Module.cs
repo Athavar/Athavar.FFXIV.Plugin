@@ -34,17 +34,24 @@ public abstract class Module
     /// <summary>
     ///     Gets a value indicating whether gets a value indication the module is enabled or not.
     /// </summary>
-    public bool Enabled => this.GetEnableStateAction().Get(this.Configuration);
+    public bool Enabled => this.GetEnableStateAction().Get();
+
+    /// <summary>
+    ///     Initialize a Module.
+    /// </summary>
+    public virtual void Init()
+    {
+    }
 
     /// <summary>
     ///     Enable/Disable the module.
     /// </summary>
     /// <param name="state">A value indication if the module should be enabled or not.</param>
-    public void Enable(bool state = true) => this.GetEnableStateAction().Set(state, this.Configuration);
+    public void Enable(bool state = true) => this.GetEnableStateAction().Set(state);
 
     /// <summary>
     ///     Gets the Functions to get and set the enable state of a module.
     /// </summary>
     /// <returns>return a getter and setter.</returns>
-    public abstract (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction();
+    public abstract (Func<bool> Get, Action<bool> Set) GetEnableStateAction();
 }

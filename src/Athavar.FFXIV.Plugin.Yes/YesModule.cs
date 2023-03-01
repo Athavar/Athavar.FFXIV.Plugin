@@ -23,7 +23,8 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Main module implementation.
 /// </summary>
-public sealed class YesModule : Module, IDisposable
+[Module(ModuleName, ModuleConfigurationType = typeof(YesConfiguration))]
+internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 {
     /// <summary>
     ///     The name of the module.
@@ -35,7 +36,7 @@ public sealed class YesModule : Module, IDisposable
 
     private readonly IServiceProvider provider;
     private readonly List<IBaseFeature> features;
-    private IYesConfigTab? tab;
+    private ZoneListWindow? zoneListWindow;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="YesModule" /> class.
@@ -45,13 +46,11 @@ public sealed class YesModule : Module, IDisposable
     /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
     public YesModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
-        : base(configuration)
+        : base(configuration, configuration.Yes!)
     {
         this.provider = provider;
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
-
-        this.Configuration = configuration.Yes ??= new YesConfiguration();
 
         this.LoadTerritories();
 
@@ -74,18 +73,12 @@ public sealed class YesModule : Module, IDisposable
     /// <inheritdoc />
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
-    public override IYesConfigTab Tab => this.tab ??= this.GetTab();
+    internal YesConfiguration MC => this.ModuleConfig;
 
     /// <summary>
     ///     Gets the <see cref="IDalamudServices" />.
     /// </summary>
     internal IDalamudServices DalamudServices { get; }
-
-    /// <summary>
-    ///     Gets the yes module configuration.
-    /// </summary>
-    internal new YesConfiguration Configuration { get; }
 
     /// <summary>
     ///     Gets the <see cref="IChatManager" />.
@@ -143,20 +136,22 @@ public sealed class YesModule : Module, IDisposable
     internal ListEntryNode LastSelectedListNode { get; set; } = new();
 
     /// <inheritdoc />
-    public void Dispose()
+    public override void Dispose()
     {
         this.DalamudServices.CommandManager.RemoveHandler(Command);
         this.DalamudServices.Framework.Update -= this.FrameworkUpdate;
+        base.Dispose();
 
         this.features.ForEach(feature => feature?.Dispose());
+        this.zoneListWindow?.Dispose();
     }
 
     /// <inheritdoc />
-    public override (Func<Configuration, bool> Get, Action<bool, Configuration> Set) GetEnableStateAction()
+    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
-        bool Get(Configuration c) => c.Yes!.Enabled;
+        bool Get() => this.ModuleConfig.Enabled;
 
-        void Set(bool state, Configuration c) => c.Yes!.ModuleEnabled = state;
+        void Set(bool state) => this.ModuleConfig.ModuleEnabled = state;
 
         return (Get, Set);
     }
@@ -245,11 +240,10 @@ public sealed class YesModule : Module, IDisposable
         return text;
     }
 
-    private IYesConfigTab GetTab()
+    protected override YesConfigTab InitTab()
     {
-        var t = this.provider.GetRequiredService<IYesConfigTab>();
-        t.Setup(this);
-        return t;
+        this.zoneListWindow = ActivatorUtilities.CreateInstance<ZoneListWindow>(this.provider, this);
+        return ActivatorUtilities.CreateInstance<YesConfigTab>(this.provider, this, this.zoneListWindow);
     }
 
     private void LoadTerritories()
@@ -275,9 +269,9 @@ public sealed class YesModule : Module, IDisposable
 
     private void FrameworkUpdate(Framework framework)
     {
-        this.DisableKeyPressed = this.Configuration.DisableKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.Configuration.DisableKey];
+        this.DisableKeyPressed = this.ModuleConfig.DisableKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.ModuleConfig.DisableKey];
 
-        this.ForcedYesKeyPressed = this.Configuration.ForcedYesKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.Configuration.ForcedYesKey];
+        this.ForcedYesKeyPressed = this.ModuleConfig.ForcedYesKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.ModuleConfig.ForcedYesKey];
 
         if (this.DalamudServices.KeyState[VirtualKey.ESCAPE])
         {
@@ -294,8 +288,8 @@ public sealed class YesModule : Module, IDisposable
                 this.CommandHelpMenu();
                 break;
             case "toggle":
-                this.Configuration.FunctionEnabled ^= true;
-                this.Configuration.Save();
+                this.ModuleConfig.FunctionEnabled ^= true;
+                this.ModuleConfig.Save();
                 break;
             case "last":
                 this.CommandAddNode(false, false, false);
@@ -362,7 +356,7 @@ public sealed class YesModule : Module, IDisposable
             return;
         }
 
-        this.CreateTextNode(this.Configuration.RootFolder, zoneRestricted, createFolder, selectNo);
+        this.CreateTextNode(this.ModuleConfig.RootFolder, zoneRestricted, createFolder, selectNo);
         this.Configuration.Save();
 
         this.ChatManager.PrintChat("Added a new text entry.");
@@ -387,7 +381,7 @@ public sealed class YesModule : Module, IDisposable
             newNode.TargetText = target;
         }
 
-        var parent = this.Configuration.ListRootFolder;
+        var parent = this.ModuleConfig.ListRootFolder;
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
@@ -406,7 +400,7 @@ public sealed class YesModule : Module, IDisposable
 
         var newNode = new TalkEntryNode { Enabled = true, TargetText = target };
 
-        var parent = this.Configuration.TalkRootFolder;
+        var parent = this.ModuleConfig.TalkRootFolder;
         parent.Children.Add(newNode);
         this.Configuration.Save();
 
@@ -415,21 +409,21 @@ public sealed class YesModule : Module, IDisposable
 
     private void ToggleDutyConfirm()
     {
-        this.Configuration.ContentsFinderConfirmEnabled ^= true;
-        this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
-        this.Configuration.Save();
+        this.ModuleConfig.ContentsFinderConfirmEnabled ^= true;
+        this.ModuleConfig.ContentsFinderOneTimeConfirmEnabled = false;
+        this.ModuleConfig.Save();
 
-        var state = this.Configuration.ContentsFinderConfirmEnabled ? "enabled" : "disabled";
+        var state = this.ModuleConfig.ContentsFinderConfirmEnabled ? "enabled" : "disabled";
         this.ChatManager.PrintChat($"Duty Confirm {state}.");
     }
 
     private void ToggleOneTimeConfirm()
     {
-        this.Configuration.ContentsFinderOneTimeConfirmEnabled ^= true;
-        this.Configuration.ContentsFinderConfirmEnabled = this.Configuration.ContentsFinderOneTimeConfirmEnabled;
-        this.Configuration.Save();
+        this.ModuleConfig.ContentsFinderOneTimeConfirmEnabled ^= true;
+        this.ModuleConfig.ContentsFinderConfirmEnabled = this.ModuleConfig.ContentsFinderOneTimeConfirmEnabled;
+        this.ModuleConfig.Save();
 
-        var state = this.Configuration.ContentsFinderOneTimeConfirmEnabled ? "enabled" : "disabled";
+        var state = this.ModuleConfig.ContentsFinderOneTimeConfirmEnabled ? "enabled" : "disabled";
         this.ChatManager.PrintChat($"Duty Confirm and One Time Confirm {state}.");
     }
 }
