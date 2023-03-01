@@ -13,6 +13,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game.ClientState.Conditions;
+using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
@@ -451,10 +452,18 @@ internal class CraftingJob
         var c = this.queue.Configuration;
 
         // maxQuality check
-        if (ci.HasMaxQuality() && c.QualitySkip)
+        try
         {
-            ++this.RotationCurrentStep;
-            return 0;
+            if (c.QualitySkip && ci.HasMaxQuality())
+            {
+                ++this.RotationCurrentStep;
+                return 0;
+            }
+        }
+        catch (AthavarPluginException ex)
+        {
+            PluginLog.LogError(ex, "Error while try to check HasMaxQuality");
+            return -100;
         }
 
         var action = this.Steps[this.RotationCurrentStep];
