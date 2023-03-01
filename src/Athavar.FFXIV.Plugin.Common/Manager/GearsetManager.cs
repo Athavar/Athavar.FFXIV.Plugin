@@ -76,14 +76,13 @@ internal class GearsetManager : IGearsetManager, IDisposable
         for (var i = 0; i < 100; ++i)
         {
             var gearsetEntryPtr = instance->Gearset[i];
-            if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0)
+            if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0 || (gearsetEntryPtr->Flags & RaptureGearsetModule.GearsetFlag.Exists) == 0)
             {
                 continue;
             }
 
             var expArrayIndex = this.classJobSheet.GetRow(gearsetEntryPtr->ClassJob)?.ExpArrayIndex;
-            var name = Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>";
-            if (expArrayIndex is not { } levelArrayIndex || levelArray[levelArrayIndex] == 0 || string.IsNullOrEmpty(name))
+            if (expArrayIndex is not { } levelArrayIndex || levelArray[levelArrayIndex] == 0)
             {
                 continue;
             }
@@ -102,7 +101,7 @@ internal class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RightLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
-            this.Gearsets.Add(new Gearset(name, gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
+            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
         }
     }
 
