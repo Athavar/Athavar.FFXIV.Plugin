@@ -149,7 +149,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <inheritdoc />
     public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
-        bool Get() => this.ModuleConfig.Enabled;
+        bool Get() => this.ModuleConfig.ModuleEnabled;
 
         void Set(bool state) => this.ModuleConfig.ModuleEnabled = state;
 

@@ -369,10 +369,10 @@ internal class ScannerRegistry
                            packet.Data[Offsets.IpcData + 4] == 0x14 &&
                            packet.Data[Offsets.IpcData + 5] == 0x01);
         //=================
-        this.RegisterScanner(Opcode.SystemLogMessage, "Please cast your line and catch a fish at Limsa Lominsa.",
+        /*this.RegisterScanner(Opcode.SystemLogMessage, "Please cast your line and catch a fish at Limsa Lominsa.",
             PacketSource.Server,
             (packet, _) => packet.PacketSize == 56 &&
-                           BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 0x08) == 257);
+                           BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 0x08) == 257);*/
         this.RegisterScanner(Opcode.EventPlay4, string.Empty,
             PacketSource.Server,
             (packet, _) => packet.PacketSize == 80 &&
@@ -663,7 +663,7 @@ internal class ScannerRegistry
         //=================
         this.RegisterScanner(Opcode.IslandWorkshopSupplyDemand, "Go to your Island Sanctuary and check workshop supply/demand status",
             PacketSource.Server,
-            (packet, parameters) => packet.PacketSize == 96 && BitConverter.ToUInt32(packet.Data, Offsets.IpcData) == 0 && BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 1) == 0);
+            (packet, parameters) => packet.PacketSize == 116 && BitConverter.ToUInt32(packet.Data, Offsets.IpcData) == 0 && BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 1) == 0);
         this.RegisterScanner(Opcode.MiniCactpotInit, "Start playing Mini Cactpot.",
             PacketSource.Server,
             (packet, _) =>
