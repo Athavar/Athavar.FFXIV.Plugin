@@ -36,11 +36,11 @@ public sealed unsafe class ClickJournalDetail : ClickBase<ClickJournalDetail, Ad
     ///     Click the accept button.
     /// </summary>
     [ClickName("journal_detail_accept")]
-    public void Accept() => this.ClickAddonButton(this.Addon->AcceptButton, 1);
+    public void Accept() => this.ClickAddonButton(this.Addon->AcceptMapButton, 1);
 
     /// <summary>
     ///     Click the decline button.
     /// </summary>
     [ClickName("journal_detail_decline")]
-    public void Decline() => this.ClickAddonButton(this.Addon->DeclineButton, 2);
+    public void Decline() => this.ClickAddonButton(this.Addon->InitiateButton, 2);
 }

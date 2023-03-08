@@ -137,7 +137,7 @@ internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfi
     {
         switch (this.dalamudServices.ClientState.TerritoryType)
         {
-            case 963:
+            case 963: // Radz-at-Han
                 return 2;
             default:
                 return 3;

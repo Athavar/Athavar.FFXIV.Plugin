@@ -1037,7 +1037,7 @@ internal class QueueTab : Tab
             return;
         }
 
-        int StepOrder((RotationNode Node, SimulationResult Result) s) => s.Result.Steps.Count(ar => !ar.Skipped);
+        int StepOrder((RotationNode Node, SimulationResult Result) s) => s.Result.Steps.Where(ar => !ar.Skipped).Sum(ar => ar.Skill.Action.GetWaitDuration());
         var winner = (this.rotationHq ? success.OrderByDescending(s => s.Result.HqPercent).ThenBy(StepOrder) : success.OrderBy(StepOrder))
            .FirstOrDefault();
 

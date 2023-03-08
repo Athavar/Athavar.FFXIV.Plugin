@@ -111,7 +111,7 @@ public partial class Simulation
         simulationFailCause ??= this.Steps.FirstOrDefault(step => step.FailCause != null)?.FailCause ?? null;
 
         var res = new SimulationResult(
-            this.Steps,
+            new List<ActionResult>(this.Steps),
             this.GetHqPercent(),
             this)
         {

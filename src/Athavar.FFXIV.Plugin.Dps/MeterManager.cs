@@ -43,12 +43,14 @@ internal class MeterManager : IDisposable
         this.services = services;
         this.pluginWindow = pluginWindow;
         this.opcodeManager = opcodeManager;
+
+        this.MissingOpCodes = this.requiredOpcodes;
         this.Load();
 
         this.services.PluginInterface.UiBuilder.Draw += this.Draw;
     }
 
-    public Opcode[] MissingOpCodes { get; private set; } = Array.Empty<Opcode>();
+    public Opcode[] MissingOpCodes { get; private set; }
 
     public List<MeterWindow> Meters { get; private set; } = new();
 
