@@ -75,6 +75,8 @@ internal class MeterManager : IDisposable
             this.pluginWindow.Toggle();
         }
 
+        this.pluginWindow.SelectTab(DpsTab.TabIdentifier);
+
         this.tab?.Value.PushConfig(meterWindow);
     }
 

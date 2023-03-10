@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Logging;
@@ -42,7 +43,15 @@ internal class ModuleManager : IModuleManager, IDisposable
     {
         var moduleType = typeof(Module);
 
-        foreach (var mType in AppDomain.CurrentDomain.GetAssemblies()
+        var context = AssemblyLoadContext.GetLoadContext(typeof(ModuleManager).Assembly);
+        if (context is null)
+        {
+            return;
+        }
+
+        PluginLog.Information("Load modules from AssemblyLoadContext: {0}", context.ToString());
+
+        foreach (var mType in context.Assemblies
            .Where(a => !a.IsDynamic)
            .Where(a => a.GetName().Name?.StartsWith("Athavar.FFXIV.Plugin") ?? false)
            .SelectMany(a => a.GetTypes())
@@ -69,9 +78,9 @@ internal class ModuleManager : IModuleManager, IDisposable
             }
 
             var definition = new ModuleDef(attribute.Hidden, mType)
-                             {
-                                 Enabled = enabled,
-                             };
+            {
+                Enabled = enabled,
+            };
 
             if (this.modules.TryAdd(attribute.Name, definition))
             {

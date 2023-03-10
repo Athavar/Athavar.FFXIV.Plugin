@@ -45,7 +45,6 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
         this.RespectCloseHotkey = false;
 
         this.manager.StateChange += this.OnModuleStateChange;
-        this.manager.LoadModules();
 
 #if DEBUG
         this.Toggle();
@@ -65,11 +64,14 @@ internal class PluginWindow : Window, IDisposable, IPluginWindow
     {
         ImGui.PopStyleColor();
 
-        this.Position = ImGui.GetWindowPos();
+        // this.Position = ImGui.GetWindowPos();
     }
 
     /// <inheritdoc />
     public override void Draw() => this.tabBarHandler.Draw();
+
+    /// <inheritdoc />
+    public void SelectTab(string tabIdentifier) => this.tabBarHandler.SelectTab(tabIdentifier);
 
     /// <inheritdoc />
     public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
