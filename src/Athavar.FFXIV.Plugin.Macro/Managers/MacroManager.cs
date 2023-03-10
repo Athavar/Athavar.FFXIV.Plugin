@@ -283,6 +283,7 @@ internal sealed partial class MacroManager
             this.PauseAtLoop = false;
             this.StopAtLoop = false;
             this.pausedWaiter.Set();
+            this.stepTokenSource?.Cancel();
             this.macroStack.Clear();
             this.chatManager.Clear();
         }

@@ -481,7 +481,7 @@ internal class CraftingJob
 
         if (!ci.UseAction(simAction.GetId(this.Recipe.Class)))
         {
-            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || simAction.SkipOnFail())
+            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || (action.Success != true && simAction.SkipOnFail()))
             {
                 ++this.RotationCurrentStep;
             }
