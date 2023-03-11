@@ -68,4 +68,6 @@ internal partial class CommandInterface
 
         return statusID != default;
     }
+
+    private bool IsLoggedIn() => this.dalamudServices.ClientState.IsLoggedIn;
 }

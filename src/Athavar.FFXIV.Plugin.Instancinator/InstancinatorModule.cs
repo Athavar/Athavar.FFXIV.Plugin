@@ -7,11 +7,9 @@ namespace Athavar.FFXIV.Plugin.Instancinator;
 
 using System.Diagnostics;
 using System.Numerics;
-using System.Reflection;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
@@ -71,7 +69,7 @@ internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfi
         this.provider = provider;
         this.dalamudServices = dalamudServices;
 
-        var aetheryteSheet = this.GetSubSheet<AetheryteString>("transport/Aetheryte") ?? throw new Exception("Sheet Aetheryte missing");
+        var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
         var text = aetheryteSheet.GetRow(10)!.String.RawString;
         this.travelToInstancedArea = text[6..];
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
@@ -166,16 +164,6 @@ internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfi
     protected override InstancinatorTab InitTab() => new(this.ModuleConfig);
 
     private InstancinatorWindow CreateWindow() => new(this.provider.GetRequiredService<WindowSystem>(), this);
-
-    private ExcelSheet<T>? GetSubSheet<T>(string path)
-        where T : ExcelRow
-        => this.dalamudServices.DataManager.Excel.GetType().GetMethod("GetSheet", BindingFlags.Instance | BindingFlags.NonPublic)!
-           .MakeGenericMethod(typeof(T)).Invoke(this.dalamudServices.DataManager.Excel, new object?[]
-            {
-                path,
-                this.dalamudServices.ClientState.ClientLanguage.ToLumina(),
-                null,
-            }) as ExcelSheet<T>;
 
     private void OnChatCommand(string command, string arguments)
     {
@@ -332,7 +320,7 @@ internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfi
     /// <summary>
     ///     Row of transport/Aetheryte Table.
     /// </summary>
-    [Sheet("Aetheryte")]
+    [Sheet("transport/Aetheryte")]
     internal class AetheryteString : ExcelRow
     {
         /// <summary>

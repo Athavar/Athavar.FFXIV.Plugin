@@ -24,6 +24,7 @@ internal class PluginService
 
     private readonly WindowSystem windowSystem;
     private readonly IServiceProvider provider;
+    private readonly IModuleManager moduleManager;
 
     private AutoTranslateWindow? translateWindow;
 
@@ -50,6 +51,7 @@ internal class PluginService
 
         this.windowSystem = windowSystem;
         this.provider = provider;
+        this.moduleManager = moduleManager;
     }
 
     /// <summary>
@@ -60,6 +62,9 @@ internal class PluginService
         // 1.
         PluginLog.LogDebug("Service Start");
         this.windowSystem.AddWindow(this.pluginWindow);
+
+        PluginLog.LogDebug("Load Modules");
+        this.moduleManager.LoadModules();
 
         this.dalamudServices.CommandManager.AddHandler(Plugin.CommandName, new CommandInfo(this.OnCommand)
         {

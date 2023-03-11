@@ -34,6 +34,12 @@ internal class Encounter : BaseEncounter<Combatant>
 
     public Combatant? GetCombatant(uint objectId)
     {
+        void Add(Combatant c)
+        {
+            this.Combatants.Add(c);
+            this.TerritoryEncounter?.AddCombatant(c);
+        }
+        
         if (this.combatantMapping.TryGetValue(objectId, out var combatant))
         {
             return combatant;
@@ -48,7 +54,7 @@ internal class Encounter : BaseEncounter<Combatant>
                             PartyType = PartyType.Party,
                             Job = Job.LimitBreak,
                         };
-            this.Combatants.Add(combatant);
+            Add(combatant);
 
             goto end;
         }
@@ -122,8 +128,7 @@ internal class Encounter : BaseEncounter<Combatant>
             return null;
         }
 
-        this.Combatants.Add(combatant);
-        this.TerritoryEncounter?.AddCombatant(combatant);
+        Add(combatant);
 
         end:
 

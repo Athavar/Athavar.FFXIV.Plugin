@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.UI;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Common.Utils;
 using ImGuiNET;
 
 /// <summary>
@@ -17,6 +18,7 @@ public class TabBarHandler
     private readonly object lockObject = new();
 
     private string lastSelectedTabTitle = string.Empty;
+    private string? selectTabIdentifier;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="TabBarHandler" /> class.
@@ -41,6 +43,8 @@ public class TabBarHandler
 
     public string GetTabTitle() => this.lastSelectedTabTitle;
 
+    public void SelectTab(string identifier) => this.selectTabIdentifier = identifier;
+
     /// <summary>
     ///     Remove a tab.
     /// </summary>
@@ -63,20 +67,30 @@ public class TabBarHandler
     {
         if (ImGui.BeginTabBar(this.name))
         {
-            TabDefinition[] tabs;
+            Span<TabDefinition> tabs;
             lock (this.lockObject)
             {
                 tabs = this.tabs.ToArray();
             }
 
-            for (var index = 0; index < tabs.Length; index++)
+            foreach (var tab in tabs)
             {
-                var tab = tabs[index];
+                var flags = ImGuiTabItemFlags.NoCloseWithMiddleMouseButton;
 
-                if (!ImGui.BeginTabItem(tab.Title))
+                if (tab.Identifier == this.selectTabIdentifier)
+                {
+                    flags |= ImGuiTabItemFlags.SetSelected;
+                }
+
+                if (!ImGuiEx.BeginTabItem(tab.Title, flags))
                 {
                     tab.Tab.OnNotDraw();
                     continue;
+                }
+
+                if ((flags & ImGuiTabItemFlags.SetSelected) != 0)
+                {
+                    this.selectTabIdentifier = null;
                 }
 
                 this.lastSelectedTabTitle = tab.Tab.Title;

@@ -23,6 +23,11 @@ internal partial class CommandInterface
     /// <inheritdoc />
     public unsafe bool CanUseItem(uint itemId, bool hq = false)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var actionId = itemId + (hq ? 1000000U : 0U);
         return ActionManager.Instance()->GetActionStatus(ActionType.Item, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
@@ -30,6 +35,11 @@ internal partial class CommandInterface
     /// <inheritdoc />
     public unsafe bool UseItem(uint itemId, bool hq = false)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var actionId = itemId + (hq ? 1000000U : 0U);
         return this.CanUseItem(itemId, hq) && ActionManager.Instance()->UseAction(ActionType.Item, actionId, Constants.PlayerId, ushort.MaxValue, 0U, 0U, null);
     }
@@ -37,6 +47,11 @@ internal partial class CommandInterface
     /// <inheritdoc />
     public unsafe uint CountItem(uint itemId, bool hq = false)
     {
+        if (!this.IsLoggedIn())
+        {
+            return 0;
+        }
+
         var num = 0;
         for (var index = 0; index < this.playerInventories.Length; index++)
         {
@@ -48,8 +63,38 @@ internal partial class CommandInterface
     }
 
     /// <inheritdoc />
+    public unsafe uint FreeInventorySlots()
+    {
+        if (!this.IsLoggedIn())
+        {
+            return 0;
+        }
+
+        var num = 0;
+        for (var index = 0; index < this.playerInventories.Length - 1; index++)
+        {
+            var playerInventory = InventoryManager.Instance()->GetInventoryContainer(this.playerInventories[index]);
+            for (var slotIndex = 0; slotIndex < playerInventory->Size; slotIndex++)
+            {
+                var slot = playerInventory->GetInventorySlot(slotIndex);
+                if (slot->ItemID == 0)
+                {
+                    num++;
+                }
+            }
+        }
+
+        return (uint)num;
+    }
+
+    /// <inheritdoc />
     public unsafe bool NeedsRepair()
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var im = InventoryManager.Instance();
         if (im == null)
         {
@@ -90,6 +135,11 @@ internal partial class CommandInterface
     /// <inheritdoc />
     public unsafe bool CanExtractMateria(float within = 100)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var im = InventoryManager.Instance();
         if (im == null)
         {
@@ -166,6 +216,11 @@ internal partial class CommandInterface
     /// <inheritdoc />
     public unsafe bool HasStats(uint craftsmanship, uint control, uint cp)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var uiState = UIState.Instance();
         if (uiState == null)
         {

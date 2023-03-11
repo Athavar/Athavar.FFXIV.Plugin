@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Dalamud.Interface;
 using ImGuiNET;
@@ -16,6 +17,21 @@ using ImGuiNET;
 /// </summary>
 public static class ImGuiEx
 {
+    public static unsafe bool BeginTabItem(string label, ImGuiTabItemFlags flags)
+    {
+        var unterminatedLabelBytes = Encoding.UTF8.GetBytes(label);
+        var labelBytes = stackalloc byte[unterminatedLabelBytes.Length + 1];
+        fixed (byte* unterminatedPtr = unterminatedLabelBytes)
+        {
+            Buffer.MemoryCopy(unterminatedPtr, labelBytes, unterminatedLabelBytes.Length + 1, unterminatedLabelBytes.Length);
+        }
+
+        labelBytes[unterminatedLabelBytes.Length] = 0;
+
+        var num2 = (int)ImGuiNative.igBeginTabItem(labelBytes, null, flags);
+        return (uint)num2 > 0U;
+    }
+
     /// <summary>
     ///     Create an icon.
     /// </summary>

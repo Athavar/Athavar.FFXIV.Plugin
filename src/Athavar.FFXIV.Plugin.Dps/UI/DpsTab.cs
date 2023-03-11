@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal class DpsTab : Tab
 {
+    internal const string TabIdentifier = "dps";
     private const float NavBarHeight = 40;
     private readonly MeterManager meterManager;
     private readonly IDalamudServices dalamudServices;
@@ -37,7 +38,7 @@ internal class DpsTab : Tab
 
     public override string Name => DpsModule.ModuleName;
 
-    public override string Identifier => "dps";
+    public override string Identifier => TabIdentifier;
 
     public override string Title => string.Join("  >  ", this.configStack.Reverse().Select(c => c.Name));
 
@@ -95,8 +96,11 @@ internal class DpsTab : Tab
 
     public void PushConfig(IConfigurable configItem)
     {
-        this.configStack.Push(configItem);
-        this.inputName = configItem.Name;
+        if (this.configStack.Peek() != configItem)
+        {
+            this.configStack.Push(configItem);
+            this.inputName = configItem.Name;
+        }
     }
 
     private void DrawNavBar(IConfigPage? openPage, Vector2 size, float padX)

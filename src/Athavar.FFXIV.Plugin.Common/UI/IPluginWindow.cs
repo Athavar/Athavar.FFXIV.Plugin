@@ -9,4 +9,6 @@ public interface IPluginWindow
     bool IsOpen { get; set; }
 
     void Toggle();
+
+    void SelectTab(string tabIdentifier);
 }
