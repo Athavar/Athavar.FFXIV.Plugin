@@ -31,6 +31,12 @@ public partial interface ICommandInterface
     public uint CountItem(uint itemId, bool hq = false);
 
     /// <summary>
+    ///     Counts the number of free slots in the inventory.
+    /// </summary>
+    /// <returns>returns the inventory slot id.</returns>
+    public uint FreeInventorySlots();
+
+    /// <summary>
     ///     Gets a value indicating whether any of the player's worn equipment is broken.
     /// </summary>
     /// <returns>A value indicating whether any of the player's worn equipment is broken.</returns>

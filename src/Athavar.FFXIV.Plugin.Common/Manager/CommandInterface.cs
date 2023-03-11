@@ -35,6 +35,11 @@ internal partial class CommandInterface : ICommandInterface
     /// <inheritdoc />
     public unsafe bool CanUseAction(uint actionId)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
         return ActionManager.Instance()->GetActionStatus(actionType, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
@@ -42,15 +47,36 @@ internal partial class CommandInterface : ICommandInterface
     /// <inheritdoc />
     public unsafe bool UseAction(uint actionId)
     {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
         var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
         return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(actionType, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
     /// <inheritdoc />
-    public unsafe bool CanUseGeneralAction(uint actionId) => ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, Constants.PlayerId, true, true, null) == 0U;
+    public unsafe bool CanUseGeneralAction(uint actionId)
+    {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
+        return ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, Constants.PlayerId, true, true, null) == 0U;
+    }
 
     /// <inheritdoc />
-    public unsafe bool UseGeneralAction(uint actionId) => this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+    public unsafe bool UseGeneralAction(uint actionId)
+    {
+        if (!this.IsLoggedIn())
+        {
+            return false;
+        }
+
+        return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+    }
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)
     {
@@ -91,7 +117,7 @@ internal partial class CommandInterface : ICommandInterface
     /// </summary>
     private unsafe bool ExecuteMainCommand(uint mainCommandId)
     {
-        if (!this.dalamudServices.ClientState.IsLoggedIn)
+        if (!this.IsLoggedIn())
         {
             return false;
         }
