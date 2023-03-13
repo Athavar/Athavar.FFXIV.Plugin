@@ -14,6 +14,7 @@ public static class Constants
 
     public static class Addons
     {
+        public const string Materialize = "Materialize";
         public const string RecipeNote = "RecipeNote";
         public const string Repair = "Repair";
         public const string Synthesis = "Synthesis";

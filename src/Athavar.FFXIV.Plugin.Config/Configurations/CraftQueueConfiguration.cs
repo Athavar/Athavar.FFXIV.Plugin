@@ -23,6 +23,16 @@ public class CraftQueueConfiguration : BasicModuleConfig
     public bool QualitySkip { get; set; } = false;
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to gear should be automatic repaired.
+    /// </summary>
+    public bool AutoRepair { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to materia is auto extracted.
+    /// </summary>
+    public bool AutoMateriaExtract { get; set; } = false;
+
+    /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>

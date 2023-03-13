@@ -75,7 +75,7 @@ internal partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+        return this.CanUseGeneralAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)

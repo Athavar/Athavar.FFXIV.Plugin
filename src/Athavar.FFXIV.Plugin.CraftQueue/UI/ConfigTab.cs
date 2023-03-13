@@ -44,7 +44,7 @@ internal class ConfigTab : Tab
             this.Configuration.Save();
         }
 
-        DisplayOption("- Don't wait after a craft commands like normal in-game macros.");
+        DisplayOption("- Don't wait after a craft commands like the default in-game crafting macros.");
 
         ImGui.Separator();
         var qualitySkip = this.Configuration.QualitySkip;
@@ -55,5 +55,25 @@ internal class ConfigTab : Tab
         }
 
         DisplayOption("- Skip quality increasing actions when the HQ chance is at 100%. If you depend on durability increases from Manipulation towards the end of your macro, you will likely want to disable this.");
+
+        ImGui.Separator();
+        var autoRepair = this.Configuration.AutoRepair;
+        if (ImGui.Checkbox("Auto Repair", ref autoRepair))
+        {
+            this.Configuration.AutoRepair = autoRepair;
+            this.Configuration.Save();
+        }
+
+        DisplayOption("- Enable repairing current gear with dark matter before starting a craft.");
+
+        ImGui.Separator();
+        var autoMateriaExtract = this.Configuration.AutoMateriaExtract;
+        if (ImGui.Checkbox("Auto Materia Extract", ref autoMateriaExtract))
+        {
+            this.Configuration.AutoMateriaExtract = autoMateriaExtract;
+            this.Configuration.Save();
+        }
+
+        DisplayOption("- Enable extraction of materia before starting a craft.");
     }
 }
