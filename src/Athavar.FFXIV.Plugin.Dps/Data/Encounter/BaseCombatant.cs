@@ -14,29 +14,32 @@ internal abstract class BaseCombatant
 {
     [JsonIgnore]
     public static readonly string[] TextTags = new[]
-                                               {
-                                                   nameof(Dps),
-                                                   nameof(Hps),
-                                                   nameof(Name),
-                                                   nameof(Name_First),
-                                                   nameof(Name_Last),
-                                                   nameof(Job),
-                                                   nameof(CurrentWorldId),
-                                                   nameof(WorldId),
-                                                   nameof(PartyType),
-                                                   nameof(Kind),
-                                                   nameof(Deaths),
-                                                   nameof(Kills),
-                                                   nameof(HealingTotal),
-                                                   nameof(HealingTaken),
-                                                   nameof(OverHealTotal),
-                                                   nameof(OverHealPct),
-                                                   nameof(EffectiveHealing),
-                                                   nameof(DamageTotal),
-                                                   nameof(DamageTaken),
-                                                   nameof(DamagePct),
-                                                   nameof(Rank),
-                                               }.Select(x => $"[{x.ToLower()}]").ToArray();
+    {
+        nameof(Dps),
+        nameof(Hps),
+        nameof(Name),
+        nameof(Name_First),
+        nameof(Name_Last),
+        nameof(Job),
+        nameof(CurrentWorldId),
+        nameof(WorldId),
+        nameof(PartyType),
+        nameof(Kind),
+        nameof(Deaths),
+        nameof(Kills),
+        nameof(HealingTotal),
+        nameof(HealingTaken),
+        nameof(OverHealTotal),
+        nameof(OverHealPct),
+        nameof(EffectiveHealing),
+        nameof(DamageTotal),
+        nameof(DamageTaken),
+        nameof(DamagePct),
+        nameof(CritPct),
+        nameof(DHitPct),
+        nameof(CritDHitPct),
+        nameof(Rank),
+    }.Select(x => $"[{x.ToLower()}]").ToArray();
 
     [JsonIgnore]
     private static readonly Dictionary<string, PropertyInfo> Fields = typeof(BaseCombatant).GetProperties().ToDictionary(x => x.Name.ToLower());
@@ -52,6 +55,12 @@ internal abstract class BaseCombatant
     public double OverHealPct { get; protected set; }
 
     public double DamagePct { get; protected set; }
+
+    public double CritPct { get; protected set; }
+
+    public double DHitPct { get; protected set; }
+
+    public double CritDHitPct { get; protected set; }
 
     public ulong EffectiveHealing { get; protected set; }
 
@@ -88,6 +97,14 @@ internal abstract class BaseCombatant
     public ulong DamageTotal { get; protected set; }
 
     public ulong DamageTaken { get; protected set; }
+
+    public ulong Casts { get; protected set; }
+
+    public ulong CritHits { get; protected set; }
+
+    public ulong DirectHits { get; protected set; }
+
+    public ulong CritDirectHits { get; protected set; }
 
     public PartyType PartyType { get; set; }
 

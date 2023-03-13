@@ -32,11 +32,15 @@ internal class Combatant : BaseCombatant<Combatant>
         if (this.change)
         {
             this.change = false;
-            ulong healingTotal = 0;
-            ulong overHealing = 0;
-            ulong healingTaken = 0;
-            ulong damageTotal = 0;
-            ulong damageTaken = 0;
+            ulong healingTotal = 0,
+                  overHealing = 0,
+                  healingTaken = 0,
+                  damageTotal = 0,
+                  damageTaken = 0,
+                  hits = 0,
+                  crit = 0,
+                  direct = 0,
+                  critDirect = 0;
             foreach (var actionSummary in CollectionsMarshal.AsSpan(this.actions))
             {
                 actionSummary.Calc();
@@ -45,6 +49,13 @@ internal class Combatant : BaseCombatant<Combatant>
                 {
                     healingTotal += value.TotalAmount;
                     overHealing += value.OverAmount;
+                    if (!actionSummary.IsStatus)
+                    {
+                        hits += (ulong)value.Hits;
+                        crit += value.CritHits;
+                        direct += value.DirectHits;
+                        critDirect += value.CritDirectHits;
+                    }
                 }
 
                 value = actionSummary.HealingTaken;
@@ -57,6 +68,13 @@ internal class Combatant : BaseCombatant<Combatant>
                 if (value is not null)
                 {
                     damageTotal += value.TotalAmount;
+                    if (!actionSummary.IsStatus)
+                    {
+                        hits += (ulong)value.Hits;
+                        crit += value.CritHits;
+                        direct += value.DirectHits;
+                        critDirect += value.CritDirectHits;
+                    }
                 }
 
                 value = actionSummary.DamageTaken;
@@ -71,6 +89,11 @@ internal class Combatant : BaseCombatant<Combatant>
             this.OverHealTotal = overHealing;
             this.DamageTotal = damageTotal;
             this.DamageTaken = damageTaken;
+
+            this.Casts = hits;
+            this.CritHits = crit;
+            this.DirectHits = direct;
+            this.CritDirectHits = critDirect;
         }
 
         base.CalcStats();

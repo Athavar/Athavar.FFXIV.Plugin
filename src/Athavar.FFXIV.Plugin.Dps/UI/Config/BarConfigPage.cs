@@ -46,14 +46,14 @@ internal class BarConfigPage : IConfigPage
     public IConfig GetDefault()
     {
         var c = new BarConfig
-                {
-                    BarNameFontKey = FontsManager.DefaultSmallFontKey,
-                    BarNameFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-                    BarDataFontKey = FontsManager.DefaultSmallFontKey,
-                    BarDataFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-                    RankTextFontKey = FontsManager.DefaultSmallFontKey,
-                    RankTextFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
-                };
+        {
+            BarNameFontKey = FontsManager.DefaultSmallFontKey,
+            BarNameFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+            BarDataFontKey = FontsManager.DefaultSmallFontKey,
+            BarDataFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+            RankTextFontKey = FontsManager.DefaultSmallFontKey,
+            RankTextFontId = this.fontsManager.GetFontIndex(FontsManager.DefaultSmallFontKey),
+        };
 
         return c;
     }
@@ -80,7 +80,7 @@ internal class BarConfigPage : IConfigPage
         var keyState = this.services.KeyState;
         if (general.ShowActionSummaryTooltip && (general.ShowActionSummaryModifyKey == VirtualKey.NO_KEY || keyState[general.ShowActionSummaryModifyKey]) && ImGui.IsMouseHoveringRect(localPos, localPos + barFillSize))
         {
-            this.utils.DrawActionSummaryTooltip(baseCombatant, true);
+            this.utils.DrawActionSummaryTooltip(baseCombatant, true, general.DataType);
         }
 
         if (!this.cache.TryGetValue(baseCombatant.Name, out var cache))

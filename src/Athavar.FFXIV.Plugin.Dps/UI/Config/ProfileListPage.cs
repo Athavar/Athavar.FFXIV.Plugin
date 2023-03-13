@@ -41,6 +41,7 @@ internal class ProfileListConfigPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
+        ImGui.TextUnformatted("Note: Dot&Hot are not correctly assigned to players");
         this.DrawCreateMenu(size, padX);
         this.DrawMeterTable(size.AddY(-padY), padX);
     }

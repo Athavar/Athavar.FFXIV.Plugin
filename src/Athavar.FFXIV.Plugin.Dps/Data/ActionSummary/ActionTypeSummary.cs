@@ -17,6 +17,12 @@ internal class ActionTypeSummary
 
     public ulong OverAmount { get; set; }
 
+    public ulong CritHits { get; set; }
+
+    public ulong DirectHits { get; set; }
+
+    public ulong CritDirectHits { get; set; }
+
     public void AddEvent(ActionEvent actionEvent)
     {
         this.Events.Add(actionEvent);
@@ -34,13 +40,36 @@ internal class ActionTypeSummary
 
         ulong sum = 0;
         ulong overSum = 0;
+        ulong crit = 0;
+        ulong direct = 0;
+        ulong critDirect = 0;
         foreach (var actionEvent in CollectionsMarshal.AsSpan(this.Events))
         {
             sum += actionEvent.Amount;
             overSum += actionEvent.OverAmount;
+            switch (actionEvent.Mod)
+            {
+                case ActionEventModifier.CritHit:
+                    crit++;
+                    break;
+                case ActionEventModifier.DirectHit:
+                    direct++;
+                    break;
+                case ActionEventModifier.CritDirectHit:
+                    critDirect++;
+                    crit++;
+                    direct++;
+                    break;
+                case ActionEventModifier.Normal:
+                default:
+                    break;
+            }
         }
 
         this.TotalAmount = sum;
         this.OverAmount = overSum;
+        this.CritHits = crit;
+        this.DirectHits = direct;
+        this.CritDirectHits = critDirect;
     }
 }
