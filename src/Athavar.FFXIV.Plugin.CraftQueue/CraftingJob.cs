@@ -287,25 +287,21 @@ internal class CraftingJob
             if (ci.IsAddonVisible(Constants.Addons.Materialize))
             {
                 ci.CloseAddon(Constants.Addons.Materialize);
-                PluginLog.LogInformation("Materialize Closing");
                 return -1000;
             }
 
-            PluginLog.LogInformation("Exit");
             return 0;
         }
 
         var value = this.ExitCraftingMode();
         if (value is { } wait)
         {
-            PluginLog.LogInformation("Exiting Craft mode");
             return wait;
         }
 
         // is currently extracting
         if (this.queue.DalamudServices.Condition[ConditionFlag.Occupied39])
         {
-            PluginLog.LogInformation("Please wait");
             return -100;
         }
 
@@ -313,7 +309,6 @@ internal class CraftingJob
         if (ci.IsAddonVisible("SelectYesno"))
         {
             this.queue.Click.TrySendClick("select_yes");
-            PluginLog.LogInformation("Click yes");
             return -100;
         }
 
@@ -321,7 +316,6 @@ internal class CraftingJob
         if (ci.IsAddonVisible(Constants.Addons.Materialize))
         {
             this.queue.Click.TrySendClick("materia_extract0");
-            PluginLog.LogInformation("Click materia extract");
             return -1000;
         }
 
@@ -331,7 +325,6 @@ internal class CraftingJob
             throw new CraftingJobException("Fail to open materialize window");
         }
 
-        PluginLog.LogInformation("Fall trough wait");
         return -100;
     }
 

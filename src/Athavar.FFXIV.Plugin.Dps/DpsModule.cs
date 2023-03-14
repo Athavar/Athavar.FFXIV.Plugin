@@ -51,7 +51,7 @@ internal class DpsModule : Module<DpsTab, DpsConfiguration>
     {
         base.Dispose();
         this.meterManager?.Dispose();
-        PluginLog.LogInformation("Dispose Dps");
+        PluginLog.LogVerbose("Dispose Dps");
     }
 
     protected override DpsTab InitTab()

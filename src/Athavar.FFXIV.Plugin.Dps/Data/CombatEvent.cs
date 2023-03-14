@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 internal abstract record CombatEvent
@@ -94,8 +93,6 @@ internal abstract record CombatEvent
             {
                 flag |= ActionEventModifier.DirectHit;
             }
-
-            PluginLog.LogInformation("Mod: {0} {1} {2} {3}", flag, this.IsDirectHit, this.IsCrit, this.HitSeverity);
 
             return flag;
         }
