@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
-internal class FinalAppraisal : BuffAction
+internal sealed class FinalAppraisal : BuffAction
 {
     private static readonly uint[] IdsValue = { 19012, 19013, 19014, 19015, 19016, 19017, 19018, 19019 };
 

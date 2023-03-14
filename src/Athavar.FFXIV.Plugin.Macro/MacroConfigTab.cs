@@ -21,7 +21,7 @@ using ImGuiNET;
 /// <summary>
 ///     UI Tab for macro execution.
 /// </summary>
-internal class MacroConfigTab : Tab
+internal sealed class MacroConfigTab : Tab
 {
     private readonly IChatManager chatManager;
     private readonly MacroManager macroManager;

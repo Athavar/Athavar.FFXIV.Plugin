@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
-public class VisibilityConfig : BaseConfig
+public sealed class VisibilityConfig : BaseConfig
 {
     public bool AlwaysHide { get; set; }
 

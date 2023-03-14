@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Common.Definitions;
 using System.Text.Json.Serialization;
 
 [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
-public class TimeProc
+public sealed class TimeProc
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TickType

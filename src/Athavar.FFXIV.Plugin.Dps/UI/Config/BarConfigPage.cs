@@ -15,7 +15,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
-internal class BarConfigPage : IConfigPage
+internal sealed class BarConfigPage : IConfigPage
 {
     [JsonIgnore]
     private static readonly string[] AnchorOptions = Enum.GetNames(typeof(DrawAnchor));

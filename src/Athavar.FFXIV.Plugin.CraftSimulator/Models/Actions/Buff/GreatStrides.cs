@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
-internal class GreatStrides : BuffAction
+internal sealed class GreatStrides : BuffAction
 {
     private static readonly uint[] IdsValue = { 260, 261, 262, 263, 265, 264, 266, 267 };
 

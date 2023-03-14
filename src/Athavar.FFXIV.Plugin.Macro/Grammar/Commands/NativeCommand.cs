@@ -11,7 +11,7 @@ using Dalamud.Logging;
 /// <summary>
 ///     A command handled by the game.
 /// </summary>
-internal class NativeCommand : MacroCommand
+internal sealed class NativeCommand : MacroCommand
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="NativeCommand" /> class.

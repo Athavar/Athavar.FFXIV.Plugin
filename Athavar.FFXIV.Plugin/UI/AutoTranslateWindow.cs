@@ -20,7 +20,7 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
-internal class AutoTranslateWindow : Window
+internal sealed class AutoTranslateWindow : Window
 {
     private readonly IDalamudServices dalamudServices;
 

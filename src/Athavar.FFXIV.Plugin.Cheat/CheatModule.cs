@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 ///     Implements cheats.
 /// </summary>
 [Module(ModuleName, Hidden = true)]
-internal class CheatModule : Module, IDisposable
+internal sealed class CheatModule : Module, IDisposable
 {
     private const string ModuleName = "CheatModule";
 

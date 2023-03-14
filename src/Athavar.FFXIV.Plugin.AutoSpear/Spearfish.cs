@@ -10,7 +10,7 @@ using Dalamud.Data;
 using ItemRow = Lumina.Excel.GeneratedSheets.Item;
 using SpearFishRow = Lumina.Excel.GeneratedSheets.SpearfishingItem;
 
-internal class SpearFish : IComparable<SpearFish>
+internal sealed class SpearFish : IComparable<SpearFish>
 {
     private readonly object fishData;
 

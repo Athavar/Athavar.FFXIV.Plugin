@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class TrainedEye : CraftingAction
+internal sealed class TrainedEye : CraftingAction
 {
     private static readonly uint[] IdsValue = { 100283, 100284, 100285, 100286, 100287, 100288, 100289, 100290 };
 

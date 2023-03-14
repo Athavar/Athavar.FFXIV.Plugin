@@ -12,7 +12,7 @@ using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration))]
-internal class DpsModule : Module<DpsTab, DpsConfiguration>
+internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
 {
     internal const string ModuleName = "DPS (Test)";
 

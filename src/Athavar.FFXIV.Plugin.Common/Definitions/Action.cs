@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Definitions;
 
-public class Action
+public sealed class Action
 {
     public bool IsDamage
     {

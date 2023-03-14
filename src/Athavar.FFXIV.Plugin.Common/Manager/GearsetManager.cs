@@ -14,7 +14,7 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
-internal class GearsetManager : IGearsetManager, IDisposable
+internal sealed class GearsetManager : IGearsetManager, IDisposable
 {
     private const int StatLength = 75;
 

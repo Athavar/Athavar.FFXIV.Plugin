@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     The &lt;unsafe&gt; modifier.
 /// </summary>
-internal class UnsafeModifier : MacroModifier
+internal sealed class UnsafeModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><unsafe>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(OpcodeWizardConfiguration))]
-internal class OpcodeWizardModule : Module<OpcodeWizardTab, OpcodeWizardConfiguration>
+internal sealed class OpcodeWizardModule : Module<OpcodeWizardTab, OpcodeWizardConfiguration>
 {
     internal const string ModuleName = "OpcodeWizard";
     private readonly IServiceProvider provider;

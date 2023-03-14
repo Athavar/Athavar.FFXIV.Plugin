@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 /// <summary>
 ///     Converts INodes to MacroNodes, FolderNodes, TextEntryNode or TextFolderNode.
 /// </summary>
-public class ConcreteNodeConverter : JsonConverter
+public sealed class ConcreteNodeConverter : JsonConverter
 {
     /// <inheritdoc />
     public override bool CanRead => true;

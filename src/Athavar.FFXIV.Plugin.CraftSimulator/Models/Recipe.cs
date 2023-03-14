@@ -8,7 +8,7 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
-public class Recipe
+public sealed class Recipe
 {
     public Recipe(Lumina.Excel.GeneratedSheets.Recipe recipe, ExcelSheet<Item> sheets)
     {

@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
-internal class CraftQueueData
+internal sealed class CraftQueueData
 {
     private readonly List<(Recipe Recipe, Job Job)> recipes = new();
     private readonly List<BuffInfo> foods = new();

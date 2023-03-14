@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
-internal class WasteNot : BuffAction
+internal sealed class WasteNot : BuffAction
 {
     private static readonly uint[] IdsValue = { 4631, 4632, 4633, 4634, 4635, 4636, 4637, 4638 };
 

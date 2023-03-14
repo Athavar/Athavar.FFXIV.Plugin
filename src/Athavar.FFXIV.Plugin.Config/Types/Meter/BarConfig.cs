@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
 
-public class BarConfig : BaseConfig
+public sealed class BarConfig : BaseConfig
 {
     public int BarCount { get; set; } = 9;
 

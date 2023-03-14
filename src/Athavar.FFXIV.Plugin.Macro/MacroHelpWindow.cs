@@ -18,7 +18,7 @@ using ImGuiNET;
 /// <summary>
 ///     Help window for macro creation.
 /// </summary>
-internal class MacroHelpWindow : Window
+internal sealed class MacroHelpWindow : Window
 {
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
 

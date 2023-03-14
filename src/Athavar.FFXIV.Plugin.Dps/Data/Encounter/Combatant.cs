@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 
-internal class Combatant : BaseCombatant<Combatant>
+internal sealed class Combatant : BaseCombatant<Combatant>
 {
     public readonly List<CombatEvent.StatusEffect> StatusList = new();
 

@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
-public class DpsConfiguration : BasicModuleConfig
+public sealed class DpsConfiguration : BasicModuleConfig
 {
     public List<MeterConfig> Meters { get; set; } = new();
 

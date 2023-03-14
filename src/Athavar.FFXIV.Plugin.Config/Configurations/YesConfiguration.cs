@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 /// <summary>
 ///     Yes module configuration.
 /// </summary>
-public class YesConfiguration : BasicModuleConfig
+public sealed class YesConfiguration : BasicModuleConfig
 {
     /// <summary>
     ///     Gets the root folder.

@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Definitions;
 
 using System.Text.Json.Serialization;
 
-public class ReactiveProc
+public sealed class ReactiveProc
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ReactiveProcType

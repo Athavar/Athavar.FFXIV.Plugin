@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-public class TextTagFormatter
+public sealed class TextTagFormatter
 {
     private readonly string _format;
     private readonly Dictionary<string, PropertyInfo> propertys;

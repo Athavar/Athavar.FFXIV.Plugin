@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
-internal class Groundwork : ProgressAction
+internal sealed class Groundwork : ProgressAction
 {
     private static readonly uint[] IdsValue = { 100403, 100404, 100405, 100406, 100407, 100408, 100409, 100410 };
 

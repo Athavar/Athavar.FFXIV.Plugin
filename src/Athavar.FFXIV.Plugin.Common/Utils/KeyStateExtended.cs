@@ -9,13 +9,14 @@ using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Game.ClientState.Keys;
 
-internal class KeyStateExtended
+internal sealed class KeyStateExtended
 {
     private readonly GetRefValueDelegate? getRefValue = null;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="KeyStateExtended" /> class.
     /// </summary>
+    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
     public KeyStateExtended(IDalamudServices dalamudServices)
     {
         var getRefValue = typeof(KeyState).GetMethod("GetRefValue", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new Exception($"Method GetRefValue not found in class {nameof(KeyState)}");

@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 /// <summary>
 ///     Folder node type.
 /// </summary>
-public class TalkFolderNode : INode
+public sealed class TalkFolderNode : INode
 {
     /// <summary>
     ///     Gets the child nodes of this folder.

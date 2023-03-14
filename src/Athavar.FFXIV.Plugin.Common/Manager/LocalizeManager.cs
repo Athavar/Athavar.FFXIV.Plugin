@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Lumina.Data;
 
-internal class LocalizeManager : ILocalizeManager
+internal sealed class LocalizeManager : ILocalizeManager
 {
     private Language language = Language.English;
 

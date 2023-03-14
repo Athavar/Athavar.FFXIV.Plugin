@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// <remarks>
 ///     https://github.com/Caraxi/SimpleTweaksPlugin/blob/main/Utility/Common.cs#L261.
 /// </remarks>
-public unsafe class AtkValueArray : IDisposable
+public sealed unsafe class AtkValueArray : IDisposable
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="AtkValueArray" /> class.

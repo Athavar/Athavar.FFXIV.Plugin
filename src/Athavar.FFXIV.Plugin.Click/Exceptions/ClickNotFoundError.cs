@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Click.Exceptions;
 /// <summary>
 ///     An exception thrown when a click cannot be found.
 /// </summary>
-public class ClickNotFoundError : InvalidOperationException
+public sealed class ClickNotFoundError : InvalidOperationException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickNotFoundError" /> class.

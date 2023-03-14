@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class AdvancedTouch : QualityAction
+internal sealed class AdvancedTouch : QualityAction
 {
     private static readonly uint[] IdsValue = { 100411, 100412, 100413, 100414, 100415, 100416, 100417, 100418 };
 

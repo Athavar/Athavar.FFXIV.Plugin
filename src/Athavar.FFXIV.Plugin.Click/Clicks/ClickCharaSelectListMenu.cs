@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Click.Enums;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-public class ClickCharaSelectListMenu : ClickBase<ClickCharaSelectListMenu, AddonTalk>
+public sealed class ClickCharaSelectListMenu : ClickBase<ClickCharaSelectListMenu, AddonTalk>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickCharaSelectListMenu" /> class.

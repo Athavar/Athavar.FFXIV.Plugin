@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     The &lt;wait&gt; modifier.
 /// </summary>
-internal class WaitModifier : MacroModifier
+internal sealed class WaitModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><wait\.(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

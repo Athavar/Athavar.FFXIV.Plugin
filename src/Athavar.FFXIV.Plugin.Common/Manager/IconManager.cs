@@ -15,7 +15,7 @@ using Lumina.Data.Files;
 /// <summary>
 ///     Cache for icons.
 /// </summary>
-internal partial class IconManager : IIconManager, IDisposable
+internal sealed partial class IconManager : IIconManager, IDisposable
 {
     // ReSharper disable once CollectionNeverUpdated.Local; Data is updated on request.
     private readonly IconDataCache iconDataCache;

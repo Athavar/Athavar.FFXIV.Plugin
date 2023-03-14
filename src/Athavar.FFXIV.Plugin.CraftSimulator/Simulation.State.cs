@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 
 /// <summary>
 /// </summary>
-public partial class Simulation
+public sealed partial class Simulation
 {
     public List<ActionResult> Steps { get; } = new();
 

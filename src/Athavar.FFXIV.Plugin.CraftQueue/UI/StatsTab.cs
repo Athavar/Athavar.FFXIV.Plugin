@@ -12,7 +12,7 @@ using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
-internal class StatsTab : Tab
+internal sealed class StatsTab : Tab
 {
     private readonly IGearsetManager gearsetManager;
     private readonly DataManager dataManager;

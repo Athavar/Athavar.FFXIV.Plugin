@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Exceptions;
 
-public class JsonParseException : AthavarPluginException
+public sealed class JsonParseException : AthavarPluginException
 {
     public JsonParseException(string message)
         : base(message)

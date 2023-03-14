@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using ImGuiNET;
 
-internal class LogPage : IConfigPage
+internal sealed class LogPage : IConfigPage
 {
     private readonly EncounterManager encounterManager;
     private readonly NetworkHandler networkHandler;

@@ -18,7 +18,7 @@ using Machina.FFXIV.Headers;
 using Server_ActorCast = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_ActorCast;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
 
-internal partial class NetworkHandler : IDisposable
+internal sealed partial class NetworkHandler : IDisposable
 {
     private readonly GameNetwork gameNetwork;
     private readonly IOpcodeManager opcodeManager;

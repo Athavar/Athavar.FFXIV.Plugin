@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Config;
 using ImGuiScene;
 
-internal partial class IconManager
+internal sealed partial class IconManager
 {
     private static readonly uint[] JobIconStyleOffset = { 62000, 62100, 62800, 62300, 91000, 91500, 92000, 92500, 93000, 93500, 94000, 94500 };
 

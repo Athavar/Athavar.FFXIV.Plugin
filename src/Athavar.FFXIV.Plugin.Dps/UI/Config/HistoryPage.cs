@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Interface.Colors;
 using ImGuiNET;
 
-internal class HistoryPage : IConfigPage
+internal sealed class HistoryPage : IConfigPage
 {
     private static readonly ImGuiTableFlags flags = ImGuiTableFlags.Sortable | ImGuiTableFlags.ScrollY |
                                                     ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.NoBordersInBody;

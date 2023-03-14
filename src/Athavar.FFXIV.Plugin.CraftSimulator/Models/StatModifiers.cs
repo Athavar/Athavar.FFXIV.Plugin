@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-public class StatModifiers
+public sealed class StatModifiers
 {
     public int CraftsmanshipPct { get; set; }
 

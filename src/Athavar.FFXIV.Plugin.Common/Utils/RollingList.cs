@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using System.Collections;
 
-public class RollingList<T> : IReadOnlyList<T>
+public sealed class RollingList<T> : IReadOnlyList<T>
 {
     private readonly LinkedList<T> list = new();
     private readonly bool reversed;

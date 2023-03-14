@@ -17,7 +17,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
 /// </summary>
-internal partial class CommandInterface : ICommandInterface
+internal sealed partial class CommandInterface : ICommandInterface
 {
     private readonly IDalamudServices dalamudServices;
 

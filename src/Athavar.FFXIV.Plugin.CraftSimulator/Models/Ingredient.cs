@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 using Lumina.Excel.GeneratedSheets;
 
-public class Ingredient
+public sealed class Ingredient
 {
     public Ingredient(uint id, Item item, uint level, byte amount)
     {

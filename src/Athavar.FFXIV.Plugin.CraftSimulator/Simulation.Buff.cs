@@ -8,7 +8,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 /// <summary>
 /// </summary>
-public partial class Simulation
+public sealed partial class Simulation
 {
     private readonly List<EffectiveBuff> effectiveBuffs = new();
 

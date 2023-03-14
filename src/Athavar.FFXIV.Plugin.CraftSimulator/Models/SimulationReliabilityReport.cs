@@ -4,6 +4,6 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-public record SimulationReliabilityReport(SimulationResult[] RawData, int SuccessPercent, int AverageHqPercent, int MedianHqPercent, int MinHqPercent, int MaxHqPercent)
+public sealed record SimulationReliabilityReport(SimulationResult[] RawData, int SuccessPercent, int AverageHqPercent, int MedianHqPercent, int MinHqPercent, int MaxHqPercent)
 {
 }

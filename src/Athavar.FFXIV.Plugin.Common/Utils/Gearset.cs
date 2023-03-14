@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Common.Utils.Constants;
 using Athavar.FFXIV.Plugin.Config;
 
-public class Gearset
+public sealed class Gearset
 {
     private readonly uint[] stats;
 

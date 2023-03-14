@@ -13,7 +13,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 
-internal class Encounter : BaseEncounter<Combatant>
+internal sealed class Encounter : BaseEncounter<Combatant>
 {
     internal static ObjectTable? ObjectTable;
 

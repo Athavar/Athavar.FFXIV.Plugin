@@ -11,7 +11,7 @@ using ImGuiNET;
 /// <summary>
 ///     Handler for ImGui tabs.
 /// </summary>
-public class TabBarHandler
+public sealed class TabBarHandler
 {
     private readonly List<TabDefinition> tabs = new();
     private readonly string name;

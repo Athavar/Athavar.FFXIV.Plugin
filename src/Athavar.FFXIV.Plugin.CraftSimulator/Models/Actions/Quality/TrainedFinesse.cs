@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class TrainedFinesse : QualityAction
+internal sealed class TrainedFinesse : QualityAction
 {
     private static readonly uint[] IdsValue = { 100435, 100436, 100437, 100438, 100439, 100440, 100441, 100442 };
 

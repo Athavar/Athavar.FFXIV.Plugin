@@ -24,7 +24,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 /// <summary>
 ///     Manager that handles displaying output in the chat box.
 /// </summary>
-internal class ChatManager : IDisposable, IChatManager
+internal sealed class ChatManager : IDisposable, IChatManager
 {
     private readonly Channel<SeString> chatBoxMessages = Channel.CreateUnbounded<SeString>();
     private readonly IDalamudServices dalamud;

@@ -5,7 +5,7 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public class CraftQueueConfiguration : BasicModuleConfig
+public sealed class CraftQueueConfiguration : BasicModuleConfig
 {
     /// <summary>
     ///     Gets the root folder.

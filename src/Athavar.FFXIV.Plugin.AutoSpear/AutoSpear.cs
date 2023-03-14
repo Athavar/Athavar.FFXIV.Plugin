@@ -12,7 +12,7 @@ using Dalamud.Game;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
-internal partial class AutoSpear : Tab
+internal sealed partial class AutoSpear : Tab
 {
     private const ImGuiWindowFlags WindowFlags = ImGuiWindowFlags.NoDecoration
                                                | ImGuiWindowFlags.NoInputs

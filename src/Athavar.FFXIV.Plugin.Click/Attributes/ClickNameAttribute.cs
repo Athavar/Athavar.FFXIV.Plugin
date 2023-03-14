@@ -9,7 +9,7 @@ namespace Athavar.FFXIV.Plugin.Click.Attributes;
 ///     The callable name of a click.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method)]
-internal class ClickNameAttribute : Attribute
+internal sealed class ClickNameAttribute : Attribute
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickNameAttribute" /> class.

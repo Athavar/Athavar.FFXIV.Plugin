@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-public class CrafterStats
+public sealed class CrafterStats
 {
     public CrafterStats(CrafterStats clone)
     {

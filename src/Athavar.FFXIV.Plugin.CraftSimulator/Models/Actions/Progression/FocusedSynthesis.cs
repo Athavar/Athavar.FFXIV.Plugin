@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal class FocusedSynthesis : ProgressAction
+internal sealed class FocusedSynthesis : ProgressAction
 {
     private static readonly uint[] IdsValue = { 100235, 100236, 100237, 100238, 100239, 100240, 100241, 100242 };
 

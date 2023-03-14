@@ -13,7 +13,7 @@ using ImGuiNET;
 /// <summary>
 ///     Zone list window.
 /// </summary>
-internal class ZoneListWindow : Window, IDisposable
+internal sealed class ZoneListWindow : Window, IDisposable
 {
     private readonly YesModule module;
     private readonly IDalamudServices dalamudServices;

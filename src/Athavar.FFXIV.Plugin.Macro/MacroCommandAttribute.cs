@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Macro;
 
-internal class MacroCommandAttribute : Attribute
+internal sealed class MacroCommandAttribute : Attribute
 {
     public MacroCommandAttribute(string name, string? alias = null)
         : this(name, alias, string.Empty, Array.Empty<string>(), Array.Empty<string>())

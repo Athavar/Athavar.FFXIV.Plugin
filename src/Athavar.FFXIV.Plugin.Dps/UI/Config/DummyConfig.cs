@@ -6,6 +6,6 @@ namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 
 using Athavar.FFXIV.Plugin.Config;
 
-internal class DummyConfig : BaseConfig
+internal sealed class DummyConfig : BaseConfig
 {
 }

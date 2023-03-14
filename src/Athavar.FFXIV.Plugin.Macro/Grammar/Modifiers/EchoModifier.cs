@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     The &lt;echo&gt; modifier.
 /// </summary>
-internal class EchoModifier : MacroModifier
+internal sealed class EchoModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><echo>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

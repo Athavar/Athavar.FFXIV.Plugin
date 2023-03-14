@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.UI;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
 
-internal class DpsConfigPage : IConfigurable
+internal sealed class DpsConfigPage : IConfigurable
 {
     public DpsConfigPage(IServiceProvider provider, Utils utils, MeterManager meterManager, Configuration configuration, EncounterManager encounterManager, NetworkHandler networkHandler)
     {

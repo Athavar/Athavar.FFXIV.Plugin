@@ -14,7 +14,7 @@ using Dalamud;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 
-public class DefinitionManager : IDefinitionManager
+public sealed class DefinitionManager : IDefinitionManager
 {
     private static readonly string DefinitionFolderName = "Athavar.FFXIV.Plugin.Common.Definitions.Data";
 

@@ -17,7 +17,7 @@ using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
-internal class CraftingJob
+internal sealed class CraftingJob
 {
     private readonly string localizedExcellent;
     private readonly Func<int>[] stepArray;

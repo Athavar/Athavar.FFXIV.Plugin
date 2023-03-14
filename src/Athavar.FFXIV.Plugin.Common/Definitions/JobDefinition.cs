@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Definitions.Converter;
 
 [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
-public class JobDefinition
+public sealed class JobDefinition
 {
     [JsonPropertyName("job")]
     public string Job { get; set; } = string.Empty;

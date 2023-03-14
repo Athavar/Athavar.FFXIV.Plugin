@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 using Lumina.Excel.GeneratedSheets;
 
-public class BuffInfo
+public sealed class BuffInfo
 {
     public BuffInfo(Item item, uint itemFoodId, StatModifiers stats, bool hq)
     {

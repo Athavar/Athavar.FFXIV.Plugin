@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
 
-public class HeaderConfig : BaseConfig
+public sealed class HeaderConfig : BaseConfig
 {
     public bool ShowHeader { get; set; } = true;
 

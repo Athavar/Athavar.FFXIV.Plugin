@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal class DelicateSynthesis : GeneralAction
+internal sealed class DelicateSynthesis : GeneralAction
 {
     private static readonly uint[] IdsValue = { 100323, 100324, 100325, 100326, 100327, 100328, 100329, 100330 };
 

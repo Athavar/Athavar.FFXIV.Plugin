@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Click.Exceptions;
 /// <summary>
 ///     Base exception for click errors.
 /// </summary>
-public class InvalidClickException : InvalidOperationException
+public sealed class InvalidClickException : InvalidOperationException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="InvalidClickException" /> class.

@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using ImGuiNET;
 
-internal class VisibilityConfigPage : IConfigPage
+internal sealed class VisibilityConfigPage : IConfigPage
 {
     private readonly MeterWindow window;
 

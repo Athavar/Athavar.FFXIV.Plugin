@@ -16,7 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Plugin Service.
 /// </summary>
-internal class PluginService
+internal sealed class PluginService
 {
     private readonly IDalamudServices dalamudServices;
     private readonly Configuration configuration;

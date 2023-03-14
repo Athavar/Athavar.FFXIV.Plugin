@@ -15,7 +15,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class ProfileListConfigPage : IConfigPage
+internal sealed class ProfileListConfigPage : IConfigPage
 {
     private const float MenuBarHeight = 40;
 

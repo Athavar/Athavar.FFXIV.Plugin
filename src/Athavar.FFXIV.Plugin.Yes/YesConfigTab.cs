@@ -19,7 +19,7 @@ using ImGuiNET;
 /// <summary>
 ///     Yes Module configuration Tab.
 /// </summary>
-internal class YesConfigTab : Tab
+internal sealed class YesConfigTab : Tab
 {
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;

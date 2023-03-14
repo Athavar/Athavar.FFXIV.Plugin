@@ -26,7 +26,7 @@ using Action = System.Action;
 using CurrentIngredient = Tuple<(uint ItemId, ushort Icon, byte Amount, ushort NqCount, uint NqAvailable, bool HaveAllNq, int HqIndex, ushort HqCount, uint HqAvailable, bool HaveAllHq)>;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
-internal class QueueTab : Tab
+internal sealed class QueueTab : Tab
 {
     private readonly CraftQueue craftQueue;
     private readonly CraftQueueData craftQueueData;

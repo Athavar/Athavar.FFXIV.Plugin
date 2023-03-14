@@ -8,7 +8,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.UI;
 using ImGuiNET;
 
-internal class ConfigTab : Tab
+internal sealed class ConfigTab : Tab
 {
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
 

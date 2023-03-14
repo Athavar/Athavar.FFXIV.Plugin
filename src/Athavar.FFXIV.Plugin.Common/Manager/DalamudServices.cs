@@ -22,7 +22,7 @@ using Dalamud.Plugin;
 /// <summary>
 ///     Contains services from dalamud.
 /// </summary>
-internal class DalamudServices : IDalamudServices
+internal sealed class DalamudServices : IDalamudServices
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="DalamudServices" /> class.

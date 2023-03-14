@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
-internal class TerritoryEncounter : BaseEncounter<CombatantCollected>
+internal sealed class TerritoryEncounter : BaseEncounter<CombatantCollected>
 {
     public List<Encounter> Encounters = new();
 

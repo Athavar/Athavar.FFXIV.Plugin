@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal class TricksOfTheTrade : CraftingAction
+internal sealed class TricksOfTheTrade : CraftingAction
 {
     private static readonly uint[] IdsValue = { 100371, 100372, 100373, 100374, 100375, 100376, 100377, 100378 };
 

@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using System.Runtime.InteropServices;
 
-internal class CombatantCollected : BaseCombatant<CombatantCollected>
+internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
 {
     private readonly List<Combatant> combatants = new();
 

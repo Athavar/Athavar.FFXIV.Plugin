@@ -5,7 +5,7 @@
 // ReSharper disable InconsistentNaming
 namespace Athavar.FFXIV.Plugin.Config;
 
-public class BarColorsConfig : BaseConfig
+public sealed class BarColorsConfig : BaseConfig
 {
     public ConfigColor PLDColor { get; set; } = new(168f / 255f, 210f / 255f, 230f / 255f, 1f);
 

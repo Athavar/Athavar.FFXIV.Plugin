@@ -17,7 +17,7 @@ using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
-internal class Utils
+internal sealed class Utils
 {
     private readonly IDalamudServices dalamudServices;
     private readonly ExcelSheet<ClassJob> jobsSheet;

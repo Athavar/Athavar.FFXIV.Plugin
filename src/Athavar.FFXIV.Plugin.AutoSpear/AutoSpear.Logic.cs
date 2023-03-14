@@ -11,7 +11,7 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-internal partial class AutoSpear
+internal sealed partial class AutoSpear
 {
     // We should always have to target a spearfishing spot when opening the window.
     // If we are not, hackery is afoot.

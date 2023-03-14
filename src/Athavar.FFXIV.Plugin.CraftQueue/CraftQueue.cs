@@ -15,7 +15,7 @@ using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
-internal class CraftQueue : IDisposable
+internal sealed class CraftQueue : IDisposable
 {
     private readonly List<CraftingJob> queuedJobs = new();
     private readonly List<CraftingJob> completedJobs = new();

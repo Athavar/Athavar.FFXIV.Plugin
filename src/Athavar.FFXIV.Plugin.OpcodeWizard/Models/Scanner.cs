@@ -2,7 +2,7 @@
 
 using Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
-internal class Scanner
+internal sealed class Scanner
 {
     public Scanner(Opcode opcodeType, string packetName, string tutorial, Func<IpcPacket, string[], Comment, bool> scanDelegate, Comment comment, string[] parameterPrompts, PacketSource packetSource, Opcode? dependentScanner)
     {

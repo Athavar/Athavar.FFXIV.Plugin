@@ -276,7 +276,7 @@ public class FontsManager : IDisposable, IFontsManager
         return ranges;
     }
 
-    public class FontScope : IDisposable
+    public sealed class FontScope : IDisposable
     {
         private readonly bool fontPushed;
 

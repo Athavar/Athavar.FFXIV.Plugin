@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using ImGuiNET;
 
-internal partial class AutoSpear
+internal sealed partial class AutoSpear
 {
     private readonly string[] fishData = new string[3] { string.Empty, string.Empty, string.Empty };
 

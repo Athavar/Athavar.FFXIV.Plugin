@@ -9,7 +9,7 @@ using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
-internal partial class CommandInterface
+internal sealed partial class CommandInterface
 {
     private readonly InventoryType[] playerInventories = new InventoryType[5]
     {

@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 using Dalamud;
 
-public class CraftingMacro
+public sealed class CraftingMacro
 {
     public CraftingMacro(CraftingSkill[] rotation) => this.Rotation = rotation;
 

@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Dps.UI.Config;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class MeterWindow : IConfigurable
+internal sealed class MeterWindow : IConfigurable
 {
     private readonly MeterManager meterManager;
     private readonly ICommandInterface ci;
@@ -245,7 +245,7 @@ internal class MeterWindow : IConfigurable
     }
 
     // Dont ask
-    protected void UpdateDragData(Vector2 pos, Vector2 size, bool locked)
+    private void UpdateDragData(Vector2 pos, Vector2 size, bool locked)
     {
         this.unlocked = !locked;
         this.hovered = ImGui.IsMouseHoveringRect(pos, pos + size);

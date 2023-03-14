@@ -6,7 +6,7 @@ using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using Machina.FFXIV;
 using Machina.Infrastructure;
 
-internal class DetectionProgram : IDisposable
+internal sealed class DetectionProgram : IDisposable
 {
     public bool Debug;
     private readonly ScannerRegistry scannerRegistry;

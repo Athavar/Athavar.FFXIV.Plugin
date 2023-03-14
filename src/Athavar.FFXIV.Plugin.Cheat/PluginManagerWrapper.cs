@@ -10,7 +10,7 @@ using Dalamud.Plugin;
 /// <summary>
 ///     Wrapper around the plugin manager from dalamud.
 /// </summary>
-internal class PluginManagerWrapper
+internal sealed class PluginManagerWrapper
 {
     private bool init;
     private Type? servicePluginManagerType;
@@ -100,7 +100,7 @@ internal class PluginManagerWrapper
     /// <summary>
     ///     Wrapper around the internal LocalPlugin of Dalamud.
     /// </summary>
-    internal class LocalPluginWrapper
+    internal sealed class LocalPluginWrapper
     {
         private static Type? localPluginType;
         private readonly dynamic instance;
