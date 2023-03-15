@@ -134,6 +134,12 @@ internal sealed class Utils
             return this.actionTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
         }
 
+        string Hits(double total, ulong part) => part == 0 ? "0" : $"{part} [{Pct(total, part)}]";
+
+        string Pct(double total, ulong part) => $"{Math.Round((part / total) * 100, 2).ToString(CultureInfo.InvariantCulture)}%";
+
+        void NumberWithAvg(ulong total, ulong hits) => ImGui.TextUnformatted($"{total.ToString(CultureInfo.InvariantCulture)} [~{total / hits}]");
+
         Func<ActionSummary, bool> actionSummaryFilter = type switch
         {
             MeterDataType.Damage => a => a.DamageDone is not null,
@@ -158,6 +164,8 @@ internal sealed class Utils
             return;
         }
 
+        var isHeal = type is MeterDataType.Healing or MeterDataType.EffectiveHealing;
+
         ImGui.BeginTooltip();
 
         if (ImGui.BeginTable("actionsummary", 6, ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.RowBg))
@@ -176,9 +184,9 @@ internal sealed class Utils
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide, 100f);
                 ImGui.TableSetupColumn(type.Value.ToString(), ImGuiTableColumnFlags.NoHide, 10 * 12.0f);
                 ImGui.TableSetupColumn("Casts", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
-                ImGui.TableSetupColumn("CritPct", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
-                ImGui.TableSetupColumn("DHitPct", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
-                ImGui.TableSetupColumn("CritDHitPct", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
+                ImGui.TableSetupColumn("Crits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
+                ImGui.TableSetupColumn(isHeal ? "OverH" : "DHits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
+                ImGui.TableSetupColumn(isHeal ? "OverHPct" : "CritDHits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
             }
 
             ImGui.TableSetupScrollFreeze(0, 1);
@@ -196,7 +204,7 @@ internal sealed class Utils
                     ImGui.TableNextColumn();
                     if (summary.DamageDone is { } damageDone)
                     {
-                        ImGui.TextUnformatted($"{damageDone.TotalAmount.ToString(CultureInfo.InvariantCulture)} (avg {damageDone.TotalAmount / (ulong)damageDone.Hits})");
+                        NumberWithAvg(damageDone.TotalAmount, (ulong)damageDone.Hits);
                     }
 
                     ImGui.TableNextColumn();
@@ -204,7 +212,7 @@ internal sealed class Utils
                     ImGui.TableNextColumn();
                     if (summary.HealingDone is { } healingDone)
                     {
-                        ImGui.TextUnformatted($"{healingDone.TotalAmount.ToString(CultureInfo.InvariantCulture)} (avg {healingDone.TotalAmount / (ulong)healingDone.Hits})");
+                        NumberWithAvg(healingDone.TotalAmount, (ulong)healingDone.Hits);
                     }
 
                     ImGui.TableNextColumn();
@@ -236,16 +244,25 @@ internal sealed class Utils
                         total -= typeSummary.OverAmount;
                     }
 
-                    ImGui.TextUnformatted($"{total.ToString(CultureInfo.InvariantCulture)} (avg {total / (ulong)typeSummary.Hits})");
+                    NumberWithAvg(total, (ulong)typeSummary.Hits);
 
                     ImGui.TableNextColumn();
                     ImGui.TextDisabled(typeSummary.Hits.ToString());
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted(typeSummary.CritHits.ToString());
+                    ImGui.TextUnformatted(Hits(typeSummary.Hits, typeSummary.CritHits));
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted(typeSummary.DirectHits.ToString());
-                    ImGui.TableNextColumn();
-                    ImGui.TextUnformatted(typeSummary.CritDirectHits.ToString());
+                    if (isHeal)
+                    {
+                        ImGui.TextUnformatted(typeSummary.OverAmount.ToString());
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(Pct(typeSummary.TotalAmount, typeSummary.OverAmount));
+                    }
+                    else
+                    {
+                        ImGui.TextUnformatted(Hits(typeSummary.Hits, typeSummary.DirectHits));
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted(Hits(typeSummary.Hits, typeSummary.CritDirectHits));
+                    }
                 }
             }
             
