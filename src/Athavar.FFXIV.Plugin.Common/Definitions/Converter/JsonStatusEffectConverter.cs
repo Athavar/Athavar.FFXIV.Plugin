@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 
-internal class JsonStatusEffectConverter : JsonConverter<Dictionary<uint, StatusEffect>>
+internal sealed class JsonStatusEffectConverter : JsonConverter<Dictionary<uint, StatusEffect>>
 {
     public override bool CanConvert(Type objectType) => objectType == typeof(Dictionary<uint, StatusEffect>);
 

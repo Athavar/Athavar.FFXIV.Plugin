@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     The &lt;maxwait&gt; modifier.
 /// </summary>
-internal class MaxWaitModifier : MacroModifier
+internal sealed class MaxWaitModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><maxwait\.(?<wait>\d+(?:\.\d+)?)>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

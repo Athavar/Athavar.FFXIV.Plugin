@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Lumina.Excel.GeneratedSheets;
 
-internal class FishingSpot
+internal sealed class FishingSpot
 {
     public const uint SpearfishingIdOffset = 1u << 31;
 

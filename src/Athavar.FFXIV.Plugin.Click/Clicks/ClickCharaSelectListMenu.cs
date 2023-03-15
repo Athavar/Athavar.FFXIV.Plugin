@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Click.Enums;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-public class ClickCharaSelectListMenu : ClickBase<ClickCharaSelectListMenu, AddonTalk>
+public sealed class ClickCharaSelectListMenu : ClickBase<ClickCharaSelectListMenu, AddonTalk>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickCharaSelectListMenu" /> class.
@@ -33,7 +33,7 @@ public class ClickCharaSelectListMenu : ClickBase<ClickCharaSelectListMenu, Addo
     /// <summary>
     ///     Click a retainer.
     /// </summary>
-    /// <param name="index">Retainer index.</param>
+    /// <param name="index">Character index.</param>
     public unsafe void Character(ushort index) => this.ClickAddonComponentList((AtkComponentNode*)this.UnitBase->UldManager.NodeList[2], index, 5U + index, EventType.MOUSE_CLICK);
 
 #pragma warning disable SA1134,SA1516,SA1600

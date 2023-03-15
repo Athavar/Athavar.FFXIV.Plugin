@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 
-internal class ActionSummary
+internal sealed class ActionSummary
 {
     public ActionSummary(uint id, bool isStatus = false)
     {

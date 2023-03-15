@@ -44,6 +44,10 @@ internal abstract class BaseCombatant<T> : BaseCombatant
     {
         var duration = this.Encounter.Duration.TotalSeconds >= 1 ? this.Encounter.Duration.TotalSeconds : 1;
         this.Dps = Math.Round(this.DamageTotal / duration, 2);
+        this.CritPct = Math.Round(((double)this.CritHits / this.Casts) * 100, 2);
+        this.DHitPct = Math.Round(((double)this.DirectHits / this.Casts) * 100, 2);
+        this.CritDHitPct = Math.Round(((double)this.CritDirectHits / this.Casts) * 100, 2);
+
         this.Hps = Math.Round(this.HealingTotal / duration, 2);
         this.EffectiveHealing = this.HealingTotal - this.OverHealTotal;
         this.OverHealPct = this.HealingTotal == 0 ? 0 : Math.Round(((double)this.OverHealTotal / this.HealingTotal) * 100, 2);

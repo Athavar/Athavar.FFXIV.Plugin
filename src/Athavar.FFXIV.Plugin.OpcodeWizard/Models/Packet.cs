@@ -21,7 +21,7 @@ internal class Packet
     public PacketSource Source { get; init; }
 }
 
-internal class IpcPacket : Packet
+internal sealed class IpcPacket : Packet
 {
     public IpcPacket(string connection, long epoch, byte[] data, PacketSource source, uint packetSize, ushort segmentType, ushort opcode, uint sourceActor, uint targetActor)
         : base(connection, epoch, data, source)

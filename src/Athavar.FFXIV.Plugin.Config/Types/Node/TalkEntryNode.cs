@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 /// <summary>
 ///     Text entry node type.
 /// </summary>
-public class TalkEntryNode : INode
+public sealed class TalkEntryNode : INode
 {
     /// <summary>
     ///     Gets a value indicating whether the matching target text is a regex.

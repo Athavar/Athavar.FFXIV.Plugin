@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using ImGuiNET;
 
-internal class SettingsConfigPage : IConfigPage
+internal sealed class SettingsConfigPage : IConfigPage
 {
     private static readonly string[] PartyTypeOptions = Enum.GetNames(typeof(PartyType));
     private readonly DpsConfiguration c;

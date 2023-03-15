@@ -18,7 +18,7 @@ using Machina.FFXIV.Headers;
 using Server_ActorCast = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_ActorCast;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
 
-internal partial class NetworkHandler : IDisposable
+internal sealed partial class NetworkHandler : IDisposable
 {
     private readonly GameNetwork gameNetwork;
     private readonly IOpcodeManager opcodeManager;
@@ -49,8 +49,6 @@ internal partial class NetworkHandler : IDisposable
     public event EventHandler<(ulong actorID, uint iconID)>? EventActorControlTargetIcon;
 
     public event EventHandler<(ulong actorId, ulong targetID, uint tetherID)>? EventActorControlTether;
-
-    public event EventHandler<(uint directorID, uint updateID, uint p1, uint p2, uint p3, uint p4)>? EventActorControlSelfDirectorUpdate;
 
     public event EventHandler<CombatEvent>? CombatEvent;
 
@@ -231,8 +229,8 @@ internal partial class NetworkHandler : IDisposable
                     case ActionEffectType.Heal:
                         actionEffects.Add(new CombatEvent.Healed
                         {
-                            HitSeverity = actionEffect.Param0,
-                            Param1 = actionEffect.Param1,
+                            HitSeverity = actionEffect.Param1,
+                            Param1 = actionEffect.Param0,
                             Percentage = actionEffect.Param2,
                             Multiplier = actionEffect.Param3,
                             Flags2 = actionEffect.Param4,

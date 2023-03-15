@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common;
 
-public class ModuleAttribute : Attribute
+public sealed class ModuleAttribute : Attribute
 {
     public ModuleAttribute(string name) => this.Name = name;
 

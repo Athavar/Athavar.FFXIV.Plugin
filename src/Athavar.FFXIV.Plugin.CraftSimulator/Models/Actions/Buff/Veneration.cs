@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
-internal class Veneration : BuffAction
+internal sealed class Veneration : BuffAction
 {
     private static readonly uint[] IdsValue = { 19297, 19298, 19299, 19300, 19301, 19302, 19303, 19304 };
 

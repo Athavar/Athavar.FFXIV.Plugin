@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using System.Runtime.InteropServices;
 
-internal class CombatantCollected : BaseCombatant<CombatantCollected>
+internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
 {
     private readonly List<Combatant> combatants = new();
 
@@ -32,18 +32,27 @@ internal class CombatantCollected : BaseCombatant<CombatantCollected>
 
     public override void CalcStats()
     {
-        ulong damageTotal = 0;
-        ulong damageTaken = 0;
-        ulong healingTotal = 0;
-        ulong healingTaken = 0;
-        ushort deaths = 0;
-        ushort kills = 0;
+        ulong damageTotal = 0,
+              damageTaken = 0,
+              healingTotal = 0,
+              healingTaken = 0,
+              hits = 0,
+              crit = 0,
+              direct = 0,
+              critDirect = 0;
+        ushort deaths = 0,
+               kills = 0;
         foreach (var combatant in CollectionsMarshal.AsSpan(this.combatants))
         {
             damageTotal += combatant.DamageTotal;
             damageTaken += combatant.DamageTaken;
             healingTotal += combatant.HealingTotal;
             healingTaken += combatant.HealingTaken;
+
+            hits += combatant.Casts;
+            crit += combatant.CritHits;
+            direct += combatant.DirectHits;
+            critDirect += combatant.CritDirectHits;
 
             deaths += combatant.Deaths;
             kills += combatant.Kills;
@@ -53,6 +62,12 @@ internal class CombatantCollected : BaseCombatant<CombatantCollected>
         this.DamageTaken = damageTaken;
         this.HealingTotal = healingTotal;
         this.HealingTaken = healingTaken;
+
+        this.Casts = hits;
+        this.CritHits = crit;
+        this.DirectHits = direct;
+        this.CritDirectHits = critDirect;
+
         this.Deaths = deaths;
         this.Kills = kills;
 

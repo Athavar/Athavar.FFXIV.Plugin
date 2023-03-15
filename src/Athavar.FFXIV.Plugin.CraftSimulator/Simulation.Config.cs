@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-public partial class Simulation
+public sealed partial class Simulation
 {
     /// <summary>
     ///     Gets the current recipe to craft.

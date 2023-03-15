@@ -12,7 +12,7 @@ using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration))]
-internal class DpsModule : Module<DpsTab, DpsConfiguration>
+internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
 {
     internal const string ModuleName = "DPS (Test)";
 
@@ -51,7 +51,7 @@ internal class DpsModule : Module<DpsTab, DpsConfiguration>
     {
         base.Dispose();
         this.meterManager?.Dispose();
-        PluginLog.LogInformation("Dispose Dps");
+        PluginLog.LogVerbose("Dispose Dps");
     }
 
     protected override DpsTab InitTab()

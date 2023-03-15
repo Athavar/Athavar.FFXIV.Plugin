@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 
-internal class CraftingJobException : AthavarPluginException
+internal sealed class CraftingJobException : AthavarPluginException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="CraftingJobException" /> class.

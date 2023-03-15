@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
-internal unsafe class EquipmentScanner : IDisposable
+internal sealed unsafe class EquipmentScanner : IDisposable
 {
     private const uint EquipmentContainerSize = 12;
     private readonly IDalamudServices dalamudServices;

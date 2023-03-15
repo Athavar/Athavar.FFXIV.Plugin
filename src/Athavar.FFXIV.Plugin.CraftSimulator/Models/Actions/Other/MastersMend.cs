@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal class MastersMend : CraftingAction
+internal sealed class MastersMend : CraftingAction
 {
     private static readonly uint[] IdsValue = { 100003, 100017, 100032, 100077, 100047, 100062, 100092, 100107 };
 

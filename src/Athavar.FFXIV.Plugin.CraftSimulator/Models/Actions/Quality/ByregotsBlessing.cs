@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class ByregotsBlessing : QualityAction
+internal sealed class ByregotsBlessing : QualityAction
 {
     private static readonly uint[] IdsValue = { 100339, 100340, 100341, 100342, 100343, 100344, 100345, 100346 };
 

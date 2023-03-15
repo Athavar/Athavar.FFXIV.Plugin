@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal class CarefulObservation : CraftingAction
+internal sealed class CarefulObservation : CraftingAction
 {
     private static readonly uint[] IdsValue = { 100395, 100396, 100397, 100398, 100399, 100400, 100401, 100402 };
 

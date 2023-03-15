@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using ImGuiNET;
 
-internal class HeaderConfigPage : IConfigPage
+internal sealed class HeaderConfigPage : IConfigPage
 {
     [JsonIgnore]
     private static readonly string[] AnchorOptions = Enum.GetNames(typeof(DrawAnchor));

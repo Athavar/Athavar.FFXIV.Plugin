@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
-internal class Manipulation : BuffAction
+internal sealed class Manipulation : BuffAction
 {
     private static readonly uint[] IdsValue = { 4574, 4575, 4576, 4577, 4578, 4579, 4580, 4581 };
 

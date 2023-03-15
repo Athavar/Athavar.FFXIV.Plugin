@@ -9,7 +9,7 @@ using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 using Newtonsoft.Json;
 
-public class GeneralConfig : BaseConfig
+public sealed class GeneralConfig : BaseConfig
 {
     [JsonIgnore]
     public bool Preview { get; set; } = false;

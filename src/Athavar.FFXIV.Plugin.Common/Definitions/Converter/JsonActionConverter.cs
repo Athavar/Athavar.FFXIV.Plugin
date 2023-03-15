@@ -10,7 +10,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 
-internal class JsonActionConverter : JsonConverter<Dictionary<uint, Action>>
+internal sealed class JsonActionConverter : JsonConverter<Dictionary<uint, Action>>
 {
     public override bool CanConvert(Type objectType) => objectType == typeof(Dictionary<uint, Action>);
 

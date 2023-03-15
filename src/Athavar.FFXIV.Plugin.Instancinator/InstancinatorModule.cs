@@ -28,7 +28,7 @@ using Microsoft.Extensions.DependencyInjection;
 ///     Implements the instancinator module.
 /// </summary>
 [Module(ModuleName, ModuleConfigurationType = typeof(InstancinatorConfiguration))]
-internal class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfiguration>
+internal sealed class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfiguration>
 {
     internal const string ModuleName = "Instancinator";
     private const string FolderName = "InstancinatorInternal";

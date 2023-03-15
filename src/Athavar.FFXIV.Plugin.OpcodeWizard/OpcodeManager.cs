@@ -7,7 +7,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Logging;
 using Machina.FFXIV;
 
-internal class OpcodeManager : IOpcodeManager
+internal sealed class OpcodeManager : IOpcodeManager
 {
     private readonly OpcodeWizardConfiguration configuration;
     private readonly IDefinitionManager definitionManager;

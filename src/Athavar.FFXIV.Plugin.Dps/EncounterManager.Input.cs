@@ -8,7 +8,7 @@ using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game.ClientState.Objects.Types;
 
-internal partial class EncounterManager
+internal sealed partial class EncounterManager
 {
     private void OnCombatEvent(object? sender, CombatEvent @event)
     {

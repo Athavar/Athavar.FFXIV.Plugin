@@ -9,7 +9,7 @@ namespace Athavar.FFXIV.Plugin;
 /// <summary>
 ///     Instancinator Module configuration.
 /// </summary>
-public class InstancinatorConfiguration : BasicModuleConfig
+public sealed class InstancinatorConfiguration : BasicModuleConfig
 {
     public string KeyCode { get; set; } = "NumPad0";
 

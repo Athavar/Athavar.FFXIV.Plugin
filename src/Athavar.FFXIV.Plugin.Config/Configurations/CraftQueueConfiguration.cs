@@ -5,7 +5,7 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public class CraftQueueConfiguration : BasicModuleConfig
+public sealed class CraftQueueConfiguration : BasicModuleConfig
 {
     /// <summary>
     ///     Gets the root folder.
@@ -21,6 +21,16 @@ public class CraftQueueConfiguration : BasicModuleConfig
     ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
     /// </summary>
     public bool QualitySkip { get; set; } = false;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to gear should be automatic repaired.
+    /// </summary>
+    public bool AutoRepair { get; set; } = true;
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to materia is auto extracted.
+    /// </summary>
+    public bool AutoMateriaExtract { get; set; } = false;
 
     /// <summary>
     ///     Get all nodes in the tree.

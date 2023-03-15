@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
-public class MeterConfig : BaseConfig
+public sealed class MeterConfig : BaseConfig
 {
     public string Name { get; set; } = string.Empty;
 

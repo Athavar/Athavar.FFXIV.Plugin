@@ -9,7 +9,7 @@ using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(AutoSpearConfiguration))]
-internal class AutoSpearModule : Module<AutoSpear, AutoSpearConfiguration>
+internal sealed class AutoSpearModule : Module<AutoSpear, AutoSpearConfiguration>
 {
     private const string ModuleName = "AutoSpear";
     private readonly IServiceProvider provider;

@@ -10,7 +10,7 @@ using Dalamud.Logging;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Ipc.Exceptions;
 
-internal class IpcManager : IIpcManager, IDisposable
+internal sealed class IpcManager : IIpcManager, IDisposable
 {
     private ICallGateSubscriber<(int Breaking, int Features)> penumbraApiVersionsSubscriber;
     private ICallGateSubscriber<string, string>? penumbraResolveInterfacePathSubscriber;

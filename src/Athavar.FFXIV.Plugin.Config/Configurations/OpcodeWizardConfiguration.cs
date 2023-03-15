@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Text.Json.Serialization;
 
-public class OpcodeWizardConfiguration : BasicModuleConfig
+public sealed class OpcodeWizardConfiguration : BasicModuleConfig
 {
     [JsonPropertyName("Opcodes")]
     public Dictionary<Opcode, ushort> Opcodes { get; } = new();

@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
-internal class MuscleMemory : ProgressAction
+internal sealed class MuscleMemory : ProgressAction
 {
     private static readonly uint[] IdsValue = { 100379, 100380, 100381, 100382, 100383, 100384, 100385, 100386 };
 

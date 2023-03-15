@@ -9,7 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
-internal partial class CommandInterface
+internal sealed partial class CommandInterface
 {
     /// <inheritdoc />
     public bool IsCrafting() => this.dalamudServices.Condition[ConditionFlag.Crafting] && !this.dalamudServices.Condition[ConditionFlag.PreparingToCraft];

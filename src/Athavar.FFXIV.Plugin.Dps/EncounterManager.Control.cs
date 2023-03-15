@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 
-internal partial class EncounterManager
+internal sealed partial class EncounterManager
 {
     public void EndEncounter(bool inValid = false)
     {

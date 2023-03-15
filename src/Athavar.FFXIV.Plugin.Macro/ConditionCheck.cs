@@ -12,7 +12,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     Contains condition checks.
 /// </summary>
-internal class ConditionCheck
+internal sealed class ConditionCheck
 {
     private readonly IDalamudServices dalamudServices;
     private readonly ICommandInterface commandInterface;

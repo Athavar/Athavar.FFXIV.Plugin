@@ -8,7 +8,7 @@ using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.UI;
 using ImGuiNET;
 
-internal class InstancinatorTab : Tab
+internal sealed class InstancinatorTab : Tab
 {
     public InstancinatorTab(InstancinatorConfiguration configuration) => this.Configuration = configuration;
 

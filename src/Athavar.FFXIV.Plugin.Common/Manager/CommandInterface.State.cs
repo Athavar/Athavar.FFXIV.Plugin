@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 using Dalamud.Game.ClientState.Conditions;
 using Lumina.Excel.GeneratedSheets;
 
-internal partial class CommandInterface
+internal sealed partial class CommandInterface
 {
     private static readonly uint[] GoldenSaucerIDs = { 144, 388, 389, 390, 391, 579, 792, 899, 941 };
     private readonly uint logOutId;

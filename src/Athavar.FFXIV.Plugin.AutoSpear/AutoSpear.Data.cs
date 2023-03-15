@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.AutoSpear.Enum;
 
-internal partial class AutoSpear
+internal sealed partial class AutoSpear
 {
     private void ApplyData(IDictionary<uint, SpearFish> fishes)
     {

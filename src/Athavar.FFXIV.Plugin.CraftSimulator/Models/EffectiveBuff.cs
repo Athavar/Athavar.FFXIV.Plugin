@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 
-public record EffectiveBuff(int MaxDuration, int InitStacks, Buffs Buffs, int AppliedStep, BuffAction.OnTick? TickAction = null, BuffAction.OnExpire? ExpireAction = null)
+public sealed record EffectiveBuff(int MaxDuration, int InitStacks, Buffs Buffs, int AppliedStep, BuffAction.OnTick? TickAction = null, BuffAction.OnExpire? ExpireAction = null)
 {
     public int Duration { get; set; } = MaxDuration;
 

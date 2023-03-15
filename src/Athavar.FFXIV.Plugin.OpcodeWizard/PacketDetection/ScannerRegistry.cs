@@ -7,7 +7,7 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
-internal class ScannerRegistry
+internal sealed class ScannerRegistry
 {
     private readonly IList<Scanner> scanners;
     private readonly IOpcodeManager opcodeManager;

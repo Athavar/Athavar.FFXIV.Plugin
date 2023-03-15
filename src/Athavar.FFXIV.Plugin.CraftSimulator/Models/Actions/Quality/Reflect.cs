@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class Reflect : QualityAction
+internal sealed class Reflect : QualityAction
 {
     private static readonly uint[] IdsValue = { 100387, 100388, 100389, 100390, 100391, 100392, 100393, 100394 };
 

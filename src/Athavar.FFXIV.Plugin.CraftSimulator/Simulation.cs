@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-public partial class Simulation
+public sealed partial class Simulation
 {
     private readonly Random random = new((int)DateTime.UtcNow.Ticks);
     private long startingQuality;
@@ -133,63 +133,84 @@ public partial class Simulation
         return res;
     }
 
-    public (uint Control, uint Craftsmanship, uint Cp, bool Found) GetMinStats(CraftingSkills[] rotation)
+    public (uint Control, uint Craftsmanship, uint Cp, bool Found) GetMinStats(CraftingSkills[] rotation, uint[]? collectableThresholds = null)
     {
-        var totalIterations = 0;
-        var originalHqPercent = this.Run(rotation, true).HqPercent;
-        var originalStats = this.CurrentStats;
+        var result = this.Run(rotation, true);
         var res = (
             this.CurrentStats.Control,
             this.CurrentStats.Craftsmanship,
             this.CurrentStats.CP,
             Found: true);
 
-        this.CurrentStats.Craftsmanship = 1;
+        if (!result.Success)
+        {
+            res.Found = false;
+            return res;
+        }
 
-        var result = this.Run(rotation, true);
+        var totalIterations = 0;
+
+        uint Bisect(uint start, uint end, Action<uint> stat, int targetHpPercent, bool isCollectable = false)
+        {
+            if (start == end)
+            {
+                return start;
+            }
+
+            var testValue = (uint)Math.Floor(((double)start - end) / 2);
+            stat(testValue);
+            result = this.Run(rotation, true);
+
+            totalIterations++;
+            var hqTargetReached = result.HqPercent >= targetHpPercent;
+            if (isCollectable)
+            {
+                hqTargetReached = GetCollectRating(result) >= targetHpPercent;
+            }
+
+            if (result.Success && hqTargetReached)
+            {
+                if (testValue == start)
+                {
+                    return testValue;
+                }
+
+                return Bisect(start, testValue, stat, targetHpPercent, isCollectable);
+            }
+
+            if (testValue == end - 1)
+            {
+                stat(end);
+            }
+
+            return Bisect(testValue, end, stat, targetHpPercent, isCollectable);
+        }
+
+        double GetCollectRating(SimulationResult r) => Math.Floor((double)r.Simulation.Quality / 10);
+
+        var originalHqPercent = result.HqPercent;
+        var originalQuality = result.Simulation.Quality;
+        var originalStats = this.CurrentStats;
+
+        var rating = originalHqPercent;
+        if (collectableThresholds is { } tiers)
+        {
+            rating = (int)collectableThresholds.Aggregate((current, next) => next > originalQuality ? current : Math.Max(current, next));
+        }
 
         // Three loops, one per stat
-        while (!result.Success && totalIterations < 10000)
-        {
-            this.CurrentStats.Craftsmanship++;
-            result = this.Run(rotation, true);
-            totalIterations++;
-        }
+        res.Craftsmanship = Bisect((uint?)this.Recipe.CraftsmanshipReq ?? 1, originalStats.Craftsmanship, x => this.CurrentStats.Craftsmanship = x, originalHqPercent);
+        res.Control = Bisect((uint?)this.Recipe.ControlReq ?? 1, originalStats.Control, x => this.CurrentStats.Control = x, rating, collectableThresholds is not null);
 
-        res.Craftsmanship = this.CurrentStats.Craftsmanship;
-
-        this.CurrentStats.Control = 1;
-        result = this.Run(rotation, true);
-
-        while (result.HqPercent < originalHqPercent && totalIterations < 10000)
-        {
-            this.CurrentStats.Control++;
-            result = this.Run(rotation, true);
-            totalIterations++;
-        }
-
-        res.Control = this.CurrentStats.Control;
-
-        this.CurrentStats.CP = 180;
-        result = this.Run(rotation, true);
-
-        while (totalIterations < 10000 && (!result.Success || result.HqPercent < originalHqPercent))
-        {
-            this.CurrentStats.CP++;
-            result = this.Run(rotation, true);
-            totalIterations++;
-        }
-
-        res.CP = this.CurrentStats.CP;
-
+        // We need to reset control to make sure result.hqPercent is accurate
+        this.CurrentStats.Control = originalStats.Control;
+        res.CP = Bisect(180, originalStats.CP, x => this.CurrentStats.CP = x, originalHqPercent);
         if (totalIterations >= 10000)
         {
             res.Found = false;
         }
 
-        this.CurrentStats.CP = originalStats.CP;
-        this.CurrentStats.Craftsmanship = originalStats.Craftsmanship;
-        this.CurrentStats.Control = originalStats.Control;
+        this.CurrentStats = originalStats;
         return res;
     }
 

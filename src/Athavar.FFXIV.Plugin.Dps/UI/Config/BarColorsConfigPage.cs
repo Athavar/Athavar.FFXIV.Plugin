@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using ImGuiNET;
 
-internal class BarColorsConfigPage : IConfigPage
+internal sealed class BarColorsConfigPage : IConfigPage
 {
     private readonly MeterWindow window;
 

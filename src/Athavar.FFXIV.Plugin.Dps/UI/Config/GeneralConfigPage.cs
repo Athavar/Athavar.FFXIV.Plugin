@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
-internal class GeneralConfigPage : IConfigPage
+internal sealed class GeneralConfigPage : IConfigPage
 {
     [JsonIgnore]
     public bool Preview;

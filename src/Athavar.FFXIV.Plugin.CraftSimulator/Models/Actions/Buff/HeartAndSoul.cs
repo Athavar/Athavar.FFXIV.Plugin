@@ -8,7 +8,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
-internal class HeartAndSoul : BuffAction
+internal sealed class HeartAndSoul : BuffAction
 {
     private static readonly uint[] IdsValue = { 100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426 };
 

@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
-internal class IntensiveSynthesis : ProgressAction
+internal sealed class IntensiveSynthesis : ProgressAction
 {
     private static readonly uint[] IdsValue = { 100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322 };
 

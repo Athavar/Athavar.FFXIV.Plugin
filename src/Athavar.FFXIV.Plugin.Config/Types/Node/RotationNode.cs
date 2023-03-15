@@ -5,7 +5,7 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public class RotationNode : INode
+public sealed class RotationNode : INode
 {
     /// <inheritdoc />
     public string Name { get; set; } = string.Empty;

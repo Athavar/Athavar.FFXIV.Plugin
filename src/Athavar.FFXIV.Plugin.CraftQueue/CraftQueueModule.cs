@@ -9,7 +9,7 @@ using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(CraftQueueConfiguration))]
-internal class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfiguration>
+internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfiguration>
 {
     private const string ModuleName = "CraftQueue";
 

@@ -12,7 +12,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 /// <summary>
 ///     The &lt;condition&gt; modifier.
 /// </summary>
-internal class ConditionModifier : MacroModifier
+internal sealed class ConditionModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><condition\.(?<not>(not\.|\!))?(?<name>[^>]+)>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

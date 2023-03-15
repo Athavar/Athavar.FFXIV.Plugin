@@ -17,7 +17,7 @@ using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
-internal class CraftingJob
+internal sealed class CraftingJob
 {
     private readonly string localizedExcellent;
     private readonly Func<int>[] stepArray;
@@ -64,6 +64,7 @@ internal class CraftingJob
         {
             this.SwitchToJob,
             this.EnsureRepair,
+            this.EnsureMateriaExtracted,
             this.EnsureStats,
             this.OpenRecipe,
             this.SelectIngredients,
@@ -230,20 +231,15 @@ internal class CraftingJob
             return 0;
         }
 
-        // is in crafting mode
-        if (this.IsKneeling)
+        if (!this.queue.Configuration.AutoRepair)
         {
-            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
-            {
-                ci.CloseAddon(Constants.Addons.RecipeNote);
-                return -1000;
-            }
+            throw new CraftingJobException("Gear is not repaired.");
         }
 
-        if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+        var value = this.ExitCraftingMode();
+        if (value is { } wait)
         {
-            ci.CloseAddon(Constants.Addons.RecipeNote);
-            return -100;
+            return wait;
         }
 
         // is currently repairing
@@ -263,13 +259,70 @@ internal class CraftingJob
         if (ci.IsAddonVisible(Constants.Addons.Repair))
         {
             this.queue.Click.TrySendClick("repair_all");
-            return -100;
+            return -1000;
         }
 
         // open repair window
         if (!ci.UseGeneralAction(6))
         {
             throw new CraftingJobException("Fail to open repair window");
+        }
+
+        return -100;
+    }
+
+    private int EnsureMateriaExtracted()
+    {
+        var ci = this.queue.CommandInterface;
+
+        if (!this.queue.Configuration.AutoMateriaExtract)
+        {
+            // skip step
+            return 0;
+        }
+
+        // can extract materia?
+        if (!ci.CanExtractMateria())
+        {
+            if (ci.IsAddonVisible(Constants.Addons.Materialize))
+            {
+                ci.CloseAddon(Constants.Addons.Materialize);
+                return -1000;
+            }
+
+            return 0;
+        }
+
+        var value = this.ExitCraftingMode();
+        if (value is { } wait)
+        {
+            return wait;
+        }
+
+        // is currently extracting
+        if (this.queue.DalamudServices.Condition[ConditionFlag.Occupied39])
+        {
+            return -100;
+        }
+
+        // say yes to extract
+        if (ci.IsAddonVisible("SelectYesno"))
+        {
+            this.queue.Click.TrySendClick("select_yes");
+            return -100;
+        }
+
+        // materia extract item0
+        if (ci.IsAddonVisible(Constants.Addons.Materialize))
+        {
+            this.queue.Click.TrySendClick("materia_extract0");
+            return -1000;
+        }
+
+        // open materialize window
+        if (!ci.UseGeneralAction(14))
+        {
+            throw new CraftingJobException("Fail to open materialize window");
         }
 
         return -100;
@@ -497,6 +550,34 @@ internal class CraftingJob
         }
 
         return -1000 * simAction.GetWaitDuration();
+    }
+
+    private int? ExitCraftingMode()
+    {
+        var ci = this.queue.CommandInterface;
+
+        // is in crafting mode
+        if (this.IsKneeling)
+        {
+            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+            {
+                ci.CloseAddon(Constants.Addons.RecipeNote);
+                return -1000;
+            }
+        }
+
+        if (!ci.IsPlayerCharacterReady())
+        {
+            return -100;
+        }
+
+        if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+        {
+            ci.CloseAddon(Constants.Addons.RecipeNote);
+            return -100;
+        }
+
+        return null;
     }
 
     private BuffApplyTest? TestStatModifier()

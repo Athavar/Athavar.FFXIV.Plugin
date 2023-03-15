@@ -12,7 +12,7 @@ using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 
-internal class InstancinatorWindow : Window, IDisposable
+internal sealed class InstancinatorWindow : Window, IDisposable
 {
     private readonly InstancinatorModule module;
     private readonly WindowSystem windowSystem;

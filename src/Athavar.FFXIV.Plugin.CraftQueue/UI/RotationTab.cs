@@ -16,7 +16,7 @@ using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 
-internal class RotationTab : Tab
+internal sealed class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
     private readonly IChatManager chatManager;

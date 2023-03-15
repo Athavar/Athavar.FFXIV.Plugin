@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Config;
 using System.Numerics;
 using Newtonsoft.Json;
 
-public class ConfigColor
+public sealed class ConfigColor
 {
     [JsonIgnore]
     private float[] colorMapRatios = { -.8f, -.3f, .1f };

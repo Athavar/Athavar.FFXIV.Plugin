@@ -15,7 +15,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class ProfileListConfigPage : IConfigPage
+internal sealed class ProfileListConfigPage : IConfigPage
 {
     private const float MenuBarHeight = 40;
 
@@ -41,6 +41,7 @@ internal class ProfileListConfigPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
+        ImGui.TextUnformatted("Note: DoT&HoT are not correctly assigned to players");
         this.DrawCreateMenu(size, padX);
         this.DrawMeterTable(size.AddY(-padY), padX);
     }

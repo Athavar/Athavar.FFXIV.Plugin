@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 /// <summary>
 ///     The &lt;itemquality&gt; modifier.
 /// </summary>
-internal class ItemQualityModifier : MacroModifier
+internal sealed class ItemQualityModifier : MacroModifier
 {
     private static readonly Regex Regex = new(@"(?<modifier><hq>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

@@ -9,7 +9,7 @@ namespace Athavar.FFXIV.Plugin;
 /// <summary>
 ///     Macro node type.
 /// </summary>
-public class MacroNode : INode
+public sealed class MacroNode : INode
 {
     /// <inheritdoc />
     public string Name { get; set; } = string.Empty;

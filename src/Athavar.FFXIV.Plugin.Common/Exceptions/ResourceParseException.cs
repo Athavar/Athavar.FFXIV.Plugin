@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Exceptions;
 
-public class ResourceParseException : AthavarPluginException
+public sealed class ResourceParseException : AthavarPluginException
 {
     public ResourceParseException(string message)
         : base(message)

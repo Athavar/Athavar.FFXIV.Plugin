@@ -10,7 +10,7 @@ using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
-internal partial class CommandInterface
+internal sealed partial class CommandInterface
 {
     /// <inheritdoc />
     public unsafe bool IsAddonVisible(string addonName)

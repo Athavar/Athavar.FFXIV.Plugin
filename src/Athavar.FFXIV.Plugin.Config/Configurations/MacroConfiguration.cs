@@ -9,7 +9,7 @@ namespace Athavar.FFXIV.Plugin;
 /// <summary>
 ///     Macro Module configuration.
 /// </summary>
-public class MacroConfiguration : BasicModuleConfig
+public sealed class MacroConfiguration : BasicModuleConfig
 {
     /// <summary>
     ///     Gets the root folder.

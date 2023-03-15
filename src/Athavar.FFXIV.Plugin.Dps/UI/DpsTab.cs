@@ -17,7 +17,7 @@ using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class DpsTab : Tab
+internal sealed class DpsTab : Tab
 {
     internal const string TabIdentifier = "dps";
     private const float NavBarHeight = 40;

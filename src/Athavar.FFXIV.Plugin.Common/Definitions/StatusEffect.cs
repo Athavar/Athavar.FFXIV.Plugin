@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Definitions;
 
-public class StatusEffect
+public sealed class StatusEffect
 {
     public uint Id { get; set; }
 

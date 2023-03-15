@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 /// <summary>
 ///     Error thrown when a macro needs to pause, but not treat it like an error.
 /// </summary>
-internal class MacroPause : InvalidOperationException
+internal sealed class MacroPause : InvalidOperationException
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroPause" /> class.

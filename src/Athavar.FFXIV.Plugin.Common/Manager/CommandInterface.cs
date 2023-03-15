@@ -17,7 +17,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
 /// </summary>
-internal partial class CommandInterface : ICommandInterface
+internal sealed partial class CommandInterface : ICommandInterface
 {
     private readonly IDalamudServices dalamudServices;
 
@@ -75,7 +75,7 @@ internal partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+        return this.CanUseGeneralAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)

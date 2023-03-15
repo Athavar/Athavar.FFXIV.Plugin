@@ -13,7 +13,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using Machina.FFXIV.Headers;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
 
-internal partial class NetworkHandler
+internal sealed partial class NetworkHandler
 {
     private enum ActorControlCategory : ushort
     {

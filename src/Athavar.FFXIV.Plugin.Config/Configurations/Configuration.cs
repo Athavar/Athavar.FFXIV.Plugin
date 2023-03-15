@@ -17,7 +17,7 @@ using Dalamud.Plugin;
 using Lumina.Data;
 using Newtonsoft.Json;
 
-public class Configuration : IPluginConfiguration
+public sealed class Configuration : IPluginConfiguration
 {
     [JsonIgnore]
     private DalamudPluginInterface? pi;

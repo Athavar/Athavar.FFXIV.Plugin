@@ -17,7 +17,7 @@ internal abstract record CombatEvent
 
     public uint ActorId { get; init; }
 
-    public record Action : CombatEvent
+    public sealed record Action : CombatEvent
     {
         public uint TargetId { get; init; }
 
@@ -28,17 +28,17 @@ internal abstract record CombatEvent
         public ActionEffectEvent[] Effects { get; init; } = Array.Empty<ActionEffectEvent>();
     }
 
-    public record Death : CombatEvent
+    public sealed record Death : CombatEvent
     {
         public uint SourceId { get; init; }
     }
 
-    public record DeferredEvent : CombatEvent
+    public sealed record DeferredEvent : CombatEvent
     {
         public ActionEffectEvent? EffectEvent { get; init; }
     }
 
-    public record StatusEffect : CombatEvent
+    public sealed record StatusEffect : CombatEvent
     {
         public ushort StatusId { get; init; }
 
@@ -75,9 +75,9 @@ internal abstract record CombatEvent
 
         public bool IsSourceTarget => (this.Flags2 & 0x80) != 0;
 
-        public bool IsCrit => (this.HitSeverity & 0x1) == 0x1;
+        public bool IsCrit => (this.HitSeverity & 0x20) != 0x00;
 
-        public bool IsDirectHit => (this.HitSeverity & 0x2) == 0x2;
+        public bool IsDirectHit => (this.HitSeverity & 0x40) != 0x00;
 
         public uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
 
@@ -108,19 +108,19 @@ internal abstract record CombatEvent
         public virtual DamageType DamageType => DamageType.Unknown;
     }
 
-    public record HoT : Heal
+    public sealed record HoT : Heal
     {
         public uint StatusId { get; init; }
     }
 
-    public record DoT : Damage
+    public sealed record DoT : Damage
     {
         public uint StatusId { get; init; }
 
         public override DamageType DamageType => (DamageType)(this.Param1 & 0xF);
     }
 
-    public record DamageTaken : Damage
+    public sealed record DamageTaken : Damage
     {
         public uint ActionId { get; set; }
 
@@ -137,7 +137,7 @@ internal abstract record CombatEvent
         public bool IsBlocked => this.EffectType == ActionEffectType.BlockedDamage;
     }
 
-    public record Healed : Heal
+    public sealed record Healed : Heal
     {
         public uint ActionId { get; set; }
 

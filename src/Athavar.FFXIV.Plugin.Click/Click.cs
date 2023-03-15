@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Click.Exceptions;
 /// <summary>
 ///     Main class for clicking by name.
 /// </summary>
-public class Click : IClick
+public sealed class Click : IClick
 {
     private readonly Dictionary<string, PrecompiledDelegate> availableClicks = new();
     private bool initialized;

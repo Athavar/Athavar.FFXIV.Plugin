@@ -12,7 +12,7 @@ using Dalamud;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
-internal class CraftQueueTab : Tab
+internal sealed class CraftQueueTab : Tab
 {
     private readonly TabBarHandler tabBarHandler = new("CraftQueueTabBar");
 

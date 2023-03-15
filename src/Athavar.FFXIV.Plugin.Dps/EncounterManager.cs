@@ -14,7 +14,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
-internal partial class EncounterManager : IDisposable
+internal sealed partial class EncounterManager : IDisposable
 {
     private readonly IDalamudServices services;
     private readonly ObjectTable? objectTable;

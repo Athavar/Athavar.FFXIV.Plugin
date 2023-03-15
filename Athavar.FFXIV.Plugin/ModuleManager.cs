@@ -19,7 +19,7 @@ using Module = Athavar.FFXIV.Plugin.Common.Module;
 /// <summary>
 ///     Manage instances of <see cref="Common.Module" />.
 /// </summary>
-internal class ModuleManager : IModuleManager, IDisposable
+internal sealed class ModuleManager : IModuleManager, IDisposable
 {
     private readonly Dictionary<string, ModuleDef> modules = new();
 

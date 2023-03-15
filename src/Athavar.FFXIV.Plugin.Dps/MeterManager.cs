@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Interface;
 using ImGuiNET;
 
-internal class MeterManager : IDisposable
+internal sealed class MeterManager : IDisposable
 {
     private const ImGuiWindowFlags MainWindowFlags =
         ImGuiWindowFlags.NoTitleBar |

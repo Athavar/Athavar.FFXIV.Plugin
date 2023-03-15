@@ -17,7 +17,7 @@ using Dalamud.Data;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.VisualBasic.CompilerServices;
 
-public record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiString Name, ushort[] IconIds)
+public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiString Name, ushort[] IconIds)
 {
     private static readonly Regex ActionRegex = new(@"^(/(?:ac|action)\s+)?(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

@@ -19,7 +19,7 @@ using NLua;
 /// <summary>
 ///     Represent a active running macro.
 /// </summary>
-internal partial class ActiveMacro : IDisposable
+internal sealed partial class ActiveMacro : IDisposable
 {
     private static MacroConfiguration? configuration;
     private static ICommandInterface? commandInterface;
@@ -282,7 +282,7 @@ internal partial class ActiveMacro : IDisposable
 /// <summary>
 ///     Lua code snippets.
 /// </summary>
-internal partial class ActiveMacro
+internal sealed partial class ActiveMacro
 {
     private const string EntrypointTemplate = @"
 yield = coroutine.yield
