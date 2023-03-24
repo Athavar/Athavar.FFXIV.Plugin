@@ -16,6 +16,7 @@ using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Network;
+using Dalamud.Interface;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 
@@ -126,6 +127,11 @@ internal sealed class DalamudServices : IDalamudServices
     [PluginService]
     [RequiredVersion("1.0")]
     public TargetManager TargetManager { get; init; } = null!;
+
+    /// <inheritdoc />
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public TitleScreenMenu TitleScreenMenu { get; init; } = null!;
 
     /*[PluginService]
     [RequiredVersion("1.0")]

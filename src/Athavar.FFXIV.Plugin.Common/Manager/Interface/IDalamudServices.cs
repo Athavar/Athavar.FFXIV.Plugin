@@ -15,6 +15,7 @@ using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Network;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 
 public interface IDalamudServices
@@ -48,4 +49,6 @@ public interface IDalamudServices
     SigScanner SigScanner { get; }
 
     TargetManager TargetManager { get; }
+
+    TitleScreenMenu TitleScreenMenu { get; }
 }

@@ -26,17 +26,25 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 
     private readonly SettingsTab settingsTab;
 
+    private readonly PluginLaunchButton launchButton;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="PluginWindow" /> class.
     /// </summary>
     /// <param name="localizeManager"><see cref="ILocalizeManager" /> added by DI.</param>
     /// <param name="manager"><see cref="IModuleManager" /> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration)
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration, IDalamudServices services)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
-        this.settingsTab = new SettingsTab(this.manager, localizeManager, configuration);
+        this.launchButton = new PluginLaunchButton(services, this.Toggle);
+        if (configuration.ShowLaunchButton)
+        {
+            this.launchButton.AddEntry();
+        }
+
+        this.settingsTab = new SettingsTab(this, this.manager, localizeManager, configuration);
         this.tabBarHandler.Add(this.settingsTab);
 
         this.Size = new Vector2(525, 600);
@@ -60,13 +68,9 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     }
 
     /// <inheritdoc />
-    public override void PostDraw()
-    {
-        ImGui.PopStyleColor();
+    public override void PostDraw() => ImGui.PopStyleColor();
 
-        // this.Position = ImGui.GetWindowPos();
-    }
-
+    // this.Position = ImGui.GetWindowPos();
     /// <inheritdoc />
     public override void Draw() => this.tabBarHandler.Draw();
 
@@ -100,13 +104,15 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 
     private class SettingsTab : Tab
     {
+        private readonly PluginWindow window;
         private readonly IModuleManager manager;
         private readonly ILocalizeManager localizeManager;
         private readonly string[] languages = Enum.GetNames<Language>();
         private readonly Configuration configuration;
 
-        public SettingsTab(IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
+        public SettingsTab(PluginWindow window, IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
         {
+            this.window = window;
             this.manager = manager;
             this.localizeManager = localizeManager;
             this.configuration = configuration;
@@ -130,6 +136,24 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
             {
                 config.ShowToolTips = value;
                 change = true;
+            }
+
+            value = config.ShowLaunchButton;
+            ImGui.TextUnformatted(this.localizeManager.Localize("Launch Button"));
+            ImGui.AlignTextToFramePadding();
+            ImGui.SameLine();
+            if (ImGui.Checkbox("##showLaunchButtonOnOff", ref value))
+            {
+                config.ShowLaunchButton = value;
+                change = true;
+                if (value)
+                {
+                    this.window.launchButton.AddEntry();
+                }
+                else
+                {
+                    this.window.launchButton.RemoveEntry();
+                }
             }
 
             /*
