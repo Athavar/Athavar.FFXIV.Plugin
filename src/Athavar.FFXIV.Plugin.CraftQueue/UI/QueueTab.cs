@@ -679,7 +679,7 @@ internal sealed class QueueTab : Tab
                 var job2 = this.craftQueue.Jobs[i];
                 var index = i;
                 var cancel = (Action)(() => remove = index);
-                DrawJobRow(job2, "queued-" + i, "Cancel queued Job", cancel);
+                DrawJobRow(job2, "queued-" + i, $"Cancel queued Job {i}", cancel);
             }
 
             ImGui.EndTable();
@@ -709,7 +709,7 @@ internal sealed class QueueTab : Tab
             {
                 var index = i;
                 var removeAction = (Action)(() => remove = index);
-                DrawJobRow(this.craftQueue.JobsCompleted[i], "history-" + i, "Remove History Entry", removeAction);
+                DrawJobRow(this.craftQueue.JobsCompleted[i], "history-" + i, $"Remove History Entry {i}", removeAction);
             }
 
             ImGui.EndTable();
@@ -754,14 +754,14 @@ internal sealed class QueueTab : Tab
             values[5] = timeSpan1.ToString("hh':'mm':'ss");
             values[6] = "~" + timeSpan2.ToString("mm':'ss");
             values[7] = (Action)(() =>
-                                    {
-                                        if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, tooltip, small: true))
-                                        {
-                                            return;
-                                        }
+            {
+                if (id == null || cancel == null || !ImGuiEx.IconButton(FontAwesomeIcon.Times, tooltip, small: true))
+                {
+                    return;
+                }
 
-                                        cancel();
-                                    });
+                cancel();
+            });
             ImGuiEx.TableRow(values);
 
             if (drawnJob.Status == JobStatus.Failure)
@@ -779,12 +779,12 @@ internal sealed class QueueTab : Tab
 
         var queueState = this.craftQueue.Paused;
         var stateName = queueState switch
-                        {
-                            QueueState.Paused => "Paused",
-                            QueueState.Running => "Running",
-                            QueueState.PausedSoon => "Pausing Soon",
-                            _ => throw new ArgumentOutOfRangeException(),
-                        };
+        {
+            QueueState.Paused => "Paused",
+            QueueState.Running => "Running",
+            QueueState.PausedSoon => "Pausing Soon",
+            _ => throw new ArgumentOutOfRangeException(),
+        };
 
         var buttonCol = ImGuiEx.GetStyleColorVec4(ImGuiCol.Button);
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonCol);

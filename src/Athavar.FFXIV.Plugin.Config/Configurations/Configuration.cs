@@ -44,6 +44,8 @@ public sealed class Configuration : IPluginConfiguration
 
     public bool ShowToolTips { get; set; } = true;
 
+    public bool ShowLaunchButton { get; set; } = false;
+
     public Language Language { get; set; } = Language.English;
 
     /// <summary>
@@ -111,16 +113,16 @@ public sealed class Configuration : IPluginConfiguration
 
     public BasicModuleConfig? GetBasicModuleConfig(Type type)
         => type switch
-           {
-               not null when type == typeof(AutoSpearConfiguration) => this.AutoSpear,
-               not null when type == typeof(CraftQueueConfiguration) => this.CraftQueue,
-               not null when type == typeof(DpsConfiguration) => this.Dps,
-               not null when type == typeof(InstancinatorConfiguration) => this.Instancinator,
-               not null when type == typeof(MacroConfiguration) => this.Macro,
-               not null when type == typeof(OpcodeWizardConfiguration) => this.OpcodeWizard,
-               not null when type == typeof(YesConfiguration) => this.Yes,
-               _ => null,
-           };
+        {
+            not null when type == typeof(AutoSpearConfiguration) => this.AutoSpear,
+            not null when type == typeof(CraftQueueConfiguration) => this.CraftQueue,
+            not null when type == typeof(DpsConfiguration) => this.Dps,
+            not null when type == typeof(InstancinatorConfiguration) => this.Instancinator,
+            not null when type == typeof(MacroConfiguration) => this.Macro,
+            not null when type == typeof(OpcodeWizardConfiguration) => this.OpcodeWizard,
+            not null when type == typeof(YesConfiguration) => this.Yes,
+            _ => null,
+        };
 
     private static void UpgradeConfiguration(string filePath)
     {
