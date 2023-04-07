@@ -31,16 +31,16 @@ public sealed class DefinitionManager : IDefinitionManager
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public DalamudStartInfo StartInfo { get; } = new();
 
-    /// <inheritdoc />
-    public Action? GetActionById(uint actionId) => this.actionEffectDefinitions.ContainsKey(actionId) ? this.actionEffectDefinitions[actionId] : null;
+    /// <inheritdoc/>
+    public Action? GetActionById(uint actionId) => this.actionEffectDefinitions.TryGetValue(actionId, out var data) ? data : null;
 
-    /// <inheritdoc />
-    public StatusEffect? GetStatusEffectById(uint statusId) => this.statusEffectDefinitions.ContainsKey(statusId) ? this.statusEffectDefinitions[statusId] : null;
+    /// <inheritdoc/>
+    public StatusEffect? GetStatusEffectById(uint statusId) => this.statusEffectDefinitions.TryGetValue(statusId, out var data) ? data : null;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public uint[] GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType procType) => this.statusEffectDefinitions.Where(x => x.Value.ReactiveProc?.Type == procType).Select(x => x.Key).ToArray();
 
     private static bool TryGetDalamudStartInfo(DalamudPluginInterface pluginInterface, [NotNullWhen(true)] out DalamudStartInfo? dalamudStartInfo)

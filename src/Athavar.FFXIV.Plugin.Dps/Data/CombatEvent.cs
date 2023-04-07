@@ -79,7 +79,19 @@ internal abstract record CombatEvent
 
         public bool IsDirectHit => (this.HitSeverity & 0x40) != 0x00;
 
-        public uint Amount => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
+        public uint Amount
+        {
+            get => (uint)(this.Value + ((this.Flags2 & 0x40) == 0x40 ? this.Multiplier << 16 : 0));
+            set
+            {
+                var overFlow = value > ushort.MaxValue ? (byte)1 : (byte)0;
+
+                this.Value = (ushort)(value & ushort.MaxValue);
+                this.Multiplier = (byte)(value >> 16);
+
+                this.Flags2 ^= (byte)((-overFlow ^ this.Flags2) & (1 << 6));
+            }
+        }
 
         public ActionEventModifier GetModifier()
         {
@@ -110,12 +122,12 @@ internal abstract record CombatEvent
 
     public sealed record HoT : Heal
     {
-        public uint StatusId { get; init; }
+        public uint StatusId { get; set; }
     }
 
     public sealed record DoT : Damage
     {
-        public uint StatusId { get; init; }
+        public uint StatusId { get; set; }
 
         public override DamageType DamageType => (DamageType)(this.Param1 & 0xF);
     }

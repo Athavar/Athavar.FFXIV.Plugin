@@ -4,7 +4,8 @@
 
 - `AutoSpear`: Catch fishes during spearfishing by name
 - `CraftQueue`: Tool to verify crafting rotations and queue crafts
-- `Dps`: Damage meter without the use of ACT. Note: Dot&Hot are not correctly assigned to players
+- `Dps`: Damage meter without the use of ACT. Note: Dot&Hot are assigned to players by potency of current target status
+  effects. Buffs and gear are not taken into account.
 - `Instancinator`: Open window for fast instance change on aetheryte
 - `Macro`: Save and run unlimited Text macros
 - `Yes`: Auto Yes or select for Dialog windows

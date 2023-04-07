@@ -74,6 +74,7 @@ internal sealed class TerritoryEncounter : BaseEncounter<CombatantCollected>
         }
 
         this.duration = duration;
+        this.CalcPostStats();
 
         //  PluginLog.LogInformation($"UpdateAllies: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
     }

@@ -19,6 +19,8 @@ using Lumina.Excel.GeneratedSheets;
 
 internal sealed class Utils
 {
+    private readonly Dictionary<uint, string> statusText = new();
+    private readonly Dictionary<uint, string> actionText = new();
     private readonly IDalamudServices dalamudServices;
     private readonly ExcelSheet<ClassJob> jobsSheet;
     private readonly ExcelSheet<Status> statusTable;
@@ -126,12 +128,27 @@ internal sealed class Utils
                 return defaultActionName;
             }
 
+            string? name;
             if (actionSummary.IsStatus)
             {
-                return this.statusTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+                if (this.statusText.TryGetValue(actionSummary.Id, out name))
+                {
+                    return name;
+                }
+
+                name = $"[S]{this.statusTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty}";
+                this.statusText.Add(actionSummary.Id, name);
+                return name;
             }
 
-            return this.actionTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+            if (this.actionText.TryGetValue(actionSummary.Id, out name))
+            {
+                return name;
+            }
+
+            name = this.actionTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+            this.actionText.Add(actionSummary.Id, name);
+            return name;
         }
 
         string Hits(double total, ulong part) => part == 0 ? "0" : $"{part} [{Pct(total, part)}]";
@@ -265,7 +282,6 @@ internal sealed class Utils
                     }
                 }
             }
-            
 
             ImGui.EndTable();
         }

@@ -41,7 +41,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
-        ImGui.TextUnformatted("Note: DoT&HoT are not correctly assigned to players");
+        ImGui.TextWrapped("Note: DoT&HoT are assigned to players by potency of current target status effects. Buffs and gear are not taken into account.");
         this.DrawCreateMenu(size, padX);
         this.DrawMeterTable(size.AddY(-padY), padX);
     }
