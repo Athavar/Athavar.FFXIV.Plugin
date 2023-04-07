@@ -159,6 +159,11 @@ internal sealed partial class EncounterManager
                             foreach (var (status, combatant) in affectedStatusList)
                             {
                                 var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
+                                if (calc == 0)
+                                {
+                                    continue;
+                                }
+
                                 dotEvent.Amount = calc;
                                 dotEvent.StatusId = status.Id;
                                 combatant?.AddActionDone(@event.Timestamp, dotEvent);
@@ -199,6 +204,11 @@ internal sealed partial class EncounterManager
                             foreach (var (status, combatant) in affectedStatusList)
                             {
                                 var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
+                                if (calc == 0)
+                                {
+                                    continue;
+                                }
+
                                 hotEvent.Amount = calc;
                                 hotEvent.StatusId = status.Id;
                                 combatant?.AddActionDone(@event.Timestamp, hotEvent);
