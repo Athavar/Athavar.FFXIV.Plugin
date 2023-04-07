@@ -193,6 +193,11 @@ internal sealed class QueueTab : Tab
                 this.FilterRecipes(this.recipeSearch);
             }
 
+            if (!ImGui.IsAnyItemFocused() && !ImGui.IsAnyItemActive() && !ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+            {
+                ImGui.SetKeyboardFocusHere(-1);
+            }
+
             if (ImGui.BeginChild("##recipe-list-child", new Vector2(0.0f, 250f) * ImGuiHelpers.GlobalScale, false, ImGuiWindowFlags.NoScrollbar) && ImGui.BeginTable("##cq-recipe-list-table", 4, ImGuiTableFlags.ScrollY))
             {
                 ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
@@ -338,20 +343,8 @@ internal sealed class QueueTab : Tab
     private void DisplayRotationSelect()
     {
         var previewValue = this.selectedRotation?.Name ?? "Select a rotation";
-        ImGui.SetNextItemWidth(-1f);
         if (ImGui.BeginCombo("##cq-rotation-picker", previewValue))
         {
-            if (ImGui.Button("Optimize##cq-rotation-picker-find"))
-            {
-                this.RotationSolver();
-                ImGui.CloseCurrentPopup();
-            }
-
-            ImGui.SameLine();
-            if (ImGui.Checkbox($"{this.addonsSheet.GetRow(217)!.Text}?##cq-rotation-picker-hq", ref this.rotationHq))
-            {
-            }
-
             ImGuiEx.TextTooltip("Try to find rotation with the best HQ percentage");
 
             for (var index = 0; index < this.rotations?.Length; ++index)
@@ -366,6 +359,18 @@ internal sealed class QueueTab : Tab
             }
 
             ImGui.EndCombo();
+        }
+
+        ImGui.SameLine();
+        if (ImGui.Button("Optimize##cq-rotation-picker-find"))
+        {
+            this.RotationSolver();
+            ImGui.CloseCurrentPopup();
+        }
+
+        ImGui.SameLine();
+        if (ImGui.Checkbox($"{this.addonsSheet.GetRow(217)!.Text}?##cq-rotation-picker-hq", ref this.rotationHq))
+        {
         }
     }
 
