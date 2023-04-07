@@ -36,7 +36,7 @@ internal abstract class QualityAction : GeneralAction
         if (simulation.HasBuff(Buffs.GREAT_STRIDES))
         {
             buffMult += 1;
-            simulation.HasBuff(Buffs.GREAT_STRIDES);
+            simulation.RemoveBuff(Buffs.GREAT_STRIDES);
         }
 
         if (simulation.HasBuff(Buffs.INNOVATION))
