@@ -12,31 +12,31 @@ internal sealed class HeartAndSoul : BuffAction
 {
     private static readonly uint[] IdsValue = { 100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426 };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Other;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 86;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDuration(Simulation simulation) => int.MaxValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Buffs GetBuff() => Buffs.HEART_AND_SOUL;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetInitialStacks() => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -48,10 +48,10 @@ internal sealed class HeartAndSoul : BuffAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override OnTick? GetOnTick() => this.OnTick;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 
     protected override bool BaseCanBeUsed(Simulation simulation)
@@ -66,7 +66,7 @@ internal sealed class HeartAndSoul : BuffAction
 
     private new void OnTick(Simulation simulation, CraftingAction action)
     {
-        var usedOnNonGoodOrExcellent = simulation.State is not StepState.GOOD or StepState.EXCELLENT;
+        var usedOnNonGoodOrExcellent = simulation.State is not (StepState.GOOD or StepState.EXCELLENT);
 
         // If linear, this buff will be removed if last action is one of the buffed ones.
         if (usedOnNonGoodOrExcellent && action is PreciseTouch or IntensiveSynthesis or TricksOfTheTrade)

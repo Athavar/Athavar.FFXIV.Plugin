@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game;
@@ -72,7 +71,7 @@ internal sealed class CraftQueue : IDisposable
             return false;
         }
 
-        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, new CrafterStats(Constants.MaxLevel, gs.Control, gs.Craftsmanship, gs.CP, gs.HasSoulStone), count, food, potion, hqIngredients));
+        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gs.ToCrafterStats(), count, food, potion, hqIngredients));
         return true;
     }
 

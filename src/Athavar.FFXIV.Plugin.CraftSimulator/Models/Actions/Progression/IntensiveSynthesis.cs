@@ -8,19 +8,19 @@ internal sealed class IntensiveSynthesis : ProgressAction
 {
     private static readonly uint[] IdsValue = { 100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322 };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 78;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 6;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -32,7 +32,7 @@ internal sealed class IntensiveSynthesis : ProgressAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
@@ -45,15 +45,15 @@ internal sealed class IntensiveSynthesis : ProgressAction
             return false;
         }
 
-        return simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT;
+        return simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is (StepState.GOOD or StepState.EXCELLENT);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 400;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
 }

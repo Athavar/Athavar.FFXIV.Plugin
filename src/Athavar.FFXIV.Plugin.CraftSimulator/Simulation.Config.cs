@@ -14,7 +14,7 @@ public sealed partial class Simulation
     public Recipe Recipe { get; }
 
     /// <summary>
-    ///     Gets or sets the current crafting stats for the recipe to craft.
+    ///     Gets or sets the original crafting stats for the recipe to craft.
     /// </summary>
     public CrafterStats CrafterStats { get; set; }
 

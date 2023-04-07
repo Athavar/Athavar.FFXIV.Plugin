@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 public static class GearsetExtensions
 {
-    public static CrafterStats ToCrafterStats(this Gearset gearset) => new(gearset.JobLevel, gearset.Control, gearset.Craftsmanship, gearset.CP, gearset.HasSoulStone);
+    public static CrafterStats ToCrafterStats(this Gearset gearset) => new(gearset.JobLevel, gearset.Control, gearset.Craftsmanship, gearset.CP, gearset.HasSoulStone, gearset.HasSplendorousTools());
 
     public static CraftingClass? GetCraftingJob(this Gearset gearset)
     {
@@ -20,4 +20,17 @@ public static class GearsetExtensions
 
         return null;
     }
+
+    public static bool HasSplendorousTools(this Gearset gearset)
+        => gearset.MainHandItemId is 38737 or // crystalline saw
+                                     38738 or // crystalline cross-pein hammer
+                                     38739 or // crystalline raising hammer
+                                     38740 or // crystalline mallet
+                                     38741 or // crystalline round knife
+                                     38742 or // crystalline needle
+                                     38743 or // crystalline alembic
+                                     38744 or // crystalline frypan
+                                     38745 or // crystalline pickaxe
+                                     38746 or // crystalline hatchet
+                                     38747;   // crystalline fishing rod
 }
