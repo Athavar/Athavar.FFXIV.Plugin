@@ -46,12 +46,12 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public IEnumerable<Gearset> AllGearsets => this.Gearsets;
 
     private List<Gearset> Gearsets { get; } = new();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         var clientState = this.dalamudServices.ClientState;
@@ -61,7 +61,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
     public unsafe void EquipGearset(int gearsetId) => RaptureGearsetModule.Instance()->EquipGearset(gearsetId);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe void UpdateGearsets()
     {
         this.Gearsets.Clear();
@@ -101,7 +101,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RightLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
-            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, (&gearsetEntryPtr->SoulStone)->ItemID != 0));
+            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID));
         }
     }
 
@@ -121,7 +121,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
         var player = this.dalamudServices.ClientState.LocalPlayer;
 
-        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0);
+        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0);
     }
 
     private unsafe InventoryItem[]? CurrentEquipment()

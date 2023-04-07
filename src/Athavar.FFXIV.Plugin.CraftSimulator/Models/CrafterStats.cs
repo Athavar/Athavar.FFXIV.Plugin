@@ -13,15 +13,17 @@ public sealed class CrafterStats
         this.Craftsmanship = clone.Craftsmanship;
         this.CP = clone.CP;
         this.Specialist = clone.Specialist;
+        this.Splendorous = clone.Splendorous;
     }
 
-    public CrafterStats(int level, uint control, uint craftsmanship, uint cp, bool specialist)
+    public CrafterStats(int level, uint control, uint craftsmanship, uint cp, bool specialist, bool splendorous)
     {
         this.Level = level;
         this.Control = control;
         this.Craftsmanship = craftsmanship;
         this.CP = cp;
         this.Specialist = specialist;
+        this.Splendorous = splendorous;
     }
 
     public int Level { get; set; }
@@ -33,6 +35,8 @@ public sealed class CrafterStats
     public uint Control { get; set; }
 
     public bool Specialist { get; set; }
+
+    public bool Splendorous { get; set; }
 
     public void Apply(params StatModifiers?[] modifiers)
     {

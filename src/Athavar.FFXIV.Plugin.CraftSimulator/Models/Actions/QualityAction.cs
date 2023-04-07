@@ -26,7 +26,7 @@ internal abstract class QualityAction : GeneralAction
                 conditionMod *= 0.5;
                 break;
             case StepState.GOOD:
-                conditionMod *= 1.5;
+                conditionMod *= simulation.CurrentStats.Splendorous ? 1.75 : 1.5;
                 break;
         }
 

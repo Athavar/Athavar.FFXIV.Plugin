@@ -12,7 +12,7 @@ public sealed class Gearset
     private readonly uint[] stats;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Gearset" /> class.
+    ///     Initializes a new instance of the <see cref="Gearset"/> class.
     /// </summary>
     /// <param name="name">THe name of the gearset.</param>
     /// <param name="id">The id of the gearset.</param>
@@ -20,7 +20,8 @@ public sealed class Gearset
     /// <param name="level">The jobClass level.</param>
     /// <param name="stats">The stats.</param>
     /// <param name="hasSoulStone">The soulstone check.</param>
-    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone)
+    /// <param name="mainHandItemId">The main hand item id.</param>
+    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone, uint mainHandItemId)
     {
         this.Name = name;
         this.Id = id;
@@ -28,6 +29,7 @@ public sealed class Gearset
         this.JobLevel = level;
         this.stats = stats;
         this.HasSoulStone = hasSoulStone;
+        this.MainHandItemId = mainHandItemId;
     }
 
     /// <summary>
@@ -54,6 +56,8 @@ public sealed class Gearset
     ///     Gets a value indicating whether the gearset has a soulstone.
     /// </summary>
     public bool HasSoulStone { get; }
+
+    public uint MainHandItemId { get; }
 
 #pragma warning disable SA1516
 #pragma warning disable SA1600
