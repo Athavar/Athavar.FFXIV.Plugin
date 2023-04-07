@@ -17,8 +17,9 @@ using Action = Lumina.Excel.GeneratedSheets.Action;
 internal sealed partial class EncounterManager : IDisposable
 {
     private readonly IDalamudServices services;
-    private readonly ObjectTable? objectTable;
+    private readonly ObjectTable objectTable;
     private readonly NetworkHandler networkHandler;
+    private readonly IDefinitionManager definitions;
     private readonly ICommandInterface ci;
     private readonly Utils utils;
     private readonly DpsConfiguration configuration;
@@ -38,6 +39,7 @@ internal sealed partial class EncounterManager : IDisposable
     {
         this.services = services;
         this.networkHandler = networkHandler;
+        this.definitions = definitions;
         this.utils = utils;
         this.ci = ci;
         this.configuration = configuration.Dps!;

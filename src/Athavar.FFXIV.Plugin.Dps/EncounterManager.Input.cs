@@ -142,20 +142,82 @@ internal sealed partial class EncounterManager
             }
             case CombatEvent.DoT dotEvent:
             {
-                source.AddActionDone(@event.Timestamp, dotEvent);
-                target?.AddActionTaken(@event.Timestamp, dotEvent);
-                this.UpdateLastEvent(encounter, @event.Timestamp);
+                var handled = false;
+                if (dotEvent.StatusId == 0)
+                {
+                    // event is not assigned to a specific source
+                    var targetObject = this.objectTable?.SearchById(dotEvent.TargetId);
+                    if (targetObject is BattleChara battleChara)
+                    {
+                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc is not null).ToList();
+                        if (affectedStatusList.Any())
+                        {
+                            // only calculate amount based on potency. Buffs are not calculated in.
+                            handled = true;
+                            var combinedPotency = affectedStatusList.Sum(s => s.Status!.TimeProc!.Potency);
+                            var totalAmount = dotEvent.Amount;
+                            foreach (var (status, combatant) in affectedStatusList)
+                            {
+                                var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
+                                dotEvent.Amount = calc;
+                                dotEvent.StatusId = status.Id;
+                                combatant?.AddActionDone(@event.Timestamp, dotEvent);
+                                target?.AddActionTaken(@event.Timestamp, dotEvent);
+                                this.Log.Add($"{@event.Timestamp:O}|DoT|{combatant?.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount} of {totalAmount}");
+                            }
+                        }
+                    }
+                }
 
-                this.Log.Add($"{@event.Timestamp:O}|DoT|{source.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
+                if (!handled)
+                {
+                    // fallback, that data is not dropped.
+                    source.AddActionDone(@event.Timestamp, dotEvent);
+                    target?.AddActionTaken(@event.Timestamp, dotEvent);
+                    this.Log.Add($"{@event.Timestamp:O}|DoT|{source?.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
+                }
+
+                this.UpdateLastEvent(encounter, @event.Timestamp);
                 break;
             }
             case CombatEvent.HoT hotEvent:
             {
-                source.AddActionDone(@event.Timestamp, hotEvent);
-                target?.AddActionTaken(@event.Timestamp, hotEvent);
-                this.UpdateLastEvent(encounter, @event.Timestamp);
+                var handled = false;
+                if (hotEvent.StatusId == 0)
+                {
+                    // event is not assigned to a specific source
+                    var targetObject = this.objectTable?.SearchById(hotEvent.TargetId);
+                    if (targetObject is BattleChara battleChara)
+                    {
+                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc is not null).ToList();
+                        if (affectedStatusList.Any())
+                        {
+                            // only calculate amount based on potency. Buffs are not calculated in.
+                            handled = true;
+                            var combinedPotency = affectedStatusList.Sum(s => s.Status!.TimeProc!.Potency);
+                            var totalAmount = hotEvent.Amount;
+                            foreach (var (status, combatant) in affectedStatusList)
+                            {
+                                var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
+                                hotEvent.Amount = calc;
+                                hotEvent.StatusId = status.Id;
+                                combatant?.AddActionDone(@event.Timestamp, hotEvent);
+                                target?.AddActionTaken(@event.Timestamp, hotEvent);
+                                this.Log.Add($"{@event.Timestamp:O}|HoT|{combatant?.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount} of {totalAmount}");
+                            }
+                        }
+                    }
+                }
 
-                this.Log.Add($"{@event.Timestamp:O}|HoT|{source.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount}");
+                if (!handled)
+                {
+                    // fallback, that data is not dropped.
+                    source.AddActionDone(@event.Timestamp, hotEvent);
+                    target?.AddActionTaken(@event.Timestamp, hotEvent);
+                    this.Log.Add($"{@event.Timestamp:O}|HoT|{source.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount}");
+                }
+
+                this.UpdateLastEvent(encounter, @event.Timestamp);
                 break;
             }
             case CombatEvent.Healed healEvent:

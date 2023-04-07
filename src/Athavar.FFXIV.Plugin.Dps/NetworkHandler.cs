@@ -90,10 +90,10 @@ internal sealed partial class NetworkHandler : IDisposable
         }
 
         dataPtr -= headerSize;
-        /*if (this.debug)
+        if (this.Debug)
         {
             this.DumpServerMessage(dataPtr, opCode, targetActorId);
-        }*/
+        }
 
         // server->client
         switch (opcodeType)
