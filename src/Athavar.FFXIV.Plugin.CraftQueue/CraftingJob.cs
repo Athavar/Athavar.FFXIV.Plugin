@@ -306,9 +306,9 @@ internal sealed class CraftingJob
         }
 
         // say yes to extract
-        if (ci.IsAddonVisible("SelectYesno"))
+        if (ci.IsAddonVisible("MaterializeDialog"))
         {
-            this.queue.Click.TrySendClick("select_yes");
+            this.queue.Click.TrySendClick("materialize");
             return -100;
         }
 
