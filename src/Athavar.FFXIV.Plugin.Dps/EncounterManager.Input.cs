@@ -158,7 +158,8 @@ internal sealed partial class EncounterManager
                             var totalAmount = dotEvent.Amount;
                             foreach (var (status, combatant) in affectedStatusList)
                             {
-                                var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
+                                var multi = (double)status!.TimeProc!.Potency / combinedPotency;
+                                var calc = (uint)(totalAmount * multi);
                                 if (calc == 0)
                                 {
                                     continue;
@@ -200,20 +201,24 @@ internal sealed partial class EncounterManager
                             // only calculate amount based on potency. Buffs are not calculated in.
                             handled = true;
                             var combinedPotency = affectedStatusList.Sum(s => s.Status!.TimeProc!.Potency);
-                            var totalAmount = hotEvent.Amount;
+                            var totalHeal = hotEvent.Amount;
+                            var totalOverHeal = hotEvent.Overheal;
                             foreach (var (status, combatant) in affectedStatusList)
                             {
-                                var calc = (uint)(totalAmount * ((double)status!.TimeProc!.Potency / combinedPotency));
-                                if (calc == 0)
+                                var multi = (double)status!.TimeProc!.Potency / combinedPotency;
+                                var calcHeal = (uint)(totalHeal * multi);
+                                var calcOverHeal = (uint)(totalOverHeal * multi);
+                                if (calcHeal == 0)
                                 {
                                     continue;
                                 }
 
-                                hotEvent.Amount = calc;
+                                hotEvent.Amount = calcHeal;
+                                hotEvent.Overheal = calcOverHeal;
                                 hotEvent.StatusId = status.Id;
                                 combatant?.AddActionDone(@event.Timestamp, hotEvent);
                                 target?.AddActionTaken(@event.Timestamp, hotEvent);
-                                this.Log.Add($"{@event.Timestamp:O}|HoT|{combatant?.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount} of {totalAmount}");
+                                this.Log.Add($"{@event.Timestamp:O}|HoT|{combatant?.Name}|{target?.Name}|{this.utils.StatusString(hotEvent.StatusId)}|{hotEvent.Amount} of {totalHeal}");
                             }
                         }
                     }
