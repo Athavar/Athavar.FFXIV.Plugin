@@ -4,6 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps;
 
+using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Game.ClientState.Objects.Types;
@@ -149,7 +150,7 @@ internal sealed partial class EncounterManager
                     var targetObject = this.objectTable?.SearchById(dotEvent.TargetId);
                     if (targetObject is BattleChara battleChara)
                     {
-                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc is not null).ToList();
+                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.DoT).ToList();
                         if (affectedStatusList.Any())
                         {
                             // only calculate amount based on potency. Buffs are not calculated in.
@@ -195,7 +196,7 @@ internal sealed partial class EncounterManager
                     var targetObject = this.objectTable?.SearchById(hotEvent.TargetId);
                     if (targetObject is BattleChara battleChara)
                     {
-                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc is not null).ToList();
+                        var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.HoT).ToList();
                         if (affectedStatusList.Any())
                         {
                             // only calculate amount based on potency. Buffs are not calculated in.
