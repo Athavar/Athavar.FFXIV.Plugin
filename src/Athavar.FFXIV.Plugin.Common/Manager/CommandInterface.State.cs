@@ -9,7 +9,8 @@ using Lumina.Excel.GeneratedSheets;
 
 internal sealed partial class CommandInterface
 {
-    private static readonly uint[] GoldenSaucerIDs = { 144, 388, 389, 390, 391, 579, 792, 899, 941 };
+    private static readonly uint[] GoldenSaucerIds = { 144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098 };
+
     private readonly uint logOutId;
 
     /// <inheritdoc />
@@ -34,7 +35,7 @@ internal sealed partial class CommandInterface
     public bool IsPerforming() => this.dalamudServices.Condition[ConditionFlag.Performing];
 
     /// <inheritdoc />
-    public bool IsInGoldenSaucer() => GoldenSaucerIDs.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
+    public bool IsInGoldenSaucer() => GoldenSaucerIds.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
 
     /// <inheritdoc />
     public bool IsPvP() => this.dalamudServices.ClientState.IsPvP;
@@ -61,12 +62,12 @@ internal sealed partial class CommandInterface
     /// <inheritdoc />
     public bool HasStatusId(params uint[] statusIDs)
     {
-        var statusID = this.dalamudServices.ClientState.LocalPlayer!.StatusList
+        var statusId = this.dalamudServices.ClientState.LocalPlayer!.StatusList
            .Select(se => se.StatusId)
            .ToList().Intersect(statusIDs)
            .FirstOrDefault();
 
-        return statusID != default;
+        return statusId != default;
     }
 
     private bool IsLoggedIn() => this.dalamudServices.ClientState.IsLoggedIn;
