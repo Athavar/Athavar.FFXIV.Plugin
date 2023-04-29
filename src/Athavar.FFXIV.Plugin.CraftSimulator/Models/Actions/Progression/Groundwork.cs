@@ -30,7 +30,7 @@ internal sealed class Groundwork : ProgressAction
     protected override int GetPotency(Simulation simulation)
     {
         var basePotency = simulation.CurrentStats?.Level >= 86 ? 360 : 300;
-        if (simulation.Durability >= this.GetBaseDurabilityCost(simulation))
+        if (simulation.Durability >= this.GetDurabilityCost(simulation))
         {
             return basePotency;
         }
