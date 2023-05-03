@@ -59,6 +59,7 @@
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj" />
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj" />
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.OpcodeWizard\Athavar.FFXIV.Plugin.OpcodeWizard.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.SliceIsRight\Athavar.FFXIV.Plugin.SliceIsRight.csproj" />
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.Yes\Athavar.FFXIV.Plugin.Yes.csproj" />
   </ItemGroup>
 

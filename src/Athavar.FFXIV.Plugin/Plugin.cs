@@ -16,6 +16,7 @@ using Athavar.FFXIV.Plugin.Dps;
 using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
+using Athavar.FFXIV.Plugin.SliceIsRight;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
@@ -94,6 +95,7 @@ public sealed class Plugin : IDalamudPlugin
            .AddCraftQueueModule()
            .AddDps()
            .AddOpcodeWizard()
+           .AddSliceIsRightModule()
 #if DEBUG
 #endif
            .AddSingleton<AutoTranslateWindow>()

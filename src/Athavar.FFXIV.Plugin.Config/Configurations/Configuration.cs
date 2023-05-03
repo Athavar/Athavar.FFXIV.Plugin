@@ -25,7 +25,7 @@ public sealed class Configuration : IPluginConfiguration
     [JsonIgnore]
     private Timer? saveTimer;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int Version { get; set; } = 1;
 
     public YesConfiguration? Yes { get; set; }
@@ -45,6 +45,8 @@ public sealed class Configuration : IPluginConfiguration
     public bool ShowToolTips { get; set; } = true;
 
     public bool ShowLaunchButton { get; set; } = false;
+
+    public bool EnableSliceIsRight { get; set; } = false;
 
     public Language Language { get; set; } = Language.English;
 
@@ -136,9 +138,9 @@ public sealed class Configuration : IPluginConfiguration
     }
 
     /// <summary>
-    ///     Setup <see cref="DalamudPluginInterface" />.
+    ///     Setup <see cref="DalamudPluginInterface"/>.
     /// </summary>
-    /// <param name="interface">The <see cref="DalamudPluginInterface" />.</param>
+    /// <param name="interface">The <see cref="DalamudPluginInterface"/>.</param>
     private void Setup(DalamudPluginInterface @interface)
     {
         this.pi = @interface;
