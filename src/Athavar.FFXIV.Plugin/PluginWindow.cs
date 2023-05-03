@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using System;
 using System.Diagnostics;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common;
@@ -16,7 +15,7 @@ using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
 /// <summary>
-///     The main <see cref="Window" /> of the plugin.
+///     The main <see cref="Window"/> of the plugin.
 /// </summary>
 internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 {
@@ -29,12 +28,12 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     private readonly PluginLaunchButton launchButton;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="PluginWindow" /> class.
+    ///     Initializes a new instance of the <see cref="PluginWindow"/> class.
     /// </summary>
-    /// <param name="localizeManager"><see cref="ILocalizeManager" /> added by DI.</param>
-    /// <param name="manager"><see cref="IModuleManager" /> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration, IDalamudServices services)
+    /// <param name="localizeManager"><see cref="ILocalizeManager"/> added by DI.</param>
+    /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration, IDalamudServices services, IGearsetManager gearsetManager)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
@@ -44,7 +43,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
             this.launchButton.AddEntry();
         }
 
-        this.settingsTab = new SettingsTab(this, this.manager, localizeManager, configuration);
+        this.settingsTab = new SettingsTab(this, services, this.manager, localizeManager, configuration, gearsetManager);
         this.tabBarHandler.Add(this.settingsTab);
 
         this.Size = new Vector2(525, 600);
@@ -59,7 +58,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 #endif
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void PreDraw()
     {
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
@@ -67,17 +66,17 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
         ImGui.SetNextWindowSize(this.Size.GetValueOrDefault());
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void PostDraw() => ImGui.PopStyleColor();
 
     // this.Position = ImGui.GetWindowPos();
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw() => this.tabBarHandler.Draw();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void SelectTab(string tabIdentifier) => this.tabBarHandler.SelectTab(tabIdentifier);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => this.manager.StateChange -= this.OnModuleStateChange;
 
     private void OnModuleStateChange(Module module)
@@ -105,17 +104,21 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     private class SettingsTab : Tab
     {
         private readonly PluginWindow window;
+        private readonly IDalamudServices dalamudServices;
         private readonly IModuleManager manager;
         private readonly ILocalizeManager localizeManager;
         private readonly string[] languages = Enum.GetNames<Language>();
         private readonly Configuration configuration;
+        private readonly IGearsetManager gearsetManager;
 
-        public SettingsTab(PluginWindow window, IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration)
+        public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration, IGearsetManager gearsetManager)
         {
             this.window = window;
+            this.dalamudServices = dalamudServices;
             this.manager = manager;
             this.localizeManager = localizeManager;
             this.configuration = configuration;
+            this.gearsetManager = gearsetManager;
         }
 
         public override string Name => "Settings";
@@ -244,6 +247,11 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 
                 this.totalLoop++;
             }
+
+            var currentG = this.gearsetManager.GetCurrentEquipment();
+            ImGui.TextUnformatted("MainItem:" + currentG?.MainHandItemId);
+            ImGui.TextUnformatted("TerritoryType:" + this.dalamudServices.ClientState.TerritoryType);
+
 #endif
         }
 
