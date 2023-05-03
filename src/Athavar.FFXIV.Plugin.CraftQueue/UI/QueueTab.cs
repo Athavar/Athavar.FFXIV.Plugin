@@ -6,11 +6,11 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -90,17 +90,17 @@ internal sealed class QueueTab : Tab
         this.potionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "Queue";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "Tab-CQQueue";
 
     private CraftQueueConfiguration Configuration { get; }
 
     private ClientLanguage ClientLanguage { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         if (!this.init)
@@ -139,7 +139,7 @@ internal sealed class QueueTab : Tab
         ImGui.Columns(1);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void OnNotDraw()
     {
         if (this.rotations is not null)
@@ -220,7 +220,7 @@ internal sealed class QueueTab : Tab
                         if (ImGui.Selectable($"##recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             this.recipeIdx = num;
-                            this.selectedRecipe = new CraftSimulator.Models.Recipe(this.craftQueueData.Recipes[this.recipeIdx].Recipe, this.itemsSheet);
+                            this.selectedRecipe = this.craftQueueData.Recipes[this.recipeIdx].Recipe.ToCraftSimulatorRecipe(this.itemsSheet);
                             this.hqIngredients = this.selectedRecipe.Ingredients.Where(i => i.CanBeHq).Select(i => (ItemId: i.Id, Amount: (byte)0)).ToArray();
                             this.craftCount = 1;
                             this.UpdateCurrentIngredients();
@@ -365,7 +365,6 @@ internal sealed class QueueTab : Tab
         if (ImGui.Button("Optimize##cq-rotation-picker-find"))
         {
             this.RotationSolver();
-            ImGui.CloseCurrentPopup();
         }
 
         ImGui.SameLine();
@@ -748,7 +747,7 @@ internal sealed class QueueTab : Tab
             ImGui.TableNextRow();
             var timeSpan1 = drawnJob.Duration;
             var timeSpan2 = drawnJob.LoopDuration;
-            var str1 = drawnJob.Recipe.GameRecipe.ItemResult.Value?.Name.RawString ?? "???";
+            var str1 = drawnJob.Recipe.ResultItemName ?? "???";
             var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
             var values = new object[columnCount];
             values[0] = str1;
@@ -847,7 +846,7 @@ internal sealed class QueueTab : Tab
             return;
         }
 
-        var job = this.selectedRecipe.GameRecipe.GetJobType();
+        var job = this.selectedRecipe.Class.GetJob();
 
         var gs = this.gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == job);
         if (gs == null)

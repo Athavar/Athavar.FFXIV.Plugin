@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game;
@@ -60,7 +61,7 @@ internal sealed class CraftQueue : IDisposable
         var food = foodId is not null ? this.Data.Foods.SingleOrDefault(r => r.Item.RowId == foodId) : null;
         var potion = potionId is not null ? this.Data.Potions.SingleOrDefault(r => r.Item.RowId == potionId) : null;
 
-        return this.CreateJob(new Recipe(recipe.Recipe, this.DalamudServices.DataManager.GetExcelSheet<Item>()!), rotationNode, count, food, potion, hqIngredients);
+        return this.CreateJob(recipe.Recipe.ToCraftSimulatorRecipe(this.DalamudServices.DataManager.GetExcelSheet<Item>()!), rotationNode, count, food, potion, hqIngredients);
     }
 
     public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
@@ -75,7 +76,7 @@ internal sealed class CraftQueue : IDisposable
         return true;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => this.DalamudServices.Framework.Update -= this.FrameworkOnUpdate;
 
     internal void DequeueJob(int idx) => this.queuedJobs.RemoveAt(idx);

@@ -395,7 +395,7 @@ internal sealed class CraftingJob
     private int OpenRecipe()
     {
         var ci = this.queue.CommandInterface;
-        var recipeId = this.Recipe.GameRecipe.RowId;
+        var recipeId = this.Recipe.RecipeId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
         if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
