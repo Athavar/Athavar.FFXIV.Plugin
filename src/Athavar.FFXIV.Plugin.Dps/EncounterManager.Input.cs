@@ -173,13 +173,21 @@ internal sealed partial class EncounterManager
                                 this.Log.Add($"{@event.Timestamp:O}|DoT|{combatant?.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount} of {totalAmount}");
                             }
                         }
+
+                        // TODO: Fix dot assignment on not enemy players
                     }
                 }
 
                 if (!handled)
                 {
                     // fallback, that data is not dropped.
-                    source.AddActionDone(@event.Timestamp, dotEvent);
+
+                    if (target?.IsEnemy() != source?.IsEnemy())
+                    {
+                        //  no friendly fire
+                        source?.AddActionDone(@event.Timestamp, dotEvent);
+                    }
+
                     target?.AddActionTaken(@event.Timestamp, dotEvent);
                     this.Log.Add($"{@event.Timestamp:O}|DoT|{source?.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
                 }

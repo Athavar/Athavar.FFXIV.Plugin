@@ -35,6 +35,7 @@ internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
         ulong damageTotal = 0,
               damageTaken = 0,
               healingTotal = 0,
+              overhealTotal = 0,
               healingTaken = 0,
               hits = 0,
               crit = 0,
@@ -47,6 +48,7 @@ internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
             damageTotal += combatant.DamageTotal;
             damageTaken += combatant.DamageTaken;
             healingTotal += combatant.HealingTotal;
+            overhealTotal += combatant.OverHealTotal;
             healingTaken += combatant.HealingTaken;
 
             hits += combatant.Casts;
@@ -61,6 +63,7 @@ internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
         this.DamageTotal = damageTotal;
         this.DamageTaken = damageTaken;
         this.HealingTotal = healingTotal;
+        this.OverHealTotal = overhealTotal;
         this.HealingTaken = healingTaken;
 
         this.Casts = hits;

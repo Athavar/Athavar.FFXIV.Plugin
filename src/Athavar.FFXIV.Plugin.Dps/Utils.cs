@@ -190,7 +190,7 @@ internal sealed class Utils
             if (type == null)
             {
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide, 150f);
-                ImGui.TableSetupColumn("Casts", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
+                ImGui.TableSetupColumn("Hits/Swings", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
                 ImGui.TableSetupColumn("Damage", ImGuiTableColumnFlags.WidthStretch, 5 * 12.0f);
                 ImGui.TableSetupColumn("D. Hits", ImGuiTableColumnFlags.WidthStretch, 5 * 4.0f);
                 ImGui.TableSetupColumn("Heal", ImGuiTableColumnFlags.WidthStretch, 5 * 12.0f);
@@ -200,7 +200,7 @@ internal sealed class Utils
             {
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide, 100f);
                 ImGui.TableSetupColumn(type.Value.ToString(), ImGuiTableColumnFlags.NoHide, 10 * 12.0f);
-                ImGui.TableSetupColumn("Casts", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
+                ImGui.TableSetupColumn("Hits/Swings", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
                 ImGui.TableSetupColumn("Crits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
                 ImGui.TableSetupColumn(isHeal ? "OverH" : "DHits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
                 ImGui.TableSetupColumn(isHeal ? "OverHPct" : "CritDHits", ImGuiTableColumnFlags.WidthFixed, 15 * 4.0f);
