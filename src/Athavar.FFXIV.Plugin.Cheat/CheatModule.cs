@@ -18,33 +18,34 @@ internal sealed class CheatModule : Module, IDisposable
     private const string ModuleName = "CheatModule";
 
     private readonly IDalamudServices dalamudServices;
-    private readonly Dictionary<ICheat, bool> cheats;
+    private readonly Dictionary<Cheat, bool> cheats;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CheatModule" /> class.
+    ///     Initializes a new instance of the <see cref="CheatModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
+    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     public CheatModule(Configuration configuration, IDalamudServices dalamudServices, IServiceProvider provider)
         : base(configuration)
     {
         this.dalamudServices = dalamudServices;
 
-        this.cheats = typeof(ICheat).Assembly.GetTypes()
-           .Where(type => type.IsAssignableTo(typeof(ICheat)) && type is { IsGenericType: false, IsInterface: false })
-           .Select(t => (ICheat)ActivatorUtilities.CreateInstance(provider, t)).ToDictionary(cheat => cheat, _ => false);
+        this.cheats = typeof(Cheat).Assembly.GetTypes()
+           .Where(type => type.IsAssignableTo(typeof(Cheat)) && type is { IsGenericType: false, IsInterface: false, IsAbstract: false })
+           .Select(t => (Cheat)ActivatorUtilities.CreateInstance(provider, t)).ToDictionary(cheat => cheat, _ => false);
 
         this.dalamudServices.Framework.Update += this.FrameworkOnUpdate;
+        this.dalamudServices.ClientState.TerritoryChanged += this.OnTerritoryChange;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
         bool Get() => true;
@@ -56,9 +57,10 @@ internal sealed class CheatModule : Module, IDisposable
         return (Get, Set);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
+        this.dalamudServices.ClientState.TerritoryChanged -= this.OnTerritoryChange;
         this.dalamudServices.Framework.Update -= this.FrameworkOnUpdate;
 
         foreach (var cheat in this.cheats.Where(c => c.Value))
@@ -90,6 +92,14 @@ internal sealed class CheatModule : Module, IDisposable
                     this.cheats[cheat.Key] = true;
                 }
             }
+        }
+    }
+
+    private void OnTerritoryChange(object? sender, ushort e)
+    {
+        foreach (var cheat in this.cheats.Where(c => c.Value))
+        {
+            cheat.Key.OnTerritoryChange(sender, e);
         }
     }
 }

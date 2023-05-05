@@ -35,5 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Athavar.FFXIV.Plugin.Config\Athavar.FFXIV.Plugin.Config.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj" />
   </ItemGroup>
 </Project>

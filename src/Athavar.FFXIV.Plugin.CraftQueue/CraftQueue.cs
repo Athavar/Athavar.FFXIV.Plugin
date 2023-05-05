@@ -6,14 +6,11 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.CraftQueue.Extension;
-using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game;
 using Dalamud.Logging;
-using Lumina.Excel.GeneratedSheets;
-using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
 internal sealed class CraftQueue : IDisposable
 {
@@ -54,15 +51,6 @@ internal sealed class CraftQueue : IDisposable
     internal CraftingJob? CurrentJob { get; private set; }
 
     internal QueueState Paused { get; set; } = QueueState.Paused;
-
-    public bool CreateJob(uint recipeId, RotationNode rotationNode, uint count, uint? foodId, uint? potionId, (uint ItemId, byte Amount)[] hqIngredients)
-    {
-        var recipe = this.Data.Recipes.SingleOrDefault(r => r.Recipe.RowId == recipeId);
-        var food = foodId is not null ? this.Data.Foods.SingleOrDefault(r => r.Item.RowId == foodId) : null;
-        var potion = potionId is not null ? this.Data.Potions.SingleOrDefault(r => r.Item.RowId == potionId) : null;
-
-        return this.CreateJob(recipe.Recipe.ToCraftSimulatorRecipe(this.DalamudServices.DataManager.GetExcelSheet<Item>()!), rotationNode, count, food, potion, hqIngredients);
-    }
 
     public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
     {

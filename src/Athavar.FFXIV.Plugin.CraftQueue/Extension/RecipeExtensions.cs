@@ -27,7 +27,7 @@ internal static class RecipeExtensions
                 return null;
             }
 
-            return new Ingredient(item.RowId, item, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
+            return new Ingredient(item.RowId, item.Icon, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
         }).Where(i => i is not null).ToArray()!;
         var totalItemLevel = ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
         var totalContribution = (maxQuality * recipe.MaterialQualityFactor) / 100;

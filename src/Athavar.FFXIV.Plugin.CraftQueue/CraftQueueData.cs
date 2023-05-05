@@ -20,6 +20,8 @@ internal sealed class CraftQueueData
 
     public CraftQueueData(IDalamudServices dalamudServices)
     {
+        BuffInfo CreateBuffInfo(Item item, uint itemFoodId, StatModifiers stats, bool hq) => new(item.RowId, item.LevelItem.Row, item.Icon, item.Name.RawString, itemFoodId, stats, hq);
+
         var dataManager = dalamudServices.DataManager;
 
         // recipes
@@ -79,26 +81,26 @@ internal sealed class CraftQueueData
             {
                 if (itemAction.Data[0] == 48)
                 {
-                    this.foods.Add(new BuffInfo(item, itemFoodRowId, nq, false));
-                    this.foods.Add(new BuffInfo(item, itemFoodRowId, hq, true));
+                    this.foods.Add(CreateBuffInfo(item, itemFoodRowId, nq, false));
+                    this.foods.Add(CreateBuffInfo(item, itemFoodRowId, hq, true));
                 }
                 else
                 {
-                    this.potions.Add(new BuffInfo(item, itemFoodRowId, nq, false));
-                    this.potions.Add(new BuffInfo(item, itemFoodRowId, hq, true));
+                    this.potions.Add(CreateBuffInfo(item, itemFoodRowId, nq, false));
+                    this.potions.Add(CreateBuffInfo(item, itemFoodRowId, hq, true));
                 }
             }
         }
 
         int SortFunction(BuffInfo a, BuffInfo b)
         {
-            var compare = b.Item.LevelItem.Row.CompareTo(a.Item.LevelItem.Row);
+            var compare = b.ItemLevel.CompareTo(a.ItemLevel);
             if (compare != 0)
             {
                 return compare;
             }
 
-            compare = b.Item.RowId.CompareTo(a.Item.RowId);
+            compare = b.ItemId.CompareTo(a.ItemId);
             if (compare != 0)
             {
                 return compare;

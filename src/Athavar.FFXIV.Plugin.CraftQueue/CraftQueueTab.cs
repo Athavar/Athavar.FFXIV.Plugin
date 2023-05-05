@@ -29,12 +29,13 @@ internal sealed class CraftQueueTab : Tab
         var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
         var chatManager = serviceProvider.GetRequiredService<IChatManager>();
         var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
+        var craftSkillManager = serviceProvider.GetRequiredService<ICraftDataManager>();
         this.ClientLanguage = dalamudServices.ClientState.ClientLanguage;
 
         this.tabBarHandler
            .Add(new StatsTab(gearsetManager, dataManager))
-           .Add(new RotationTab(this.Configuration, chatManager, iconCacheManager, this.ClientLanguage))
-           .Add(new QueueTab(iconCacheManager, craftQueue, this.Configuration, this.ClientLanguage))
+           .Add(new RotationTab(this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
+           .Add(new QueueTab(iconCacheManager, craftSkillManager, craftQueue, this.Configuration, this.ClientLanguage))
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG
            .Add(new DebugTab(gearsetManager, commandInterface, craftQueue))
@@ -42,13 +43,13 @@ internal sealed class CraftQueueTab : Tab
             ;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "CraftQueue";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "cq-tab";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Title => $"{this.Name} > {this.tabBarHandler.GetTabTitle()}";
 
     private ClientLanguage ClientLanguage { get; }

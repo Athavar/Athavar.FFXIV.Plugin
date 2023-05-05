@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
@@ -27,7 +28,7 @@ internal class RequireCommand : MacroCommand
     private readonly int maxWait;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RequireCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RequireCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="statusName">Status name.</param>
@@ -64,12 +65,12 @@ internal class RequireCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValue = ExtractAndUnquote(match, "name");
+        var nameValue = match.ExtractAndUnquote("name");
 
         return new RequireCommand(text, nameValue, waitModifier, maxWaitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");

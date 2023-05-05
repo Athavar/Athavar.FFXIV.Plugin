@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -29,7 +30,7 @@ internal class CheckCommand : MacroCommand
     private readonly int maxWait;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CheckCommand" /> class.
+    ///     Initializes a new instance of the <see cref="CheckCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="category">Condition category.</param>
@@ -65,8 +66,8 @@ internal class CheckCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var categoryValue = ExtractAndUnquote(match, "category");
-        var conditionValue = ExtractAndUnquote(match, "condition");
+        var categoryValue = match.ExtractAndUnquote("category");
+        var conditionValue = match.ExtractAndUnquote("condition");
 
         if (!Enum.TryParse<ConditionCheck.Category>(categoryValue, true, out var parseCategory))
         {
@@ -76,7 +77,7 @@ internal class CheckCommand : MacroCommand
         return new CheckCommand(text, parseCategory, conditionValue, waitModifier, maxWaitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");

@@ -8,9 +8,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
-using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
@@ -361,8 +361,8 @@ internal sealed class CraftingJob
 
         if (this.food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
         {
-            var itemId = this.food.Item.RowId;
-            var count = ci.CountItem(this.food.Item.RowId, this.food.IsHq);
+            var itemId = this.food.ItemId;
+            var count = ci.CountItem(itemId, this.food.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing food in inventory.");
@@ -374,7 +374,7 @@ internal sealed class CraftingJob
 
         if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
         {
-            var itemId = this.potion.Item.RowId;
+            var itemId = this.potion.ItemId;
             var count = ci.CountItem(itemId, this.potion.IsHq);
             if (count == 0)
             {

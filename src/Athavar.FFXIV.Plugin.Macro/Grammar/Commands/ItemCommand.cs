@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -24,7 +25,7 @@ internal class ItemCommand : MacroCommand
     private readonly ItemQualityModifier itemQualityMod;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemCommand" /> class.
+    ///     Initializes a new instance of the <see cref="ItemCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="itemName">Item name.</param>
@@ -53,12 +54,12 @@ internal class ItemCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValue = ExtractAndUnquote(match, "name");
+        var nameValue = match.ExtractAndUnquote("name");
 
         return new ItemCommand(text, nameValue, waitModifier, itemQualityModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");

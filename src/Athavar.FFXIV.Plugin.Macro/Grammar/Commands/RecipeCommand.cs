@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -23,7 +24,7 @@ internal class RecipeCommand : MacroCommand
     private readonly string recipeName;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RecipeCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RecipeCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="recipeName">Recipe name.</param>
@@ -47,12 +48,12 @@ internal class RecipeCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValue = ExtractAndUnquote(match, "name");
+        var nameValue = match.ExtractAndUnquote("name");
 
         return new RecipeCommand(text, nameValue, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
