@@ -6,33 +6,22 @@ namespace Athavar.FFXIV.Plugin.Common;
 
 using Athavar.FFXIV.Plugin.Common.UI;
 
-public abstract class Module<T, C> : Module, IDisposable
+public abstract class Module<T, C> : Module<C>, IDisposable
     where T : Tab
     where C : BasicModuleConfig
 {
     private T? tab;
 
     protected Module(Configuration configuration, C moduleConfig)
-        : base(configuration)
-        => this.ModuleConfig = moduleConfig;
+        : base(configuration, moduleConfig)
+    {
+    }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override T Tab => this.tab ??= this.InitTab();
 
-    protected internal C ModuleConfig { get; }
-
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public virtual void Dispose() => this.tab?.Dispose();
-
-    /// <inheritdoc />
-    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
-    {
-        bool Get() => this.ModuleConfig.Enabled;
-
-        void Set(bool state) => this.ModuleConfig.Enabled = state;
-
-        return (Get, Set);
-    }
 
     protected abstract T InitTab();
 }

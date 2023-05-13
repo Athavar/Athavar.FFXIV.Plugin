@@ -24,7 +24,6 @@ internal sealed partial class EncounterManager
         if (!inValid && ce.IsValid())
         {
             ce.End = ce.LastEvent;
-            File.WriteAllText($"Z:\\home\\athavar\\.xlcore\\logs\\dps\\{ce.TitleStart}.log", string.Join('\n', this.Log));
         }
     }
 

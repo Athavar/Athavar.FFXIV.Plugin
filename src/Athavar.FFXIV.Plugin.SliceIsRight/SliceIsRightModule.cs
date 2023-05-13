@@ -9,8 +9,8 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using ImGuiNET;
 
-[Module(ModuleName)]
-public sealed class SliceIsRightModule : Module, IDisposable
+[Module(ModuleName, ModuleConfigurationType = typeof(SliceIsRightConfiguration))]
+public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDisposable
 {
     internal const string ModuleName = "SliceIsRight";
 
@@ -28,7 +28,7 @@ public sealed class SliceIsRightModule : Module, IDisposable
     private bool enableState;
 
     public SliceIsRightModule(Configuration configuration, IDalamudServices dalamudServices)
-        : base(configuration)
+        : base(configuration, configuration.SliceIsRight!)
     {
         this.dalamudServices = dalamudServices;
         if (this.GetEnableStateAction().Get())
@@ -41,29 +41,9 @@ public sealed class SliceIsRightModule : Module, IDisposable
 
     private bool IsInGoldSaucer { get; set; }
 
-    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
-    {
-        bool Get() => this.Configuration.EnableSliceIsRight;
+    public void Dispose() => this.OnDisabled();
 
-        void Set(bool state)
-        {
-            this.Configuration.EnableSliceIsRight = state;
-            if (state)
-            {
-                this.Enable();
-            }
-            else
-            {
-                this.Disable();
-            }
-        }
-
-        return (Get, Set);
-    }
-
-    public void Dispose() => this.Disable();
-
-    private void Enable()
+    protected override void OnEnabled()
     {
         if (this.enableState)
         {
@@ -79,7 +59,7 @@ public sealed class SliceIsRightModule : Module, IDisposable
         }
     }
 
-    private void Disable()
+    protected override void OnDisabled()
     {
         if (!this.enableState)
         {

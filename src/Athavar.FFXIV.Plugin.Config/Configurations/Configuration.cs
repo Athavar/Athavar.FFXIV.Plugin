@@ -42,11 +42,11 @@ public sealed class Configuration : IPluginConfiguration
 
     public DpsConfiguration? Dps { get; set; }
 
+    public SliceIsRightConfiguration? SliceIsRight { get; set; }
+
     public bool ShowToolTips { get; set; } = true;
 
     public bool ShowLaunchButton { get; set; } = false;
-
-    public bool EnableSliceIsRight { get; set; } = false;
 
     public Language Language { get; set; } = Language.English;
 
@@ -122,6 +122,7 @@ public sealed class Configuration : IPluginConfiguration
             not null when type == typeof(InstancinatorConfiguration) => this.Instancinator,
             not null when type == typeof(MacroConfiguration) => this.Macro,
             not null when type == typeof(OpcodeWizardConfiguration) => this.OpcodeWizard,
+            not null when type == typeof(SliceIsRightConfiguration) => this.SliceIsRight,
             not null when type == typeof(YesConfiguration) => this.Yes,
             _ => null,
         };
@@ -152,6 +153,7 @@ public sealed class Configuration : IPluginConfiguration
         this.CraftQueue ??= new CraftQueueConfiguration();
         this.OpcodeWizard ??= new OpcodeWizardConfiguration();
         this.Dps ??= new DpsConfiguration();
+        this.SliceIsRight ??= new SliceIsRightConfiguration();
 
         this.Yes.Setup(this);
         this.Macro.Setup(this);
@@ -160,5 +162,6 @@ public sealed class Configuration : IPluginConfiguration
         this.CraftQueue.Setup(this);
         this.OpcodeWizard.Setup(this);
         this.Dps.Setup(this);
+        this.SliceIsRight.Setup(this);
     }
 }

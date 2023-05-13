@@ -34,18 +34,10 @@ internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
     public override string Name => ModuleName;
 
     /// <inheritdoc />
-    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
-    {
-        bool Get() => this.Configuration.Dps!.Enabled;
+    protected override void OnEnabled() => this.networkHandler.Enable = true;
 
-        void Set(bool state)
-        {
-            this.Configuration.Dps!.Enabled = state;
-            this.networkHandler.Enable = state;
-        }
-
-        return (Get, Set);
-    }
+    /// <inheritdoc/>
+    protected override void OnDisabled() => this.networkHandler.Enable = false;
 
     public override void Dispose()
     {
