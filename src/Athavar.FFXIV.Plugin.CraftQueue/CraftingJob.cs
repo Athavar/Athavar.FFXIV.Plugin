@@ -12,6 +12,7 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
@@ -504,13 +505,16 @@ internal sealed class CraftingJob
 
         var c = this.queue.Configuration;
 
+        var action = this.Steps[this.RotationCurrentStep];
+
         // maxQuality check
         try
         {
-            if (c.QualitySkip && ci.HasMaxQuality())
+            if (c.QualitySkip && action.Skill.Action.ActionType is ActionType.Quality
+                              && ci.HasMaxQuality())
             {
                 ++this.RotationCurrentStep;
-                return 0;
+                return -1;
             }
         }
         catch (AthavarPluginException ex)
@@ -518,8 +522,6 @@ internal sealed class CraftingJob
             PluginLog.LogError(ex, "Error while try to check HasMaxQuality");
             return -100;
         }
-
-        var action = this.Steps[this.RotationCurrentStep];
 
         // Byregots fail save
         if (this.RotationCurrentStep + 1 < this.rotation.Length &&

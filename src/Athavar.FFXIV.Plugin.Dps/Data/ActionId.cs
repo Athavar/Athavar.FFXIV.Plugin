@@ -126,11 +126,11 @@ internal struct ActionId
 
     public uint Id => this.Raw & 0x00FFFFFFu;
 
-    public static bool operator==(ActionId l, ActionId r) => l.Raw == r.Raw;
-
-    public static bool operator!=(ActionId l, ActionId r) => l.Raw != r.Raw;
-
     public static implicit operator bool(ActionId x) => x.Raw != 0;
+
+    public static bool operator ==(ActionId l, ActionId r) => l.Raw == r.Raw;
+
+    public static bool operator !=(ActionId l, ActionId r) => l.Raw != r.Raw;
 
     public override bool Equals(object? obj) => obj is ActionId && this == (ActionId)obj;
 

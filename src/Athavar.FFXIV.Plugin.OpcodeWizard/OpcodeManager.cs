@@ -1,4 +1,9 @@
-﻿namespace Athavar.FFXIV.Plugin.OpcodeWizard;
+﻿// <copyright file="OpcodeManager.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -99,10 +104,12 @@ internal sealed class OpcodeManager : IOpcodeManager
         Machina.FFXIV.Headers.Opcodes.OpcodeManager machinaManager = new();
         machinaManager.SetRegion(GameRegion.Global);
         var codes = machinaManager.CurrentOpcodes;
+        /*
         // Add(Opcode.StatusEffectListBozja, codes["StatusEffectList2"]);
         // Add(Opcode.StatusEffectListPlayer, codes["StatusEffectList3"]);
         // Add(Opcode.StatusEffectListDouble, codes["BossStatusEffectList"]);
         // Add(Opcode.SpawnBoss, codes["NpcSpawn2"]);
+        */
     }
 
     private class UpdateConfig

@@ -1,5 +1,11 @@
-﻿namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
+﻿// <copyright file="ScannerRegistry.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// </copyright>
 
+namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
+
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
@@ -61,6 +67,9 @@ internal sealed class ScannerRegistry
         return false;
     }
 
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1005:Single line comments should begin with single space", Justification = "look")]
+    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "look")]
+    [SuppressMessage("StyleCop.CSharp.LayoutRules", "SA1515:Single-line comment should be preceded by blank line", Justification = "look")]
     private void DeclareScanners()
     {
         var inArray = (uint[] arr, uint item) => arr.Any(i => i == item);
@@ -236,8 +245,7 @@ internal sealed class ScannerRegistry
                 var z = (((float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 12) / 65536) * 2000) - 1000;
 
                 return inRange(new Vector3(x, y, z) - actorMoveCenter, new Vector3(15, 2, 15));
-            }
-        );
+            });
         //=================
         this.RegisterScanner(Opcode.PlayerSpawn, "Please wait for another player to spawn in your vicinity.",
             PacketSource.Server, (packet, parameters) =>
@@ -276,8 +284,7 @@ internal sealed class ScannerRegistry
                 var z = BitConverter.ToSingle(packet.Data, Offsets.IpcData + 16);
 
                 return inRange(new Vector3(x, y, z) - actorMoveCenter, new Vector3(15, 2, 15));
-            }
-        );
+            });
         //=================
         this.RegisterScanner(Opcode.HousingWardInfo, "Please view a housing ward from a city aetheryte/ferry.",
             PacketSource.Server,
@@ -350,9 +357,7 @@ internal sealed class ScannerRegistry
                            BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 8) == packet.SourceActor &&
                            BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 12) ==
                            BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 16) &&
-                           BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 0x1E) == 761
-        );
-        ;
+                           BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 0x1E) == 761);
         //=================
         this.RegisterScanner(Opcode.EventStart, "Please begin fishing and put your rod away immediately.",
             PacketSource.Server,
@@ -727,7 +732,7 @@ internal sealed class ScannerRegistry
 
                 var endTime = startTime + duration;
 
-                // Allow local time 
+                // Allow local time. 
                 var now = DateTimeOffset.Now.ToUnixTimeSeconds();
                 var allowableError = 60;
 

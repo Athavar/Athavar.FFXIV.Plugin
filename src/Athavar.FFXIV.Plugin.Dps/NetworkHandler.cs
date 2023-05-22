@@ -28,7 +28,7 @@ internal sealed partial class NetworkHandler : IDisposable
     // this is a mega weird thing - apparently some IDs sent over network have some extra delta added to them (e.g. action ids, icon ids, etc.)
     // they change on relogs or zone changes or something...
     // we have one simple way of detecting them - by looking at casts, since they contain both offset id and real ('animation') id
-    private long _unkDelta;
+    private long unkDelta;
 
     public NetworkHandler(IDalamudServices dalamudServices, IOpcodeManager opcodeManager, Utils utils, IDefinitionManager definitionManager)
     {
@@ -40,15 +40,15 @@ internal sealed partial class NetworkHandler : IDisposable
         this.gameNetwork.NetworkMessage += this.HandleMessage;
     }
 
-    public event EventHandler<(ulong actorID, uint seq, int targetIndex)>? EventEffectResult;
+    public event EventHandler<(ulong ActorID, uint Seq, int TargetIndex)>? EventEffectResult;
 
-    public event EventHandler<(ulong actorID, ActionId action, float castTime, ulong targetID)>? EventActorCast;
+    public event EventHandler<(ulong ActorID, ActionId Action, float CastTime, ulong TargetID)>? EventActorCast;
 
-    public event EventHandler<(ulong actorID, uint actionID)>? EventActorControlCancelCast;
+    public event EventHandler<(ulong ActorID, uint ActionID)>? EventActorControlCancelCast;
 
-    public event EventHandler<(ulong actorID, uint iconID)>? EventActorControlTargetIcon;
+    public event EventHandler<(ulong ActorID, uint IconID)>? EventActorControlTargetIcon;
 
-    public event EventHandler<(ulong actorId, ulong targetID, uint tetherID)>? EventActorControlTether;
+    public event EventHandler<(ulong ActorId, ulong TargetID, uint TetherID)>? EventActorControlTether;
 
     public event EventHandler<CombatEvent>? CombatEvent;
 
@@ -155,7 +155,7 @@ internal sealed partial class NetworkHandler : IDisposable
         }
     }
 
-    private unsafe void HandleActionEffect1(Server_ActionEffect1* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 1, new Vector3());
+    private unsafe void HandleActionEffect1(Server_ActionEffect1* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 1, default);
 
     private unsafe void HandleActionEffect8(Server_ActionEffect8* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 8, IntToFloatCoords(p->effectflags1, p->effectflags2));
 
@@ -175,10 +175,10 @@ internal sealed partial class NetworkHandler : IDisposable
         if ((byte)header->effectDisplayType == (byte)ActionType.Spell)
         {
             var newDelta = (int)header->actionId - header->actionAnimationId;
-            if (this._unkDelta != newDelta)
+            if (this.unkDelta != newDelta)
             {
-                PluginLog.LogVerbose($"Updating network delta: {this._unkDelta} -> {newDelta}");
-                this._unkDelta = newDelta;
+                PluginLog.LogVerbose($"Updating network delta: {this.unkDelta} -> {newDelta}");
+                this.unkDelta = newDelta;
             }
         }
 
@@ -224,9 +224,11 @@ internal sealed partial class NetworkHandler : IDisposable
                             ActionId = actionId,
                             ActionType = actionType,
                         });
-                    }
                         break;
+                    }
+
                     case ActionEffectType.Heal:
+                    {
                         actionEffects.Add(new CombatEvent.Healed
                         {
                             HitSeverity = actionEffect.Param1,
@@ -242,6 +244,7 @@ internal sealed partial class NetworkHandler : IDisposable
                             ActionType = actionType,
                         });
                         break;
+                    }
                 }
             }
         }
@@ -307,7 +310,7 @@ internal sealed partial class NetworkHandler : IDisposable
         var action = new ActionId(p->ActionType, p->SpellId);
         if (this.Debug)
         {
-            this.Log($"[Network] - AID={action} ({new ActionId(ActionType.Spell, p->SpellId)}), target={this.utils.ObjectString(p->TargetID)}, time={p->CastTime:f2} ({p->BaseCastTime100ms * 0.1f:f1}), rot={IntToFloatAngle(p->Rotation)}, targetpos={this.utils.Vec3String(IntToFloatCoords(p->PosX, p->PosY, p->PosZ))}, interruptible={p->Interruptible}, u1={p->u1:X2}, u2={this.utils.ObjectString(p->u2_objID)}, u3={p->u3:X4}");
+            this.Log($"[Network] - AID={action} ({new ActionId(ActionType.Spell, p->SpellId)}), target={this.utils.ObjectString(p->TargetID)}, time={p->CastTime:f2} ({p->BaseCastTime100ms * 0.1f:f1}), rot={IntToFloatAngle(p->Rotation)}, targetpos={this.utils.Vec3String(IntToFloatCoords(p->PosX, p->PosY, p->PosZ))}, interruptible={p->Interruptible}, u1={p->U1:X2}, u2={this.utils.ObjectString(p->U2ObjID)}, u3={p->U3:X4}");
         }
 
         this.EventActorCast?.Invoke(this, (actorId, action, p->CastTime, p->TargetID));
@@ -370,7 +373,7 @@ internal sealed partial class NetworkHandler : IDisposable
                 });
                 break;
             case Server_ActorControlCategory.TargetIcon:
-                this.EventActorControlTargetIcon?.Invoke(this, (actorId, (uint)(p->param1 - this._unkDelta)));
+                this.EventActorControlTargetIcon?.Invoke(this, (actorId, (uint)(p->param1 - this.unkDelta)));
                 break;
             case Server_ActorControlCategory.Tether:
                 this.EventActorControlTether?.Invoke(this, (actorId, p->param3, p->param2));
@@ -417,7 +420,7 @@ internal sealed partial class NetworkHandler : IDisposable
     {
         if (this.Debug)
         {
-            //  this.Log($"[Network] Self - cat={p->category.AsText()}|{((ActorControlCategory)p->category).AsText()}, params={p->param1:X8} {p->param2:X8} {p->param3:X8} {p->param4:X8} {p->param5:X8} {p->param6:X8} {p->padding1:X8}, unk={p->padding:X4}");
+            // this.Log($"[Network] Self - cat={p->category.AsText()}|{((ActorControlCategory)p->category).AsText()}, params={p->param1:X8} {p->param2:X8} {p->param3:X8} {p->param4:X8} {p->param5:X8} {p->param6:X8} {p->padding1:X8}, unk={p->padding:X4}");
         }
 
         switch (p->category)

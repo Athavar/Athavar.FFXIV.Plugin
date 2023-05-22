@@ -32,7 +32,7 @@ internal class EnablePeepingTomPvP : Cheat
     }
 
     /// <inheritdoc/>
-    public override bool Enabled => this.dalamudServices.PluginInterface.PluginNames.Contains("Peeping Tom");
+    public override bool Enabled => this.dalamudServices.PluginInterface.InstalledPlugins.FirstOrDefault(ip => ip.Name == "Peeping Tom") is not null;
 
     /// <inheritdoc/>
     public override bool OnEnabled()

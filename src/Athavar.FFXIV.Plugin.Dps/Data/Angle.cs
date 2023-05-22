@@ -17,25 +17,25 @@ internal struct Angle
 
     public float Deg => this.Rad * RadToDeg;
 
-    public static Angle operator+(Angle a, Angle b) => new(a.Rad + b.Rad);
+    public static Angle operator +(Angle a, Angle b) => new(a.Rad + b.Rad);
 
-    public static Angle operator-(Angle a, Angle b) => new(a.Rad - b.Rad);
+    public static Angle operator -(Angle a, Angle b) => new(a.Rad - b.Rad);
 
-    public static Angle operator-(Angle a) => new(-a.Rad);
+    public static Angle operator -(Angle a) => new(-a.Rad);
 
-    public static Angle operator*(Angle a, float b) => new(a.Rad * b);
+    public static Angle operator *(Angle a, float b) => new(a.Rad * b);
 
-    public static Angle operator*(float a, Angle b) => new(a * b.Rad);
+    public static Angle operator *(float a, Angle b) => new(a * b.Rad);
 
-    public static Angle operator/(Angle a, float b) => new(a.Rad / b);
+    public static Angle operator /(Angle a, float b) => new(a.Rad / b);
+
+    public static bool operator ==(Angle l, Angle r) => Math.Abs(l.Rad - r.Rad) < 0.001;
+
+    public static bool operator !=(Angle l, Angle r) => Math.Abs(l.Rad - r.Rad) > 0.001;
 
     public static Angle Asin(float x) => new(MathF.Asin(x));
 
     public static Angle Acos(float x) => new(MathF.Acos(x));
-
-    public static bool operator==(Angle l, Angle r) => l.Rad == r.Rad;
-
-    public static bool operator!=(Angle l, Angle r) => l.Rad != r.Rad;
 
     public Angle Abs() => new(Math.Abs(this.Rad));
 

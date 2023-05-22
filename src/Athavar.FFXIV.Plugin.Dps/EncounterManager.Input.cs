@@ -1,4 +1,4 @@
-// <copyright file="Input.cs" company="Athavar">
+// <copyright file="EncounterManager.Input.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -47,6 +47,7 @@ internal sealed partial class EncounterManager
 
                 break;
             }
+
             case CombatEvent.DeferredEvent deferredEvent:
             {
                 var effect = deferredEvent.EffectEvent;
@@ -64,6 +65,7 @@ internal sealed partial class EncounterManager
                 this.HandleActionEffect(encounter, actor, deferredEvent, effect);
                 break;
             }
+
             case CombatEvent.StatusEffect statusEffect:
             {
                 var source = encounter.GetCombatant(statusEffect.SourceId);
@@ -80,6 +82,7 @@ internal sealed partial class EncounterManager
 
                 break;
             }
+
             case CombatEvent.Death deathEvent:
             {
                 var source = encounter.GetCombatant(deathEvent.SourceId);
@@ -141,6 +144,7 @@ internal sealed partial class EncounterManager
 
                 break;
             }
+
             case CombatEvent.DoT dotEvent:
             {
                 var handled = false;
@@ -181,10 +185,9 @@ internal sealed partial class EncounterManager
                 if (!handled)
                 {
                     // fallback, that data is not dropped.
-
                     if (target?.IsEnemy() != source?.IsEnemy())
                     {
-                        //  no friendly fire
+                        // no friendly fire
                         source?.AddActionDone(@event.Timestamp, dotEvent);
                     }
 
@@ -195,6 +198,7 @@ internal sealed partial class EncounterManager
                 this.UpdateLastEvent(encounter, @event.Timestamp);
                 break;
             }
+
             case CombatEvent.HoT hotEvent:
             {
                 var handled = false;
@@ -244,6 +248,7 @@ internal sealed partial class EncounterManager
                 this.UpdateLastEvent(encounter, @event.Timestamp);
                 break;
             }
+
             case CombatEvent.Healed healEvent:
             {
                 var isStatus = false;

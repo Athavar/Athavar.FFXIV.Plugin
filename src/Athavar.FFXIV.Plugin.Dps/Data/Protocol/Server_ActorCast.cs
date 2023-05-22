@@ -20,10 +20,10 @@ internal struct Server_ActorCast
     public uint TargetID;
     public ushort Rotation;
     public byte Interruptible;
-    public byte u1;
-    public uint u2_objID;
+    public byte U1;
+    public uint U2ObjID;
     public ushort PosX;
     public ushort PosY;
     public ushort PosZ;
-    public ushort u3;
+    public ushort U3;
 }

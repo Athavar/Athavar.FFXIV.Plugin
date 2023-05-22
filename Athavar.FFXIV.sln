@@ -50,6 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Athavar.FFXIV.Plugin.Opcode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Athavar.FFXIV.Plugin.SliceIsRight", "src\Athavar.FFXIV.Plugin.SliceIsRight\Athavar.FFXIV.Plugin.SliceIsRight.csproj", "{F18053B2-7344-4169-A26F-6AD669D42D61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{BFAC93A5-977C-468F-AF24-66633A38CDFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release|Any CPU = Release|Any CPU
@@ -112,6 +114,10 @@ Global
 		{F18053B2-7344-4169-A26F-6AD669D42D61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F18053B2-7344-4169-A26F-6AD669D42D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F18053B2-7344-4169-A26F-6AD669D42D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFAC93A5-977C-468F-AF24-66633A38CDFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFAC93A5-977C-468F-AF24-66633A38CDFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFAC93A5-977C-468F-AF24-66633A38CDFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFAC93A5-977C-468F-AF24-66633A38CDFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-// <copyright file="GeneralConfig.cs" company="Athavar">
+// <copyright file="GeneralConfigPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -78,7 +78,8 @@ internal sealed class GeneralConfigPage : IConfigPage
             {
                 change = true;
             }
-            // ImGuiEx.Checkbox("Preview", c.Preview, x => c.Preview = x);
+
+            /* ImGuiEx.Checkbox("Preview", c.Preview, x => c.Preview = x);*/
 
             ImGui.NewLine();
 

@@ -1,4 +1,9 @@
-﻿namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
+﻿// <copyright file="PacketScanner.cs" company="Athavar">
+// Copyright (c) Athavar. All rights reserved.
+// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using Dalamud.Logging;
@@ -56,7 +61,8 @@ internal static class PacketScanner
     ///     Pull packets from the queue and do basic parsing on them.
     /// </summary>
     private static IpcPacket ScanGeneric(Packet basePacket)
-        => new(basePacket.Connection,
+        => new(
+            basePacket.Connection,
             basePacket.Epoch,
             basePacket.Data,
             basePacket.Source,
@@ -64,6 +70,5 @@ internal static class PacketScanner
             BitConverter.ToUInt16(basePacket.Data, Offsets.SegmentType),
             BitConverter.ToUInt16(basePacket.Data, Offsets.IpcType),
             BitConverter.ToUInt32(basePacket.Data, Offsets.SourceActor),
-            BitConverter.ToUInt32(basePacket.Data, Offsets.TargetActor)
-        );
+            BitConverter.ToUInt32(basePacket.Data, Offsets.TargetActor));
 }

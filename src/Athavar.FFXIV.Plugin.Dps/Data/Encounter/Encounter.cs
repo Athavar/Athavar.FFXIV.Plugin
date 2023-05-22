@@ -39,7 +39,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
             this.Combatants.Add(c);
             this.TerritoryEncounter?.AddCombatant(c);
         }
-        
+
         if (this.combatantMapping.TryGetValue(objectId, out var combatant))
         {
             return combatant;
@@ -48,12 +48,12 @@ internal sealed class Encounter : BaseEncounter<Combatant>
         if (objectId == uint.MaxValue)
         {
             combatant = new Combatant(this, uint.MaxValue, 0)
-                        {
-                            Name = "Limit Break",
-                            Level = 9999,
-                            PartyType = PartyType.Party,
-                            Job = Job.LimitBreak,
-                        };
+            {
+                Name = "Limit Break",
+                Level = 9999,
+                PartyType = PartyType.Party,
+                Job = Job.LimitBreak,
+            };
             Add(combatant);
 
             goto end;
@@ -68,18 +68,18 @@ internal sealed class Encounter : BaseEncounter<Combatant>
 
             // create new battle player
             combatant = new Combatant(this, objectId, 0)
-                        {
-                            Name = name,
-                            Name_First = nameSplits[0],
-                            Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
-                            Job = (Job)playerCharacter.ClassJob.Id,
-                            Level = playerCharacter.Level,
-                            WorldId = playerCharacter.HomeWorld.Id,
-                            WorldName = playerCharacter.HomeWorld.GameData?.Name.ToDalamudString().ToString() ?? "<Unknown>",
-                            CurrentWorldId = playerCharacter.CurrentWorld.Id,
-                            PartyType = PartyType.None,
-                            Kind = BattleNpcSubKind.None,
-                        };
+            {
+                Name = name,
+                Name_First = nameSplits[0],
+                Name_Last = nameSplits.Length == 2 ? nameSplits[1] : string.Empty,
+                Job = (Job)playerCharacter.ClassJob.Id,
+                Level = playerCharacter.Level,
+                WorldId = playerCharacter.HomeWorld.Id,
+                WorldName = playerCharacter.HomeWorld.GameData?.Name.ToDalamudString().ToString() ?? "<Unknown>",
+                CurrentWorldId = playerCharacter.CurrentWorld.Id,
+                PartyType = PartyType.None,
+                Kind = BattleNpcSubKind.None,
+            };
         }
         else if (gameObject is BattleNpc battleNpc)
         {
@@ -109,18 +109,18 @@ internal sealed class Encounter : BaseEncounter<Combatant>
 
             // create new battle npc
             combatant = new Combatant(this, oid, battleNpc.DataId)
-                        {
-                            OwnerId = ownerId,
-                            Name = name,
-                            Name_First = name,
-                            Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
-                            Level = battleNpc.Level,
-                            WorldId = 0,
-                            WorldName = string.Empty,
-                            CurrentWorldId = 0,
-                            PartyType = PartyType.None,
-                            Kind = battleNpc.BattleNpcKind,
-                        };
+            {
+                OwnerId = ownerId,
+                Name = name,
+                Name_First = name,
+                Job = battleNpc.BattleNpcKind == BattleNpcSubKind.Chocobo ? Job.Chocobo : (Job)battleNpc.ClassJob.Id,
+                Level = battleNpc.Level,
+                WorldId = 0,
+                WorldName = string.Empty,
+                CurrentWorldId = 0,
+                PartyType = PartyType.None,
+                Kind = battleNpc.BattleNpcKind,
+            };
         }
         else
         {
@@ -160,7 +160,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
             combatant.PartyType = groupManager->IsObjectIDInParty(combatant.ObjectId) ? PartyType.Party : isInAlliance && groupManager->IsObjectIDInAlliance(combatant.ObjectId) ? PartyType.Alliance : PartyType.None;
         }
 
-        // match chocobo ownership with owner. 
+        // match chocobo ownership with owner.
         foreach (var chocobo in combatants.Where(c => c.Kind == BattleNpcSubKind.Chocobo))
         {
             chocobo.PartyType = combatants.Find(c => c.ObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;

@@ -26,77 +26,130 @@ using Dalamud.Plugin;
 internal sealed class DalamudServices : IDalamudServices
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="DalamudServices" /> class.
+    ///     Initializes a new instance of the <see cref="DalamudServices"/> class.
     /// </summary>
-    /// <param name="pluginInterface"><see cref="DalamudPluginInterface" /> used to inject the other values.</param>
+    /// <param name="pluginInterface"><see cref="DalamudPluginInterface"/> used to inject the other values.</param>
     public DalamudServices(DalamudPluginInterface pluginInterface) => pluginInterface.Inject(this);
 
-    /*[PluginService]
-    [RequiredVersion("1.0")]
-    public BuddyList Buddies { get; private set; } = null!;*/
-
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public DalamudPluginInterface PluginInterface { get; init; } = null!;
 
-    /// <inheritdoc />
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public BuddyList Buddies { get; private set; } = null!;
+    */
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public AetheryteList AetheryteList { get; init; } = null!;
+    */
+
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public ChatGui ChatGui { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public ChatHandlers ChatHandlers { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public ClientState ClientState { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public Condition Condition { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public CommandManager CommandManager { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public DataManager DataManager { get; init; } = null!;
 
-    /*[PluginService]
+    /*
+    /// <inheritdoc/>
+    [PluginService]
     [RequiredVersion("1.0")]
-    public FateTable FateTable { get; private set; } = null!;*/
+    public DutyState DutyState { get; init; } = null!;
+    */
 
-    /*[PluginService]
+    /*
+    /// <inheritdoc/>
+    [PluginService]
     [RequiredVersion("1.0")]
-    public FlyTextGui FlyTexts { get; private set; } = null!;*/
+    public DtrBar DtrBar { get; init; } = null!;
+    */
 
-    /// <inheritdoc />
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public FateTable FateTable { get; private set; } = null!;
+    */
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public FlyTextGui FlyTexts { get; private set; } = null!;
+    */
+
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public Framework Framework { get; init; } = null!;
 
-    /// <inheritdoc />
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public GameConfig GameConfig { get; init; } = null!;
+    */
+
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public GameGui GameGui { get; init; } = null!;
 
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public GameLifecycle GameLifecycle { get; init; } = null!;
+
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public GameNetwork GameNetwork { get; init; } = null!;
 
-    /*[PluginService]
+    /*
+    /// <inheritdoc/>
+    [PluginService]
     [RequiredVersion("1.0")]
-    public JobGauges Gauges { get; private set; } = null!;*/
+    public GamepadState GamepadState { get; init; } = null!;
+    */
 
-    /// <inheritdoc />
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public JobGauges Gauges { get; private set; } = null!;
+    */
+
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public KeyState KeyState { get; init; } = null!;
@@ -105,7 +158,7 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public LibcFunction LibC { get; private set; } = null!;*/
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public ObjectTable ObjectTable { get; init; } = null!;
@@ -118,17 +171,17 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public PartyList PartyList { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public SigScanner SigScanner { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public TargetManager TargetManager { get; init; } = null!;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public TitleScreenMenu TitleScreenMenu { get; init; } = null!;

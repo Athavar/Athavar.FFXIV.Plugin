@@ -13,8 +13,7 @@ using ImGuiNET;
 
 internal sealed class HistoryPage : IConfigPage
 {
-    private static readonly ImGuiTableFlags flags = ImGuiTableFlags.Sortable | ImGuiTableFlags.ScrollY |
-                                                    ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.NoBordersInBody;
+    private const ImGuiTableFlags Flags = ImGuiTableFlags.Sortable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.NoBordersInBody;
 
     private static readonly string[] ColumnNames = { "Name", "Duration", "Dps" };
 
@@ -48,7 +47,7 @@ internal sealed class HistoryPage : IConfigPage
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {
-        if (ImGui.BeginTable("Encounter", 6, flags))
+        if (ImGui.BeginTable("Encounter", 6, Flags))
         {
             ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide | ImGuiTableColumnFlags.NoSort, 150f);
             ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthStretch | ImGuiTableColumnFlags.NoSort, 10 * 12.0f);
@@ -87,13 +86,13 @@ internal sealed class HistoryPage : IConfigPage
     {
         double mod = this.sortDirection == ImGuiSortDirection.Descending ? -1 : 1;
         return this.sortColumn switch
-               {
-                   Columns.Dps => combatant => combatant.Dps * mod,
-                   Columns.Hps => combatant => combatant.Hps * mod,
-                   Columns.Kills => combatant => combatant.Kills * mod,
-                   Columns.Deaths => combatant => combatant.Deaths * mod,
-                   _ => _ => 0,
-               };
+        {
+            Columns.Dps => combatant => combatant.Dps * mod,
+            Columns.Hps => combatant => combatant.Hps * mod,
+            Columns.Kills => combatant => combatant.Kills * mod,
+            Columns.Deaths => combatant => combatant.Deaths * mod,
+            _ => _ => 0,
+        };
     }
 
     private void DrawEncounter(BaseEncounter? encounter)

@@ -33,18 +33,18 @@ internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
 
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
-    protected override void OnEnabled() => this.networkHandler.Enable = true;
-
-    /// <inheritdoc/>
-    protected override void OnDisabled() => this.networkHandler.Enable = false;
-
     public override void Dispose()
     {
         base.Dispose();
         this.meterManager?.Dispose();
         PluginLog.LogVerbose("Dispose Dps");
     }
+
+    /// <inheritdoc/>
+    protected override void OnEnabled() => this.networkHandler.Enable = true;
+
+    /// <inheritdoc/>
+    protected override void OnDisabled() => this.networkHandler.Enable = false;
 
     protected override DpsTab InitTab()
     {
