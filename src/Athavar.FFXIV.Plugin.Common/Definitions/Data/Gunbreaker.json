@@ -5,7 +5,7 @@
       "3F09": "keen edge",
       "damage": [
         {
-          "potency": 170
+          "potency": 200
         }
       ]
     },
@@ -13,8 +13,8 @@
       "3F0B": "brutal shell",
       "damage": [
         {
-          "potency": 130,
-          "combo": 270
+          "potency": 160,
+          "combo": 300
         }
       ],
       "heal": [

@@ -13,8 +13,8 @@
       "0F": "riot blade",
       "damage": [
         {
-          "potency": 120,
-          "combo": 280
+          "potency": 140,
+          "combo": 300
         }
       ]
     },
@@ -72,7 +72,7 @@
       "17": "circle of scorn",
       "damage": [
         {
-          "potency": 100
+          "potency": 120
         }
       ]
     },
@@ -104,8 +104,8 @@
       "DD3": "royal authority",
       "damage": [
         {
-          "potency": 120,
-          "combo": 380
+          "potency": 140,
+          "combo": 400
         }
       ]
     },
@@ -155,7 +155,7 @@
       "404C": "atonement",
       "damage": [
         {
-          "potency": 380
+          "potency": 400
         }
       ]
     },
