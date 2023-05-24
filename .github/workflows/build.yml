@@ -41,7 +41,7 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build --configuration Release -v n /p:DalamudLibPath="/tmp/dalamud" -o ./bin/Release ${{ env.INTERNAL_NAME }}
+          dotnet build --configuration Release -v n /p:DalamudLibPath="/tmp/dalamud" -o ./bin/Release src/${{ env.INTERNAL_NAME }}
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
 
