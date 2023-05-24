@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 
 internal class ActionTypeSummary
 {
-    private readonly List<ActionEvent> Events = new();
+    private readonly List<ActionEvent> events = new();
     private bool change;
 
-    public int Hits => this.Events.Count;
+    public int Hits => this.events.Count;
 
     public ulong TotalAmount { get; set; }
 
@@ -25,7 +25,7 @@ internal class ActionTypeSummary
 
     public void AddEvent(ActionEvent actionEvent)
     {
-        this.Events.Add(actionEvent);
+        this.events.Add(actionEvent);
         this.change = true;
     }
 
@@ -43,7 +43,7 @@ internal class ActionTypeSummary
         ulong crit = 0;
         ulong direct = 0;
         ulong critDirect = 0;
-        foreach (var actionEvent in CollectionsMarshal.AsSpan(this.Events))
+        foreach (var actionEvent in CollectionsMarshal.AsSpan(this.events))
         {
             sum += actionEvent.Amount;
             overSum += actionEvent.OverAmount;

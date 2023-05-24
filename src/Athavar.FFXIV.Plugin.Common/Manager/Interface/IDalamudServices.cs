@@ -38,6 +38,8 @@ public interface IDalamudServices
 
     GameGui GameGui { get; }
 
+    GameLifecycle GameLifecycle { get; }
+
     GameNetwork GameNetwork { get; }
 
     KeyState KeyState { get; }

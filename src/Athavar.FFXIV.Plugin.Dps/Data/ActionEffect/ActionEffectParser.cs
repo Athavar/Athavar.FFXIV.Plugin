@@ -124,7 +124,7 @@ internal static class ActionEffectParser
                 break;
             case ActionEffectType.Knockback:
                 var kbData = dalamudServices.DataManager.GetExcelSheet<Knockback>()?.GetRow(eff.Value);
-                res.Append($"row={eff.Value}, dist={kbData?.Distance}+{eff.Param0}, dir={(KnockbackDirection?)kbData?.Direction}{(kbData?.Direction == (byte)KnockbackDirection.Arg ? $" ({kbData.DirectionArg}deg)" : "")}, speed={kbData?.Speed}");
+                res.Append($"row={eff.Value}, dist={kbData?.Distance}+{eff.Param0}, dir={(KnockbackDirection?)kbData?.Direction}{(kbData?.Direction == (byte)KnockbackDirection.Arg ? $" ({kbData.DirectionArg}deg)" : string.Empty)}, speed={kbData?.Speed}");
                 break;
             case ActionEffectType.Attract1:
             case ActionEffectType.Attract2:
@@ -152,7 +152,7 @@ internal static class ActionEffectParser
             case ActionEffectType.NoEffectText: // e.g. taunt immune
             case ActionEffectType.FailMissingStatus: // e.g. deployment tactics or bane when target doesn't have required status
                 // so far never seen any non-zero params
-                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 || eff.Value != 0 ? "non-zero params" : "";
+                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 || eff.Value != 0 ? "non-zero params" : string.Empty;
             case ActionEffectType.Damage:
             case ActionEffectType.BlockedDamage:
             case ActionEffectType.ParriedDamage:
@@ -181,7 +181,7 @@ internal static class ActionEffectParser
                     return "retaliation bit set but source is unset";
                 }
 
-                return "";
+                return string.Empty;
             case ActionEffectType.Heal:
                 if ((eff.Param0 & ~3) != 0)
                 {
@@ -213,7 +213,7 @@ internal static class ActionEffectParser
                     return "lifedrain bits set while source bit is unset";
                 }
 
-                return "";
+                return string.Empty;
             case ActionEffectType.Invulnerable:
             case ActionEffectType.MpGain:
             case ActionEffectType.TpGain:
@@ -221,7 +221,7 @@ internal static class ActionEffectParser
             case ActionEffectType.LoseStatusEffectSource:
             case ActionEffectType.SetHP:
                 // so far only seen 'source' flag and non-zero values
-                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || (eff.Param4 & ~0x80) != 0 ? "non-zero params" : "";
+                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || (eff.Param4 & ~0x80) != 0 ? "non-zero params" : string.Empty;
             case ActionEffectType.ApplyStatusEffectTarget:
             case ActionEffectType.ApplyStatusEffectSource:
                 if (eff.Param3 != 0 || (eff.Param4 & ~0xA0) != 0)
@@ -236,16 +236,16 @@ internal static class ActionEffectParser
 
                 return "TODO investigate param0/1"; // $"{Utils.StatusString(eff.Value)} {eff.Param0:X2}{eff.Param1:X2}"; - these are often non-zero, but I have no idea what they mean...
             case ActionEffectType.RecoveredFromStatusEffect:
-                return eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || (eff.Param4 & ~0x80) != 0 ? "non-zero params" : "";
+                return eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || (eff.Param4 & ~0x80) != 0 ? "non-zero params" : string.Empty;
             case ActionEffectType.Knockback:
-                return eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : "";
+                return eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : string.Empty;
             case ActionEffectType.Attract1:
             case ActionEffectType.Attract2:
-                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : "";
+                return eff.Param0 != 0 || eff.Param1 != 0 || eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : string.Empty;
             case ActionEffectType.AttractCustom1:
             case ActionEffectType.AttractCustom2:
             case ActionEffectType.AttractCustom3:
-                return eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : "";
+                return eff.Param2 != 0 || eff.Param3 != 0 || eff.Param4 != 0 ? "non-zero params" : string.Empty;
             default:
                 return "unknown type";
         }

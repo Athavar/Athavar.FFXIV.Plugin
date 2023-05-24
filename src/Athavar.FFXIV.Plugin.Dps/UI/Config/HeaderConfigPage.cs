@@ -1,4 +1,4 @@
-// <copyright file="HeaderConfig.cs" company="Athavar">
+// <copyright file="HeaderConfigPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -48,7 +48,7 @@ internal sealed class HeaderConfigPage : IConfigPage
 
     public IConfig GetConfig() => this.Config;
 
-    public (Vector2, Vector2) DrawHeader(Vector2 pos, Vector2 size, BaseEncounter? encounter, ImDrawListPtr drawList)
+    public (Vector2 Pos, Vector2 Size) DrawHeader(Vector2 pos, Vector2 size, BaseEncounter? encounter, ImDrawListPtr drawList)
     {
         if (!this.Config.ShowHeader)
         {

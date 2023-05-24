@@ -21,6 +21,7 @@ internal sealed class RotationTab : Tab
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
+    private readonly ICraftDataManager craftDataManager;
     private INode? draggedNode;
     private RotationNode? activeRotationNode;
     private CraftingMacro? activeRotationMacro;
@@ -28,18 +29,19 @@ internal sealed class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ClientLanguage clientLanguage)
+    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
     {
         this.Configuration = configuration;
         this.chatManager = chatManager;
         this.iconManager = iconManager;
+        this.craftDataManager = craftDataManager;
         this.ClientLanguage = clientLanguage;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "Rotation";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "Tab-RotationsOptions";
 
     private CraftQueueConfiguration Configuration { get; }
@@ -48,7 +50,7 @@ internal sealed class RotationTab : Tab
 
     private ClientLanguage ClientLanguage { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         ImGui.Columns(2);
@@ -91,12 +93,13 @@ internal sealed class RotationTab : Tab
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var action = rotations[index];
-                var tex = this.iconManager.GetIcon(action.IconIds[0], false);
+                var craftSkillData = this.craftDataManager.GetCraftSkillData(action);
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], false);
                 ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
-                    ImGui.TextUnformatted(action.Name[this.ClientLanguage]);
+                    ImGui.TextUnformatted(craftSkillData.Name[this.ClientLanguage]);
                     ImGui.EndTooltip();
                 }
 
@@ -170,8 +173,9 @@ internal sealed class RotationTab : Tab
                 text = text.Remove(index, 1).Insert(index, "\r\n");
             }
 
-            this.activeRotationMacro = CraftingSkill.ParseMacro(text);
-            this.activeRotationContent = this.activeRotationMacro!.CreateMacro(this.ClientLanguage);
+            this.activeRotationMacro = this.craftDataManager.ParseCraftingMacro(text);
+            this.activeRotationContent = this.craftDataManager.CreateTextMacro(this.activeRotationMacro, this.ClientLanguage);
+
             this.editChanged = true;
         }
 
@@ -187,7 +191,7 @@ internal sealed class RotationTab : Tab
         if (ImGui.InputTextMultiline($"##{node.Name}-editor", ref this.activeRotationContent, 100_000, new Vector2(-1, -1)))
         {
             this.editChanged = true;
-            this.activeRotationMacro = CraftingSkill.ParseMacro(this.activeRotationContent);
+            this.activeRotationMacro = this.craftDataManager.ParseCraftingMacro(this.activeRotationContent);
         }
 
         ImGui.PopItemWidth();
@@ -250,7 +254,7 @@ internal sealed class RotationTab : Tab
             // select rotation
             this.activeRotationNode = node;
             this.activeRotationMacro = CraftingSkill.ParseMacro(node.Rotations);
-            this.activeRotationContent = this.activeRotationMacro.CreateMacro(this.ClientLanguage);
+            this.activeRotationContent = this.craftDataManager.CreateTextMacro(this.activeRotationMacro, this.ClientLanguage);
             this.editChanged = false;
         }
 

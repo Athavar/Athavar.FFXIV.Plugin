@@ -1,4 +1,4 @@
-// <copyright file="BaseCombatant.cs" company="Athavar">
+// <copyright file="BaseCombatant{T}.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -16,9 +16,9 @@ internal abstract class BaseCombatant<T> : BaseCombatant
         this.DataId = dataId;
     }
 
-    public static bool operator==(BaseCombatant<T>? left, BaseCombatant<T>? right) => Equals(left, right);
+    public static bool operator ==(BaseCombatant<T>? left, BaseCombatant<T>? right) => Equals(left, right);
 
-    public static bool operator!=(BaseCombatant<T>? left, BaseCombatant<T>? right) => !Equals(left, right);
+    public static bool operator !=(BaseCombatant<T>? left, BaseCombatant<T>? right) => !Equals(left, right);
 
     public override bool Equals(object? obj)
     {

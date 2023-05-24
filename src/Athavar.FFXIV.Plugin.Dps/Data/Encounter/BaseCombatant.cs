@@ -1,4 +1,4 @@
-// <copyright file="ICombatant.cs" company="Athavar">
+// <copyright file="BaseCombatant.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -120,13 +120,13 @@ internal abstract class BaseCombatant
 
     public float GetMeterData(MeterDataType type)
         => type switch
-           {
-               MeterDataType.Damage => this.DamageTotal,
-               MeterDataType.Healing => this.HealingTotal,
-               MeterDataType.EffectiveHealing => this.EffectiveHealing,
-               MeterDataType.DamageTaken => this.DamageTaken,
-               _ => 0,
-           };
+        {
+            MeterDataType.Damage => this.DamageTotal,
+            MeterDataType.Healing => this.HealingTotal,
+            MeterDataType.EffectiveHealing => this.EffectiveHealing,
+            MeterDataType.DamageTaken => this.DamageTaken,
+            _ => 0,
+        };
 
     public abstract void CalcStats();
 

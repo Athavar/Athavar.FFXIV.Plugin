@@ -111,18 +111,21 @@ internal sealed class Combatant : BaseCombatant<Combatant>
                 summary.OnHealingTake(new ActionEvent(timestamp, hoT.SourceId, effectEvent.GetModifier(), hoT.Amount, hoT.Overheal));
                 break;
             }
+
             case CombatEvent.Healed healed:
             {
                 var summary = this.GetActionSummary(healed.ActionId, isStatusOverwrite);
                 summary.OnHealingTake(new ActionEvent(timestamp, healed.SourceId, effectEvent.GetModifier(), healed.Amount, healed.Overheal));
                 break;
             }
+
             case CombatEvent.DoT doT:
             {
                 var summary = this.GetActionSummary(doT.StatusId, true);
                 summary.OnDamageTake(new ActionEvent(timestamp, doT.SourceId, effectEvent.GetModifier(), doT.Amount));
                 break;
             }
+
             case CombatEvent.DamageTaken damage:
             {
                 var summary = this.GetActionSummary(damage.ActionId, isStatusOverwrite);

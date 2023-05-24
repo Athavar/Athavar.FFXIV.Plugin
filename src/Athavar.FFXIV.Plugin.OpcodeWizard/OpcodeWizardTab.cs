@@ -24,7 +24,7 @@ internal sealed class OpcodeWizardTab : Tab
     private Scanner? selectedScanner;
 
     private DateTime requestParameterModalReopenWaitTime = DateTime.MinValue;
-    private TaskCompletionSource<(string parameter, bool skipRequested)>? requestParameterCompletionSource;
+    private TaskCompletionSource<(string Parameter, bool SkipRequested)>? requestParameterCompletionSource;
 
     private string requestParameterText = string.Empty;
     private string requestParameterValue = string.Empty;
@@ -75,12 +75,12 @@ internal sealed class OpcodeWizardTab : Tab
         ImGui.Columns(1);
     }
 
-    private async Task<(string parameter, bool skipRequested)> RequestParameter(Scanner scanner, int index)
+    private async Task<(string Parameter, bool SkipRequested)> RequestParameter(Scanner scanner, int index)
     {
         this.requestParameterText = scanner.ParameterPrompts[index];
         this.requestParameterValue = string.Empty;
         this.requestParameterModalReopenWaitTime = DateTime.MinValue;
-        this.requestParameterCompletionSource = new TaskCompletionSource<(string parameter, bool skipRequested)>();
+        this.requestParameterCompletionSource = new TaskCompletionSource<(string Parameter, bool SkipRequested)>();
 
         var result = await this.requestParameterCompletionSource.Task;
         this.requestParameterCompletionSource = null;

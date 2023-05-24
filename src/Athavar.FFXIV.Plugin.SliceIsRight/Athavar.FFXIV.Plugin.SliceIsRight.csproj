@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(SolutionDir)\src\dalamud.targets" />
+
+    <ItemGroup>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
+    </ItemGroup>
+</Project>

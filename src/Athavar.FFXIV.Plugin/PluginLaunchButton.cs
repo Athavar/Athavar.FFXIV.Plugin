@@ -1,11 +1,9 @@
-// <copyright file="PluginLauchButton.cs" company="Athavar">
+// <copyright file="PluginLaunchButton.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin;
 
-using System;
-using System.IO;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Interface;
 using ImGuiScene;

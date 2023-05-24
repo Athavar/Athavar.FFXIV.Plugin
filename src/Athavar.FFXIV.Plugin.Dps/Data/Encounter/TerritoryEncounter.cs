@@ -8,8 +8,7 @@ internal sealed class TerritoryEncounter : BaseEncounter<CombatantCollected>
 {
     public List<Encounter> Encounters = new();
 
-    public bool closed;
-
+    private bool closed;
     private TimeSpan duration;
 
     public TerritoryEncounter()
@@ -76,7 +75,7 @@ internal sealed class TerritoryEncounter : BaseEncounter<CombatantCollected>
         this.duration = duration;
         this.CalcPostStats();
 
-        //  PluginLog.LogInformation($"UpdateAllies: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
+        // PluginLog.LogInformation($"UpdateAllies: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
     }
 
     public override bool IsValid() => true;

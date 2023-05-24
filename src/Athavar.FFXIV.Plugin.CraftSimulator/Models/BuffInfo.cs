@@ -4,19 +4,26 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-using Lumina.Excel.GeneratedSheets;
-
 public sealed class BuffInfo
 {
-    public BuffInfo(Item item, uint itemFoodId, StatModifiers stats, bool hq)
+    public BuffInfo(uint itemId, uint itemLevel, ushort iconId, string name, uint itemFoodId, StatModifiers stats, bool hq)
     {
-        this.Item = item;
+        this.ItemId = itemId;
+        this.ItemLevel = itemLevel;
+        this.IconId = iconId;
+        this.Name = name;
         this.ItemFoodId = itemFoodId;
         this.Stats = stats;
         this.IsHq = hq;
     }
 
-    public Item Item { get; }
+    public uint ItemId { get; }
+
+    public uint ItemLevel { get; }
+
+    public ushort IconId { get; }
+
+    public string Name { get; }
 
     public uint ItemFoodId { get; }
 

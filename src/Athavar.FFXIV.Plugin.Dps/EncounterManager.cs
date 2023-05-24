@@ -58,7 +58,7 @@ internal sealed partial class EncounterManager : IDisposable
         services.Framework.Update += this.Update;
     }
 
-    public List<string> Log { get; } = new(); //new(100, true);
+    public List<string> Log { get; } = new(); // new(100, true);
 
     public IReadOnlyList<TerritoryEncounter> EncounterHistory => this.encounterHistory;
 
@@ -86,7 +86,7 @@ internal sealed partial class EncounterManager : IDisposable
     {
         TerritoryEncounter? territory;
         var historyCount = this.encounterHistory.Count;
-        if (0 <= territoryIndex && territoryIndex < historyCount)
+        if (territoryIndex >= 0 && territoryIndex < historyCount)
         {
             territory = this.encounterHistory[territoryIndex];
         }
@@ -105,7 +105,7 @@ internal sealed partial class EncounterManager : IDisposable
         }
 
         var encounterCount = territory.Encounters.Count;
-        if (0 <= encounterIndex && encounterIndex < encounterCount)
+        if (encounterIndex >= 0 && encounterIndex < encounterCount)
         {
             return territory.Encounters[encounterIndex];
         }

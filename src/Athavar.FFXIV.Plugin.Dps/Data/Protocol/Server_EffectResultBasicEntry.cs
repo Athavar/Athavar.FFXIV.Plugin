@@ -14,6 +14,6 @@ public struct Server_EffectResultBasicEntry
     public uint ActorID;
     public uint CurrentHP;
     public byte RelatedTargetIndex;
-    public byte padding3;
-    public ushort padding4;
+    public byte Padding3;
+    public ushort Padding4;
 }

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="$(SolutionDir)\src\dalamud.targets" />
+  
+  <PropertyGroup>
+    <Authors>athavar</Authors>
+    <Company>-</Company>
+    <Description></Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/Athavar/Athavar.FFXIV.Plugin</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <LangVersion>11</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <Configurations>Debug;Release</Configurations>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Documentation">
+    <DocumentationFile></DocumentationFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>embedded</DebugType>
+    <DocumentationFile>bin\Debug\Athavar.FFXIV.Plugin.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <AdditionalFiles Include="..\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DalamudPackager" Version="2.1.10" GeneratePathProperty="false" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.AutoSpear\Athavar.FFXIV.Plugin.AutoSpear.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Cheat\Athavar.FFXIV.Plugin.Cheat.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Click\Athavar.FFXIV.Plugin.Click.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftQueue\Athavar.FFXIV.Plugin.CraftQueue.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Dps\Athavar.FFXIV.Plugin.Dps.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.OpcodeWizard\Athavar.FFXIV.Plugin.OpcodeWizard.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.SliceIsRight\Athavar.FFXIV.Plugin.SliceIsRight.csproj" />
+    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Yes\Athavar.FFXIV.Plugin.Yes.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

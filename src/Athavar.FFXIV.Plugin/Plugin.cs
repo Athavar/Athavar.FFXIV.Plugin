@@ -11,11 +11,11 @@ using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftQueue;
-using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Dps;
 using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
+using Athavar.FFXIV.Plugin.SliceIsRight;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
@@ -44,7 +44,7 @@ public sealed class Plugin : IDalamudPlugin
     private readonly PluginService servive;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Plugin" /> class.
+    ///     Initializes a new instance of the <see cref="Plugin"/> class.
     /// </summary>
     /// <param name="pluginInterface">Dalamud plugin interface.</param>
     public Plugin(
@@ -58,10 +58,10 @@ public sealed class Plugin : IDalamudPlugin
         this.servive.Start();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public string Name => PluginName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.servive.Stop();
@@ -77,8 +77,6 @@ public sealed class Plugin : IDalamudPlugin
            .AddSingleton(o =>
             {
                 var ser = o.GetRequiredService<IDalamudServices>();
-                CraftingSkill.Populate(ser.DataManager);
-
                 var pi = ser.PluginInterface;
 
                 return Configuration.Load(pi);
@@ -94,6 +92,7 @@ public sealed class Plugin : IDalamudPlugin
            .AddCraftQueueModule()
            .AddDps()
            .AddOpcodeWizard()
+           .AddSliceIsRightModule()
 #if DEBUG
 #endif
            .AddSingleton<AutoTranslateWindow>()

@@ -1,4 +1,4 @@
-// <copyright file="Server_EffectResultEntry.cs" company="Athavar">
+// <copyright file="Server_EffectResult.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
@@ -19,6 +19,6 @@ internal unsafe struct Server_EffectResult
     public byte ClassJob;
     public byte DamageShield;
     public byte EffectCount;
-    public ushort padding3;
+    public ushort Padding3;
     public fixed byte Effects[4 * 4 * 4]; // Server_EffectResultEffectEntry[4]
 }

@@ -8,10 +8,11 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
-using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
@@ -361,8 +362,8 @@ internal sealed class CraftingJob
 
         if (this.food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
         {
-            var itemId = this.food.Item.RowId;
-            var count = ci.CountItem(this.food.Item.RowId, this.food.IsHq);
+            var itemId = this.food.ItemId;
+            var count = ci.CountItem(itemId, this.food.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing food in inventory.");
@@ -374,7 +375,7 @@ internal sealed class CraftingJob
 
         if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
         {
-            var itemId = this.potion.Item.RowId;
+            var itemId = this.potion.ItemId;
             var count = ci.CountItem(itemId, this.potion.IsHq);
             if (count == 0)
             {
@@ -395,7 +396,7 @@ internal sealed class CraftingJob
     private int OpenRecipe()
     {
         var ci = this.queue.CommandInterface;
-        var recipeId = this.Recipe.GameRecipe.RowId;
+        var recipeId = this.Recipe.RecipeId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
         if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
@@ -504,13 +505,16 @@ internal sealed class CraftingJob
 
         var c = this.queue.Configuration;
 
+        var action = this.Steps[this.RotationCurrentStep];
+
         // maxQuality check
         try
         {
-            if (c.QualitySkip && ci.HasMaxQuality())
+            if (c.QualitySkip && action.Skill.Action.ActionType is ActionType.Quality
+                              && ci.HasMaxQuality())
             {
                 ++this.RotationCurrentStep;
-                return 0;
+                return -1;
             }
         }
         catch (AthavarPluginException ex)
@@ -519,15 +523,35 @@ internal sealed class CraftingJob
             return -100;
         }
 
-        var action = this.Steps[this.RotationCurrentStep];
-
         // Byregots fail save
-        if (this.RotationCurrentStep + 1 < this.rotation.Length &&
+        if (!this.Recipe.Expert && this.RotationCurrentStep + 1 < this.rotation.Length &&
             this.rotation[this.RotationCurrentStep + 1] == CraftingSkills.ByregotsBlessing &&
-            ci.HasCondition(this.localizedExcellent) &&
-            ci.UseAction(CraftingSkill.FindAction(CraftingSkills.TricksOfTheTrade).Action.GetId(this.Recipe.Class)))
+            ci.HasCondition(this.localizedExcellent))
         {
-            return -1000;
+            var failSaveAction = CraftingSkills.TricksOfTheTrade;
+
+            var testStepStates = new StepState?[this.rotation.Length];
+            testStepStates[this.RotationCurrentStep] = StepState.EXCELLENT;
+            testStepStates[this.RotationCurrentStep + 1] = StepState.POOR;
+
+            IEnumerable<CraftingSkills> GetTestRotation()
+            {
+                for (var i = 0; i < this.rotation.Length; i++)
+                {
+                    if (i == this.RotationCurrentStep)
+                    {
+                        yield return failSaveAction;
+                    }
+
+                    yield return this.rotation[i];
+                }
+            }
+
+            var result = this.simulation.Run(GetTestRotation(), stepStates: testStepStates);
+            if (result.Success && ci.UseAction(CraftingSkill.FindAction(failSaveAction).Action.GetId(this.Recipe.Class)))
+            {
+                return -1000;
+            }
         }
 
         var simAction = action.Skill.Action;

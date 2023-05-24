@@ -2,9 +2,11 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -15,7 +17,7 @@ using Sheets = Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /item command.
 /// </summary>
-[MacroCommand("Item", null, "Use an item, stopping the macro if the item is not present.", new[] { "hq", "wait" }, new[] { "/item Calamari Ripieni", "/item Calamari Ripieni <hq> <wait.3>" }, RequireLogin = true)]
+[MacroCommand("item", null, "Use an item, stopping the macro if the item is not present.", new[] { "hq", "wait" }, new[] { "/item Calamari Ripieni", "/item Calamari Ripieni <hq> <wait.3>" }, RequireLogin = true)]
 internal class ItemCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/item\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -24,7 +26,7 @@ internal class ItemCommand : MacroCommand
     private readonly ItemQualityModifier itemQualityMod;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ItemCommand" /> class.
+    ///     Initializes a new instance of the <see cref="ItemCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="itemName">Item name.</param>
@@ -53,12 +55,12 @@ internal class ItemCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValue = ExtractAndUnquote(match, "name");
+        var nameValue = match.ExtractAndUnquote("name");
 
         return new ItemCommand(text, nameValue, waitModifier, itemQualityModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");

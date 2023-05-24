@@ -4,75 +4,56 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-
 public sealed class Recipe
 {
-    public Recipe(Lumina.Excel.GeneratedSheets.Recipe recipe, ExcelSheet<Item> sheets)
+    public Recipe(
+        uint id,
+        uint recipeLevel,
+        uint maxQuality,
+        uint progress,
+        int durability,
+        byte progressDivider,
+        byte qualityDivider,
+        byte progressModifier,
+        byte qualityModifier,
+        CraftingClass craftingClass = CraftingClass.ANY,
+        int level = 90,
+        bool isExpert = false,
+        int requiredCraftsmanship = 0,
+        int requiredControl = 0,
+        uint requiredQuality = 0,
+        StepState[]? possibleConditions = null,
+        Ingredient[]? ingredients = null)
     {
-        this.GameRecipe = recipe;
-        this.RecipeId = recipe.RowId;
-        var lvlTable = recipe.RecipeLevelTable.Value ?? throw new AthavarPluginException();
-        this.RecipeLevel = lvlTable.RowId;
-        this.Level = lvlTable.ClassJobLevel;
-        this.Class = (CraftingClass)recipe.CraftType.Row;
+        this.RecipeId = id;
+        this.RecipeLevel = recipeLevel;
+        this.Level = level;
+        this.Class = craftingClass;
 
-        this.MaxQuality = (lvlTable.Quality * recipe.QualityFactor) / 100;
-        this.Progress = ((uint)lvlTable.Difficulty * recipe.DifficultyFactor) / 100;
-        this.Durability = (lvlTable.Durability * recipe.DurabilityFactor) / 100;
+        this.MaxQuality = maxQuality;
+        this.Progress = progress;
+        this.Durability = durability;
 
-        this.Expert = recipe.IsExpert;
+        this.Expert = isExpert;
 
-        this.CraftsmanshipReq = recipe.RequiredCraftsmanship == 0 ? null : recipe.RequiredCraftsmanship;
-        this.ControlReq = recipe.RequiredControl == 0 ? null : recipe.RequiredControl;
-        this.QualityReq = recipe.RequiredQuality == 0 ? null : recipe.RequiredQuality;
+        this.CraftsmanshipReq = requiredCraftsmanship == 0 ? null : requiredCraftsmanship;
+        this.ControlReq = requiredControl == 0 ? null : requiredControl;
+        this.QualityReq = requiredQuality == 0 ? null : requiredQuality;
 
-        this.PossibleConditions =
-            Enum.GetValues<StepState>()
-               .Where(f => (f & (StepState)lvlTable.ConditionsFlag) == f)
-               .ToArray();
+        this.PossibleConditions = possibleConditions ?? new[] { StepState.NORMAL, StepState.GOOD, StepState.EXCELLENT, StepState.POOR };
 
-        this.ProgressDivider = lvlTable.ProgressDivider;
-        this.QualityDivider = lvlTable.QualityDivider;
-        this.ProgressModifier = lvlTable.ProgressModifier;
-        this.QualityModifier = lvlTable.QualityModifier;
+        this.ProgressDivider = progressDivider;
+        this.QualityDivider = qualityDivider;
+        this.ProgressModifier = progressModifier;
+        this.QualityModifier = qualityModifier;
 
-        Ingredient[] ingredients = recipe.UnkData5.Select(i =>
-        {
-            var item = sheets.GetRow((uint)i.ItemIngredient);
-            if (item is null || item.RowId == 0)
-            {
-                return null;
-            }
-
-            return new Ingredient(item.RowId, item, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
-        }).Where(i => i is not null).ToArray()!;
-        var totalItemLevel = ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
-        var totalContribution = (this.MaxQuality * recipe.MaterialQualityFactor) / 100;
-
-        for (var index = 0; index < ingredients.Length; index++)
-        {
-            var ingredient = ingredients[index];
-            if (ingredient.CanBeHq)
-            {
-                ingredient.Quality = (uint)(((float)ingredient.ILevel / totalItemLevel) * totalContribution);
-            }
-        }
-
-        this.Ingredients = ingredients;
+        this.Ingredients = ingredients ?? Array.Empty<Ingredient>();
     }
 
     /// <summary>
     ///     Gets the recipe id.
     /// </summary>
     public uint RecipeId { get; }
-
-    /// <summary>
-    ///     Gets the lumina game recipe.
-    /// </summary>
-    public Lumina.Excel.GeneratedSheets.Recipe GameRecipe { get; }
 
     /// <summary>
     ///     Gets the lvl.
@@ -118,6 +99,11 @@ public sealed class Recipe
     public byte QualityModifier { get; }
 
     public Ingredient[] Ingredients { get; }
+
+    /// <summary>
+    ///     Gets or sets the result item name of the recipe.
+    /// </summary>
+    public string? ResultItemName { get; set; } = null;
 
     public CraftingClass Class { get; set; }
 }

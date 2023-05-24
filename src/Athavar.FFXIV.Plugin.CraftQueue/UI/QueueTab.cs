@@ -11,8 +11,8 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator;
-using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
 using Dalamud.Interface;
@@ -31,6 +31,7 @@ internal sealed class QueueTab : Tab
     private readonly CraftQueue craftQueue;
     private readonly CraftQueueData craftQueueData;
     private readonly IIconManager iconManager;
+    private readonly ICraftDataManager craftDataManager;
     private readonly IGearsetManager gearsetManager;
     private readonly ICommandInterface ci;
     private readonly ExcelSheet<Item> itemsSheet;
@@ -70,12 +71,13 @@ internal sealed class QueueTab : Tab
     private bool init;
     private uint updateTick;
 
-    public QueueTab(IIconManager iconManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
+    public QueueTab(IIconManager iconManager, ICraftDataManager craftDataManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
     {
         this.craftQueue = craftQueue;
         this.craftQueueData = craftQueue.Data;
         this.ci = craftQueue.CommandInterface;
         this.gearsetManager = craftQueue.GearsetManager;
+        this.craftDataManager = craftDataManager;
         this.iconManager = iconManager;
         this.Configuration = configuration;
         this.ClientLanguage = clientLanguage;
@@ -90,17 +92,17 @@ internal sealed class QueueTab : Tab
         this.potionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "Queue";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "Tab-CQQueue";
 
     private CraftQueueConfiguration Configuration { get; }
 
     private ClientLanguage ClientLanguage { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         if (!this.init)
@@ -139,7 +141,7 @@ internal sealed class QueueTab : Tab
         ImGui.Columns(1);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void OnNotDraw()
     {
         if (this.rotations is not null)
@@ -220,7 +222,7 @@ internal sealed class QueueTab : Tab
                         if (ImGui.Selectable($"##recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             this.recipeIdx = num;
-                            this.selectedRecipe = new CraftSimulator.Models.Recipe(this.craftQueueData.Recipes[this.recipeIdx].Recipe, this.itemsSheet);
+                            this.selectedRecipe = this.craftQueueData.Recipes[this.recipeIdx].Recipe.ToCraftSimulatorRecipe(this.itemsSheet);
                             this.hqIngredients = this.selectedRecipe.Ingredients.Where(i => i.CanBeHq).Select(i => (ItemId: i.Id, Amount: (byte)0)).ToArray();
                             this.craftCount = 1;
                             this.UpdateCurrentIngredients();
@@ -270,7 +272,7 @@ internal sealed class QueueTab : Tab
         ref int idx,
         ref BuffInfo? selected)
     {
-        var previewValue = selected == null ? "None" : selected.Item.Name.RawString;
+        var previewValue = selected == null ? "None" : selected.Name;
         if (selected?.IsHq == true)
         {
             previewValue += " \uE03C";
@@ -300,7 +302,6 @@ internal sealed class QueueTab : Tab
                     for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
                     {
                         var buffInfo = items[index];
-                        var item = buffInfo.Item;
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
                         Vector2 cursorPos1 = ImGui.GetCursorPos();
@@ -312,7 +313,7 @@ internal sealed class QueueTab : Tab
                         }
 
                         ImGui.SetCursorPos(cursorPos1);
-                        var icon = this.iconManager.GetHqIcon(item.Icon, buffInfo.IsHq);
+                        var icon = this.iconManager.GetHqIcon(buffInfo.IconId, buffInfo.IsHq);
                         if (icon != null)
                         {
                             ImGuiEx.ScaledImageY(icon.ImGuiHandle, icon.Width, icon.Height, ImGui.GetTextLineHeight());
@@ -321,11 +322,11 @@ internal sealed class QueueTab : Tab
                         ImGui.TableSetColumnIndex(1);
                         if (buffInfo.IsHq)
                         {
-                            ImGui.TextUnformatted(item.Name.RawString + " \uE03C");
+                            ImGui.TextUnformatted(buffInfo.Name + " \uE03C");
                         }
                         else
                         {
-                            ImGui.TextUnformatted(item.Name.RawString);
+                            ImGui.TextUnformatted(buffInfo.Name);
                         }
                     }
                 }
@@ -365,7 +366,6 @@ internal sealed class QueueTab : Tab
         if (ImGui.Button("Optimize##cq-rotation-picker-find"))
         {
             this.RotationSolver();
-            ImGui.CloseCurrentPopup();
         }
 
         ImGui.SameLine();
@@ -559,7 +559,8 @@ internal sealed class QueueTab : Tab
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var actionResult = rotationSteps[index];
-                var tex = this.iconManager.GetIcon(actionResult.Skill.IconIds[classIndex], false);
+                var craftSkillData = this.craftDataManager.GetCraftSkillData(actionResult.Skill);
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[classIndex], false);
                 if (tex is null)
                 {
                     continue;
@@ -571,7 +572,7 @@ internal sealed class QueueTab : Tab
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
-                    ImGui.TextUnformatted(actionResult.Skill.Name[this.ClientLanguage] + (actionResult.FailCause is not null ? ": " + actionResult.FailCause : string.Empty));
+                    ImGui.TextUnformatted(craftSkillData.Name[this.ClientLanguage] + (actionResult.FailCause is not null ? ": " + actionResult.FailCause : string.Empty));
                     ImGui.EndTooltip();
                 }
 
@@ -610,6 +611,7 @@ internal sealed class QueueTab : Tab
                 for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
                 {
                     var step = rotationSteps[index];
+                    var craftSkillData = this.craftDataManager.GetCraftSkillData(step.Skill);
                     if (step.Skipped)
                     {
                         ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudGrey);
@@ -620,7 +622,7 @@ internal sealed class QueueTab : Tab
                     ImGui.TableSetColumnIndex(0);
                     ImGui.TextUnformatted($"{index}");
                     ImGui.TableSetColumnIndex(1);
-                    if (this.iconManager.TryGetIcon(step.Skill.IconIds[classIndex], false, out var textureWrap))
+                    if (this.iconManager.TryGetIcon(craftSkillData.IconIds[classIndex], false, out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                     }
@@ -632,7 +634,7 @@ internal sealed class QueueTab : Tab
                     if (ImGui.IsItemHovered())
                     {
                         ImGui.BeginTooltip();
-                        ImGui.TextUnformatted(step.Skill.Name[this.ClientLanguage]);
+                        ImGui.TextUnformatted(craftSkillData.Name[this.ClientLanguage]);
                         ImGui.EndTooltip();
                     }
 
@@ -748,7 +750,7 @@ internal sealed class QueueTab : Tab
             ImGui.TableNextRow();
             var timeSpan1 = drawnJob.Duration;
             var timeSpan2 = drawnJob.LoopDuration;
-            var str1 = drawnJob.Recipe.GameRecipe.ItemResult.Value?.Name.RawString ?? "???";
+            var str1 = drawnJob.Recipe.ResultItemName ?? "???";
             var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
             var values = new object[columnCount];
             values[0] = str1;
@@ -847,7 +849,7 @@ internal sealed class QueueTab : Tab
             return;
         }
 
-        var job = this.selectedRecipe.GameRecipe.GetJobType();
+        var job = this.selectedRecipe.Class.GetJob();
 
         var gs = this.gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == job);
         if (gs == null)
@@ -911,8 +913,8 @@ internal sealed class QueueTab : Tab
         var recipeSelected = this.recipeIdx > -1;
         var rotationSelected = this.selectedRotation is not null;
         var haveGearset = this.simulationResult?.Success == true;
-        var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.Item.RowId, this.selectedFood.IsHq) > 0;
-        var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.Item.RowId, this.selectedPotion.IsHq) > 0;
+        var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.ItemId, this.selectedFood.IsHq) > 0;
+        var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.ItemId, this.selectedPotion.IsHq) > 0;
         var valid = recipeSelected & rotationSelected & haveGearset & this.haveAllIngredient & haveFood & havePotion;
 
         if (!valid)
@@ -999,7 +1001,7 @@ internal sealed class QueueTab : Tab
                 this.haveAllIngredient = false;
             }
 
-            result[index] = new CurrentIngredient((ItemId: itemId, ingredient.Item.Icon, ingredient.Amount, NqCount: nqAmount, NqAvailable: nqAvailable, HaveAllNq: haveAllNq, HqIndex: hqIndex, HqCount: hqAmount, HqAvailable: hqAvailable, HaveAllHq: haveAllHq));
+            result[index] = new CurrentIngredient((ItemId: itemId, ingredient.IconId, ingredient.Amount, NqCount: nqAmount, NqAvailable: nqAvailable, HaveAllNq: haveAllNq, HqIndex: hqIndex, HqCount: hqAmount, HqAvailable: hqAvailable, HaveAllHq: haveAllHq));
         }
 
         this.currentIngredients = result;

@@ -10,17 +10,17 @@ using System.Text.RegularExpressions;
 
 public sealed class TextTagFormatter
 {
-    private readonly string _format;
+    private readonly string format;
     private readonly Dictionary<string, PropertyInfo> propertys;
-    private readonly object _source;
+    private readonly object source;
 
     public TextTagFormatter(
         object source,
         string format,
         Dictionary<string, PropertyInfo> propertys)
     {
-        this._source = source;
-        this._format = format;
+        this.source = source;
+        this.format = format;
         this.propertys = propertys;
     }
 
@@ -34,15 +34,15 @@ public sealed class TextTagFormatter
         }
 
         var format = string.IsNullOrEmpty(m.Groups[3].Value)
-            ? $"{this._format}0"
-            : $"{this._format}{m.Groups[3].Value}";
+            ? $"{this.format}0"
+            : $"{this.format}{m.Groups[3].Value}";
 
         string? value = null;
         var key = m.Groups[1].Value;
 
         if (this.propertys.ContainsKey(key))
         {
-            var propValue = this.propertys[m.Groups[1].Value].GetValue(this._source);
+            var propValue = this.propertys[m.Groups[1].Value].GetValue(this.source);
 
             if (propValue is null)
             {
@@ -88,33 +88,33 @@ public sealed class TextTagFormatter
 
     private static string KiloFormat(float num, string format)
         => num switch
-           {
-               >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
-               >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
-               _ => num.ToString(format, CultureInfo.InvariantCulture),
-           };
+        {
+            >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
+            >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
+            _ => num.ToString(format, CultureInfo.InvariantCulture),
+        };
 
     private static string KiloFormat(double num, string format)
         => num switch
-           {
-               >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
-               >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
-               _ => num.ToString(format, CultureInfo.InvariantCulture),
-           };
+        {
+            >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
+            >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
+            _ => num.ToString(format, CultureInfo.InvariantCulture),
+        };
 
     private static string KiloFormat(int num, string format)
         => num switch
-           {
-               >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
-               >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
-               _ => num.ToString(format, CultureInfo.InvariantCulture),
-           };
+        {
+            >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
+            >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
+            _ => num.ToString(format, CultureInfo.InvariantCulture),
+        };
 
     private static string KiloFormat(ulong num, string format)
         => num switch
-           {
-               >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
-               >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
-               _ => num.ToString(format, CultureInfo.InvariantCulture),
-           };
+        {
+            >= 1000000 => (num / 1000000f).ToString(format, CultureInfo.InvariantCulture) + "M",
+            >= 1000 => (num / 1000f).ToString(format, CultureInfo.InvariantCulture) + "K",
+            _ => num.ToString(format, CultureInfo.InvariantCulture),
+        };
 }

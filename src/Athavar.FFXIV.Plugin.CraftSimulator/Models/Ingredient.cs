@@ -4,21 +4,19 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-using Lumina.Excel.GeneratedSheets;
-
 public sealed class Ingredient
 {
-    public Ingredient(uint id, Item item, uint level, byte amount)
+    public Ingredient(uint id, ushort iconId, uint level, byte amount)
     {
         this.Id = id;
-        this.Item = item;
+        this.IconId = iconId;
         this.ILevel = level;
         this.Amount = amount;
     }
 
     public uint Id { get; init; }
 
-    public Item Item { get; init; }
+    public ushort IconId { get; init; }
 
     public uint ILevel { get; init; }
 

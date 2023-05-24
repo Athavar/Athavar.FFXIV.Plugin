@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddSingleton<IDalamudServices, DalamudServices>()
            .AddSingleton<ILocalizeManager, LocalizeManager>()
            .AddSingleton<IIconManager, IconManager>()
+           .AddSingleton<ICraftDataManager, CraftDataManager>()
            .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<IChatManager, ChatManager>()
            .AddSingleton<EquipmentScanner>()

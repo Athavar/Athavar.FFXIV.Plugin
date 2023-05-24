@@ -4,29 +4,19 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
-using Dalamud.Data;
-using Lumina.Excel.GeneratedSheets;
 using Microsoft.VisualBasic.CompilerServices;
 
-public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action, MultiString Name, ushort[] IconIds)
+public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action)
 {
-    private static readonly Regex ActionRegex = new(@"^(/(?:ac|action)\s+)?(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Dictionary<CraftingSkills, CraftingSkill>? Actions;
 
-    private static readonly Regex WaitRegex = new(@"(?<modifier><wait\.(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-    private static Dictionary<CraftingSkills, CraftingSkill>? actions;
-
-    public static void Populate(DataManager dataManager)
-        => actions = new CraftingSkillCollectionBuilder(dataManager)
+    static CraftingSkill()
+        => Actions = new CraftingSkillCollectionBuilder()
             /* Class Actions  */
            .Add(CraftingSkills.BasicSynthesis, new BasicSynthesis())
            .Add(CraftingSkills.BasicTouch, new BasicTouch())
@@ -64,69 +54,19 @@ public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action, 
            .Add(CraftingSkills.HearthAndSoul, new HeartAndSoul())
            .Build();
 
-    public static CraftingSkill FindAction(CraftingSkills skill) => actions?[skill] ?? throw new AthavarPluginException();
+    public static CraftingSkill FindAction(CraftingSkills skill) => Actions?[skill] ?? throw new IncompleteInitialization();
 
-    public static CraftingSkill? FindAction(string name) => actions?.Values.FirstOrDefault(a => a.Name.Equals(name));
-
-    public static IReadOnlyCollection<CraftingSkill> AllSkills() => actions?.Values ?? throw new IncompleteInitialization();
+    public static IReadOnlyCollection<CraftingSkill> AllSkills() => Actions?.Values ?? throw new IncompleteInitialization();
 
     public static CraftingMacro ParseMacro(int[] skills) => ParseMacro(Parse(skills));
 
-    public static CraftingMacro ParseMacro(string text) => ParseMacro(Parse(text));
-
-    public static CraftingMacro ParseMacro(CraftingSkills[] skills) => new(skills.Select(s => actions![s]).ToArray());
+    public static CraftingMacro ParseMacro(CraftingSkills[] skills) => new(skills.Select(s => Actions![s]).ToArray());
 
     public static CraftingSkills[] Parse(int[] skills) => Array.ConvertAll(skills, value => (CraftingSkills)value);
 
-    public static CraftingSkills[] Parse(string text)
+    private sealed class CraftingSkillCollectionBuilder
     {
-        string? line;
-        using var reader = new StringReader(text);
-
-        List<CraftingSkills> skillsList = new();
-        while ((line = reader.ReadLine()) != null)
-        {
-            var match = WaitRegex.Match(line);
-
-            if (match.Success)
-            {
-                var group = match.Groups["modifier"];
-                line = line.Remove(group.Index, group.Length);
-            }
-
-            match = ActionRegex.Match(line);
-            if (match.Success)
-            {
-                var name = match.ExtractAndUnquote("name");
-                var skill = FindAction(name);
-                if (skill is not null)
-                {
-                    skillsList.Add(skill.Skill);
-                }
-            }
-        }
-
-        return skillsList.ToArray();
-    }
-
-    private class CraftingSkillCollectionBuilder
-    {
-        private static readonly CraftingClass?[] CraftingClass =
-        {
-            Models.CraftingClass.CRP,
-            Models.CraftingClass.BSM,
-            Models.CraftingClass.ARM,
-            Models.CraftingClass.GSM,
-            Models.CraftingClass.LTW,
-            Models.CraftingClass.WVR,
-            Models.CraftingClass.ALC,
-            Models.CraftingClass.CUL,
-        };
-
-        private readonly DataManager dataManager;
         private Dictionary<CraftingSkills, CraftingSkill>? dictionary = new();
-
-        public CraftingSkillCollectionBuilder(DataManager dataManager) => this.dataManager = dataManager;
 
         public CraftingSkillCollectionBuilder Add(CraftingSkills key, CraftingAction value)
         {
@@ -135,56 +75,11 @@ public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action, 
                 throw new InvalidOperationException();
             }
 
-            CraftingClass?[] loopClasses;
-            if (value.Class == Models.CraftingClass.ANY)
-            {
-                loopClasses = CraftingClass;
-            }
-            else
-            {
-                loopClasses = new CraftingClass?[8];
-                loopClasses[(int)value.Class] = value.Class;
-            }
-
-            uint actionId = 0;
-            var useCraftActionSheet = false;
-            var iconIds = new ushort[8];
-            for (var index = 0; index < loopClasses.Length; index++)
-            {
-                var loopClass = loopClasses[index];
-                if (loopClass is null)
-                {
-                    continue;
-                }
-
-                actionId = value.GetId(loopClass.Value);
-                useCraftActionSheet = actionId > 100000;
-
-                if (useCraftActionSheet)
-                {
-                    var row = this.dataManager.GetExcelSheet<CraftAction>()!.GetRow(actionId);
-                    if (actionId != 0 && row is not null)
-                    {
-                        iconIds[index] = row.Icon;
-                    }
-                }
-                else
-                {
-                    var row = this.dataManager.GetExcelSheet<Action>()!.GetRow(actionId);
-                    if (actionId != 0 && row is not null)
-                    {
-                        iconIds[index] = row.Icon;
-                    }
-                }
-            }
-
             this.dictionary.Add(
                 key,
                 new CraftingSkill(
                     key,
-                    value,
-                    useCraftActionSheet ? MultiString.FromCraftAction(this.dataManager, actionId) : MultiString.FromAction(this.dataManager, actionId),
-                    iconIds));
+                    value));
             return this;
         }
 

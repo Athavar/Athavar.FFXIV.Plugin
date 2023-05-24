@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
-using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Macro.Managers;
@@ -26,7 +25,7 @@ internal abstract class MacroCommand
     private static ICommandInterface? commandInterface;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroCommand" /> class.
+    ///     Initializes a new instance of the <see cref="MacroCommand"/> class.
     /// </summary>
     /// <param name="text">Original line text.</param>
     /// <param name="waitMod">Wait value.</param>
@@ -36,7 +35,7 @@ internal abstract class MacroCommand
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroCommand" /> class.
+    ///     Initializes a new instance of the <see cref="MacroCommand"/> class.
     /// </summary>
     /// <param name="text">Original line text.</param>
     /// <param name="wait">Wait value.</param>
@@ -54,32 +53,32 @@ internal abstract class MacroCommand
     public string Text { get; }
 
     /// <summary>
-    ///     Gets the <see cref="IServiceProvider" />.
+    ///     Gets the <see cref="IServiceProvider"/>.
     /// </summary>
     protected static IServiceProvider ServiceProvider => serviceProvider ?? throw new NullReferenceException("ServiceProvider is not set");
 
     /// <summary>
-    ///     Gets the <see cref="IDalamudServices" />.
+    ///     Gets the <see cref="IDalamudServices"/>.
     /// </summary>
     protected static IDalamudServices DalamudServices => dalamudServices ?? throw new NullReferenceException("DalamudServices is not set");
 
     /// <summary>
-    ///     Gets the <see cref="IChatManager" />.
+    ///     Gets the <see cref="IChatManager"/>.
     /// </summary>
     protected static IChatManager ChatManager => chatManager ?? throw new NullReferenceException("ChatManager is not set");
 
     /// <summary>
-    ///     Gets the <see cref="MacroManager" />.
+    ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
     protected static MacroManager MacroManager => macroManager ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
-    ///     Gets the <see cref="MacroManager" />.
+    ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
     protected static MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
-    ///     Gets the <see cref="MacroManager" />.
+    ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
     protected static ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
 
@@ -93,7 +92,7 @@ internal abstract class MacroCommand
     /// </summary>
     protected int WaitUntil { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string ToString() => this.Text;
 
     /// <summary>
@@ -101,13 +100,13 @@ internal abstract class MacroCommand
     /// </summary>
     /// <param name="macro"></param>
     /// <param name="token">Async cancellation token.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public abstract Task Execute(ActiveMacro macro, CancellationToken token);
 
     /// <summary>
-    ///     Setup the <see cref="IServiceProvider" /> for all commands.
+    ///     Setup the <see cref="IServiceProvider"/> for all commands.
     /// </summary>
-    /// <param name="sp">The <see cref="IServiceProvider" />.</param>
+    /// <param name="sp">The <see cref="IServiceProvider"/>.</param>
     internal static void SetServiceProvider(IServiceProvider sp)
     {
         serviceProvider = sp;
@@ -119,30 +118,11 @@ internal abstract class MacroCommand
     }
 
     /// <summary>
-    ///     Extract a match group and unquote if necessary.
-    /// </summary>
-    /// <param name="match">Match group.</param>
-    /// <param name="groupName">Group name.</param>
-    /// <returns>Extracted and unquoted group value.</returns>
-    protected static string ExtractAndUnquote(Match match, string groupName)
-    {
-        var group = match.Groups[groupName];
-        var groupValue = group.Value;
-
-        if (groupValue.StartsWith('"') && groupValue.EndsWith('"'))
-        {
-            groupValue = groupValue.Trim('"');
-        }
-
-        return groupValue;
-    }
-
-    /// <summary>
-    ///     Perform a wait given the values in <see cref="Wait" /> and <see cref="WaitUntil" />.
+    ///     Perform a wait given the values in <see cref="Wait"/> and <see cref="WaitUntil"/>.
     ///     May be zero.
     /// </summary>
     /// <param name="token">Cancellation token.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous operation.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     protected async Task PerformWait(CancellationToken token)
     {
         if (this.Wait == 0 && this.WaitUntil == 0)
@@ -167,8 +147,8 @@ internal abstract class MacroCommand
     }
 
     /// <summary>
-    ///     Perform an action every <paramref name="interval" /> seconds until either the action succeeds or
-    ///     <paramref name="until" /> seconds elapse.
+    ///     Perform an action every <paramref name="interval"/> seconds until either the action succeeds or
+    ///     <paramref name="until"/> seconds elapse.
     /// </summary>
     /// <param name="interval">Action execution interval.</param>
     /// <param name="until">Maximum time to wait.</param>
@@ -198,8 +178,8 @@ internal abstract class MacroCommand
     }
 
     /// <summary>
-    ///     Perform an action every <paramref name="interval" /> seconds until either the action succeeds or
-    ///     <paramref name="until" /> seconds elapse.
+    ///     Perform an action every <paramref name="interval"/> seconds until either the action succeeds or
+    ///     <paramref name="until"/> seconds elapse.
     /// </summary>
     /// <param name="interval">Action execution interval.</param>
     /// <param name="until">Maximum time to wait.</param>

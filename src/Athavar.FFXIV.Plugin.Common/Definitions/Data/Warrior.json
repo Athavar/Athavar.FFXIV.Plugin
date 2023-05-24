@@ -38,8 +38,8 @@
       "2A": "storm's path",
       "damage": [
         {
-          "potency": 150,
-          "combo": 430
+          "potency": 160,
+          "combo": 440
         }
       ],
       "heal": [
@@ -85,8 +85,8 @@
       "2D": "storm's eye",
       "damage": [
         {
-          "potency": 150,
-          "combo": 430
+          "potency": 160,
+          "combo": 440
         }
       ]
     },
@@ -94,7 +94,7 @@
       "DDD": "fell cleave",
       "damage": [
         {
-          "potency": 490
+          "potency": 520
         }
       ]
     },
@@ -126,7 +126,7 @@
       "1CDB": "upheaval",
       "damage": [
         {
-          "potency": 370
+          "potency": 400
         }
       ]
     },
@@ -150,7 +150,7 @@
       "4051": "inner chaos",
       "damage": [
         {
-          "potency": 650
+          "potency": 660
         }
       ]
     },

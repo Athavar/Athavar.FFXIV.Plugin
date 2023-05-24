@@ -4,10 +4,10 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.CraftSimulator.Extension;
 using Dalamud.Data;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
@@ -23,13 +23,13 @@ internal sealed class StatsTab : Tab
         this.dataManager = dataManager;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "Stats";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "Tab-CQStatsOptions";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         if (ImGui.Button("Refresh"))

@@ -45,6 +45,7 @@ internal sealed class MeterWindow : IConfigurable
     private int scrollPosition;
 
     private DateTime? lastSortedTimestamp;
+    private MeterDataType? lastSortedMeterDataType;
 
     private List<BaseCombatant> lastSortedCombatants = new();
 
@@ -93,9 +94,9 @@ internal sealed class MeterWindow : IConfigurable
     public static MeterWindow GetDefaultMeter(string name, IServiceProvider provider, MeterManager meterManager)
     {
         var config = new MeterConfig
-                     {
-                         Name = name,
-                     };
+        {
+            Name = name,
+        };
 
         var newMeter = new MeterWindow(config, provider, meterManager);
         return newMeter;
@@ -365,7 +366,7 @@ internal sealed class MeterWindow : IConfigurable
     private List<BaseCombatant> GetSortedCombatants(BaseEncounter encounter, MeterDataType dataType)
     {
         if (this.lastSortedTimestamp.HasValue && this.lastSortedTimestamp.Value == encounter.LastEvent &&
-            !this.GeneralConfigPage.Preview)
+            this.lastSortedMeterDataType == dataType && !this.GeneralConfigPage.Preview)
         {
             return this.lastSortedCombatants;
         }
@@ -377,6 +378,7 @@ internal sealed class MeterWindow : IConfigurable
         sortedCombatants.Sort((x, y) => (int)(y.GetMeterData(dataType) - x.GetMeterData(dataType)));
 
         this.lastSortedTimestamp = encounter.LastEvent;
+        this.lastSortedMeterDataType = dataType;
         this.lastSortedCombatants = sortedCombatants;
         return sortedCombatants;
     }

@@ -12,7 +12,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 internal class ClickGrandCompanySupplyList : ClickBase<ClickGrandCompanySupplyList, AddonTalk>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickGrandCompanySupplyList" /> class.
+    ///     Initializes a new instance of the <see cref="ClickGrandCompanySupplyList"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickGrandCompanySupplyList(nint addon = default)
@@ -33,7 +33,7 @@ internal class ClickGrandCompanySupplyList : ClickBase<ClickGrandCompanySupplyLi
     ///     Click a Supply.
     /// </summary>
     /// <param name="index">Supply index.</param>
-    public unsafe void Supply(ushort index) => this.ClickAddonComponentList((AtkComponentNode*)this.UnitBase->UldManager.NodeList[5], index, 1);
+    public unsafe void Supply(ushort index) => this.ClickAddonComponentList((AtkComponentNode*)this.UnitBase->UldManager.NodeList[5], index, 1U + index);
 
     [ClickName("select_gcsupply1")]
     public void Supply1() => this.Supply(0);

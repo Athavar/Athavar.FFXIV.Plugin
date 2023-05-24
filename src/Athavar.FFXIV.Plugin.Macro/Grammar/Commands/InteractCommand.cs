@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Click;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -38,12 +39,12 @@ internal class InteractCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValue = ExtractAndUnquote(match, "name");
+        var nameValue = match.ExtractAndUnquote("name");
 
         return new InteractCommand(text, nameValue, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");

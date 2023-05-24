@@ -134,7 +134,7 @@
       "4061": "hissatsu: senei",
       "damage": [
         {
-          "potency": 800
+          "potency": 860
         }
       ]
     },
@@ -150,7 +150,7 @@
       "4067": "shoha",
       "damage": [
         {
-          "potency": 520
+          "potency": 560
         }
       ]
     },
@@ -174,7 +174,7 @@
       "64b5": "ogi namikiri",
       "damage": [
         {
-          "potency": 800,
+          "potency": 860,
           "targetindex": 0
         },
         {
@@ -186,7 +186,7 @@
       "64b6": "kaeshi: namikiri",
       "damage": [
         {
-          "potency": 800,
+          "potency": 860,
           "targetindex": 0
         },
         {

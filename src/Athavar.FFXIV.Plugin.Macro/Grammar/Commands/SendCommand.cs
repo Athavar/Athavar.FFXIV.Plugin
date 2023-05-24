@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
@@ -23,7 +24,7 @@ internal class SendCommand : MacroCommand
     private readonly KeyCode[] vkCodes;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="SendCommand" /> class.
+    ///     Initializes a new instance of the <see cref="SendCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="vkCodes">KeyCode codes.</param>
@@ -47,7 +48,7 @@ internal class SendCommand : MacroCommand
             throw new MacroSyntaxError(text);
         }
 
-        var nameValues = ExtractAndUnquote(match, "name").Split(' ', '+');
+        var nameValues = match.ExtractAndUnquote("name").Split(' ', '+');
 
         var vkCodes = nameValues.Select(name =>
         {
@@ -62,7 +63,7 @@ internal class SendCommand : MacroCommand
         return new SendCommand(text, vkCodes, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
