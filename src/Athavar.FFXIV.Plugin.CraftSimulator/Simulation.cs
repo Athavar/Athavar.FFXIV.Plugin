@@ -47,9 +47,9 @@ public sealed partial class Simulation
         }
     }
 
-    public SimulationResult Run(int[] skills, bool linear = false) => this.Run(CraftingSkill.Parse(skills), linear);
+    public SimulationResult Run(int[] skills, bool linear = false, StepState?[]? stepStates = null) => this.Run(CraftingSkill.Parse(skills), linear, stepStates);
 
-    public SimulationResult Run(IEnumerable<CraftingSkills> skills, bool linear = false)
+    public SimulationResult Run(IEnumerable<CraftingSkills> skills, bool linear = false, StepState?[]? stepStates = null)
     {
         this.Linear = linear;
         SimulationFailCause? simulationFailCause = null;
@@ -66,11 +66,21 @@ public sealed partial class Simulation
         }
         else
         {
+            var stepId = 0;
             foreach (var skill in skills)
             {
                 var craftingSkill = CraftingSkill.FindAction(skill);
                 var action = craftingSkill.Action;
                 ActionResult result;
+
+                if (stepStates is not null && stepStates.Length > stepId)
+                {
+                    var stepState = stepStates[stepId];
+                    if (stepState is not null)
+                    {
+                        this.State = stepState.Value;
+                    }
+                }
 
                 SimulationFailCause? failCause = null;
                 var canUseAction = action.CanBeUsed(this);
@@ -105,6 +115,7 @@ public sealed partial class Simulation
                 }
 
                 this.Steps.Add(result);
+                stepId++;
             }
         }
 
@@ -386,6 +397,10 @@ public sealed partial class Simulation
         if (!this.Linear && action is not FinalAppraisal or RemoveFinalAppraisal)
         {
             this.TickState();
+        }
+        else
+        {
+            this.State = StepState.NONE;
         }
 
         return new ActionResult(

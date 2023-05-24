@@ -524,12 +524,34 @@ internal sealed class CraftingJob
         }
 
         // Byregots fail save
-        if (this.RotationCurrentStep + 1 < this.rotation.Length &&
+        if (!this.Recipe.Expert && this.RotationCurrentStep + 1 < this.rotation.Length &&
             this.rotation[this.RotationCurrentStep + 1] == CraftingSkills.ByregotsBlessing &&
-            ci.HasCondition(this.localizedExcellent) &&
-            ci.UseAction(CraftingSkill.FindAction(CraftingSkills.TricksOfTheTrade).Action.GetId(this.Recipe.Class)))
+            ci.HasCondition(this.localizedExcellent))
         {
-            return -1000;
+            var failSaveAction = CraftingSkills.TricksOfTheTrade;
+
+            var testStepStates = new StepState?[this.rotation.Length];
+            testStepStates[this.RotationCurrentStep] = StepState.EXCELLENT;
+            testStepStates[this.RotationCurrentStep + 1] = StepState.POOR;
+
+            IEnumerable<CraftingSkills> GetTestRotation()
+            {
+                for (var i = 0; i < this.rotation.Length; i++)
+                {
+                    if (i == this.RotationCurrentStep)
+                    {
+                        yield return failSaveAction;
+                    }
+
+                    yield return this.rotation[i];
+                }
+            }
+
+            var result = this.simulation.Run(GetTestRotation(), stepStates: testStepStates);
+            if (result.Success && ci.UseAction(CraftingSkill.FindAction(failSaveAction).Action.GetId(this.Recipe.Class)))
+            {
+                return -1000;
+            }
         }
 
         var simAction = action.Skill.Action;
