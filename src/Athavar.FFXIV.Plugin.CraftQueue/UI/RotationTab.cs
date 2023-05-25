@@ -36,6 +36,8 @@ internal sealed class RotationTab : Tab
         this.iconManager = iconManager;
         this.craftDataManager = craftDataManager;
         this.ClientLanguage = clientLanguage;
+
+        this.Configuration.CalculateDuplicateRotations();
     }
 
     /// <inheritdoc/>
@@ -138,6 +140,7 @@ internal sealed class RotationTab : Tab
                 node.Save(this.activeRotationMacro);
                 this.editChanged = false;
                 this.Configuration.Save();
+                this.Configuration.CalculateDuplicateRotations();
             }
         }
 
@@ -244,7 +247,28 @@ internal sealed class RotationTab : Tab
             flags |= ImGuiTreeNodeFlags.Selected;
         }
 
+        if (node.Duplicates.Any())
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+        }
+
         ImGui.TreeNodeEx($"{node.Name}##tree", flags);
+
+        if (node.Duplicates.Any())
+        {
+            ImGui.PopStyleColor();
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.TextUnformatted("Duplicate rotations:");
+                foreach (var duplicate in node.Duplicates)
+                {
+                    ImGui.BulletText(duplicate.Name);
+                }
+
+                ImGui.EndTooltip();
+            }
+        }
 
         this.DisplayNodePopup(node);
         this.NodeDragDrop(node);
@@ -370,6 +394,8 @@ internal sealed class RotationTab : Tab
                     var newNode = new RotationNode { Name = this.GetUniqueNodeName("Untitled rotation") };
                     folderNode.Children.Add(newNode);
                     this.Configuration.Save();
+
+                    this.Configuration.CalculateDuplicateRotations();
                 }
 
                 ImGui.SameLine();
@@ -381,6 +407,7 @@ internal sealed class RotationTab : Tab
                 }
             }
 
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             if (node != this.RootFolder)
             {
                 ImGui.SameLine();
@@ -396,6 +423,11 @@ internal sealed class RotationTab : Tab
                     {
                         parentNode!.Children.Remove(node);
                         this.Configuration.Save();
+
+                        if (node is RotationNode)
+                        {
+                            this.Configuration.CalculateDuplicateRotations();
+                        }
                     }
                 }
 

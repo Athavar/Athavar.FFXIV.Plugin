@@ -50,7 +50,7 @@ internal sealed class CraftingJob
 
         this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
-        this.rotation = CraftingSkill.Parse(node.Rotations);
+        this.rotation = CraftingSkill.Parse(node.Rotations).ToArray();
         this.HqIngredients = hqIngredients;
 
         this.simulation = new Simulation(crafterStats, this.Recipe)

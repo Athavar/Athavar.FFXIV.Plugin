@@ -58,11 +58,11 @@ public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action)
 
     public static IReadOnlyCollection<CraftingSkill> AllSkills() => Actions?.Values ?? throw new IncompleteInitialization();
 
-    public static CraftingMacro ParseMacro(int[] skills) => ParseMacro(Parse(skills));
+    public static CraftingMacro ParseMacro(IEnumerable<int> skills) => ParseMacro(Parse(skills));
 
-    public static CraftingMacro ParseMacro(CraftingSkills[] skills) => new(skills.Select(s => Actions![s]).ToArray());
+    public static CraftingMacro ParseMacro(IEnumerable<CraftingSkills> skills) => new(skills.Select(s => Actions![s]).ToArray());
 
-    public static CraftingSkills[] Parse(int[] skills) => Array.ConvertAll(skills, value => (CraftingSkills)value);
+    public static IEnumerable<CraftingSkills> Parse(IEnumerable<int> skills) => skills.Cast<CraftingSkills>();
 
     private sealed class CraftingSkillCollectionBuilder
     {
