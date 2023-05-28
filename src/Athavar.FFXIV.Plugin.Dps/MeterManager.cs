@@ -36,9 +36,9 @@ internal sealed class MeterManager : IDisposable
 
     private DateTime nextCacheReset = DateTime.MinValue;
 
-    public MeterManager(Configuration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow, IOpcodeManager opcodeManager)
+    public MeterManager(DpsConfiguration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow, IOpcodeManager opcodeManager)
     {
-        this.configuration = configuration.Dps!;
+        this.configuration = configuration;
         this.provider = provider;
         this.services = services;
         this.pluginWindow = pluginWindow;

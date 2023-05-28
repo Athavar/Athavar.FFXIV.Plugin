@@ -28,31 +28,29 @@ internal sealed class MacroConfigTab : Tab
     private readonly MacroHelpWindow helpWindow;
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
 
-    private INode? draggedNode;
+    private Node? draggedNode;
     private MacroNode? activeMacroNode;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroConfigTab" /> class.
+    ///     Initializes a new instance of the <see cref="MacroConfigTab"/> class.
     /// </summary>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    /// <param name="macroManager"><see cref="MacroModule" /> added by DI.</param>
-    /// <param name="helpWindow"><see cref="MacroHelpWindow" /> added by DI.</param>
-    /// <param name="configuration">The <see cref="Configuration" /> added by DI.</param>
-    public MacroConfigTab(IChatManager chatManager, MacroManager macroManager, MacroHelpWindow helpWindow, Configuration configuration)
+    /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
+    /// <param name="macroManager"><see cref="MacroModule"/> added by DI.</param>
+    /// <param name="helpWindow"><see cref="MacroHelpWindow"/> added by DI.</param>
+    /// <param name="configuration">The <see cref="MacroConfiguration"/> added by DI.</param>
+    public MacroConfigTab(IChatManager chatManager, MacroManager macroManager, MacroHelpWindow helpWindow, MacroConfiguration configuration)
     {
         this.chatManager = chatManager;
         this.macroManager = macroManager;
         this.helpWindow = helpWindow;
-        this.BaseConfiguration = configuration;
+        this.Configuration = configuration;
     }
 
     public override string Name => MacroModule.ModuleName;
 
     public override string Identifier => "macro";
 
-    private Configuration BaseConfiguration { get; }
-
-    private MacroConfiguration Configuration => this.BaseConfiguration.Macro ?? throw new ArgumentException();
+    private MacroConfiguration Configuration { get; }
 
     private FolderNode RootFolder => this.Configuration.RootFolder;
 
@@ -81,7 +79,7 @@ internal sealed class MacroConfigTab : Tab
 
     private void DisplayNodeTree() => this.DisplayNode(this.RootFolder);
 
-    private void DisplayNode(INode node)
+    private void DisplayNode(Node node)
     {
         ImGui.PushID(node.Name);
 
@@ -141,7 +139,7 @@ internal sealed class MacroConfigTab : Tab
         }
     }
 
-    private void DisplayNodePopup(INode node)
+    private void DisplayNodePopup(Node node)
     {
         if (ImGui.BeginPopupContextItem($"##{node.Name}-popup"))
         {
@@ -149,7 +147,7 @@ internal sealed class MacroConfigTab : Tab
             if (ImGui.InputText("##rename", ref name, 100, ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue))
             {
                 node.Name = this.GetUniqueNodeName(name);
-                this.BaseConfiguration.Save();
+                this.Configuration.Save();
             }
 
             if (node is MacroNode macroNode)
@@ -166,7 +164,7 @@ internal sealed class MacroConfigTab : Tab
                 {
                     var newNode = new MacroNode { Name = this.GetUniqueNodeName("Untitled macro") };
                     folderNode.Children.Add(newNode);
-                    this.BaseConfiguration.Save();
+                    this.Configuration.Save();
                 }
 
                 ImGui.SameLine();
@@ -174,7 +172,7 @@ internal sealed class MacroConfigTab : Tab
                 {
                     var newNode = new FolderNode { Name = this.GetUniqueNodeName("Untitled folder") };
                     folderNode.Children.Add(newNode);
-                    this.BaseConfiguration.Save();
+                    this.Configuration.Save();
                 }
             }
 
@@ -192,7 +190,7 @@ internal sealed class MacroConfigTab : Tab
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
                         parentNode!.Children.Remove(node);
-                        this.BaseConfiguration.Save();
+                        this.Configuration.Save();
                     }
                 }
 
@@ -210,12 +208,12 @@ internal sealed class MacroConfigTab : Tab
         var state = this.macroManager.State;
 
         var stateName = state switch
-                        {
-                            LoopState.NotLoggedIn => "Not Logged In",
-                            LoopState.Running when this.macroManager.PauseAtLoop => "Pausing Soon",
-                            LoopState.Running when this.macroManager.StopAtLoop => "Stopping Soon",
-                            _ => Enum.GetName(state),
-                        };
+        {
+            LoopState.NotLoggedIn => "Not Logged In",
+            LoopState.Running when this.macroManager.PauseAtLoop => "Pausing Soon",
+            LoopState.Running when this.macroManager.StopAtLoop => "Stopping Soon",
+            _ => Enum.GetName(state),
+        };
 
         var buttonCol = ImGuiEx.GetStyleColorVec4(ImGuiCol.Button);
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, buttonCol);
@@ -375,7 +373,7 @@ internal sealed class MacroConfigTab : Tab
             }
 
             node.Contents = text;
-            this.BaseConfiguration.Save();
+            this.Configuration.Save();
         }
 
         ImGui.SameLine();
@@ -478,7 +476,7 @@ internal sealed class MacroConfigTab : Tab
         if (ImGui.InputTextMultiline($"##{node.Name}-editor", ref contents, 100_000, new Vector2(-1, -1)))
         {
             node.Contents = contents;
-            this.BaseConfiguration.Save();
+            this.Configuration.Save();
         }
 
         if (useMono)
@@ -514,7 +512,7 @@ internal sealed class MacroConfigTab : Tab
         return name.Trim();
     }
 
-    private void NodeDragDrop(INode node)
+    private void NodeDragDrop(Node node)
     {
         if (node != this.RootFolder)
         {

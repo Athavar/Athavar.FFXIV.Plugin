@@ -17,7 +17,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     private readonly Hook<OnSetupDelegate> onSetupHook;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="OnSetupFeature" /> class.
+    ///     Initializes a new instance of the <see cref="OnSetupFeature"/> class.
     /// </summary>
     /// <param name="onSetupSig">Signature to the OnSetup method.</param>
     /// <param name="module">The module.</param>
@@ -39,7 +39,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     internal delegate nint OnSetupDelegate(nint addon, uint a2, nint data);
 
     /// <summary>
-    ///     Gets the <see cref="YesConfiguration" />.
+    ///     Gets the <see cref="YesConfiguration"/>.
     /// </summary>
     protected YesConfiguration Configuration => this.module.MC;
 
@@ -53,7 +53,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// </summary>
     protected nint HookAddress { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.onSetupHook?.Disable();
@@ -73,7 +73,7 @@ internal abstract class OnSetupFeature : IBaseFeature
         PluginLog.Debug($"Addon{this.AddonName}.OnSetup");
         var result = this.onSetupHook.Original(addon, a2, data);
 
-        if (!this.module.MC.Enabled || this.module.DisableKeyPressed)
+        if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
         {
             return result;
         }

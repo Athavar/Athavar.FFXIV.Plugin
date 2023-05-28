@@ -6,31 +6,41 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 ///     Macro node type.
 /// </summary>
-public sealed class MacroNode : INode
+public sealed class MacroNode : Node
 {
-    /// <inheritdoc />
-    public string Name { get; set; } = string.Empty;
+    /// <inheritdoc/>
+    public override string Name { get; set; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets the contents of the macro.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("Contents")]
     public string Contents { get; set; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets a value indicating whether this macro should loop automatically.
     /// </summary>
-    public bool CraftingLoop { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("CraftingLoop")]
+    public bool CraftingLoop { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating how many loops this macro should run if looping is enabled.
     /// </summary>
-    public int CraftLoopCount { get; set; } = 0;
+    [JsonInclude]
+    [JsonPropertyName("CraftLoopCount")]
+    public int CraftLoopCount { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the macro is a Lua script.
     /// </summary>
-    public bool IsLua { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("IsLua")]
+    public bool IsLua { get; set; }
 }

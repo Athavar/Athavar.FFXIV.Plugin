@@ -32,8 +32,8 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
 
     private bool enableState;
 
-    public SliceIsRightModule(Configuration configuration, IDalamudServices dalamudServices)
-        : base(configuration, configuration.SliceIsRight!)
+    public SliceIsRightModule(SliceIsRightConfiguration configuration, IDalamudServices dalamudServices)
+        : base(configuration)
     {
         this.dalamudServices = dalamudServices;
         if (this.GetEnableStateAction().Get())

@@ -10,6 +10,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
+using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.Text;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
@@ -33,7 +34,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     /// <param name="localizeManager"><see cref="ILocalizeManager"/> added by DI.</param>
     /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
     /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
-    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, Configuration configuration, IDalamudServices services, IGearsetManager gearsetManager)
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IGearsetManager gearsetManager)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
@@ -108,10 +109,10 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
         private readonly IModuleManager manager;
         private readonly ILocalizeManager localizeManager;
         private readonly string[] languages = Enum.GetNames<Language>();
-        private readonly Configuration configuration;
+        private readonly CommonConfiguration configuration;
         private readonly IGearsetManager gearsetManager;
 
-        public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, Configuration configuration, IGearsetManager gearsetManager)
+        public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, CommonConfiguration configuration, IGearsetManager gearsetManager)
         {
             this.window = window;
             this.dalamudServices = dalamudServices;

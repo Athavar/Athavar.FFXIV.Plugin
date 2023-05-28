@@ -27,16 +27,16 @@ internal partial class MacroManager : IDisposable
     private CancellationTokenSource? stepTokenSource;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroManager" /> class.
+    ///     Initializes a new instance of the <see cref="MacroManager"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager, Configuration configuration)
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
+    /// <param name="configuration"><see cref="MacroConfiguration"/> added by DI.</param>
+    public MacroManager(IDalamudServices dalamudServices, IChatManager chatManager, MacroConfiguration configuration)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
-        this.configuration = configuration.Macro!;
+        this.configuration = configuration;
 
         // Start the loop.
         Task.Factory.StartNew(this.EventLoop, TaskCreationOptions.LongRunning);
@@ -59,7 +59,7 @@ internal partial class MacroManager : IDisposable
     /// </summary>
     public bool StopAtLoop { get; private set; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.eventLoopTokenSource.Cancel();

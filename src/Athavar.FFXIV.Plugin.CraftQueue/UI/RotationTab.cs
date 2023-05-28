@@ -22,7 +22,7 @@ internal sealed class RotationTab : Tab
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
     private readonly ICraftDataManager craftDataManager;
-    private INode? draggedNode;
+    private Node? draggedNode;
     private RotationNode? activeRotationNode;
     private CraftingMacro? activeRotationMacro;
 
@@ -200,7 +200,7 @@ internal sealed class RotationTab : Tab
         ImGui.PopItemWidth();
     }
 
-    private void DisplayNode(INode node)
+    private void DisplayNode(Node node)
     {
         ImGui.PushID(node.Name);
 
@@ -310,7 +310,7 @@ internal sealed class RotationTab : Tab
         return name.Trim();
     }
 
-    private void NodeDragDrop(INode node)
+    private void NodeDragDrop(Node node)
     {
         if (node != this.RootFolder)
         {
@@ -376,7 +376,7 @@ internal sealed class RotationTab : Tab
         }
     }
 
-    private void DisplayNodePopup(INode node)
+    private void DisplayNodePopup(Node node)
     {
         if (ImGui.BeginPopupContextItem($"##{node.Name}-popup"))
         {

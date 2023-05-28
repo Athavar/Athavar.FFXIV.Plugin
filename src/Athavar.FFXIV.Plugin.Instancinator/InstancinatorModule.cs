@@ -47,6 +47,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         // 961, /* Elpis */
     };
 
+    private readonly YesConfiguration yesConfiguration;
     private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
     private readonly string travelToInstancedArea;
@@ -57,15 +58,16 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private long nextKeypress;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InstancinatorModule" /> class.
+    ///     Initializes a new instance of the <see cref="InstancinatorModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="tab"><see cref="IInstancinatorTab" /> added by DI.</param>
-    public InstancinatorModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices)
-        : base(configuration, configuration.Instancinator!)
+    /// <param name="configuration"><see cref="InstancinatorConfiguration"/> added by DI.</param>
+    /// <param name="yesConfiguration"><see cref="YesConfiguration"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices)
+        : base(configuration)
     {
+        this.yesConfiguration = yesConfiguration;
         this.provider = provider;
         this.dalamudServices = dalamudServices;
 
@@ -83,10 +85,10 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         PluginLog.LogDebug("Module 'Instancinator' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => false;
 
     /// <summary>
@@ -103,7 +105,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.DisableAllAndCreateIfNotExists();
         this.SelectedInstance = instance;
 
-        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.yesConfiguration.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {
@@ -122,7 +124,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
@@ -146,7 +148,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     {
         if (!this.DisableAllEntries())
         {
-            var rootChildren = this.Configuration.Yes!.ListRootFolder.Children;
+            var rootChildren = this.yesConfiguration.ListRootFolder.Children;
             var instance = new TextFolderNode
             {
                 Name = FolderName,
@@ -160,7 +162,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override InstancinatorTab InitTab() => new(this.ModuleConfig);
 
     private InstancinatorWindow CreateWindow() => new(this.provider.GetRequiredService<WindowSystem>(), this);
@@ -205,8 +207,8 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             }
         }
 
-        var config = this.Configuration.Instancinator;
-        if (config is null || !config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
+        var config = this.ModuleConfig;
+        if (!config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
         {
             if (this.window != null)
             {
@@ -296,7 +298,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private bool DisableAllEntries()
     {
         this.SelectedInstance = 0;
-        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.yesConfiguration.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {
@@ -333,7 +335,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         /// </summary>
         public SeString String { get; set; } = null!;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public override void PopulateData(RowParser parser, GameData gameData, Language language)
         {
             base.PopulateData(parser, gameData, language);

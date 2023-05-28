@@ -18,9 +18,9 @@ internal sealed class CraftQueueTab : Tab
 
     private string debugInput = string.Empty;
 
-    public CraftQueueTab(IServiceProvider serviceProvider, CraftQueue craftQueue, Configuration configuration)
+    public CraftQueueTab(IServiceProvider serviceProvider, CraftQueue craftQueue, CraftQueueConfiguration configuration)
     {
-        this.BaseConfiguration = configuration;
+        this.Configuration = configuration;
 
         var dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
         var dataManager = dalamudServices.DataManager;
@@ -54,9 +54,7 @@ internal sealed class CraftQueueTab : Tab
 
     private ClientLanguage ClientLanguage { get; }
 
-    private Configuration BaseConfiguration { get; }
-
-    private CraftQueueConfiguration Configuration => this.BaseConfiguration.CraftQueue ?? throw new ArgumentException();
+    private CraftQueueConfiguration Configuration { get; }
 
     /// <summary>
     ///     Draw this tab.

@@ -14,11 +14,11 @@ internal sealed class OpcodeWizardModule : Module<OpcodeWizardTab, OpcodeWizardC
     internal const string ModuleName = "OpcodeWizard";
     private readonly IServiceProvider provider;
 
-    public OpcodeWizardModule(Configuration configuration, IServiceProvider provider)
-        : base(configuration, configuration.OpcodeWizard!)
+    public OpcodeWizardModule(OpcodeWizardConfiguration configuration, IServiceProvider provider)
+        : base(configuration)
         => this.provider = provider;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
     protected override OpcodeWizardTab InitTab() => ActivatorUtilities.CreateInstance<OpcodeWizardTab>(this.provider);

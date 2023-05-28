@@ -20,6 +20,7 @@ using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -71,16 +72,20 @@ public sealed class Plugin : IDalamudPlugin
     private ServiceProvider BuildProvider()
     {
         return new ServiceCollection()
-           .AddSingleton(this.pluginInterface)
-           .AddSingleton<IPluginWindow, PluginWindow>()
-           .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(o =>
             {
-                var ser = o.GetRequiredService<IDalamudServices>();
-                var pi = ser.PluginInterface;
+                if (this.pluginInterface.ConfigFile.Exists)
+                {
+                    // migrate old configuration
+                    PluginLog.LogInformation("Start the migrate of the configuration");
+                    Configuration.Migrate(this.pluginInterface);
+                    PluginLog.LogInformation("Finish the migrate of the configuration");
+                }
 
-                return Configuration.Load(pi);
+                return this.pluginInterface;
             })
+           .AddSingleton<IPluginWindow, PluginWindow>()
+           .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
            .AddCommon()
            .AddAutoSpearModule()

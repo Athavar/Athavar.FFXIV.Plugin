@@ -44,24 +44,24 @@ internal sealed class YesConfigTab : Tab
     };
 
     private readonly YesModule module;
-    private INode? draggedNode;
+    private Node? draggedNode;
     private string debugClickName = string.Empty;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="YesConfigTab" /> class.
+    ///     Initializes a new instance of the <see cref="YesConfigTab"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    /// <param name="click"><see cref="IClick" /> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="zoneListWindow"><see cref="ZoneListWindow" /> added by DI.</param>
-    public YesConfigTab(YesModule module, IDalamudServices dalamudServices, IChatManager chatManager, IClick click, Configuration configuration, ZoneListWindow zoneListWindow)
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
+    /// <param name="click"><see cref="IClick"/> added by DI.</param>
+    /// <param name="configuration"><see cref="YesConfiguration"/> added by DI.</param>
+    /// <param name="zoneListWindow"><see cref="ZoneListWindow"/> added by DI.</param>
+    public YesConfigTab(YesModule module, IDalamudServices dalamudServices, IChatManager chatManager, IClick click, YesConfiguration configuration, ZoneListWindow zoneListWindow)
     {
         this.module = module;
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
         this.click = click;
-        this.Configuration = configuration.Yes!;
+        this.Configuration = configuration;
         this.zoneListWindow = zoneListWindow;
     }
 
@@ -664,7 +664,7 @@ internal sealed class YesConfigTab : Tab
     }
 
     // ====================================================================================================
-    private void DisplayTextNode(INode node, TextFolderNode rootNode)
+    private void DisplayTextNode(Node node, TextFolderNode rootNode)
     {
         if (node is TextFolderNode folderNode)
         {
@@ -923,7 +923,7 @@ internal sealed class YesConfigTab : Tab
         }
     }
 
-    private void TextNodePopup(INode node, TextFolderNode? root = null)
+    private void TextNodePopup(Node node, TextFolderNode? root = null)
     {
         var style = ImGui.GetStyle();
         var newItemSpacing = new Vector2(style.ItemSpacing.X / 2, style.ItemSpacing.Y);
@@ -1213,7 +1213,7 @@ internal sealed class YesConfigTab : Tab
         }
     }
 
-    private void TextNodeDragDrop(INode node)
+    private void TextNodeDragDrop(Node node)
     {
         if (node != this.RootFolder && node != this.ListRootFolder && node != this.TalkRootFolder && ImGui.BeginDragDropSource())
         {

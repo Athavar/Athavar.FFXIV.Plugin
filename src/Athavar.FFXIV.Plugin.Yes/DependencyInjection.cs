@@ -11,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddYesModule(this IServiceCollection services)
     {
         services.AddSingleton<ZoneListWindow>();
+        YesConfiguration.AddToDependencyInjection(services);
 
         return services;
     }

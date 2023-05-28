@@ -5,68 +5,35 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-using System.Collections;
 using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-public sealed class RotationNode : INode, IEquatable<RotationNode>
+public sealed class RotationNode : Node
 {
-    [JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public List<RotationNode> Duplicates { get; } = new();
 
     /// <inheritdoc/>
-    public string Name { get; set; } = string.Empty;
+    public override string Name { get; set; } = string.Empty;
 
-    [JsonIgnore]
+    [System.Text.Json.Serialization.JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public ImmutableArray<int> Rotations { get; set; } = Array.Empty<int>().ToImmutableArray();
 
+    [JsonInclude]
+    [JsonPropertyName("Rotations")]
     [JsonProperty("Rotations")]
-    private int[] RotationArray
+    public int[] RotationArray
     {
         get => this.Rotations.ToArray();
-        set => this.Rotations = value.ToImmutableArray();
+        init => this.Rotations = value.ToImmutableArray();
     }
-
-    public static bool operator ==(RotationNode? left, RotationNode? right) => Equals(left, right);
-
-    public static bool operator !=(RotationNode? left, RotationNode? right) => !Equals(left, right);
 
     /// <inheritdoc/>
     public override string ToString() => this.Name;
 
-    /// <inheritdoc/>
-    public bool Equals(RotationNode? other)
-    {
-        if (ReferenceEquals(null, other))
-        {
-            return false;
-        }
-
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        if (this.Rotations.Length != other.Rotations.Length)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < this.Rotations.Length; i++)
-        {
-            if (this.Rotations[i] != other.Rotations[i])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /// <inheritdoc/>
-    public override bool Equals(object? obj) => ReferenceEquals(this, obj) || (obj is RotationNode other && this.Equals(other));
-
-    /// <inheritdoc/>
     // ReSharper disable once NonReadonlyMemberInGetHashCode
-    public override int GetHashCode() => ((IStructuralEquatable)this.Rotations).GetHashCode(EqualityComparer<int>.Default);
+    internal string GetRotationString() => string.Join('-', this.Rotations);
 }

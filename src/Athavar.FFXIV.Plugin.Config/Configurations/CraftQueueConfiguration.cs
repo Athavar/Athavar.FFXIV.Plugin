@@ -5,36 +5,48 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public sealed class CraftQueueConfiguration : BasicModuleConfig
+using System.Text.Json.Serialization;
+
+public sealed class CraftQueueConfiguration : BasicModuleConfig<CraftQueueConfiguration>
 {
     /// <summary>
     ///     Gets the root folder.
     /// </summary>
-    public FolderNode RootFolder { get; } = new() { Name = "/" };
+    [JsonInclude]
+    [JsonPropertyName("RootFolder")]
+    public FolderNode RootFolder { get; init; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets a value indicating whether to wait after a craft actions.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftWaitSkip")]
     public bool CraftWaitSkip { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
     /// </summary>
-    public bool QualitySkip { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("QualitySkip")]
+    public bool QualitySkip { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to gear should be automatic repaired.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("AutoRepair")]
     public bool AutoRepair { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets a value indicating whether to materia is auto extracted.
     /// </summary>
-    public bool AutoMateriaExtract { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("AutoMateriaExtract")]
+    public bool AutoMateriaExtract { get; set; }
 
     public void CalculateDuplicateRotations()
     {
-        foreach (var rotationNodes in this.GetAllNodes().OfType<RotationNode>().GroupBy(x => x))
+        foreach (var rotationNodes in this.GetAllNodes().OfType<RotationNode>().GroupBy(x => x.GetRotationString()))
         {
             if (rotationNodes.Count() > 1)
             {
@@ -58,7 +70,7 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig
             else
             {
                 // unique
-                rotationNodes.Key.Duplicates.Clear();
+                rotationNodes.First().Duplicates.Clear();
             }
         }
     }
@@ -67,7 +79,7 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>
-    public IEnumerable<INode> GetAllNodes() => new INode[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
+    public IEnumerable<Node> GetAllNodes() => new Node[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
 
     /// <summary>
     ///     Tries to find the parent of a node.
@@ -75,7 +87,7 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig
     /// <param name="node">Node to check.</param>
     /// <param name="parent">Parent of the node or null.</param>
     /// <returns>A value indicating whether the parent was found.</returns>
-    public bool TryFindParent(INode node, out FolderNode? parent)
+    public bool TryFindParent(Node node, out FolderNode? parent)
     {
         foreach (var candidate in this.GetAllNodes())
         {
@@ -95,7 +107,7 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig
     /// </summary>
     /// <param name="nodes">Nodes to search.</param>
     /// <returns>The nodes in the tree.</returns>
-    private IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)
+    private IEnumerable<Node> GetAllNodes(IEnumerable<Node> nodes)
     {
         foreach (var node in nodes)
         {

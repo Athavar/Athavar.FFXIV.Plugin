@@ -6,6 +6,6 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public sealed class SliceIsRightConfiguration : BasicModuleConfig
+public sealed class SliceIsRightConfiguration : BasicModuleConfig<SliceIsRightConfiguration>
 {
 }

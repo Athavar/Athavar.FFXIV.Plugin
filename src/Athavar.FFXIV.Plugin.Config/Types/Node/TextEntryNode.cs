@@ -6,24 +6,26 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 /// <summary>
 ///     Text entry node type.
 /// </summary>
-public sealed class TextEntryNode : INode
+public sealed class TextEntryNode : Node
 {
     /// <summary>
     ///     Gets a value indicating whether the matching text is a regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public bool IsTextRegex => this.Text.StartsWith("/") && this.Text.EndsWith("/");
 
     /// <summary>
     ///     Gets the matching text as a compiled regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public Regex? TextRegex
     {
         get
@@ -43,12 +45,14 @@ public sealed class TextEntryNode : INode
     ///     Gets a value indicating whether the matching zone text is a regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public bool ZoneIsRegex => this.ZoneText.StartsWith("/") && this.ZoneText.EndsWith("/");
 
     /// <summary>
     ///     Gets the matching zone text as a compiled regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public Regex? ZoneRegex
     {
         get
@@ -67,13 +71,16 @@ public sealed class TextEntryNode : INode
     /// <summary>
     ///     Gets or sets a value indicating whether the node is enabled.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets the name of the node.
     /// </summary>
     [JsonIgnore]
-    public string Name
+    [Newtonsoft.Json.JsonIgnore]
+    public override string Name
     {
         get
             => !string.IsNullOrEmpty(this.ZoneText)
@@ -86,20 +93,28 @@ public sealed class TextEntryNode : INode
     /// <summary>
     ///     Gets or sets the matching text.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("Text")]
     public string Text { get; set; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets a value indicating whether this entry should be zone restricted.
     /// </summary>
-    public bool ZoneRestricted { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("ZoneRestricted")]
+    public bool ZoneRestricted { get; set; }
 
     /// <summary>
     ///     Gets or sets the matching zone text.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("ZoneText")]
     public string ZoneText { get; set; } = string.Empty;
 
     /// <summary>
     ///     Gets or sets a value indicating whether yes should be pressed instead of no.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("IsYes")]
     public bool IsYes { get; set; } = true;
 }

@@ -6,147 +6,182 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
 using Dalamud.Game.ClientState.Keys;
-using Newtonsoft.Json;
 
 /// <summary>
 ///     Yes module configuration.
 /// </summary>
-public sealed class YesConfiguration : BasicModuleConfig
+public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
 {
-    /// <summary>
-    ///     Gets the root folder.
-    /// </summary>
-    public TextFolderNode RootFolder { get; } = new() { Name = "/" };
-
-    /// <summary>
-    ///     Gets the list root folder.
-    /// </summary>
-    public TextFolderNode ListRootFolder { get; } = new() { Name = "/" };
-
-    /// <summary>
-    ///     Gets the talk root folder.
-    /// </summary>
-    public TextFolderNode TalkRootFolder { get; } = new() { Name = "/" };
-
     /// <summary>
     ///     Gets a value indicating whether the module is enabled with functionality.
     /// </summary>
     [JsonIgnore]
-    public new bool Enabled => this.FunctionEnabled && this.ModuleEnabled;
+    [Newtonsoft.Json.JsonIgnore]
+    public bool ModuleEnabled => this.FunctionEnabled && this.Enabled;
+
+    /// <summary>
+    ///     Gets the root folder.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("RootFolder")]
+    public TextFolderNode RootFolder { get; init; } = new() { Name = "/" };
+
+    /// <summary>
+    ///     Gets the list root folder.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("ListRootFolder")]
+    public TextFolderNode ListRootFolder { get; init; } = new() { Name = "/" };
+
+    /// <summary>
+    ///     Gets the talk root folder.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("TalkRootFolder")]
+    public TextFolderNode TalkRootFolder { get; init; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets the hotkey to always click yes.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("ForcedYesKey")]
     public VirtualKey ForcedYesKey { get; set; } = VirtualKey.NO_KEY;
 
     /// <summary>
     ///     Gets or sets the hotkey to disable all functionality.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("DisableKey")]
     public VirtualKey DisableKey { get; set; } = VirtualKey.NO_KEY;
-
-    /// <summary>
-    ///     Gets or sets the configuration version.
-    /// </summary>
-    public int Version { get; set; } = 1;
-
-    /// <summary>
-    ///     Gets or sets a value indicating whether the module is enabled.
-    /// </summary>
-    public bool ModuleEnabled { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets a value indicating whether the module functionality is enabled.
     /// </summary>
     // ReSharper disable once RedundantDefaultMemberInitializer
-    public bool FunctionEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("FunctionEnabled")]
+    public bool FunctionEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the desynth dialog setting is enabled.
     /// </summary>
-    public bool DesynthDialogEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("DesynthDialogEnabled")]
+    public bool DesynthDialogEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the desynth bulk dialog setting is enabled.
     /// </summary>
-    public bool DesynthBulkDialogEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("DesynthBulkDialogEnabled")]
+    public bool DesynthBulkDialogEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the materialize dialog setting is enabled.
     /// </summary>
-    public bool MaterializeDialogEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("MaterializeDialogEnabled")]
+    public bool MaterializeDialogEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the materia retrieve dialog setting is enabled.
     /// </summary>
-    public bool MateriaRetrieveDialogEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("MateriaRetrieveDialogEnabled")]
+    public bool MateriaRetrieveDialogEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the item inspection result dialog setting is enabled.
     /// </summary>
-    public bool ItemInspectionResultEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("ItemInspectionResultEnabled")]
+    public bool ItemInspectionResultEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets the item inspection result limit, where the inspection loop will pause after that many items.
     /// </summary>
-    public int ItemInspectionResultRateLimiter { get; set; } = 0;
+    [JsonInclude]
+    [JsonPropertyName("ItemInspectionResultRateLimiter")]
+    public int ItemInspectionResultRateLimiter { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the retainer task ask dialog setting is enabled.
     /// </summary>
-    public bool RetainerTaskAskEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("RetainerTaskAskEnabled")]
+    public bool RetainerTaskAskEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the retainer task result dialog setting is enabled.
     /// </summary>
-    public bool RetainerTaskResultEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("RetainerTaskResultEnabled")]
+    public bool RetainerTaskResultEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the grand company supply reward dialog setting is enabled.
     /// </summary>
-    public bool GrandCompanySupplyReward { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("GrandCompanySupplyReward")]
+    public bool GrandCompanySupplyReward { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the shop card dialog setting is enabled.
     /// </summary>
-    public bool ShopCardDialog { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("ShopCardDialog")]
+    public bool ShopCardDialog { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the journal result complete setting is enabled.
     /// </summary>
-    public bool JournalResultCompleteEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("JournalResultCompleteEnabled")]
+    public bool JournalResultCompleteEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the duty finder accept setting is enabled.
     /// </summary>
-    public bool ContentsFinderConfirmEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("ContentsFinderConfirmEnabled")]
+    public bool ContentsFinderConfirmEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the duty finder one-time accept setting is enabled.
     /// </summary>
-    public bool ContentsFinderOneTimeConfirmEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("ContentsFinderOneTimeConfirmEnabled")]
+    public bool ContentsFinderOneTimeConfirmEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to remember the last pane in the inclusion shop.
     /// </summary>
-    public bool InclusionShopRememberEnabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("InclusionShopRememberEnabled")]
+    public bool InclusionShopRememberEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets the first AtkValue for the inclusion shop category change event.
     /// </summary>
-    public uint InclusionShopRememberCategory { get; set; } = 0;
+    [JsonInclude]
+    [JsonPropertyName("InclusionShopRememberCategory")]
+    public uint InclusionShopRememberCategory { get; set; }
 
     /// <summary>
     ///     Gets or sets the second AtkValue for the inclusion shop subcategory change event.
     /// </summary>
-    public uint InclusionShopRememberSubcategory { get; set; } = 0;
+    [JsonInclude]
+    [JsonPropertyName("InclusionShopRememberSubcategory")]
+    public uint InclusionShopRememberSubcategory { get; set; }
 
     /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>
-    public IEnumerable<INode> GetAllNodes()
-        => new INode[]
+    public IEnumerable<Node> GetAllNodes()
+        => new Node[]
             {
                 this.RootFolder,
                 this.ListRootFolder,
@@ -161,7 +196,7 @@ public sealed class YesConfiguration : BasicModuleConfig
     /// </summary>
     /// <param name="nodes">Nodes to search.</param>
     /// <returns>The nodes in the tree.</returns>
-    public IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)
+    public IEnumerable<Node> GetAllNodes(IEnumerable<Node> nodes)
     {
         foreach (var node in nodes)
         {
@@ -183,7 +218,7 @@ public sealed class YesConfiguration : BasicModuleConfig
     /// <param name="node">Node to check.</param>
     /// <param name="parent">Parent of the node or null.</param>
     /// <returns>A value indicating whether the parent was found.</returns>
-    public bool TryFindParent(INode node, out TextFolderNode? parent)
+    public bool TryFindParent(Node node, out TextFolderNode? parent)
     {
         foreach (var candidate in this.GetAllNodes())
         {

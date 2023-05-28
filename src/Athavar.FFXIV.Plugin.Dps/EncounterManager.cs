@@ -35,14 +35,14 @@ internal sealed partial class EncounterManager : IDisposable
     private DateTime nextUpdate = DateTime.MinValue;
     private DateTime nextStatUpdate = DateTime.MinValue;
 
-    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, Configuration configuration)
+    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration)
     {
         this.services = services;
         this.networkHandler = networkHandler;
         this.definitions = definitions;
         this.utils = utils;
         this.ci = ci;
-        this.configuration = configuration.Dps!;
+        this.configuration = configuration;
 
         this.objectTable = services.ObjectTable;
         Encounter.ObjectTable = services.ObjectTable;

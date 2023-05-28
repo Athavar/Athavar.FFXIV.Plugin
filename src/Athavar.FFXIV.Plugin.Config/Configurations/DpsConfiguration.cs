@@ -4,11 +4,19 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
-public sealed class DpsConfiguration : BasicModuleConfig
+using System.Text.Json.Serialization;
+
+public sealed class DpsConfiguration : BasicModuleConfig<DpsConfiguration>
 {
+    [JsonInclude]
+    [JsonPropertyName("Meters")]
     public List<MeterConfig> Meters { get; set; } = new();
 
+    [JsonInclude]
+    [JsonPropertyName("PartyFilter")]
     public PartyType PartyFilter { get; set; } = PartyType.Alliance;
 
+    [JsonInclude]
+    [JsonPropertyName("TextRefreshInterval")]
     public int TextRefreshInterval { get; set; } = 200;
 }

@@ -15,6 +15,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
@@ -408,7 +409,7 @@ internal sealed class CraftingJob
         return !ci.IsAddonVisible(Constants.Addons.RecipeNote) ? -1000 : 100;
     }
 
-    private int SelectIngredients()
+    private unsafe int SelectIngredients()
     {
         var ci = this.queue.CommandInterface;
         if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
@@ -421,6 +422,8 @@ internal sealed class CraftingJob
         {
             return -100;
         }
+
+        var addon = (AddonRecipeNote*)ptr;
 
         var click = ClickRecipeNote.Using(ptr);
 

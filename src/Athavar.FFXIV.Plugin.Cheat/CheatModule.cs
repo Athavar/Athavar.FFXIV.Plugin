@@ -23,11 +23,9 @@ internal sealed class CheatModule : Module, IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="CheatModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
-    public CheatModule(Configuration configuration, IDalamudServices dalamudServices, IServiceProvider provider)
-        : base(configuration)
+    public CheatModule(IDalamudServices dalamudServices, IServiceProvider provider)
     {
         this.dalamudServices = dalamudServices;
 

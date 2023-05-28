@@ -18,10 +18,10 @@ internal abstract class UpdateFeature : IBaseFeature
     private readonly Hook<UpdateDelegate> updateHook;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="UpdateFeature" /> class.
+    ///     Initializes a new instance of the <see cref="UpdateFeature"/> class.
     /// </summary>
     /// <param name="updateSig">Signature to the Update method.</param>
-    /// <param name="scanner"><see cref="SigScanner" /> to scan after signature in memory.</param>
+    /// <param name="scanner"><see cref="SigScanner"/> to scan after signature in memory.</param>
     /// <param name="module">The module.</param>
     public UpdateFeature(string updateSig, YesModule module)
     {
@@ -40,7 +40,7 @@ internal abstract class UpdateFeature : IBaseFeature
     internal delegate void UpdateDelegate(nint addon, nint a2, nint a3);
 
     /// <summary>
-    ///     Gets the <see cref="YesConfiguration" />.
+    ///     Gets the <see cref="YesConfiguration"/>.
     /// </summary>
     protected YesConfiguration Configuration => this.module.MC;
 
@@ -54,7 +54,7 @@ internal abstract class UpdateFeature : IBaseFeature
     /// </summary>
     protected nint HookAddress { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.updateHook?.Disable();
@@ -75,7 +75,7 @@ internal abstract class UpdateFeature : IBaseFeature
         // PluginLog.Debug($"Addon{this.AddonName}.Update");
         this.updateHook.Original(addon, a2, a3);
 
-        if (!this.Configuration.Enabled || this.module.DisableKeyPressed)
+        if (!this.Configuration.ModuleEnabled || this.module.DisableKeyPressed)
         {
             return;
         }

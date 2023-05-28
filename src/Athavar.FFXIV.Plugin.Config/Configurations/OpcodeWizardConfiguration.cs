@@ -6,13 +6,17 @@ namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Text.Json.Serialization;
 
-public sealed class OpcodeWizardConfiguration : BasicModuleConfig
+public sealed class OpcodeWizardConfiguration : BasicModuleConfig<OpcodeWizardConfiguration>
 {
+    [JsonInclude]
     [JsonPropertyName("Opcodes")]
-    public Dictionary<Opcode, ushort> Opcodes { get; } = new();
+    public Dictionary<Opcode, ushort> Opcodes { get; init; } = new();
 
+    [JsonInclude]
     [JsonPropertyName("GameVersion")]
     public string GameVersion { get; set; } = string.Empty;
 
+    [JsonInclude]
+    [JsonPropertyName("RemoteUpdate")]
     public bool RemoteUpdate { get; set; }
 }

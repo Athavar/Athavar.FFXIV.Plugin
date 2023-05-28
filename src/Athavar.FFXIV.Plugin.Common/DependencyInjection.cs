@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Config;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -25,6 +26,7 @@ public static class DependencyInjection
            .AddSingleton<IFontsManager, FontsManager>()
            .AddSingleton<IIpcManager, IpcManager>()
            .AddSingleton<ICommandInterface, CommandInterface>();
+        CommonConfiguration.AddToDependencyInjection(services);
 
         return services;
     }
