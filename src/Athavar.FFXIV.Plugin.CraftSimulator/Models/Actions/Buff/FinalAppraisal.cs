@@ -8,33 +8,36 @@ internal sealed class FinalAppraisal : BuffAction
 {
     private static readonly uint[] IdsValue = { 19012, 19013, 19014, 19015, 19016, 19017, 19018, 19019 };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Buff;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 42;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 1;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDuration(Simulation simulation) => 5;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Buffs GetBuff() => Buffs.FINAL_APPRAISAL;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetInitialStacks() => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
+    public override bool IsSkipsBuffTicks() => true;
+
+    /// <inheritdoc/>
     protected override OnTick? GetOnTick() => null;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 }
