@@ -14,16 +14,16 @@ using Newtonsoft.Json.Linq;
 /// </summary>
 public sealed class ConcreteNodeConverter : JsonConverter
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool CanRead => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool CanWrite => false;
 
-    /// <inheritdoc />
-    public override bool CanConvert(Type objectType) => objectType == typeof(INode);
+    /// <inheritdoc/>
+    public override bool CanConvert(Type objectType) => objectType == typeof(Node);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         var jObject = JObject.Load(reader);
@@ -67,7 +67,7 @@ public sealed class ConcreteNodeConverter : JsonConverter
         throw new NotSupportedException($"Node type \"{jType}\" is not supported.");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) => throw new JsonException("Write is disabled");
 
     private T CreateObject<T>(JObject jObject, JsonSerializer serializer)

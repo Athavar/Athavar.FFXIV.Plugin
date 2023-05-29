@@ -15,21 +15,21 @@ internal sealed class AutoSpearModule : Module<AutoSpear, AutoSpearConfiguration
     private readonly IServiceProvider provider;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AutoSpearModule" /> class.
+    ///     Initializes a new instance of the <see cref="AutoSpearModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    public AutoSpearModule(Configuration configuration, IServiceProvider provider)
-        : base(configuration, configuration.AutoSpear!)
+    /// <param name="configuration"><see cref="AutoSpearConfiguration"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    public AutoSpearModule(AutoSpearConfiguration configuration, IServiceProvider provider)
+        : base(configuration)
     {
         this.provider = provider;
         PluginLog.LogDebug("Module 'AutoSpear' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => false;
 
     protected override AutoSpear InitTab() => ActivatorUtilities.CreateInstance<AutoSpear>(this.provider);

@@ -11,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInstancinatorModule(this IServiceCollection services)
     {
         services.AddTransient<InstancinatorModule>();
+        InstancinatorConfiguration.AddToDependencyInjection(services);
 
         return services;
     }

@@ -35,7 +35,7 @@ internal class RunMacroCommand : MacroCommand
     {
         this.macroName = macroName;
 
-        this.configuration = ServiceProvider.GetRequiredService<Configuration>().Macro!;
+        this.configuration = ServiceProvider.GetRequiredService<MacroConfiguration>();
     }
 
     /// <summary>

@@ -47,7 +47,7 @@ public sealed partial class Simulation
         }
     }
 
-    public SimulationResult Run(int[] skills, bool linear = false, StepState?[]? stepStates = null) => this.Run(CraftingSkill.Parse(skills), linear, stepStates);
+    public SimulationResult Run(IEnumerable<int> skills, bool linear = false, StepState?[]? stepStates = null) => this.Run(CraftingSkill.Parse(skills), linear, stepStates);
 
     public SimulationResult Run(IEnumerable<CraftingSkills> skills, bool linear = false, StepState?[]? stepStates = null)
     {

@@ -6,55 +6,75 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
+
 /// <summary>
 ///     Macro Module configuration.
 /// </summary>
-public sealed class MacroConfiguration : BasicModuleConfig
+public sealed class MacroConfiguration : BasicModuleConfig<MacroConfiguration>
 {
     /// <summary>
     ///     Gets the root folder.
     /// </summary>
-    public FolderNode RootFolder { get; } = new() { Name = "/" };
+    [JsonInclude]
+    [JsonPropertyName("RootFolder")]
+    public FolderNode RootFolder { get; init; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets a value indicating whether to skip craft actions when not crafting.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftSkip")]
     public bool CraftSkip { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets a value indicating whether to skip craft actions when not crafting.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftWaitSkip")]
     public bool CraftWaitSkip { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets a value indicating whether to skip quality increasing actions when at 100% HQ chance.
     /// </summary>
-    public bool QualitySkip { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("QualitySkip")]
+    public bool QualitySkip { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to count the /loop number as the total iterations, rather than the amount
     ///     to loop.
     /// </summary>
-    public bool LoopTotal { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("LoopTotal")]
+    public bool LoopTotal { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to always echo /loop commands.
     /// </summary>
-    public bool LoopEcho { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("LoopEcho")]
+    public bool LoopEcho { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the mono front should be disabled.
     /// </summary>
-    public bool DisableMonospaced { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("DisableMonospaced")]
+    public bool DisableMonospaced { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether to use the "CraftLoop" template.
     /// </summary>
-    public bool UseCraftLoopTemplate { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("UseCraftLoopTemplate")]
+    public bool UseCraftLoopTemplate { get; set; }
 
     /// <summary>
     ///     Gets or sets the "CraftLoop" template.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftLoopTemplate")]
     public string CraftLoopTemplate { get; set; } =
         "/craft {{count}}\n" +
         "/waitaddon \"RecipeNote\" <maxwait.5>\n" +
@@ -66,53 +86,64 @@ public sealed class MacroConfiguration : BasicModuleConfig
     /// <summary>
     ///     Gets or sets a value indicating whether to start crafting loops from the recipe note window.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftLoopFromRecipeNote")]
     public bool CraftLoopFromRecipeNote { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets the maximum wait value for the "CraftLoop" maxwait modifier.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("CraftLoopMaxWait")]
     public int CraftLoopMaxWait { get; set; } = 5;
 
     /// <summary>
     ///     Gets or sets a value indicating whether the "CraftLoop" loop should have an echo modifier.
     /// </summary>
-    public bool CraftLoopEcho { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("CraftLoopEcho")]
+    public bool CraftLoopEcho { get; set; }
 
     /// <summary>
     ///     Gets or sets the maximum number of retries when an action does not receive a timely response.
     /// </summary>
-    public int MaxTimeoutRetries { get; set; } = 0;
+    [JsonInclude]
+    [JsonPropertyName("MaxTimeoutRetries")]
+    public int MaxTimeoutRetries { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether errors should be audible.
     /// </summary>
-    public bool NoisyErrors { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("NoisyErrors")]
+    public bool NoisyErrors { get; set; }
 
     /// <summary>
     ///     Gets or sets the beep frequency.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("BeepFrequency")]
     public int BeepFrequency { get; set; } = 900;
 
     /// <summary>
     ///     Gets or sets the beep duration.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("BeepDuration")]
     public int BeepDuration { get; set; } = 250;
 
     /// <summary>
     ///     Gets or sets the beep count.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("BeepCount")]
     public int BeepCount { get; set; } = 3;
-
-    /// <summary>
-    ///     Gets or sets the configuration version.
-    /// </summary>
-    public int Version { get; set; } = 1;
 
     /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>
-    public IEnumerable<INode> GetAllNodes() => new INode[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
+    public IEnumerable<Node> GetAllNodes() => new Node[] { this.RootFolder }.Concat(this.GetAllNodes(this.RootFolder.Children));
 
     /// <summary>
     ///     Tries to find the parent of a node.
@@ -120,7 +151,7 @@ public sealed class MacroConfiguration : BasicModuleConfig
     /// <param name="node">Node to check.</param>
     /// <param name="parent">Parent of the node or null.</param>
     /// <returns>A value indicating whether the parent was found.</returns>
-    public bool TryFindParent(INode node, out FolderNode? parent)
+    public bool TryFindParent(Node node, out FolderNode? parent)
     {
         foreach (var candidate in this.GetAllNodes())
         {
@@ -140,7 +171,7 @@ public sealed class MacroConfiguration : BasicModuleConfig
     /// </summary>
     /// <param name="nodes">Nodes to search.</param>
     /// <returns>The nodes in the tree.</returns>
-    internal IEnumerable<INode> GetAllNodes(IEnumerable<INode> nodes)
+    internal IEnumerable<Node> GetAllNodes(IEnumerable<Node> nodes)
     {
         foreach (var node in nodes)
         {

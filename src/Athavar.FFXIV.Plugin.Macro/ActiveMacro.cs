@@ -27,7 +27,7 @@ internal sealed partial class ActiveMacro : IDisposable
     private LuaFunction? luaGenerator;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ActiveMacro" /> class.
+    ///     Initializes a new instance of the <see cref="ActiveMacro"/> class.
     /// </summary>
     /// <param name="node">The node containing the macro code.</param>
     public ActiveMacro(MacroNode node)
@@ -45,12 +45,12 @@ internal sealed partial class ActiveMacro : IDisposable
     }
 
     /// <summary>
-    ///     Gets the <see cref="MacroNode" /> containing the macro code.
+    ///     Gets the <see cref="MacroNode"/> containing the macro code.
     /// </summary>
     public MacroNode Node { get; }
 
     /// <summary>
-    ///     Gets all steps of the <see cref="ActiveMacro" />.
+    ///     Gets all steps of the <see cref="ActiveMacro"/>.
     /// </summary>
     public List<MacroCommand> Steps { get; }
 
@@ -60,12 +60,12 @@ internal sealed partial class ActiveMacro : IDisposable
     public int StepIndex { get; set; }
 
     /// <summary>
-    ///     Gets the <see cref="MacroManager" />.
+    ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
     private static MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
-    ///     Gets the <see cref="MacroManager" />.
+    ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
     private static ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
 
@@ -172,7 +172,7 @@ internal sealed partial class ActiveMacro : IDisposable
         return sb.ToString().Trim();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.luaGenerator?.Dispose();
@@ -240,12 +240,12 @@ internal sealed partial class ActiveMacro : IDisposable
     }
 
     /// <summary>
-    ///     Setup the <see cref="IServiceProvider" /> for all commands.
+    ///     Setup the <see cref="IServiceProvider"/> for all commands.
     /// </summary>
-    /// <param name="sp">The <see cref="IServiceProvider" />.</param>
+    /// <param name="sp">The <see cref="IServiceProvider"/>.</param>
     internal static void SetServiceProvider(IServiceProvider sp)
     {
-        configuration = sp.GetRequiredService<Configuration>().Macro!;
+        configuration = sp.GetRequiredService<MacroConfiguration>();
         commandInterface = sp.GetRequiredService<ICommandInterface>();
     }
 

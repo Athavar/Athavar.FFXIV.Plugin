@@ -37,16 +37,16 @@ internal sealed partial class AutoSpear : Tab
     private bool isOpen;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AutoSpear" /> class.
+    ///     Initializes a new instance of the <see cref="AutoSpear"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="configuration" /> added by Di.</param>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by Di.</param>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    public AutoSpear(Configuration configuration, IDalamudServices dalamudServices, IChatManager chatManager)
+    /// <param name="configuration"><see cref="configuration"/> added by Di.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by Di.</param>
+    /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
+    public AutoSpear(AutoSpearConfiguration configuration, IDalamudServices dalamudServices, IChatManager chatManager)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
-        this.configuration = configuration.AutoSpear!;
+        this.configuration = configuration;
 
         var sheet = dalamudServices.DataManager.GetExcelSheet<Action>()!;
         this.useSpearSkillName = sheet.GetRow(7632)!.Name;

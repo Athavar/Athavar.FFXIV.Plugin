@@ -6,19 +6,22 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 /// <summary>
 ///     Folder node type.
 /// </summary>
-public sealed class FolderNode : INode
+public sealed class FolderNode : Node
 {
     /// <summary>
     ///     Gets the children inside this folder.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("Children")]
     [JsonProperty(ItemConverterType = typeof(ConcreteNodeConverter))]
-    public List<INode> Children { get; } = new();
+    public List<Node> Children { get; init; } = new();
 
-    /// <inheritdoc />
-    public string Name { get; set; } = string.Empty;
+    /// <inheritdoc/>
+    public override string Name { get; set; } = string.Empty;
 }

@@ -10,5 +10,5 @@ public sealed class CraftingMacro
 
     public CraftingSkill[] Rotation { get; init; }
 
-    public CraftingSkills[] ToEmum() => this.Rotation.Select(r => r.Skill).ToArray();
+    public CraftingSkills[] ToEnum() => this.Rotation.Select(r => r.Skill).ToArray();
 }

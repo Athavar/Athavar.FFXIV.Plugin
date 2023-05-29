@@ -47,6 +47,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         // 961, /* Elpis */
     };
 
+    private readonly YesConfiguration yesConfiguration;
     private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
     private readonly string travelToInstancedArea;
@@ -57,21 +58,22 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private long nextKeypress;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InstancinatorModule" /> class.
+    ///     Initializes a new instance of the <see cref="InstancinatorModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="tab"><see cref="IInstancinatorTab" /> added by DI.</param>
-    public InstancinatorModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices)
-        : base(configuration, configuration.Instancinator!)
+    /// <param name="configuration"><see cref="InstancinatorConfiguration"/> added by DI.</param>
+    /// <param name="yesConfiguration"><see cref="YesConfiguration"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices)
+        : base(configuration)
     {
+        this.yesConfiguration = yesConfiguration;
         this.provider = provider;
         this.dalamudServices = dalamudServices;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
-        var text = aetheryteSheet.GetRow(10)!.String.RawString;
-        this.travelToInstancedArea = text[6..];
+        var text = aetheryteSheet.GetRow(12)!.String.RawString;
+        this.travelToInstancedArea = text.Trim();
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
@@ -83,10 +85,10 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         PluginLog.LogDebug("Module 'Instancinator' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => false;
 
     /// <summary>
@@ -103,7 +105,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.DisableAllAndCreateIfNotExists();
         this.SelectedInstance = instance;
 
-        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.yesConfiguration.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {
@@ -122,7 +124,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
@@ -138,29 +140,44 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             case 963: // Radz-at-Han
                 return 2;
             default:
-                return 3;
+                return 2;
         }
     }
 
     internal void DisableAllAndCreateIfNotExists()
     {
-        if (!this.DisableAllEntries())
+        void AddOrDisable(List<Node> f, string text)
         {
-            var rootChildren = this.Configuration.Yes!.ListRootFolder.Children;
-            var instance = new TextFolderNode
+            var node = f.OfType<ListEntryNode>().FirstOrDefault(n => n.Text == text && n.TargetText == this.aetheryteTarget);
+
+            if (node is null)
+            {
+                f.Add(this.CreateListEntryNode(this.aetheryteTarget, text));
+            }
+            else
+            {
+                node.Enabled = false;
+            }
+        }
+
+        var folder = this.yesConfiguration.ListRootFolder.Children.OfType<TextFolderNode>().FirstOrDefault(f => f.Name == FolderName);
+        if (folder is null)
+        {
+            folder = new TextFolderNode
             {
                 Name = FolderName,
             };
-            var children = instance.Children;
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, this.travelToInstancedArea));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[0]));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[1]));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[2]));
-            rootChildren.Add(instance);
+            this.yesConfiguration.ListRootFolder.Children.Add(folder);
         }
+
+        var children = folder.Children;
+        AddOrDisable(children, this.travelToInstancedArea);
+        AddOrDisable(children, Instances[0]);
+        AddOrDisable(children, Instances[1]);
+        AddOrDisable(children, Instances[2]);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override InstancinatorTab InitTab() => new(this.ModuleConfig);
 
     private InstancinatorWindow CreateWindow() => new(this.provider.GetRequiredService<WindowSystem>(), this);
@@ -205,8 +222,8 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             }
         }
 
-        var config = this.Configuration.Instancinator;
-        if (config is null || !config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
+        var config = this.ModuleConfig;
+        if (!config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
         {
             if (this.window != null)
             {
@@ -296,7 +313,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private bool DisableAllEntries()
     {
         this.SelectedInstance = 0;
-        foreach (var e in this.Configuration.Yes!.ListRootFolder.Children)
+        foreach (var e in this.yesConfiguration.ListRootFolder.Children)
         {
             if (e is not TextFolderNode { Name: FolderName } folder)
             {
@@ -333,7 +350,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         /// </summary>
         public SeString String { get; set; } = null!;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
         public override void PopulateData(RowParser parser, GameData gameData, Language language)
         {
             base.PopulateData(parser, gameData, language);

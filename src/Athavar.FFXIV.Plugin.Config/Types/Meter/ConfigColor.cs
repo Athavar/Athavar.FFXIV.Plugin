@@ -5,14 +5,16 @@
 namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 public sealed class ConfigColor
 {
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     private float[] colorMapRatios = { -.8f, -.3f, .1f };
 
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     private Vector4 vector;
 
     // Constructor for deserialization
@@ -36,6 +38,8 @@ public sealed class ConfigColor
     {
     }
 
+    [JsonInclude]
+    [JsonPropertyName("Vector")]
     public Vector4 Vector
     {
         get => this.vector;
@@ -53,16 +57,20 @@ public sealed class ConfigColor
     }
 
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public uint Base { get; private set; }
 
     [JsonIgnore]
-    public uint Background { get; private set; }
+    [Newtonsoft.Json.JsonIgnore]
+    public uint Background { get; }
 
     [JsonIgnore]
-    public uint TopGradient { get; private set; }
+    [Newtonsoft.Json.JsonIgnore]
+    public uint TopGradient { get; }
 
     [JsonIgnore]
-    public uint BottomGradient { get; private set; }
+    [Newtonsoft.Json.JsonIgnore]
+    public uint BottomGradient { get; }
 
     private static uint ColorConvertFloat4ToU32(Vector4 data)
     {

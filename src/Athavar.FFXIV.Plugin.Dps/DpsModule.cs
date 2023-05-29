@@ -21,8 +21,8 @@ internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
     private readonly NetworkHandler networkHandler;
     private MeterManager? meterManager;
 
-    public DpsModule(Configuration configuration, IServiceProvider provider, IDalamudServices services)
-        : base(configuration, configuration.Dps!)
+    public DpsModule(DpsConfiguration configuration, IServiceProvider provider, IDalamudServices services)
+        : base(configuration)
     {
         this.services = services;
         this.provider = provider;

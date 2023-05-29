@@ -84,15 +84,15 @@ internal sealed class MacroHelpWindow : Window
     private readonly IList<string> clickNames;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroHelpWindow" /> class.
+    ///     Initializes a new instance of the <see cref="MacroHelpWindow"/> class.
     /// </summary>
-    /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
-    /// <param name="click"><see cref="IClick" /> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public MacroHelpWindow(WindowSystem windowSystem, IClick click, Configuration configuration)
+    /// <param name="windowSystem"><see cref="WindowSystem"/> added by DI.</param>
+    /// <param name="click"><see cref="IClick"/> added by DI.</param>
+    /// <param name="configuration"><see cref="MacroConfiguration"/> added by DI.</param>
+    public MacroHelpWindow(WindowSystem windowSystem, IClick click, MacroConfiguration configuration)
         : base($"{Constants.PluginName} Macro Help")
     {
-        this.Configuration = configuration.Macro!;
+        this.Configuration = configuration;
         this.Flags |= ImGuiWindowFlags.NoScrollbar;
 
         this.Size = new Vector2(400, 600);
@@ -105,7 +105,7 @@ internal sealed class MacroHelpWindow : Window
 
     private MacroConfiguration Configuration { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         if (ImGui.BeginTabBar("HelpTab"))

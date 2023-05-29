@@ -5,7 +5,11 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public sealed class AutoSpearConfiguration : BasicModuleConfig
+using System.Text.Json.Serialization;
+
+public sealed class AutoSpearConfiguration : BasicModuleConfig<AutoSpearConfiguration>
 {
+    [JsonInclude]
+    [JsonPropertyName("FishMatchText")]
     public string? FishMatchText { get; set; } = string.Empty;
 }

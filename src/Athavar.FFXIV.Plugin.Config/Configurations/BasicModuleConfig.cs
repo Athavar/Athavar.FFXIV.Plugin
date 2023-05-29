@@ -5,30 +5,39 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using Dalamud.Plugin;
 
 /// <summary>
-///     Basic module Configuration
+///     Basic module Configuration.
 /// </summary>
 [Serializable]
 public abstract class BasicModuleConfig
 {
-    [JsonIgnore]
-    private Configuration? configuration;
+    internal BasicModuleConfig()
+    {
+    }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the plugin functionality is enabled.
     /// </summary>
-    public bool Enabled { get; set; } = false;
+    [JsonInclude]
+    [JsonPropertyName("Enabled")]
+    public bool Enabled { get; set; }
+
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    internal DalamudPluginInterface? Pi { get; set; }
+
+    public abstract void Save(bool instant = false);
 
     /// <summary>
-    ///     Save the configuration.
+    ///     Setup <see cref="InstancinatorConfiguration"/>.
     /// </summary>
-    public void Save() => this.configuration?.Save();
-
-    /// <summary>
-    ///     Setup <see cref="InstancinatorConfiguration" />.
-    /// </summary>
-    /// <param name="conf">The <see cref="Configuration" />.</param>
-    internal void Setup(Configuration conf) => this.configuration = conf;
+    /// <param name="conf">The <see cref="Configuration"/>.</param>
+    internal void Setup(Configuration conf)
+    {
+        this.Pi = conf.Pi;
+        this.Save(true);
+    }
 }

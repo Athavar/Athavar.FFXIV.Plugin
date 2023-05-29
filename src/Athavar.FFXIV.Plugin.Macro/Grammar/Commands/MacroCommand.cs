@@ -113,7 +113,7 @@ internal abstract class MacroCommand
         dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
         chatManager = serviceProvider.GetRequiredService<IChatManager>();
         macroManager = serviceProvider.GetRequiredService<MacroManager>();
-        configuration = serviceProvider.GetRequiredService<Configuration>().Macro!;
+        configuration = serviceProvider.GetRequiredService<MacroConfiguration>();
         commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
     }
 

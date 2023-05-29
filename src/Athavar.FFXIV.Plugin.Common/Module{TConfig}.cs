@@ -7,9 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common;
 public abstract class Module<TConfig> : Module
     where TConfig : BasicModuleConfig
 {
-    protected Module(Configuration configuration, TConfig moduleConfig)
-        : base(configuration)
-        => this.ModuleConfig = moduleConfig;
+    protected Module(TConfig moduleConfig) => this.ModuleConfig = moduleConfig;
 
     protected internal TConfig ModuleConfig { get; }
 

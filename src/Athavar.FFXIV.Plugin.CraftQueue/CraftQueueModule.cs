@@ -18,25 +18,25 @@ internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfigu
     private CraftQueue? craftQueue;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CraftQueueModule" /> class.
+    ///     Initializes a new instance of the <see cref="CraftQueueModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    public CraftQueueModule(Configuration configuration, IServiceProvider provider)
-        : base(configuration, configuration.CraftQueue!)
+    /// <param name="configuration"><see cref="CraftQueueConfiguration"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    public CraftQueueModule(CraftQueueConfiguration configuration, IServiceProvider provider)
+        : base(configuration)
     {
         this.provider = provider;
 
         PluginLog.LogDebug("Module 'CraftQueue' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => false;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Dispose()
     {
         base.Dispose();
@@ -46,6 +46,6 @@ internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfigu
     protected override CraftQueueTab InitTab()
     {
         this.craftQueue = ActivatorUtilities.CreateInstance<CraftQueue>(this.provider);
-        return new CraftQueueTab(this.provider, this.craftQueue, this.Configuration);
+        return new CraftQueueTab(this.provider, this.craftQueue, this.ModuleConfig);
     }
 }

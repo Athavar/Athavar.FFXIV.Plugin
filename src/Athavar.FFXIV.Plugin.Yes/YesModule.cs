@@ -39,14 +39,14 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     private ZoneListWindow? zoneListWindow;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="YesModule" /> class.
+    ///     Initializes a new instance of the <see cref="YesModule"/> class.
     /// </summary>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="chatManager"><see cref="IChatManager" /> added by DI.</param>
-    public YesModule(Configuration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
-        : base(configuration, configuration.Yes!)
+    /// <param name="configuration"><see cref="YesConfiguration"/> added by DI.</param>
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
+    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
+        : base(configuration)
     {
         this.provider = provider;
         this.DalamudServices = dalamudServices;
@@ -70,18 +70,18 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         PluginLog.LogDebug("Module 'Yes' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
     internal YesConfiguration MC => this.ModuleConfig;
 
     /// <summary>
-    ///     Gets the <see cref="IDalamudServices" />.
+    ///     Gets the <see cref="IDalamudServices"/>.
     /// </summary>
     internal IDalamudServices DalamudServices { get; }
 
     /// <summary>
-    ///     Gets the <see cref="IChatManager" />.
+    ///     Gets the <see cref="IChatManager"/>.
     /// </summary>
     internal IChatManager ChatManager { get; }
 
@@ -135,7 +135,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// </summary>
     internal ListEntryNode LastSelectedListNode { get; set; } = new();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.DalamudServices.CommandManager.RemoveHandler(Command);
@@ -144,16 +144,6 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 
         this.features.ForEach(feature => feature?.Dispose());
         this.zoneListWindow?.Dispose();
-    }
-
-    /// <inheritdoc />
-    public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
-    {
-        bool Get() => this.ModuleConfig.ModuleEnabled;
-
-        void Set(bool state) => this.ModuleConfig.ModuleEnabled = state;
-
-        return (Get, Set);
     }
 
     /// <summary>
@@ -357,7 +347,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         }
 
         this.CreateTextNode(this.ModuleConfig.RootFolder, zoneRestricted, createFolder, selectNo);
-        this.Configuration.Save();
+        this.ModuleConfig.Save();
 
         this.ChatManager.PrintChat("Added a new text entry.");
     }
@@ -383,7 +373,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 
         var parent = this.ModuleConfig.ListRootFolder;
         parent.Children.Add(newNode);
-        this.Configuration.Save();
+        this.ModuleConfig.Save();
 
         this.ChatManager.PrintChat("Added a new list entry.");
     }
@@ -402,7 +392,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 
         var parent = this.ModuleConfig.TalkRootFolder;
         parent.Children.Add(newNode);
-        this.Configuration.Save();
+        this.ModuleConfig.Save();
 
         this.ChatManager.PrintChat("Added a new talk entry.");
     }

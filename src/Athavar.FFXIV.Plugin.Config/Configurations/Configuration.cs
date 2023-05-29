@@ -7,60 +7,68 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.RegularExpressions;
-using System.Timers;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Config.Extensions;
 using Dalamud.Configuration;
 using Dalamud.Game.Text;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Lumina.Data;
 using Newtonsoft.Json;
 
 public sealed class Configuration : IPluginConfiguration
 {
-    [JsonIgnore]
-    private DalamudPluginInterface? pi;
-
-    [JsonIgnore]
-    private Timer? saveTimer;
-
     /// <inheritdoc/>
-    public int Version { get; set; } = 1;
+    public int Version { get; set; } = 2;
 
-    public YesConfiguration? Yes { get; set; }
+    [JsonIgnore]
+    internal DalamudPluginInterface? Pi { get; private set; }
 
-    public MacroConfiguration? Macro { get; set; }
+    [JsonProperty]
+    private bool ShowToolTips { get; set; } = true;
 
-    public InstancinatorConfiguration? Instancinator { get; set; }
+    [JsonProperty]
+    private bool ShowLaunchButton { get; set; }
 
-    public AutoSpearConfiguration? AutoSpear { get; set; }
-
-    public CraftQueueConfiguration? CraftQueue { get; set; }
-
-    public OpcodeWizardConfiguration? OpcodeWizard { get; set; }
-
-    public DpsConfiguration? Dps { get; set; }
-
-    public SliceIsRightConfiguration? SliceIsRight { get; set; }
-
-    public bool ShowToolTips { get; set; } = true;
-
-    public bool ShowLaunchButton { get; set; } = false;
-
-    public Language Language { get; set; } = Language.English;
+    [JsonProperty]
+    private Language Language { get; set; } = Language.English;
 
     /// <summary>
     ///     Gets or sets the chat channel to use.
     /// </summary>
-    public XivChatType ChatType { get; set; } = XivChatType.Debug;
+    [JsonProperty]
+    private XivChatType ChatType { get; set; } = XivChatType.Debug;
 
     /// <summary>
     ///     Gets or sets the error chat channel to use.
     /// </summary>
-    public XivChatType ErrorChatType { get; set; } = XivChatType.Urgent;
+    [JsonProperty]
+    private XivChatType ErrorChatType { get; set; } = XivChatType.Urgent;
 
-    public static Configuration Load(DalamudPluginInterface pi)
+    [JsonProperty]
+    private YesConfiguration? Yes { get; set; }
+
+    [JsonProperty]
+    private MacroConfiguration? Macro { get; set; }
+
+    [JsonProperty]
+    private InstancinatorConfiguration? Instancinator { get; set; }
+
+    [JsonProperty]
+    private AutoSpearConfiguration? AutoSpear { get; set; }
+
+    [JsonProperty]
+    private CraftQueueConfiguration? CraftQueue { get; set; }
+
+    [JsonProperty]
+    private OpcodeWizardConfiguration? OpcodeWizard { get; set; }
+
+    [JsonProperty]
+    private DpsConfiguration? Dps { get; set; }
+
+    [JsonProperty]
+    private SliceIsRightConfiguration? SliceIsRight { get; set; }
+
+    public static void Migrate(DalamudPluginInterface pi)
     {
         if (pi.ConfigFile.Exists)
         {
@@ -69,63 +77,13 @@ public sealed class Configuration : IPluginConfiguration
         }
 
         var c = (Configuration?)pi.GetPluginConfig() ?? new Configuration();
-        c.Setup(pi);
-        return c;
-    }
 
-    /// <summary>
-    ///     Save the configuration.
-    /// </summary>
-    /// <param name="instant">Indicate if the configuration should be saved instant.</param>
-    public void Save(bool instant = false)
-    {
-        if (this.saveTimer is null)
+        if (c.Version == 1)
         {
-            this.saveTimer = new Timer();
-            this.saveTimer.Interval = 10000;
-#if DEBUG
-            this.saveTimer.Interval = 2500;
-#endif
-            this.saveTimer.AutoReset = false;
-            this.saveTimer.Elapsed += (_, _) => this.Save(true);
-        }
-
-        if (instant)
-        {
-            this.saveTimer.Stop();
-            this.pi?.SavePluginConfig(this);
-#if DEBUG
-            PluginLog.Information("Save Successful");
-#endif
-        }
-        else if (!this.saveTimer.Enabled)
-        {
-            this.saveTimer.Start();
-#if DEBUG
-            PluginLog.Information("Save Triggered");
-#endif
+            c.Setup(pi);
+            pi.ConfigFile.MoveTo($"{pi.ConfigFile.Name}.old");
         }
     }
-
-    public void Dispose()
-    {
-        this.saveTimer?.Dispose();
-        this.saveTimer = null;
-    }
-
-    public BasicModuleConfig? GetBasicModuleConfig(Type type)
-        => type switch
-        {
-            not null when type == typeof(AutoSpearConfiguration) => this.AutoSpear,
-            not null when type == typeof(CraftQueueConfiguration) => this.CraftQueue,
-            not null when type == typeof(DpsConfiguration) => this.Dps,
-            not null when type == typeof(InstancinatorConfiguration) => this.Instancinator,
-            not null when type == typeof(MacroConfiguration) => this.Macro,
-            not null when type == typeof(OpcodeWizardConfiguration) => this.OpcodeWizard,
-            not null when type == typeof(SliceIsRightConfiguration) => this.SliceIsRight,
-            not null when type == typeof(YesConfiguration) => this.Yes,
-            _ => null,
-        };
 
     private static void UpgradeConfiguration(string filePath)
     {
@@ -144,7 +102,7 @@ public sealed class Configuration : IPluginConfiguration
     /// <param name="interface">The <see cref="DalamudPluginInterface"/>.</param>
     private void Setup(DalamudPluginInterface @interface)
     {
-        this.pi = @interface;
+        this.Pi = @interface;
 
         this.Yes ??= new YesConfiguration();
         this.Macro ??= new MacroConfiguration();
@@ -163,5 +121,18 @@ public sealed class Configuration : IPluginConfiguration
         this.OpcodeWizard.Setup(this);
         this.Dps.Setup(this);
         this.SliceIsRight.Setup(this);
+#pragma warning disable 612,618
+        var cconfig = new CommonConfiguration
+        {
+            Pi = @interface,
+            Version = 2,
+            Language = this.Language,
+            ChatType = this.ChatType,
+            ErrorChatType = this.ErrorChatType,
+            ShowLaunchButton = this.ShowLaunchButton,
+            ShowToolTips = this.ShowToolTips,
+        };
+#pragma warning restore 612,618
+        cconfig.Save();
     }
 }

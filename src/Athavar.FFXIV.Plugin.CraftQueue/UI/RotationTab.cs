@@ -22,7 +22,7 @@ internal sealed class RotationTab : Tab
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
     private readonly ICraftDataManager craftDataManager;
-    private INode? draggedNode;
+    private Node? draggedNode;
     private RotationNode? activeRotationNode;
     private CraftingMacro? activeRotationMacro;
 
@@ -36,6 +36,8 @@ internal sealed class RotationTab : Tab
         this.iconManager = iconManager;
         this.craftDataManager = craftDataManager;
         this.ClientLanguage = clientLanguage;
+
+        this.Configuration.CalculateDuplicateRotations();
     }
 
     /// <inheritdoc/>
@@ -138,6 +140,7 @@ internal sealed class RotationTab : Tab
                 node.Save(this.activeRotationMacro);
                 this.editChanged = false;
                 this.Configuration.Save();
+                this.Configuration.CalculateDuplicateRotations();
             }
         }
 
@@ -148,8 +151,11 @@ internal sealed class RotationTab : Tab
 
         ImGui.SameLine();
 
-        if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport, "Import from clipboard"))
+        if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport, "Import from clipboard (hold control to append)"))
         {
+            var io = ImGui.GetIO();
+            var ctrlHeld = io.KeyCtrl;
+
             string text;
             try
             {
@@ -173,7 +179,16 @@ internal sealed class RotationTab : Tab
                 text = text.Remove(index, 1).Insert(index, "\r\n");
             }
 
-            this.activeRotationMacro = this.craftDataManager.ParseCraftingMacro(text);
+            var craftMacro = this.craftDataManager.ParseCraftingMacro(text);
+            if (ctrlHeld && this.activeRotationMacro is not null)
+            {
+                this.activeRotationMacro = new CraftingMacro(this.activeRotationMacro.Rotation.Concat(craftMacro.Rotation).ToArray());
+            }
+            else
+            {
+                this.activeRotationMacro = craftMacro;
+            }
+
             this.activeRotationContent = this.craftDataManager.CreateTextMacro(this.activeRotationMacro, this.ClientLanguage);
 
             this.editChanged = true;
@@ -197,7 +212,7 @@ internal sealed class RotationTab : Tab
         ImGui.PopItemWidth();
     }
 
-    private void DisplayNode(INode node)
+    private void DisplayNode(Node node)
     {
         ImGui.PushID(node.Name);
 
@@ -244,7 +259,28 @@ internal sealed class RotationTab : Tab
             flags |= ImGuiTreeNodeFlags.Selected;
         }
 
+        if (node.Duplicates.Any())
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+        }
+
         ImGui.TreeNodeEx($"{node.Name}##tree", flags);
+
+        if (node.Duplicates.Any())
+        {
+            ImGui.PopStyleColor();
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.TextUnformatted("Duplicate rotations:");
+                foreach (var duplicate in node.Duplicates)
+                {
+                    ImGui.BulletText(duplicate.Name);
+                }
+
+                ImGui.EndTooltip();
+            }
+        }
 
         this.DisplayNodePopup(node);
         this.NodeDragDrop(node);
@@ -286,7 +322,7 @@ internal sealed class RotationTab : Tab
         return name.Trim();
     }
 
-    private void NodeDragDrop(INode node)
+    private void NodeDragDrop(Node node)
     {
         if (node != this.RootFolder)
         {
@@ -352,7 +388,7 @@ internal sealed class RotationTab : Tab
         }
     }
 
-    private void DisplayNodePopup(INode node)
+    private void DisplayNodePopup(Node node)
     {
         if (ImGui.BeginPopupContextItem($"##{node.Name}-popup"))
         {
@@ -370,6 +406,8 @@ internal sealed class RotationTab : Tab
                     var newNode = new RotationNode { Name = this.GetUniqueNodeName("Untitled rotation") };
                     folderNode.Children.Add(newNode);
                     this.Configuration.Save();
+
+                    this.Configuration.CalculateDuplicateRotations();
                 }
 
                 ImGui.SameLine();
@@ -381,6 +419,7 @@ internal sealed class RotationTab : Tab
                 }
             }
 
+            // ReSharper disable once PossibleUnintendedReferenceComparison
             if (node != this.RootFolder)
             {
                 ImGui.SameLine();
@@ -396,6 +435,11 @@ internal sealed class RotationTab : Tab
                     {
                         parentNode!.Children.Remove(node);
                         this.Configuration.Save();
+
+                        if (node is RotationNode)
+                        {
+                            this.Configuration.CalculateDuplicateRotations();
+                        }
                     }
                 }
 

@@ -5,27 +5,35 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
-public sealed class RotationNode : INode
+using System.Collections.Immutable;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
+public sealed class RotationNode : Node
 {
-    /// <inheritdoc />
-    public string Name { get; set; } = string.Empty;
+    [System.Text.Json.Serialization.JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public List<RotationNode> Duplicates { get; } = new();
 
-    public int[] Rotations { get; set; } = { };
+    /// <inheritdoc/>
+    public override string Name { get; set; } = string.Empty;
 
-    /*[JsonIgnore]
-    internal CraftingMacro? Macro { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public ImmutableArray<int> Rotations { get; set; } = Array.Empty<int>().ToImmutableArray();
 
-    internal CraftingMacro InitMarco() => this.Macro ??= CraftingSkill.Parse(this.Rotations);
-
-    internal void Update(string text) => this.Macro = CraftingSkill.Parse(CraftingSkill.Parse(text));
-
-    internal void Save()
+    [JsonInclude]
+    [JsonPropertyName("Rotations")]
+    [JsonProperty("Rotations")]
+    public int[] RotationArray
     {
-        if (this.Macro is null)
-        {
-            return;
-        }
+        get => this.Rotations.ToArray();
+        init => this.Rotations = value.ToImmutableArray();
+    }
 
-        this.Rotations = this.Macro.Rotation.Select(r => r.Skill).ToArray();
-    }*/
+    /// <inheritdoc/>
+    public override string ToString() => this.Name;
+
+    // ReSharper disable once NonReadonlyMemberInGetHashCode
+    internal string GetRotationString() => string.Join('-', this.Rotations);
 }

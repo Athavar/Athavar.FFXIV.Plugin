@@ -12,10 +12,6 @@ using Athavar.FFXIV.Plugin.Common.UI;
 /// </summary>
 public abstract class Module
 {
-    protected Module(Configuration configuration) => this.Configuration = configuration;
-
-    public Configuration Configuration { get; }
-
     /// <summary>
     ///     Gets the name of the module.
     /// </summary>

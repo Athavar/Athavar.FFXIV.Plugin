@@ -4,23 +4,43 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
+using System.Text.Json.Serialization;
+
 public sealed class VisibilityConfig : BaseConfig
 {
+    [JsonInclude]
+    [JsonPropertyName("AlwaysHide")]
     public bool AlwaysHide { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("HideInCombat")]
     public bool HideInCombat { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("HideOutsideCombat")]
     public bool HideOutsideCombat { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("HideOutsideDuty")]
     public bool HideOutsideDuty { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("HideWhilePerforming")]
     public bool HideWhilePerforming { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("HideInGoldenSaucer")]
     public bool HideInGoldenSaucer { get; set; }
 
+    [JsonInclude]
+    [JsonPropertyName("ShowForJobTypes")]
     public JobType ShowForJobTypes { get; set; } = JobType.All;
 
+    [JsonInclude]
+    [JsonPropertyName("CustomJobString")]
     public string CustomJobString { get; set; } = string.Empty;
 
+    [JsonInclude]
+    [JsonPropertyName("CustomJobList")]
     public List<Job> CustomJobList { get; set; } = new();
 }

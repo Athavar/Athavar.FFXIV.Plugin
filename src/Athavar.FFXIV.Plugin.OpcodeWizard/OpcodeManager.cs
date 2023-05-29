@@ -19,9 +19,9 @@ internal sealed class OpcodeManager : IOpcodeManager
 
     private readonly Dictionary<ushort, Opcode> opcodes = new();
 
-    public OpcodeManager(Configuration configuration, IDefinitionManager definitionManager)
+    public OpcodeManager(OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
     {
-        this.configuration = configuration.OpcodeWizard!;
+        this.configuration = configuration;
         this.definitionManager = definitionManager;
         _ = this.Populate();
     }

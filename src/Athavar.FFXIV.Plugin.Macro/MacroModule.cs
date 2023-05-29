@@ -33,12 +33,12 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
     private readonly IChatManager chatManager;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroModule" /> class.
+    ///     Initializes a new instance of the <see cref="MacroModule"/> class.
     /// </summary>
-    /// <param name="provider"><see cref="IServiceProvider" /> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration" /> added by DI.</param>
-    public MacroModule(IServiceProvider provider, Configuration configuration)
-        : base(configuration, configuration.Macro!)
+    /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
+    /// <param name="configuration"><see cref="MacroConfiguration"/> added by DI.</param>
+    public MacroModule(IServiceProvider provider, MacroConfiguration configuration)
+        : base(configuration)
     {
         this.provider = provider;
         MacroCommand.SetServiceProvider(provider);
@@ -46,6 +46,8 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
         ActiveMacro.SetServiceProvider(provider);
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
+
+        PluginLog.Information("MMEntries: {0}", configuration.GetAllNodes().Count());
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
         {
@@ -55,13 +57,13 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
         PluginLog.LogDebug("Module 'Macro' init");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool Hidden => false;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
@@ -113,7 +115,7 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
             }
 
             var macroName = arguments.Trim('"');
-            var nodes = this.Configuration.Macro!.GetAllNodes()
+            var nodes = this.ModuleConfig.GetAllNodes()
                .OfType<MacroNode>()
                .Where(node => node.Name.Trim() == macroName)
                .ToArray();

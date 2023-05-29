@@ -4,6 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
+using System.Collections.Immutable;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 internal static class RotationNodeExtensions
@@ -15,6 +16,6 @@ internal static class RotationNodeExtensions
             return;
         }
 
-        node.Rotations = macro.Rotation.Select(r => (int)r.Skill).ToArray();
+        node.Rotations = macro.Rotation.Select(r => (int)r.Skill).ToImmutableArray();
     }
 }

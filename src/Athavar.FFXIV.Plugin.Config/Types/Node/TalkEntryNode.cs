@@ -6,24 +6,26 @@
 // ReSharper disable once CheckNamespace
 namespace Athavar.FFXIV.Plugin;
 
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 /// <summary>
 ///     Text entry node type.
 /// </summary>
-public sealed class TalkEntryNode : INode
+public sealed class TalkEntryNode : Node
 {
     /// <summary>
     ///     Gets a value indicating whether the matching target text is a regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public bool TargetIsRegex => this.TargetText.StartsWith("/") && this.TargetText.EndsWith("/");
 
     /// <summary>
     ///     Gets the matching target text as a compiled regex.
     /// </summary>
     [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
     public Regex? TargetRegex
     {
         get
@@ -42,13 +44,16 @@ public sealed class TalkEntryNode : INode
     /// <summary>
     ///     Gets or sets a value indicating whether the node is enabled.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; } = true;
 
     /// <summary>
     ///     Gets or sets the name of the node.
     /// </summary>
     [JsonIgnore]
-    public string Name
+    [Newtonsoft.Json.JsonIgnore]
+    public override string Name
     {
         get => this.TargetText;
 
@@ -58,5 +63,7 @@ public sealed class TalkEntryNode : INode
     /// <summary>
     ///     Gets or sets the matching target name.
     /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("TargetText")]
     public string TargetText { get; set; } = string.Empty;
 }

@@ -12,8 +12,8 @@ public abstract class Module<TTab, TConfig> : Module<TConfig>, IDisposable
 {
     private TTab? tab;
 
-    protected Module(Configuration configuration, TConfig moduleConfig)
-        : base(configuration, moduleConfig)
+    protected Module(TConfig moduleConfig)
+        : base(moduleConfig)
     {
     }
 

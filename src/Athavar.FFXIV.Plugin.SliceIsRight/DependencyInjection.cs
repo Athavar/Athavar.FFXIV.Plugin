@@ -11,6 +11,7 @@ public static class DependencyInjection
     public static IServiceCollection AddSliceIsRightModule(this IServiceCollection services)
     {
         services.AddTransient<SliceIsRightModule>();
+        SliceIsRightConfiguration.AddToDependencyInjection(services);
 
         return services;
     }
