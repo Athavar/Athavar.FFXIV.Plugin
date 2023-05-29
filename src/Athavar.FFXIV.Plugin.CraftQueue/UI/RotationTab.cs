@@ -151,8 +151,11 @@ internal sealed class RotationTab : Tab
 
         ImGui.SameLine();
 
-        if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport, "Import from clipboard"))
+        if (ImGuiEx.IconButton(FontAwesomeIcon.FileImport, "Import from clipboard (hold control to append)"))
         {
+            var io = ImGui.GetIO();
+            var ctrlHeld = io.KeyCtrl;
+
             string text;
             try
             {
@@ -176,7 +179,16 @@ internal sealed class RotationTab : Tab
                 text = text.Remove(index, 1).Insert(index, "\r\n");
             }
 
-            this.activeRotationMacro = this.craftDataManager.ParseCraftingMacro(text);
+            var craftMacro = this.craftDataManager.ParseCraftingMacro(text);
+            if (ctrlHeld && this.activeRotationMacro is not null)
+            {
+                this.activeRotationMacro = new CraftingMacro(this.activeRotationMacro.Rotation.Concat(craftMacro.Rotation).ToArray());
+            }
+            else
+            {
+                this.activeRotationMacro = craftMacro;
+            }
+
             this.activeRotationContent = this.craftDataManager.CreateTextMacro(this.activeRotationMacro, this.ClientLanguage);
 
             this.editChanged = true;

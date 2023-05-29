@@ -370,7 +370,11 @@ internal sealed class CraftingJob
                 throw new CraftingJobException("Missing food in inventory.");
             }
 
-            ci.UseItem(itemId, this.food.IsHq);
+            if (!ci.UseItem(itemId, this.food.IsHq))
+            {
+                throw new CraftingJobException("Fail to use food.");
+            }
+
             return -1000;
         }
 
@@ -443,7 +447,7 @@ internal sealed class CraftingJob
                 }
             }
 
-            return 0;
+            return 100;
         }
 
         return 0;
