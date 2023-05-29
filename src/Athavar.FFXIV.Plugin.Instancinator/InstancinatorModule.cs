@@ -72,8 +72,8 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.dalamudServices = dalamudServices;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
-        var text = aetheryteSheet.GetRow(10)!.String.RawString;
-        this.travelToInstancedArea = text[6..];
+        var text = aetheryteSheet.GetRow(12)!.String.RawString;
+        this.travelToInstancedArea = text.Trim();
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
@@ -140,26 +140,41 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             case 963: // Radz-at-Han
                 return 2;
             default:
-                return 3;
+                return 2;
         }
     }
 
     internal void DisableAllAndCreateIfNotExists()
     {
-        if (!this.DisableAllEntries())
+        void AddOrDisable(List<Node> f, string text)
         {
-            var rootChildren = this.yesConfiguration.ListRootFolder.Children;
-            var instance = new TextFolderNode
+            var node = f.OfType<ListEntryNode>().FirstOrDefault(n => n.Text == text && n.TargetText == this.aetheryteTarget);
+
+            if (node is null)
+            {
+                f.Add(this.CreateListEntryNode(this.aetheryteTarget, text));
+            }
+            else
+            {
+                node.Enabled = false;
+            }
+        }
+
+        var folder = this.yesConfiguration.ListRootFolder.Children.OfType<TextFolderNode>().FirstOrDefault(f => f.Name == FolderName);
+        if (folder is null)
+        {
+            folder = new TextFolderNode
             {
                 Name = FolderName,
             };
-            var children = instance.Children;
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, this.travelToInstancedArea));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[0]));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[1]));
-            children.Add(this.CreateListEntryNode(this.aetheryteTarget, Instances[2]));
-            rootChildren.Add(instance);
+            this.yesConfiguration.ListRootFolder.Children.Add(folder);
         }
+
+        var children = folder.Children;
+        AddOrDisable(children, this.travelToInstancedArea);
+        AddOrDisable(children, Instances[0]);
+        AddOrDisable(children, Instances[1]);
+        AddOrDisable(children, Instances[2]);
     }
 
     /// <inheritdoc/>
