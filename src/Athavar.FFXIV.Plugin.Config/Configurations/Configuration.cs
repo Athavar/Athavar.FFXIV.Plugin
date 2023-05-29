@@ -81,7 +81,7 @@ public sealed class Configuration : IPluginConfiguration
         if (c.Version == 1)
         {
             c.Setup(pi);
-            pi.ConfigFile.MoveTo($"{pi.ConfigFile.Name}.old");
+            pi.ConfigFile.MoveTo(Path.Combine(pi.ConfigFile.Directory?.FullName ?? string.Empty, $"{pi.ConfigFile.Name}.old"), true);
         }
     }
 
