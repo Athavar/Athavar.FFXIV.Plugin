@@ -15,7 +15,6 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
@@ -52,7 +51,9 @@ internal sealed class CraftingJob
         this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
         this.rotation = CraftingSkill.Parse(node.Rotations).ToArray();
-        this.HqIngredients = hqIngredients;
+
+        // clone hqIngredients
+        this.HqIngredients = hqIngredients.Select(i => (i.ItemId, i.Amount)).ToArray();
 
         this.simulation = new Simulation(crafterStats, this.Recipe)
         {
@@ -413,7 +414,7 @@ internal sealed class CraftingJob
         return !ci.IsAddonVisible(Constants.Addons.RecipeNote) ? -1000 : 100;
     }
 
-    private unsafe int SelectIngredients()
+    private int SelectIngredients()
     {
         var ci = this.queue.CommandInterface;
         if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
@@ -426,8 +427,6 @@ internal sealed class CraftingJob
         {
             return -100;
         }
-
-        var addon = (AddonRecipeNote*)ptr;
 
         var click = ClickRecipeNote.Using(ptr);
 
@@ -446,8 +445,6 @@ internal sealed class CraftingJob
                     }
                 }
             }
-
-            return 100;
         }
 
         return 0;
