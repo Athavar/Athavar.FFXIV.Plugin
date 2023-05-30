@@ -371,12 +371,8 @@ internal sealed class CraftingJob
                 throw new CraftingJobException("Missing food in inventory.");
             }
 
-            if (!ci.UseItem(itemId, this.food.IsHq))
-            {
-                throw new CraftingJobException("Fail to use food.");
-            }
-
-            return -2000;
+            ci.UseItem(itemId, this.food.IsHq);
+            return -1000;
         }
 
         if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
@@ -388,12 +384,8 @@ internal sealed class CraftingJob
                 throw new CraftingJobException("Missing potion in inventory.");
             }
 
-            if (!ci.UseItem(itemId, this.potion.IsHq))
-            {
-                throw new CraftingJobException("Fail to use potion. Is perhaps on CD.");
-            }
-
-            return -2000;
+            ci.UseItem(itemId, this.potion.IsHq);
+            return -1000;
         }
 
         return 0;
