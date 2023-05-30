@@ -376,7 +376,7 @@ internal sealed class CraftingJob
                 throw new CraftingJobException("Fail to use food.");
             }
 
-            return -1000;
+            return -2000;
         }
 
         if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
@@ -393,7 +393,7 @@ internal sealed class CraftingJob
                 throw new CraftingJobException("Fail to use potion. Is perhaps on CD.");
             }
 
-            return -1000;
+            return -2000;
         }
 
         return 0;
