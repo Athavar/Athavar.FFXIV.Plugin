@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 [Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration))]
 internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
 {
-    internal const string ModuleName = "DPS (Test)";
+    internal const string ModuleName = "DPS";
 
     private readonly IServiceProvider provider;
     private readonly IDalamudServices services;
