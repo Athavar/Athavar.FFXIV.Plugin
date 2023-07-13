@@ -5,6 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
+using Dalamud.Game.ClientState.Objects.Enums;
+
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
 /// </summary>
@@ -37,4 +39,34 @@ public partial interface ICommandInterface
     /// <param name="actionId">The actionId.</param>
     /// <returns>A value indicating whether the general action was used.</returns>
     public bool UseGeneralAction(uint actionId);
+
+    /// <summary>
+    ///     Check if the target in in interaction range.
+    /// </summary>
+    /// <param name="targetName">The name of the target.</param>
+    /// <returns>A value indicating whether the target is in interaction reach.</returns>
+    public bool IsTargetInReach(string targetName);
+
+    /// <summary>
+    ///     Check if the target in in interaction range.
+    /// </summary>
+    /// <param name="objectKind">The object kind of the target.</param>
+    /// <param name="targetName">The name of the target.</param>
+    /// <returns>A value indicating whether the target is in interaction reach.</returns>
+    public bool IsTargetInReach(ObjectKind objectKind, string targetName);
+
+    /// <summary>
+    ///     Interact with a target.
+    /// </summary>
+    /// <param name="targetName">The name of the target.</param>
+    /// <returns>A value indicating whether the interaction with the target was successful.</returns>
+    public bool InteractWithTarget(string targetName);
+
+    /// <summary>
+    ///     Interact with a target.
+    /// </summary>
+    /// <param name="objectKind">The object kind of the target.</param>
+    /// <param name="targetName">The name of the target.</param>
+    /// <returns>A value indicating whether the interaction with the target was successful.</returns>
+    public bool InteractWithTarget(ObjectKind objectKind, string targetName);
 }

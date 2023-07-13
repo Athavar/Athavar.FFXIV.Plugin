@@ -5,11 +5,16 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Dalamud;
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
@@ -22,9 +27,9 @@ internal sealed partial class CommandInterface : ICommandInterface
     private readonly IDalamudServices dalamudServices;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="CommandInterface" /> class.
+    ///     Initializes a new instance of the <see cref="CommandInterface"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="dalamudServices" /> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="dalamudServices"/> added by DI.</param>
     public CommandInterface(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
@@ -32,7 +37,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         this.logOutId = mainSheet.FirstOrDefault(c => c.Name?.RawString == "Log Out")?.RowId ?? 0u;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool CanUseAction(uint actionId)
     {
         if (!this.IsLoggedIn())
@@ -44,7 +49,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return ActionManager.Instance()->GetActionStatus(actionType, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool UseAction(uint actionId)
     {
         if (!this.IsLoggedIn())
@@ -56,7 +61,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(actionType, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool CanUseGeneralAction(uint actionId)
     {
         if (!this.IsLoggedIn())
@@ -67,7 +72,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool UseGeneralAction(uint actionId)
     {
         if (!this.IsLoggedIn())
@@ -76,6 +81,83 @@ internal sealed partial class CommandInterface : ICommandInterface
         }
 
         return this.CanUseGeneralAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+    }
+
+    public bool IsTargetInReach(string targetName) => this.IsTargetInReach(targetName, null);
+
+    public bool IsTargetInReach(ObjectKind objectKind, string targetName) => this.IsTargetInReach(targetName, objectKind);
+
+    public bool InteractWithTarget(string targetName) => this.InteractWithTarget(targetName, null);
+
+    public bool InteractWithTarget(ObjectKind objectKind, string targetName) => this.InteractWithTarget(targetName, objectKind);
+
+    private bool IsTargetInReach(string targetName, ObjectKind? objectKind)
+    {
+        var gameObject = this.FindNearestGameObject(targetName, objectKind);
+        if (gameObject is null)
+        {
+            return false;
+        }
+
+        return this.IsObjectInReach(gameObject);
+    }
+
+    private unsafe bool InteractWithTarget(string targetName, ObjectKind? objectKind)
+    {
+        var target = this.FindNearestGameObject(targetName, objectKind);
+
+        if (target is null)
+        {
+            return false;
+        }
+
+        if (this.dalamudServices.TargetManager.Target != target)
+        {
+            this.dalamudServices.TargetManager.Target = target;
+        }
+
+        var targetAddress = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)target.Address;
+        var ts = TargetSystem.Instance();
+
+        if (!this.IsObjectInReach(target))
+        {
+            return false;
+        }
+
+        var res = ts->InteractWithObject(targetAddress);
+        PluginLog.LogInformation("Interaction Result: {0}", res);
+        return true;
+    }
+
+    private bool IsObjectInReach(GameObject gameObject, Vector3? playerPosition = null)
+    {
+        playerPosition ??= this.dalamudServices.ClientState.LocalPlayer?.Position;
+        if (playerPosition is null)
+        {
+            return false;
+        }
+
+        return Vector3.Distance(playerPosition.Value, gameObject.Position) < 10f;
+    }
+
+    private GameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)
+    {
+        if (!this.IsLoggedIn())
+        {
+            return null;
+        }
+
+        var playerPosition = this.dalamudServices.ClientState.LocalPlayer!.Position;
+
+        IEnumerable<GameObject> objects = this.dalamudServices.ObjectTable;
+        if (objectKind is not null)
+        {
+            objects = objects.Where(obj => obj.ObjectKind == objectKind);
+        }
+
+        return objects
+           .Where(obj => targetName.Equals(obj.Name.TextValue, StringComparison.OrdinalIgnoreCase))
+           .MinBy(o => Vector3.Distance(playerPosition, o.Position));
     }
 
     private unsafe int GetNodeTextAsInt(AtkTextNode* node, string error)

@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -13,10 +14,6 @@ using System.Text.Json.Serialization;
 /// </summary>
 public sealed class InstancinatorConfiguration : BasicModuleConfig<InstancinatorConfiguration>
 {
-    [JsonInclude]
-    [JsonPropertyName("KeyCode")]
-    public string KeyCode { get; set; } = "NumPad0";
-
     [JsonInclude]
     [JsonPropertyName("ExtraDelay")]
     public int ExtraDelay { get; set; }

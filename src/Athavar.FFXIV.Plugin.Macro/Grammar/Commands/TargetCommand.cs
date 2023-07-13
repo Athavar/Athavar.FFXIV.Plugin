@@ -63,7 +63,7 @@ internal class TargetCommand : MacroCommand
             throw new MacroCommandError("Could not find target");
         }
 
-        DalamudServices.TargetManager.SetTarget(target);
+        DalamudServices.TargetManager.Target = target;
 
         await this.PerformWait(token);
     }
