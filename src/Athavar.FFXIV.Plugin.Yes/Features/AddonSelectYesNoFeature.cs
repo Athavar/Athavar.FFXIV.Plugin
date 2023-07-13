@@ -10,6 +10,7 @@ using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     AddonSelectYesNo feature.
@@ -19,18 +20,18 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     private readonly YesModule module;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature" /> class.
+    ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature"/> class.
     /// </summary>
-    /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectYesNoFeature(YesModule module)
         : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC 40 44 8B F2 0F 29 74 24 ??", module)
         => this.module = module;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override string AddonName => "SelectYesNo";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
     {
         var dataPtr = (AddonSelectYesNoOnSetupData*)data;
@@ -101,7 +102,7 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
             if (yesButton != null && !yesButton->IsEnabled)
             {
                 PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
-                yesButton->AtkComponentBase.OwnerNode->AtkResNode.Flags ^= 1 << 5;
+                yesButton->AtkComponentBase.OwnerNode->AtkResNode.NodeFlags |= NodeFlags.Enabled;
             }
 
             PluginLog.Debug("AddonSelectYesNo: Selecting yes");
