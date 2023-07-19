@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Machina.FFXIV" Version="2.3.6.4" />
+    <PackageReference Include="Machina.FFXIV" Version="2.3.7.7"/>
   </ItemGroup>
 
   <ItemGroup>
