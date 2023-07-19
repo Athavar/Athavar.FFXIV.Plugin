@@ -559,15 +559,10 @@
       ]
     },
     {
-      "5AE5": "stotram",
+      "5AE5": "stotram attack",
       "damage": [
         {
           "potency": 140
-        }
-      ],
-      "heal": [
-        {
-          "potency": 300
         }
       ]
     },
@@ -648,7 +643,7 @@
       ]
     },
     {
-      "5AF2": "hydo pull",
+      "5AF2": "hydro pull",
       "damage": [
         {
           "potency": 110
@@ -728,15 +723,158 @@
       ]
     },
     {
-      "5B78": "stotram",
-      "damage": [
-        {
-          "potency": 140
-        }
-      ],
+      "5B78": "stotram heal",
       "heal": [
         {
           "potency": 300
+        }
+      ]
+    },
+    {
+      "8703": "goblin punch",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "8704": "right round",
+      "damage": [
+        {
+          "potency": 110
+        }
+      ]
+    },
+    {
+      "8706": "rehydration",
+      "heal": [
+        {
+          "potency": 600
+        }
+      ]
+    },
+    {
+      "8708": "wild rage",
+      "damage": [
+        {
+          "potency": 250
+        },
+        {
+          "potency": 500,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "8709": "peat pelt",
+      "damage": [
+        {
+          "potency": 50
+        },
+        {
+          "potency": 100,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "870A": "deep clean",
+      "damage": [
+        {
+          "potency": 110
+        },
+        {
+          "potency": 220,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "870B": "ruby dynamics",
+      "damage": [
+        {
+          "potency": 220
+        }
+      ]
+    },
+    {
+      "870C": "divination rune",
+      "damage": [
+        {
+          "potency": 100
+        }
+      ]
+    },
+    {
+      "870D": "dimensional shift",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "870E": "conviction marcato",
+      "damage": [
+        {
+          "potency": 110
+        },
+        {
+          "potency": 220,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "8710": "winged reprobation",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "8711": "laser eye",
+      "damage": [
+        {
+          "potency": 110
+        },
+        {
+          "potency": 220,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "8712": "candy cane",
+      "damage": [
+        {
+          "potency": 125
+        },
+        {
+          "potency": 250,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "8714": "sea shanty",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "8716": "being mortal",
+      "damage": [
+        {
+          "potency": 400
+        },
+        {
+          "potency": 800,
+          "targetindex": 0
         }
       ]
     }
@@ -1002,6 +1140,95 @@
           "amountbyte": 2
         }
       ]
+    },
+    {
+      "E2F": "schiltron",
+      "reactiveproc": {
+        "type": "DamageOnDamageReceived",
+        "amount": 0
+      }
+    },
+    {
+      "E34": "begrimed",
+      "timeproc": {
+        "type": "dot",
+        "potency": "10",
+        "damagetype": "magic",
+        "maxticks": "3"
+      }
+    },
+    {
+      "E35": "spick-and-span",
+      "timeproc": {
+        "type": "hot",
+        "potency": "0",
+        "maxticks": "5"
+      }
+    },
+    {
+      "E36": "force field physical",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -50,
+          "limittodamagetype": "physical"
+        }
+      ]
+    },
+    {
+      "E37": "force field magical",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -50,
+          "limittodamagetype": "magic"
+        }
+      ]
+    },
+    {
+      "E39": "winged redemption",
+      "potency": [
+        {
+          "type": "damagedonemultiplier",
+          "amount": 100,
+          "limitto": "Conviction Marcato"
+        }
+      ]
+    },
+    {
+      "E3A": "candy cane",
+      "potency": [
+        {
+          "type": "damagedonemultiplier",
+          "amount": -10,
+          "limittodamagetype": "physical"
+        }
+      ]
+    },
+    {
+      "E3B": "mortal flame",
+      "timeproc": {
+        "type": "dot",
+        "potency": "40",
+        "damagetype": "magic"
+      }
+    },
+    {
+      "E3C": "apokalypsis",
+      "timeproc": {
+        "type": "grounddamage",
+        "potency": "140",
+        "maxticks": "11"
+      }
+    },
+    {
+      "E80": "breath of magic",
+      "timeproc": {
+        "type": "dot",
+        "potency": "120",
+        "damagetype": "magic",
+        "maxticks": "20"
+      }
     }
   ]
 }
