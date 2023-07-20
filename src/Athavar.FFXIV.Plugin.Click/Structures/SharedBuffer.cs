@@ -5,7 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Click.Structures;
 
-using Reloaded.Memory.Sources;
+using Reloaded.Memory;
+using Reloaded.Memory.Structs;
 using Reloaded.Memory.Utilities;
 
 /// <summary>
@@ -13,15 +14,21 @@ using Reloaded.Memory.Utilities;
 /// </summary>
 public abstract class SharedBuffer
 {
-    static SharedBuffer() => Buffer = new CircularBuffer(0x2048, Memory.Instance);
+    static SharedBuffer()
+    {
+        Allocation = Memory.Instance.Allocate(0x2048);
+        Buffer = new CircularBuffer(Allocation.Address, 0x2048);
+    }
 
     /// <summary>
     ///     Gets the shared buffer.
     /// </summary>
     protected static CircularBuffer Buffer { get; }
 
+    private static MemoryAllocation Allocation { get; }
+
     /// <summary>
     ///     Dispose.
     /// </summary>
-    public static void Dispose() => Buffer.Dispose();
+    public static void Dispose() => Memory.Instance.Free(Allocation);
 }

@@ -11,11 +11,15 @@ namespace Athavar.FFXIV.Plugin.Click.Structures;
 public sealed unsafe class EventData : SharedBuffer
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EventData" /> class.
+    ///     Initializes a new instance of the <see cref="EventData"/> class.
     /// </summary>
     private EventData()
     {
-        this.Data = (void**)Buffer.Add(new byte[0x18]);
+        const int size = 0x18;
+        var d = stackalloc byte[size];
+        this.Data = (void**)Buffer.Add(d, size);
+
+
         if (this.Data == null)
         {
             throw new ArgumentNullException(null, "EventData could not be created, null");
@@ -32,7 +36,7 @@ public sealed unsafe class EventData : SharedBuffer
     public void** Data { get; }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EventData" /> class.
+    ///     Initializes a new instance of the <see cref="EventData"/> class.
     /// </summary>
     /// <param name="target">Target.</param>
     /// <param name="listener">Event listener.</param>
@@ -46,7 +50,7 @@ public sealed unsafe class EventData : SharedBuffer
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EventData" /> class.
+    ///     Initializes a new instance of the <see cref="EventData"/> class.
     /// </summary>
     /// <param name="target">Target.</param>
     /// <param name="listener">Event listener.</param>

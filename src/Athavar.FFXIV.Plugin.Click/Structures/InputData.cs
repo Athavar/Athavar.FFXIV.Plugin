@@ -14,11 +14,14 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 public sealed unsafe class InputData : SharedBuffer
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InputData" /> class.
+    ///     Initializes a new instance of the <see cref="InputData"/> class.
     /// </summary>
     private InputData()
     {
-        this.Data = (void**)Buffer.Add(new byte[0x40]);
+        const int size = 0x40;
+        var d = stackalloc byte[size];
+        this.Data = (void**)Buffer.Add(d, size);
+
         if (this.Data == null)
         {
             throw new ArgumentNullException(null, "InputData could not be created, null");
@@ -40,13 +43,13 @@ public sealed unsafe class InputData : SharedBuffer
     public void** Data { get; }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InputData" /> class.
+    ///     Initializes a new instance of the <see cref="InputData"/> class.
     /// </summary>
     /// <returns>Input data.</returns>
     public static InputData Empty() => new();
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InputData" /> class.
+    ///     Initializes a new instance of the <see cref="InputData"/> class.
     /// </summary>
     /// <param name="popupMenu">List popup menu.</param>
     /// <param name="index">Selected index.</param>
@@ -60,7 +63,7 @@ public sealed unsafe class InputData : SharedBuffer
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InputData" /> class.
+    ///     Initializes a new instance of the <see cref="InputData"/> class.
     /// </summary>
     /// <param name="node">List popup menu.</param>
     /// <param name="index">Selected index.</param>
