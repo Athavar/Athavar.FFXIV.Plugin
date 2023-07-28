@@ -135,7 +135,7 @@ internal sealed partial class EncounterManager
                 {
                     if (damageTakenEvent.IsSourceEntry)
                     {
-                        var effect = target?.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
+                        var effect = source.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
                             damageTakenEvent.ActionId = effect.StatusId;
