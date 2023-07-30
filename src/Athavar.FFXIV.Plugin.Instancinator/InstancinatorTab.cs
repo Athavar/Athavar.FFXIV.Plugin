@@ -25,19 +25,6 @@ internal sealed class InstancinatorTab : Tab
     public override void Draw()
     {
         ImGui.SetNextItemWidth(100f);
-        var keyCode = this.Configuration.KeyCode;
-        if (ImGui.InputText("Interact keycode", ref keyCode, 64))
-        {
-            this.Configuration.KeyCode = keyCode;
-            if (this.Configuration.KeyCode.Length == 0)
-            {
-                this.Configuration.KeyCode = Native.KeyCode.NumPad0.ToString();
-            }
-
-            this.Configuration.Save();
-        }
-
-        ImGui.SetNextItemWidth(100f);
         var delay = this.Configuration.ExtraDelay;
         if (ImGui.DragInt("Extra delay, MS", ref delay, 1f, 0, 2000))
         {

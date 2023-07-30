@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Cheat;
 
 using Athavar.FFXIV.Plugin.Common;
@@ -19,6 +20,8 @@ internal sealed class CheatModule : Module, IDisposable
 
     private readonly IDalamudServices dalamudServices;
     private readonly Dictionary<Cheat, bool> cheats;
+
+    private DateTimeOffset nextTick = DateTimeOffset.MinValue;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CheatModule"/> class.
@@ -69,6 +72,13 @@ internal sealed class CheatModule : Module, IDisposable
 
     private void FrameworkOnUpdate(Framework framework)
     {
+        if (DateTimeOffset.UtcNow < this.nextTick)
+        {
+            return;
+        }
+
+        this.nextTick = DateTimeOffset.UtcNow.AddSeconds(1);
+
         foreach (var cheat in this.cheats)
         {
             var state = cheat.Key.Enabled;

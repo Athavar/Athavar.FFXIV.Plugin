@@ -219,7 +219,6 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
                     if (ImGui.Checkbox(module, ref val))
                     {
                         this.manager.Enable(module, val);
-                        change = true;
                     }
                 }
             }

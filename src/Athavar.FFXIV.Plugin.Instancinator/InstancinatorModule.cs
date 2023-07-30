@@ -5,10 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Instancinator;
 
-using System.Diagnostics;
-using System.Numerics;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Conditions;
@@ -50,6 +47,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private readonly YesConfiguration yesConfiguration;
     private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
+    private readonly ICommandInterface ci;
     private readonly string travelToInstancedArea;
     private readonly string aetheryteTarget;
 
@@ -64,12 +62,14 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     /// <param name="yesConfiguration"><see cref="YesConfiguration"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
-    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices)
+    /// <param name="ci"><see cref="ICommandInterface"/> added by DI.</param>
+    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices, ICommandInterface ci)
         : base(configuration)
     {
         this.yesConfiguration = yesConfiguration;
         this.provider = provider;
         this.dalamudServices = dalamudServices;
+        this.ci = ci;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
         var text = aetheryteSheet.GetRow(12)!.String.RawString;
@@ -233,9 +233,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             return;
         }
 
-        var aetheryte = this.dalamudServices.ObjectTable.FirstOrDefault(o => o.ObjectKind == ObjectKind.Aetheryte && Vector3.Distance(o.Position, this.dalamudServices.ClientState.LocalPlayer.Position) < 10f);
-
-        if (aetheryte == null || !aetheryte.Name.ToString().Equals(this.aetheryteTarget, StringComparison.OrdinalIgnoreCase))
+        if (!this.ci.IsTargetInReach(ObjectKind.Aetheryte, this.aetheryteTarget))
         {
             if (this.window != null)
             {
@@ -257,45 +255,9 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             this.nextKeypress = Environment.TickCount64 + 1000 + config.ExtraDelay;
         }
 
-        var target = this.dalamudServices.TargetManager.Target;
+        this.ci.InteractWithTarget(ObjectKind.Aetheryte, this.aetheryteTarget);
 
-        if (target is null || target.Name.ToString() != this.aetheryteTarget)
-        {
-            this.dalamudServices.TargetManager.SetTarget(aetheryte);
-            this.nextKeypress = Environment.TickCount64 + 100;
-        }
-        else
-        {
-            Task.Run(async () =>
-            {
-                List<Native.KeyCode> vkCodes = new();
-                foreach (var nameValue in config.KeyCode.Split(' ', ','))
-                {
-                    if (!Enum.TryParse<Native.KeyCode>(nameValue, true, out var vkCode))
-                    {
-                        throw new AthavarPluginException($"Invalid key code '{nameValue}'");
-                    }
-
-                    vkCodes.Add(vkCode);
-                }
-
-                var mWnd = Process.GetCurrentProcess().MainWindowHandle;
-
-                foreach (var keyCode in vkCodes)
-                {
-                    Native.KeyDown(mWnd, keyCode);
-                }
-
-                await Task.Delay(15);
-
-                foreach (var keyCode in vkCodes)
-                {
-                    Native.KeyUp(mWnd, keyCode);
-                }
-            });
-
-            this.nextKeypress = Environment.TickCount64 + 500;
-        }
+        this.nextKeypress = Environment.TickCount64 + 500;
     }
 
     private ListEntryNode CreateListEntryNode(string target, string text)

@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
@@ -41,7 +42,7 @@ internal sealed partial class EncounterManager
 
                 foreach (var effectEvent in action.Effects)
                 {
-                    effectEvent.SourceId = overWriteSource;
+                    effectEvent.EffectSourceId = overWriteSource;
                     this.HandleActionEffect(encounter, actor, action, effectEvent);
                 }
 
@@ -101,6 +102,13 @@ internal sealed partial class EncounterManager
     private void HandleActionEffect(Encounter encounter, Combatant? source, CombatEvent @event, CombatEvent.ActionEffectEvent effectEvent)
     {
         var target = encounter.GetCombatant(effectEvent.TargetId);
+
+        if (effectEvent.IsSourceTarget && effectEvent.SourceId != source?.ObjectId)
+        {
+            // reflect effect
+            source = encounter.GetCombatant(effectEvent.SourceId);
+        }
+
         if (source is null)
         {
             return;
@@ -127,7 +135,7 @@ internal sealed partial class EncounterManager
                 {
                     if (damageTakenEvent.IsSourceEntry)
                     {
-                        var effect = target?.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
+                        var effect = source.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
                             damageTakenEvent.ActionId = effect.StatusId;
@@ -140,7 +148,11 @@ internal sealed partial class EncounterManager
                 target?.AddActionTaken(@event.Timestamp, damageTakenEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp, true);
 
-                this.Log.Add($"{@event.Timestamp:O}|Damage|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{damageTakenEvent.Amount}");
+                this.Log.Add($"{@event.Timestamp:O}|Damage{(damageTakenEvent.IsSourceTarget ? "(reflect/self)" : string.Empty)}|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{damageTakenEvent.Amount}");
+                if (effectEvent.IsSourceTarget)
+                {
+                    this.Log.Add($"{damageTakenEvent.EffectSourceId}!={effectEvent.SourceId} && {damageTakenEvent.EffectTargetId}!={effectEvent.TargetId}");
+                }
 
                 break;
             }

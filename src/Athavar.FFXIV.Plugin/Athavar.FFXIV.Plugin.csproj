@@ -40,7 +40,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.10" GeneratePathProperty="false"/>
+        <PackageReference Include="DalamudPackager" Version="2.1.11" GeneratePathProperty="false"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
     </ItemGroup>
 

@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Numerics;
@@ -220,7 +221,7 @@ internal sealed partial class NetworkHandler : IDisposable
                             Value = actionEffect.Value,
 
                             EffectTargetId = targetId,
-                            SourceId = casterId,
+                            EffectSourceId = casterId,
                             ActionId = actionId,
                             ActionType = actionType,
                         });
@@ -239,7 +240,7 @@ internal sealed partial class NetworkHandler : IDisposable
                             Value = actionEffect.Value,
 
                             EffectTargetId = targetId,
-                            SourceId = casterId,
+                            EffectSourceId = casterId,
                             ActionId = actionId,
                             ActionType = actionType,
                         });
@@ -337,7 +338,7 @@ internal sealed partial class NetworkHandler : IDisposable
 
                         EffectTargetId = actorId,
                         StatusId = p->param1,
-                        SourceId = p->param3,
+                        EffectSourceId = p->param3,
                     },
                 });
                 break;
@@ -353,7 +354,7 @@ internal sealed partial class NetworkHandler : IDisposable
 
                         EffectTargetId = actorId,
                         StatusId = p->param1,
-                        SourceId = p->param3,
+                        EffectSourceId = p->param3,
                     },
                 });
                 break;

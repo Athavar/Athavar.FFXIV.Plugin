@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
@@ -55,11 +56,13 @@ internal abstract record CombatEvent
 
         protected ActionEffectType EffectType { get; init; }
 
-        public uint SourceId { get; set; }
+        public uint EffectSourceId { get; set; }
+
+        public virtual uint SourceId => this.EffectSourceId;
 
         public uint EffectTargetId { get; init; }
 
-        public uint TargetId => this.IsSourceTarget ? this.SourceId : this.EffectTargetId;
+        public uint TargetId => this.IsSourceTarget ? this.EffectSourceId : this.EffectTargetId;
 
         public byte HitSeverity { get; set; }
 
@@ -117,6 +120,8 @@ internal abstract record CombatEvent
 
     public abstract record Damage : ActionEffectEvent
     {
+        public override uint SourceId => this.IsSourceTarget ? this.EffectTargetId : this.EffectSourceId;
+
         public virtual DamageType DamageType => DamageType.Unknown;
     }
 

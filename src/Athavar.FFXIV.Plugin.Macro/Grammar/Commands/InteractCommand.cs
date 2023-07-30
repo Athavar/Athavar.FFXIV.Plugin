@@ -2,16 +2,14 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
-using System.Numerics;
 using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
 [MacroCommand("interact", null, "Interact with new nearest selectable target with the given name.", new[] { "wait" }, new[] { "/interact Summoning Bell" }, RequireLogin = true)]
 internal class InteractCommand : MacroCommand
@@ -48,40 +46,17 @@ internal class InteractCommand : MacroCommand
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
         PluginLog.Debug($"Executing: {this.Text}");
-        var position = GetPlayerPosition();
-        var target = DalamudServices.ObjectTable
-           .Where(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName)
-           .Select(o => (Object: o, Distance: Vector3.Distance(position, o.Position)))
-           .OrderBy(o => o.Distance)
-           .Select(o => o.Object)
-           .FirstOrDefault();
 
-        if (target == default)
+        if (!CommandInterface.IsTargetInReach(this.targetName))
         {
-            throw new MacroCommandError("Could not find target");
+            throw new MacroCommandError($"Could not find target {this.targetName} in interaction range");
         }
 
-        // backup current focus target.
-        var currentFocusTarget = DalamudServices.TargetManager.FocusTarget;
-
-        DalamudServices.TargetManager.SetFocusTarget(target);
-        ServiceProvider.GetService<IClick>()?.TrySendClick("focus_interact");
-        DalamudServices.TargetManager.SetFocusTarget(currentFocusTarget);
+        if (!CommandInterface.InteractWithTarget(this.targetName))
+        {
+            throw new MacroCommandError($"Fail to interact with target {this.targetName}");
+        }
 
         await this.PerformWait(token);
-    }
-
-    private static Vector3 GetPlayerPosition()
-    {
-        var player = DalamudServices.ClientState.LocalPlayer;
-        if (player != null)
-        {
-            return new Vector3(
-                player.Position.X,
-                player.Position.Y,
-                player.Position.Z);
-        }
-
-        return Vector3.Zero;
     }
 }
