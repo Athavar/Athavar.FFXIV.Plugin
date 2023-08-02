@@ -230,8 +230,9 @@ internal sealed class DetectionProgram : IDisposable
         {
             MessageReceivedEventHandler = this.OnMessageReceived,
             MessageSentEventHandler = this.OnMessageSent,
-            MonitorType = NetworkMonitorType.WinPCap,
             WindowName = "FINAL FANTASY XIV",
+            UseDeucalion = true,
+            ProcessID = pid,
         };
 
         if (!string.IsNullOrEmpty(gamePath))

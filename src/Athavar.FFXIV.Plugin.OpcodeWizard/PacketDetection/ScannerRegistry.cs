@@ -194,7 +194,7 @@ internal sealed class ScannerRegistry
             PacketSource.Server,
             (packet, parameters) =>
             {
-                if (lightningCrystals == -1)
+                if (lightningCrystals == -1 && parameters.Length > 0)
                 {
                     lightningCrystals = int.Parse(parameters[0]);
                 }
