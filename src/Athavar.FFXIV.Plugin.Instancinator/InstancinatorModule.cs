@@ -140,7 +140,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             case 963: // Radz-at-Han
                 return 2;
             default:
-                return 2;
+                return 3;
         }
     }
 
