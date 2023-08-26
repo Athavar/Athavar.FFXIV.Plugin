@@ -23,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Main module implementation.
 /// </summary>
-[Module(ModuleName, ModuleConfigurationType = typeof(YesConfiguration))]
+[Module(ModuleName, ModuleConfigurationType = typeof(YesConfiguration), HasTab = true)]
 internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 {
     /// <summary>
@@ -35,6 +35,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     private const string Command = "/pyes";
 
     private readonly IServiceProvider provider;
+    private readonly IFrameworkManager frameworkManager;
     private readonly List<IBaseFeature> features;
     private ZoneListWindow? zoneListWindow;
 
@@ -45,16 +46,17 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
-    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager)
+    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager)
         : base(configuration)
     {
         this.provider = provider;
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
+        this.frameworkManager = frameworkManager;
 
         this.LoadTerritories();
 
-        this.DalamudServices.Framework.Update += this.FrameworkUpdate;
+        this.frameworkManager.Subscribe(this.FrameworkUpdate);
 
         this.features = new List<IBaseFeature>(this.GetType()
            .Assembly.GetTypes()
@@ -139,7 +141,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     public override void Dispose()
     {
         this.DalamudServices.CommandManager.RemoveHandler(Command);
-        this.DalamudServices.Framework.Update -= this.FrameworkUpdate;
+        this.frameworkManager.Unsubscribe(this.FrameworkUpdate);
         base.Dispose();
 
         this.features.ForEach(feature => feature?.Dispose());

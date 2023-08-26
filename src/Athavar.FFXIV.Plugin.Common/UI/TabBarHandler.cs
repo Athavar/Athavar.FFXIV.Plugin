@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.UI;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
@@ -21,9 +22,9 @@ public sealed class TabBarHandler
     private string? selectTabIdentifier;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="TabBarHandler" /> class.
+    ///     Initializes a new instance of the <see cref="TabBarHandler"/> class.
     /// </summary>
-    /// <param name="name">The name of the <see cref="TabBarHandler" />.</param>
+    /// <param name="name">The name of the <see cref="TabBarHandler"/>.</param>
     public TabBarHandler(string name) => this.name = $"##{name}";
 
     /// <summary>
@@ -35,7 +36,10 @@ public sealed class TabBarHandler
     {
         lock (this.lockObject)
         {
-            this.tabs.Add(new TabDefinition(tab, $"{tab.Name}##{tab.Identifier}", tab.Identifier));
+            if (this.tabs.All(t => t.Identifier != tab.Identifier))
+            {
+                this.tabs.Add(new TabDefinition(tab, $"{tab.Name}##{tab.Identifier}", tab.Identifier));
+            }
         }
 
         return this;

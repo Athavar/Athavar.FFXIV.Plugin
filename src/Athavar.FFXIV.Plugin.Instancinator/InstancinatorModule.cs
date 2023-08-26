@@ -24,7 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements the instancinator module.
 /// </summary>
-[Module(ModuleName, ModuleConfigurationType = typeof(InstancinatorConfiguration))]
+[Module(ModuleName, ModuleConfigurationType = typeof(InstancinatorConfiguration), HasTab = true)]
 internal sealed class InstancinatorModule : Module<InstancinatorTab, InstancinatorConfiguration>
 {
     internal const string ModuleName = "Instancinator";
@@ -48,6 +48,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private readonly IServiceProvider provider;
     private readonly IDalamudServices dalamudServices;
     private readonly ICommandInterface ci;
+    private readonly IFrameworkManager frameworkManager;
     private readonly string travelToInstancedArea;
     private readonly string aetheryteTarget;
 
@@ -63,13 +64,14 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="ci"><see cref="ICommandInterface"/> added by DI.</param>
-    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices, ICommandInterface ci)
+    public InstancinatorModule(InstancinatorConfiguration configuration, YesConfiguration yesConfiguration, IServiceProvider provider, IDalamudServices dalamudServices, ICommandInterface ci, IFrameworkManager frameworkManager)
         : base(configuration)
     {
         this.yesConfiguration = yesConfiguration;
         this.provider = provider;
         this.dalamudServices = dalamudServices;
         this.ci = ci;
+        this.frameworkManager = frameworkManager;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
         var text = aetheryteSheet.GetRow(12)!.String.RawString;
@@ -81,7 +83,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             HelpMessage = "Commands of the instancinator module.",
             ShowInHelp = false,
         });
-        this.dalamudServices.Framework.Update += this.Tick;
+        frameworkManager.Subscribe(this.Tick);
         PluginLog.LogDebug("Module 'Instancinator' init");
     }
 
@@ -128,7 +130,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);
-        this.dalamudServices.Framework.Update -= this.Tick;
+        this.frameworkManager.Unsubscribe(this.Tick);
         base.Dispose();
         this.window?.Dispose();
     }

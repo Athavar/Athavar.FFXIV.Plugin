@@ -17,7 +17,9 @@ internal sealed class CraftQueue : IDisposable
     private readonly List<CraftingJob> queuedJobs = new();
     private readonly List<CraftingJob> completedJobs = new();
 
-    public CraftQueue(IDalamudServices dalamudServices, ICommandInterface commandInterface, IGearsetManager gearsetManager, IChatManager chatManager, IClick click, CraftQueueConfiguration configuration)
+    private readonly IFrameworkManager frameworkManager;
+
+    public CraftQueue(IDalamudServices dalamudServices, ICommandInterface commandInterface, IGearsetManager gearsetManager, IChatManager chatManager, IClick click, CraftQueueConfiguration configuration, IFrameworkManager frameworkManager)
     {
         this.DalamudServices = dalamudServices;
         this.CommandInterface = commandInterface;
@@ -26,8 +28,9 @@ internal sealed class CraftQueue : IDisposable
         this.Click = click;
         this.Data = new CraftQueueData(dalamudServices);
         this.Configuration = configuration ?? throw new AthavarPluginException();
+        this.frameworkManager = frameworkManager;
 
-        this.DalamudServices.Framework.Update += this.FrameworkOnUpdate;
+        this.frameworkManager.Subscribe(this.FrameworkOnUpdate);
     }
 
     public ICommandInterface CommandInterface { get; }
@@ -65,7 +68,7 @@ internal sealed class CraftQueue : IDisposable
     }
 
     /// <inheritdoc/>
-    public void Dispose() => this.DalamudServices.Framework.Update -= this.FrameworkOnUpdate;
+    public void Dispose() => this.frameworkManager.Unsubscribe(this.FrameworkOnUpdate);
 
     internal void DequeueJob(int idx) => this.queuedJobs.RemoveAt(idx);
 
