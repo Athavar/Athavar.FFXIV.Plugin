@@ -23,6 +23,7 @@ internal sealed partial class EncounterManager : IDisposable
     private readonly ICommandInterface ci;
     private readonly Utils utils;
     private readonly DpsConfiguration configuration;
+    private readonly IFrameworkManager frameworkManager;
 
     private readonly uint[] damageDealtHealProcs;
     private readonly uint[] damageReceivedHealProcs;
@@ -35,7 +36,7 @@ internal sealed partial class EncounterManager : IDisposable
     private DateTime nextUpdate = DateTime.MinValue;
     private DateTime nextStatUpdate = DateTime.MinValue;
 
-    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration)
+    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration, IFrameworkManager frameworkManager)
     {
         this.services = services;
         this.networkHandler = networkHandler;
@@ -43,6 +44,7 @@ internal sealed partial class EncounterManager : IDisposable
         this.utils = utils;
         this.ci = ci;
         this.configuration = configuration;
+        this.frameworkManager = frameworkManager;
 
         this.objectTable = services.ObjectTable;
         Encounter.ObjectTable = services.ObjectTable;
@@ -55,7 +57,7 @@ internal sealed partial class EncounterManager : IDisposable
         this.damageReceivedProcs = definitions.GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType.DamageOnDamageReceived);
 
         networkHandler.CombatEvent += this.OnCombatEvent;
-        services.Framework.Update += this.Update;
+        frameworkManager.Subscribe(this.Update);
     }
 
     public List<string> Log { get; } = new(); // new(100, true);
@@ -78,7 +80,7 @@ internal sealed partial class EncounterManager : IDisposable
 
     public void Dispose()
     {
-        this.services.Framework.Update -= this.Update;
+        this.frameworkManager.Unsubscribe(this.Update);
         this.networkHandler.CombatEvent -= this.OnCombatEvent;
     }
 

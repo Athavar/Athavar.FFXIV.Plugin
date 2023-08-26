@@ -24,6 +24,7 @@ internal sealed partial class AutoSpear : Tab
     private readonly IDalamudServices dalamudServices;
     private readonly IChatManager chatManager;
     private readonly AutoSpearConfiguration configuration;
+    private readonly IFrameworkManager frameworkManager;
     private readonly Dictionary<uint, FishingSpot> spearfishingSpots;
 
     private readonly string useSpearSkillName;
@@ -42,11 +43,12 @@ internal sealed partial class AutoSpear : Tab
     /// <param name="configuration"><see cref="configuration"/> added by Di.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by Di.</param>
     /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
-    public AutoSpear(AutoSpearConfiguration configuration, IDalamudServices dalamudServices, IChatManager chatManager)
+    public AutoSpear(AutoSpearConfiguration configuration, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager)
     {
         this.dalamudServices = dalamudServices;
         this.chatManager = chatManager;
         this.configuration = configuration;
+        this.frameworkManager = frameworkManager;
 
         var sheet = dalamudServices.DataManager.GetExcelSheet<Action>()!;
         this.useSpearSkillName = sheet.GetRow(7632)!.Name;
@@ -81,16 +83,16 @@ internal sealed partial class AutoSpear : Tab
             this.spearfishingSpots.Add(point.RowId, node);
         }
 
-        this.dalamudServices.Framework.Update += this.Tick;
+        this.frameworkManager.Subscribe(this.Tick);
     }
 
     public override void Dispose()
     {
-        this.dalamudServices.Framework.Update -= this.Tick;
+        this.frameworkManager.Unsubscribe(this.Tick);
         base.Dispose();
     }
 
-    public unsafe void Tick(Framework framework)
+    private unsafe void Tick(Framework framework)
     {
         var oldOpen = this.isOpen;
         this.addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing");

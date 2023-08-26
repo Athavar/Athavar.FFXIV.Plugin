@@ -28,6 +28,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
 {
     private readonly Channel<SeString> chatBoxMessages = Channel.CreateUnbounded<SeString>();
     private readonly IDalamudServices dalamud;
+    private readonly IFrameworkManager frameworkManager;
 
     [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
     private readonly ProcessChatBoxDelegate processChatBox = null!;
@@ -37,17 +38,19 @@ internal sealed class ChatManager : IDisposable, IChatManager
     private readonly unsafe delegate* unmanaged<Utf8String*, int, nint, void> sanitiseString = null!;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ChatManager" /> class.
+    ///     Initializes a new instance of the <see cref="ChatManager"/> class.
     /// </summary>
-    /// <param name="dalamud"><see cref="IDalamudServices" /> added by DI.</param>
-    public ChatManager(IDalamudServices dalamud)
+    /// <param name="dalamud"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
+    public ChatManager(IDalamudServices dalamud, IFrameworkManager frameworkManager)
     {
         this.dalamud = dalamud;
+        this.frameworkManager = frameworkManager;
 
         // init processChatBox
         SignatureHelper.Initialise(this);
 
-        this.dalamud.Framework.Update += this.FrameworkUpdate;
+        this.frameworkManager.Subscribe(this.FrameworkUpdate);
 #if DEBUG
         // this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
 #endif
@@ -57,36 +60,36 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
     private unsafe delegate void ProcessChat(Utf8String* message, int flag, nint f);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
 #if DEBUG
         // this.dalamud.ChatGui.ChatMessage -= this.OnChatMessageDebug;
 #endif
-        this.dalamud.Framework.Update -= this.FrameworkUpdate;
+        this.frameworkManager.Unsubscribe(this.FrameworkUpdate);
         this.chatBoxMessages.Writer.Complete();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void PrintChat(SeString message, XivChatType? type = null) => this.SendMessageInternal(message, type);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void PrintChat(SeString message, IChatManager.UiColor color, XivChatType? type = null) => this.SendMessageInternal(message, type, color);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void PrintErrorMessage(SeString message)
     {
         message.Payloads.Insert(0, new TextPayload($"[{Constants.PluginName}]"));
         this.dalamud.ChatGui.PrintError(message);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public async void SendMessage(string message) => await this.chatBoxMessages.Writer.WriteAsync(SeStringHelper.Parse(message));
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public async void SendMessage(SeString message) => await this.chatBoxMessages.Writer.WriteAsync(message);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Clear()
     {
         var reader = this.chatBoxMessages.Reader;
@@ -120,6 +123,11 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
     private void FrameworkUpdate(Framework framework)
     {
+        if (this.chatBoxMessages.Reader.Count == 0)
+        {
+            return;
+        }
+
         if (this.chatBoxMessages.Reader.TryRead(out var message))
         {
             this.SendMessageInternal(message);

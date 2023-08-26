@@ -19,6 +19,7 @@ internal sealed class CheatModule : Module, IDisposable
     private const string ModuleName = "CheatModule";
 
     private readonly IDalamudServices dalamudServices;
+    private readonly IFrameworkManager frameworkManager;
     private readonly Dictionary<Cheat, bool> cheats;
 
     private DateTimeOffset nextTick = DateTimeOffset.MinValue;
@@ -28,15 +29,17 @@ internal sealed class CheatModule : Module, IDisposable
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
-    public CheatModule(IDalamudServices dalamudServices, IServiceProvider provider)
+    /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
+    public CheatModule(IDalamudServices dalamudServices, IServiceProvider provider, IFrameworkManager frameworkManager)
     {
         this.dalamudServices = dalamudServices;
+        this.frameworkManager = frameworkManager;
 
         this.cheats = typeof(Cheat).Assembly.GetTypes()
            .Where(type => type.IsAssignableTo(typeof(Cheat)) && type is { IsGenericType: false, IsInterface: false, IsAbstract: false })
            .Select(t => (Cheat)ActivatorUtilities.CreateInstance(provider, t)).ToDictionary(cheat => cheat, _ => false);
 
-        this.dalamudServices.Framework.Update += this.FrameworkOnUpdate;
+        frameworkManager.Subscribe(this.FrameworkOnUpdate);
         this.dalamudServices.ClientState.TerritoryChanged += this.OnTerritoryChange;
     }
 
@@ -62,7 +65,7 @@ internal sealed class CheatModule : Module, IDisposable
     public void Dispose()
     {
         this.dalamudServices.ClientState.TerritoryChanged -= this.OnTerritoryChange;
-        this.dalamudServices.Framework.Update -= this.FrameworkOnUpdate;
+        this.frameworkManager.Unsubscribe(this.FrameworkOnUpdate);
 
         foreach (var cheat in this.cheats.Where(c => c.Value))
         {
