@@ -61,7 +61,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 #endif
             }
 
-            var definition = new ModuleDef(attribute.Hidden, mType)
+            var definition = new ModuleDef(this, attribute.Name, attribute.HasTab, attribute.Hidden, mType)
             {
                 Enabled = true,
             };
@@ -84,7 +84,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                     if (m is Module module)
                     {
                         definition.Instance = module;
-                        this.StateChange?.Invoke(module);
+                        this.StateChange?.Invoke(module, definition.Data);
                     }
                 }
             }
@@ -99,44 +99,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
     public IEnumerable<string> GetModuleNames() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Key);
 
     /// <inheritdoc/>
-    public bool IsEnables(string moduleName) => this.modules.TryGetValue(moduleName, out var mod) && mod.Enabled;
-
-    /// <inheritdoc/>
-    public void Enable(string moduleName, bool state = true)
-    {
-        if (this.modules.TryGetValue(moduleName, out var mod))
-        {
-            if (mod.Instance is null)
-            {
-                var instance = ActivatorUtilities.CreateInstance(this.serviceProvider, mod.Type);
-                if (instance is not Module module)
-                {
-                    return;
-                }
-
-                mod.Instance = module;
-            }
-
-            mod.Enabled = state;
-            mod.Instance.Enable(state);
-            mod.Config?.Save();
-            if (state)
-            {
-                mod.Instance.Init();
-            }
-
-            this.StateChange?.Invoke(mod.Instance);
-            if (!state)
-            {
-                if (mod.Instance is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-
-                mod.Instance = null;
-            }
-        }
-    }
+    public IEnumerable<IModuleManager.IModuleData> GetModuleData() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Value.Data);
 
     /// <inheritdoc/>
     public void Dispose()
@@ -150,12 +113,90 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
         }
     }
 
-    private sealed record ModuleDef(bool Hidden, Type Type)
+    private object CreateModule(Type type) => ActivatorUtilities.CreateInstance(this.serviceProvider, type);
+
+    private sealed class ModuleDef
     {
-        public bool Enabled { get; set; }
+        public ModuleDef(ModuleManager manager, string name, bool hasTabs, bool hidden, Type type)
+        {
+            this.Manager = manager;
+            this.Hidden = hidden;
+            this.Type = type;
+            this.Data = new ModuleData(this, name, hasTabs);
+        }
 
-        public Module? Instance { get; set; }
+        public bool Hidden { get; }
 
-        public BasicModuleConfig? Config { get; set; }
+        internal Type Type { get; }
+
+        internal ModuleManager Manager { get; }
+
+        internal ModuleData Data { get; }
+
+        internal bool Enabled { get; set; }
+
+        internal Module? Instance { get; set; }
+
+        internal BasicModuleConfig? Config { get; set; }
+    }
+
+    private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData
+    {
+        public bool Enabled
+        {
+            get => this.Def.Enabled;
+            set
+            {
+                if (this.Def.Instance is null)
+                {
+                    // Enable
+                    var instance = this.Def.Manager.CreateModule(this.Def.Type);
+                    if (instance is not Module module)
+                    {
+                        return;
+                    }
+
+                    this.Def.Instance = module;
+                }
+
+                this.Def.Enabled = value;
+                this.Def.Instance.Enable(value);
+                this.Def.Config?.Save();
+                if (value)
+                {
+                    // Enable
+                    this.Def.Instance.Init();
+                }
+
+                this.Def.Manager.StateChange?.Invoke(this.Def.Instance, this);
+                if (!value)
+                {
+                    // Disable
+                    if (this.Def.Instance is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+
+                    this.Def.Instance = null;
+                }
+            }
+        }
+
+        public bool TabEnabled
+        {
+            get => this.Def.Config?.TabEnabled ?? false;
+            set
+            {
+                if (this.Def.Config is not null)
+                {
+                    this.Def.Config.TabEnabled = value;
+
+                    if (this.Def.Instance is not null)
+                    {
+                        this.Def.Manager.StateChange?.Invoke(this.Def.Instance, this);
+                    }
+                }
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Implements the macro module.
 /// </summary>
-[Module(ModuleName, ModuleConfigurationType = typeof(MacroConfiguration))]
+[Module(ModuleName, ModuleConfigurationType = typeof(MacroConfiguration), HasTab = true)]
 internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
 {
     /// <summary>

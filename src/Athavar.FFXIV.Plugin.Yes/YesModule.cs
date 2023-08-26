@@ -23,7 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     Main module implementation.
 /// </summary>
-[Module(ModuleName, ModuleConfigurationType = typeof(YesConfiguration))]
+[Module(ModuleName, ModuleConfigurationType = typeof(YesConfiguration), HasTab = true)]
 internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 {
     /// <summary>

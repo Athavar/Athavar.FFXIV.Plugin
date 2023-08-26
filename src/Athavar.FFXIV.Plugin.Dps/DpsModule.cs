@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common;
@@ -11,7 +12,7 @@ using Athavar.FFXIV.Plugin.Dps.UI;
 using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
-[Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration))]
+[Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration), HasTab = true)]
 internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
 {
     internal const string ModuleName = "DPS";

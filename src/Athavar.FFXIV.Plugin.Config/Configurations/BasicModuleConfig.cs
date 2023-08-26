@@ -3,6 +3,7 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -24,6 +25,13 @@ public abstract class BasicModuleConfig
     [JsonInclude]
     [JsonPropertyName("Enabled")]
     public bool Enabled { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the plugin functionality is enabled.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("TabEnabled")]
+    public bool TabEnabled { get; set; } = true;
 
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]

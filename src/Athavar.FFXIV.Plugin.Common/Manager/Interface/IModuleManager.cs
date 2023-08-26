@@ -7,15 +7,24 @@ namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
 public interface IModuleManager
 {
-    public delegate void ModuleStateChange(Module module);
+    public delegate void ModuleStateChange(Module module, IModuleData data);
 
     event ModuleStateChange StateChange;
 
+    public interface IModuleData
+    {
+        string Name { get; }
+
+        bool HasTab { get; }
+
+        bool Enabled { get; set; }
+
+        bool TabEnabled { get; set; }
+    }
+
     public IEnumerable<string> GetModuleNames();
 
-    public bool IsEnables(string moduleName);
-
-    public void Enable(string moduleName, bool state = true);
+    public IEnumerable<IModuleData> GetModuleData();
 
     void LoadModules();
 }
