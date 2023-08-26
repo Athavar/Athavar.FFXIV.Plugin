@@ -190,6 +190,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                 if (this.Def.Config is not null)
                 {
                     this.Def.Config.TabEnabled = value;
+                    this.Def.Config?.Save();
 
                     if (this.Def.Instance is not null)
                     {
