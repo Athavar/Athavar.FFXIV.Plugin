@@ -234,6 +234,35 @@ public static class ImGuiEx
         }
     }
 
+    /// <summary>
+    ///     Draw a table row based on the input values.
+    /// </summary>
+    /// <param name="values">The input values.</param>
+    /// <param name="rowItemActionTrigger">The trigger for the action.</param>
+    /// <param name="rowItemAction">The triggered action.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void TableRow(object[] values, Func<bool> rowItemActionTrigger, Action<int> rowItemAction)
+    {
+        for (var columnIndex = 0; columnIndex < values.Length; columnIndex++)
+        {
+            ImGui.TableSetColumnIndex(columnIndex);
+            switch (values[columnIndex])
+            {
+                case string text:
+                    ImGui.TextUnformatted(text);
+                    break;
+                case Action action:
+                    action();
+                    break;
+            }
+
+            if (rowItemActionTrigger())
+            {
+                rowItemAction(columnIndex);
+            }
+        }
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool DragFloat2(string label, Vector2 value, Action<Vector2> setter, float vSpeed = 1f, float vMin = 0f, float vMax = 0f)
     {

@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using System.Diagnostics.CodeAnalysis;
@@ -769,7 +770,22 @@ internal sealed class QueueTab : Tab
 
                 cancel();
             });
-            ImGuiEx.TableRow(values);
+            ImGuiEx.TableRow(values, ImGui.IsItemHovered, index =>
+            {
+                ImGui.BeginTooltip();
+                ImGui.TextUnformatted("Rotation: " + drawnJob.RotationName);
+                if (drawnJob.Food != null)
+                {
+                    ImGui.TextUnformatted(this.foodLabel + ": " + drawnJob.Food!.Name + (drawnJob.Food!.IsHq ? " \ue03c" : string.Empty));
+                }
+
+                if (drawnJob.Potion != null)
+                {
+                    ImGui.TextUnformatted(this.potionLabel + ": " + drawnJob.Potion!.Name + (drawnJob.Potion!.IsHq ? " \ue03c" : string.Empty));
+                }
+
+                ImGui.EndTooltip();
+            });
 
             if (drawnJob.Status == JobStatus.Failure)
             {

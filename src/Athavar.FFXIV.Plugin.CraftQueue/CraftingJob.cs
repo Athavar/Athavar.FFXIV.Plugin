@@ -28,9 +28,6 @@ internal sealed class CraftingJob
 
     private readonly CraftingSkills[] rotation;
 
-    private readonly BuffInfo? food;
-    private readonly BuffInfo? potion;
-
     private readonly int hqPercent;
     private readonly bool trial;
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
@@ -45,11 +42,12 @@ internal sealed class CraftingJob
         this.Recipe = recipe;
         this.Loops = count;
 
-        this.food = food;
-        this.potion = potion;
+        this.Food = food;
+        this.Potion = potion;
 
         this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
+        this.RotationName = node.Name;
         this.rotation = CraftingSkill.Parse(node.Rotations).ToArray();
 
         // clone hqIngredients
@@ -76,6 +74,12 @@ internal sealed class CraftingJob
             this.DoRotationAction,
         };
     }
+
+    public BuffInfo? Food { get; }
+
+    public BuffInfo? Potion { get; }
+
+    public string RotationName { get; }
 
     [Flags]
     private enum BuffApplyTest
@@ -362,29 +366,29 @@ internal sealed class CraftingJob
             }
         }
 
-        if (this.food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
+        if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
         {
-            var itemId = this.food.ItemId;
-            var count = ci.CountItem(itemId, this.food.IsHq);
+            var itemId = this.Food.ItemId;
+            var count = ci.CountItem(itemId, this.Food.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing food in inventory.");
             }
 
-            ci.UseItem(itemId, this.food.IsHq);
+            ci.UseItem(itemId, this.Food.IsHq);
             return -1000;
         }
 
-        if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
+        if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
         {
-            var itemId = this.potion.ItemId;
-            var count = ci.CountItem(itemId, this.potion.IsHq);
+            var itemId = this.Potion.ItemId;
+            var count = ci.CountItem(itemId, this.Potion.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing potion in inventory.");
             }
 
-            ci.UseItem(itemId, this.potion.IsHq);
+            ci.UseItem(itemId, this.Potion.IsHq);
             return -1000;
         }
 
@@ -609,24 +613,24 @@ internal sealed class CraftingJob
         for (var i = 0; i < 4; i++)
         {
             buffApplyStats = (BuffApplyTest)i;
-            if (this.food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
+            if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
             {
-                this.simulation.CurrentStatModifiers[0] = this.food.Stats;
+                this.simulation.CurrentStatModifiers[0] = this.Food.Stats;
             }
 
-            if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
+            if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
             {
-                this.simulation.CurrentStatModifiers[1] = this.potion.Stats;
+                this.simulation.CurrentStatModifiers[1] = this.Potion.Stats;
             }
 
             this.RunSimulation();
 
-            if (this.food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
+            if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
             {
                 this.simulation.CurrentStatModifiers[0] = currentStatModifier[0];
             }
 
-            if (this.potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
+            if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
             {
                 this.simulation.CurrentStatModifiers[1] = currentStatModifier[1];
             }
