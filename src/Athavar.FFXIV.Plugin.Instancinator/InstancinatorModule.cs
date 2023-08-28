@@ -89,9 +89,6 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     /// <inheritdoc/>
     public override string Name => ModuleName;
 
-    /// <inheritdoc/>
-    public override bool Hidden => false;
-
     /// <summary>
     ///     Gets current selected Instance.
     /// </summary>

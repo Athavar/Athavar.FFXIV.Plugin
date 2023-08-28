@@ -1,4 +1,4 @@
-namespace Athavar.FFXIV.Plugin.Config.Interfaces;
+namespace Athavar.FFXIV.Plugin.Models.Interfaces;
 
 public interface IRegex
 {

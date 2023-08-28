@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
 using System.Diagnostics.CodeAnalysis;
-using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin.Services;
 using ImGuiScene;

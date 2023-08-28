@@ -1,40 +1,41 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="$(SolutionDir)\src\dalamud.targets" />
-  <PropertyGroup>
-    <LangVersion>11</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+    <Import Project="$(SolutionDir)\src\dalamud.targets"/>
+    <PropertyGroup>
+        <LangVersion>11</LangVersion>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Definitions\Data\Astrologian.json" />
-    <EmbeddedResource Include="Definitions\Data\Bard.json" />
-    <EmbeddedResource Include="Definitions\Data\BlackMage.json" />
-    <EmbeddedResource Include="Definitions\Data\BlueMage.json" />
-    <EmbeddedResource Include="Definitions\Data\Chocobo.json" />
-    <EmbeddedResource Include="Definitions\Data\Dancer.json" />
-    <EmbeddedResource Include="Definitions\Data\DarkKnight.json" />
-    <EmbeddedResource Include="Definitions\Data\Dragoon.json" />
-    <EmbeddedResource Include="Definitions\Data\Eureka.json" />
-    <EmbeddedResource Include="Definitions\Data\Gunbreaker.json" />
-    <EmbeddedResource Include="Definitions\Data\JobRole.json" />
-    <EmbeddedResource Include="Definitions\Data\LimitBreak.json" />
-    <EmbeddedResource Include="Definitions\Data\Machinist.json" />
-    <EmbeddedResource Include="Definitions\Data\Monk.json" />
-    <EmbeddedResource Include="Definitions\Data\Ninja.json" />
-    <EmbeddedResource Include="Definitions\Data\NPC.json" />
-    <EmbeddedResource Include="Definitions\Data\Paladin.json" />
-    <EmbeddedResource Include="Definitions\Data\Reaper.json" />
-    <EmbeddedResource Include="Definitions\Data\RedMage.json" />
-    <EmbeddedResource Include="Definitions\Data\Sage.json" />
-    <EmbeddedResource Include="Definitions\Data\Samurai.json" />
-    <EmbeddedResource Include="Definitions\Data\Scholar.json" />
-    <EmbeddedResource Include="Definitions\Data\Summoner.json" />
-    <EmbeddedResource Include="Definitions\Data\Warrior.json" />
-    <EmbeddedResource Include="Definitions\Data\WhiteMage.json" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Definitions\Data\Astrologian.json"/>
+        <EmbeddedResource Include="Definitions\Data\Bard.json"/>
+        <EmbeddedResource Include="Definitions\Data\BlackMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\BlueMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Chocobo.json"/>
+        <EmbeddedResource Include="Definitions\Data\Dancer.json"/>
+        <EmbeddedResource Include="Definitions\Data\DarkKnight.json"/>
+        <EmbeddedResource Include="Definitions\Data\Dragoon.json"/>
+        <EmbeddedResource Include="Definitions\Data\Eureka.json"/>
+        <EmbeddedResource Include="Definitions\Data\Gunbreaker.json"/>
+        <EmbeddedResource Include="Definitions\Data\JobRole.json"/>
+        <EmbeddedResource Include="Definitions\Data\LimitBreak.json"/>
+        <EmbeddedResource Include="Definitions\Data\Machinist.json"/>
+        <EmbeddedResource Include="Definitions\Data\Monk.json"/>
+        <EmbeddedResource Include="Definitions\Data\Ninja.json"/>
+        <EmbeddedResource Include="Definitions\Data\NPC.json"/>
+        <EmbeddedResource Include="Definitions\Data\Paladin.json"/>
+        <EmbeddedResource Include="Definitions\Data\Reaper.json"/>
+        <EmbeddedResource Include="Definitions\Data\RedMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Sage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Samurai.json"/>
+        <EmbeddedResource Include="Definitions\Data\Scholar.json"/>
+        <EmbeddedResource Include="Definitions\Data\Summoner.json"/>
+        <EmbeddedResource Include="Definitions\Data\Warrior.json"/>
+        <EmbeddedResource Include="Definitions\Data\WhiteMage.json"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Athavar.FFXIV.Plugin.Config\Athavar.FFXIV.Plugin.Config.csproj" />
-    <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Config\Athavar.FFXIV.Plugin.Config.csproj"/>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj"/>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Models\Athavar.FFXIV.Plugin.Models.csproj"/>
+    </ItemGroup>
 </Project>

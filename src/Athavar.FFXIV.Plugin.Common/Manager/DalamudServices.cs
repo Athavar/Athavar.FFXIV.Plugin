@@ -3,11 +3,12 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.IoC;
@@ -105,12 +106,10 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public IDataManager DataManager { get; init; } = null!;
 
-    /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public IDutyState DutyState { get; init; } = null!;
-    */
 
     /*
     /// <inheritdoc/>

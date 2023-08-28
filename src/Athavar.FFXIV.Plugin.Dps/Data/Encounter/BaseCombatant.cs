@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Objects.Enums;
 
 internal abstract class BaseCombatant

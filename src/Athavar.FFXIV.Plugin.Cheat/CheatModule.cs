@@ -47,9 +47,6 @@ internal sealed class CheatModule : Module, IDisposable
     public override string Name => ModuleName;
 
     /// <inheritdoc/>
-    public override bool Hidden => true;
-
-    /// <inheritdoc/>
     public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
     {
         bool Get() => true;

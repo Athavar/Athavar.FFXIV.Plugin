@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.UI;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using ImGuiNET;
 
 /// <summary>

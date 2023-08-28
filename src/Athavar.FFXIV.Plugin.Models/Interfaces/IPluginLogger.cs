@@ -3,7 +3,7 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.Config.Interfaces;
+namespace Athavar.FFXIV.Plugin.Models.Interfaces;
 
 public interface IPluginLogger
 {

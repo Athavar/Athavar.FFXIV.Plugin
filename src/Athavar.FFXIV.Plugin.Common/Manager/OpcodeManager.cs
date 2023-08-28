@@ -3,16 +3,15 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.OpcodeWizard;
+namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Networking.Http;
-using Machina.FFXIV;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {
@@ -112,10 +111,11 @@ internal sealed class OpcodeManager : IOpcodeManager
             Add(opcode, value);
         }
 
+        /*
         Machina.FFXIV.Headers.Opcodes.OpcodeManager machinaManager = new();
         machinaManager.SetRegion(GameRegion.Global);
         var codes = machinaManager.CurrentOpcodes;
-        /*
+
         // Add(Opcode.StatusEffectListBozja, codes["StatusEffectList2"]);
         // Add(Opcode.StatusEffectListPlayer, codes["StatusEffectList3"]);
         // Add(Opcode.StatusEffectListDouble, codes["BossStatusEffectList"]);

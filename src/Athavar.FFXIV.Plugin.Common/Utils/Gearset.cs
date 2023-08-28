@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using Athavar.FFXIV.Plugin.Common.Utils.Constants;
-using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
 
 public sealed class Gearset
 {

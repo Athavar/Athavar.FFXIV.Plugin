@@ -60,9 +60,6 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
     public override string Name => ModuleName;
 
     /// <inheritdoc/>
-    public override bool Hidden => false;
-
-    /// <inheritdoc/>
     public override void Dispose()
     {
         this.dalamudServices.CommandManager.RemoveHandler(MacroCommandName);

@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;

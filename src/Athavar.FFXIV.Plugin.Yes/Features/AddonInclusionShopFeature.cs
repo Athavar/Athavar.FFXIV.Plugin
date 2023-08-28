@@ -66,17 +66,17 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 
     private unsafe nint AgentReceiveEventDetour(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind)
     {
-        nint Original() => this.agentReceiveEventHook.Original(agent, eventData, values, valueCount, eventKind);
+        var result = this.agentReceiveEventHook.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind);
 
         if (valueCount != 2)
         {
-            return Original();
+            return result;
         }
 
         var atkValue0 = values[0];
         if (atkValue0.Type != ValueType.Int)
         {
-            return Original();
+            return result;
         }
 
         var val0 = atkValue0.Int;
@@ -102,6 +102,6 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             }
         }
 
-        return Original();
+        return result;
     }
 }

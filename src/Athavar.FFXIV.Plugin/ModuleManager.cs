@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Module = Athavar.FFXIV.Plugin.Common.Module;

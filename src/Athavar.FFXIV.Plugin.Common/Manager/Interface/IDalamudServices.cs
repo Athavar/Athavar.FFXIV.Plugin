@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Plugin;
@@ -26,6 +26,8 @@ public interface IDalamudServices
     ICondition Condition { get; }
 
     IDataManager DataManager { get; }
+
+    IDutyState DutyState { get; }
 
     IFramework Framework { get; }
 

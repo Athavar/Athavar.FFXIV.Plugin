@@ -9,7 +9,6 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
-using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 

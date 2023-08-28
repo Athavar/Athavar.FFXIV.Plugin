@@ -46,7 +46,9 @@
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftQueue\Athavar.FFXIV.Plugin.CraftQueue.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj"/>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Data\Athavar.FFXIV.Plugin.Data.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.Dps\Athavar.FFXIV.Plugin.Dps.csproj"/>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.DutyHistory\Athavar.FFXIV.Plugin.DutyHistory.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj"/>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.OpcodeWizard\Athavar.FFXIV.Plugin.OpcodeWizard.csproj"/>

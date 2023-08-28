@@ -157,20 +157,12 @@ public static class ImGuiEx
         }
     }
 
-    /// <summary>
-    ///     Get a list clipper.
-    /// </summary>
-    /// <param name="itemsCount">Amount of items in the list.</param>
-    /// <returns>A RGBA vec4.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ImGuiListClipperPtr Clipper(int itemsCount)
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Center(string text)
     {
-        unsafe
-        {
-            var guiListClipperPtr = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
-            guiListClipperPtr.Begin(itemsCount);
-            return guiListClipperPtr;
-        }
+        var offset = (ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X) / 2;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
+        ImGui.TextUnformatted(text);
     }
 
     /// <summary>

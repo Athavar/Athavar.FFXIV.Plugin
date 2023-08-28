@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common;
 
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Serilog.Events;
 
 public abstract class BaseLogger : IPluginLogger

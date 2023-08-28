@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Yes;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
@@ -59,10 +59,14 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 
-        this.features = new List<IBaseFeature>(this.GetType()
+        this.features = new List<IBaseFeature>();
+        foreach (var baseFeatureTypes in this.GetType()
            .Assembly.GetTypes()
-           .Where(t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(IBaseFeature)))
-           .Select(t => (IBaseFeature)Activator.CreateInstance(t, this)!));
+           .Where(t => t is { IsAbstract: false, IsInterface: false } && t.IsAssignableTo(typeof(IBaseFeature))))
+        {
+            this.Logger.Verbose("[Yes] Create IBaseFeature {0}", baseFeatureTypes.FullName!);
+            this.features.Add((IBaseFeature)Activator.CreateInstance(baseFeatureTypes, this)!);
+        }
 
         this.DalamudServices.CommandManager.AddHandler(Command, new CommandInfo(this.OnChatCommand)
         {

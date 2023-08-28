@@ -11,7 +11,9 @@ using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.Data;
 using Athavar.FFXIV.Plugin.Dps;
+using Athavar.FFXIV.Plugin.DutyHistory;
 using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
@@ -60,9 +62,6 @@ public sealed class Plugin : IDalamudPlugin
     }
 
     /// <inheritdoc/>
-    public string Name => PluginName;
-
-    /// <inheritdoc/>
     public void Dispose()
     {
         this.servive.Stop();
@@ -89,6 +88,7 @@ public sealed class Plugin : IDalamudPlugin
            .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
            .AddCommon()
+           .AddData()
            .AddAutoSpearModule()
            .AddClick()
            .AddMacroModule()
@@ -99,6 +99,7 @@ public sealed class Plugin : IDalamudPlugin
            .AddDps()
            .AddOpcodeWizard()
            .AddSliceIsRightModule()
+           .AddDutyHistory()
 #if DEBUG
 #endif
            .AddSingleton<AutoTranslateWindow>()
