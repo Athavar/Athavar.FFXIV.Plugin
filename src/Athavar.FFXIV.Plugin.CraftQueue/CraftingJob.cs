@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using System.Diagnostics;
@@ -465,8 +466,11 @@ internal sealed class CraftingJob
 
         if (buffApplyStats is null || buffApplyStats != BuffApplyTest.None)
         {
+            var ci = this.queue.CommandInterface;
+
+            ci.CloseAddon(Constants.Addons.Synthesis);
             this.CurrentStep = 0;
-            return -1000;
+            return -1500;
         }
 
         return 0;
@@ -481,13 +485,15 @@ internal sealed class CraftingJob
 
         var ci = this.queue.CommandInterface;
 
-        if (this.RotationCurrentStep >= this.rotation.Length || !ci.IsAddonVisible("Synthesis"))
+        if (this.RotationCurrentStep >= this.rotation.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
         {
             if (ci.IsAddonVisible(Constants.Addons.Synthesis))
             {
+                // wait exiting of craft.
                 return -100;
             }
 
+            // finish craft of item
             ++this.CurrentLoop;
             this.RotationCurrentStep = 0;
             this.CurrentStep = 0;
