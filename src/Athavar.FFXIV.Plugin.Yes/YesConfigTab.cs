@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using ImGuiNET;
 
 /// <summary>

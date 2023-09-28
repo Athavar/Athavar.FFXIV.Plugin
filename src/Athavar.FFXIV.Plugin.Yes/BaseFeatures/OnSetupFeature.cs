@@ -24,8 +24,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     public OnSetupFeature(string onSetupSig, YesModule module)
     {
         this.module = module;
-        this.HookAddress = module.DalamudServices.SigScanner.ScanText(onSetupSig);
-        this.onSetupHook = Hook<OnSetupDelegate>.FromAddress(this.HookAddress, this.OnSetupDetour);
+        this.onSetupHook = this.module.DalamudServices.GameInteropProvider.HookFromSignature(onSetupSig, (OnSetupDelegate)this.OnSetupDetour);
         this.onSetupHook.Enable();
     }
 
@@ -47,11 +46,6 @@ internal abstract class OnSetupFeature : IBaseFeature
     ///     Gets the name of the addon being hooked.
     /// </summary>
     protected abstract string AddonName { get; }
-
-    /// <summary>
-    ///     Gets the address of the addon Update function.
-    /// </summary>
-    protected nint HookAddress { get; }
 
     /// <inheritdoc/>
     public void Dispose()

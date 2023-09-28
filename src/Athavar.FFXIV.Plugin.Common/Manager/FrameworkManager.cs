@@ -6,31 +6,31 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Game;
+using Dalamud.Plugin.Services;
 
 internal class FrameworkManager : IDisposable, IFrameworkManager
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly List<Framework.OnUpdateDelegate> onUpdateDelegates;
+    private readonly List<IFramework.OnUpdateDelegate> onUpdateDelegates;
 
-    private Framework.OnUpdateDelegate[] onUpdateDelegatesArray;
+    private IFramework.OnUpdateDelegate[] onUpdateDelegatesArray;
 
     public FrameworkManager(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
 
-        this.onUpdateDelegates = new List<Framework.OnUpdateDelegate>();
-        this.onUpdateDelegatesArray = Array.Empty<Framework.OnUpdateDelegate>();
+        this.onUpdateDelegates = new List<IFramework.OnUpdateDelegate>();
+        this.onUpdateDelegatesArray = Array.Empty<IFramework.OnUpdateDelegate>();
         this.dalamudServices.Framework.Update += this.FrameworkOnUpdate;
     }
 
-    public void Subscribe(Framework.OnUpdateDelegate updateDelegate)
+    public void Subscribe(IFramework.OnUpdateDelegate updateDelegate)
     {
         this.onUpdateDelegates.Add(updateDelegate);
         this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
     }
 
-    public void Unsubscribe(Framework.OnUpdateDelegate updateDelegate)
+    public void Unsubscribe(IFramework.OnUpdateDelegate updateDelegate)
     {
         this.onUpdateDelegates.Remove(updateDelegate);
         this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
@@ -38,7 +38,7 @@ internal class FrameworkManager : IDisposable, IFrameworkManager
 
     public void Dispose() => this.dalamudServices.Framework.Update -= this.FrameworkOnUpdate;
 
-    private void FrameworkOnUpdate(Framework framework)
+    private void FrameworkOnUpdate(IFramework framework)
     {
         foreach (var updateDelegate in this.onUpdateDelegatesArray)
         {

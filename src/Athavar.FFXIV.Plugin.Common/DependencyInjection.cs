@@ -22,7 +22,6 @@ public static class DependencyInjection
            .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<IChatManager, ChatManager>()
            .AddSingleton<EquipmentScanner>()
-           .AddSingleton<KeyStateExtended>()
            .AddSingleton<IDefinitionManager, DefinitionManager>()
            .AddSingleton<IFontsManager, FontsManager>()
            .AddSingleton<IIpcManager, IpcManager>()

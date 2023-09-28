@@ -9,13 +9,13 @@ using System.Text;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
-using Dalamud.Game;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Logging;
 using Dalamud.Memory;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
@@ -259,7 +259,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         }
     }
 
-    private void FrameworkUpdate(Framework framework)
+    private void FrameworkUpdate(IFramework framework1)
     {
         this.DisableKeyPressed = this.ModuleConfig.DisableKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.ModuleConfig.DisableKey];
 

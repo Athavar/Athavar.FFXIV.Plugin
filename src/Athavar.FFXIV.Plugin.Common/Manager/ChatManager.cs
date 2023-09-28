@@ -11,12 +11,13 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Game;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility.Signatures;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Memory;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -48,7 +49,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
         this.frameworkManager = frameworkManager;
 
         // init processChatBox
-        SignatureHelper.Initialise(this);
+        dalamud.GameInteropProvider.InitializeFromAttributes(this);
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 #if DEBUG
@@ -109,7 +110,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
         if (type is not null)
         {
-            this.dalamud.ChatGui.PrintChat(new XivChatEntry
+            this.dalamud.ChatGui.Print(new XivChatEntry
             {
                 Message = message,
                 Type = type.Value,
@@ -121,7 +122,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
         }
     }
 
-    private void FrameworkUpdate(Framework framework)
+    private void FrameworkUpdate(IFramework framework)
     {
         if (this.chatBoxMessages.Reader.Count == 0)
         {
@@ -176,7 +177,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
             throw new InvalidOperationException("Could not find signature for chat sending");
         }
 
-        var uiModule = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance()->GetUiModule();
+        var uiModule = Framework.Instance()->GetUiModule();
         using var payload = new ChatPayload(message);
         var chatPayloadPtr = Marshal.AllocHGlobal(400);
         Marshal.StructureToPtr(payload, chatPayloadPtr, false);

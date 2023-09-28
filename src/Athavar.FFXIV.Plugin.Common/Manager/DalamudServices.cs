@@ -5,31 +5,40 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.ClientState.Party;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Network;
-using Dalamud.Interface;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 /// <summary>
 ///     Contains services from dalamud.
 /// </summary>
 internal sealed class DalamudServices : IDalamudServices
 {
+    private readonly Assembly? dalamudAssembly;
+    private readonly Type? serviceGenericType;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="DalamudServices"/> class.
     /// </summary>
     /// <param name="pluginInterface"><see cref="DalamudPluginInterface"/> used to inject the other values.</param>
-    public DalamudServices(DalamudPluginInterface pluginInterface) => pluginInterface.Inject(this);
+    public DalamudServices(DalamudPluginInterface pluginInterface)
+    {
+        pluginInterface.Inject(this);
+
+        try
+        {
+            this.dalamudAssembly = typeof(DalamudPluginInterface).Assembly;
+            this.serviceGenericType = this.dalamudAssembly.GetType("Dalamud.Service`1") ?? throw new Exception("Fail to get type of Dalamud.Service<>");
+        }
+        catch (Exception e)
+        {
+            this.PluginLog.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
+        }
+    }
 
     /// <inheritdoc/>
     [PluginService]
@@ -40,153 +49,172 @@ internal sealed class DalamudServices : IDalamudServices
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public BuddyList Buddies { get; private set; } = null!;
+    public IBuddyList Buddies { get; private set; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public AetheryteList AetheryteList { get; init; } = null!;
+    public IAetheryteList AetheryteList { get; init; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public ChatGui ChatGui { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public ChatHandlers ChatHandlers { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public ClientState ClientState { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public Condition Condition { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public CommandManager CommandManager { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public DataManager DataManager { get; init; } = null!;
+    public IChatGui ChatGui { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public DutyState DutyState { get; init; } = null!;
+    public IChatManager ChatHandlers { get; init; } = null!;
     */
 
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IClientState ClientState { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public ICondition Condition { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public ICommandManager CommandManager { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IDataManager DataManager { get; init; } = null!;
+
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public DtrBar DtrBar { get; init; } = null!;
+    public IDutyState DutyState { get; init; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public FateTable FateTable { get; private set; } = null!;
+    public IDtrBar DtrBar { get; init; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public FlyTextGui FlyTexts { get; private set; } = null!;
-    */
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public Framework Framework { get; init; } = null!;
-
-    /*
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public GameConfig GameConfig { get; init; } = null!;
-    */
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public GameGui GameGui { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public GameLifecycle GameLifecycle { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public GameNetwork GameNetwork { get; init; } = null!;
-
-    /*
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public GamepadState GamepadState { get; init; } = null!;
+    public IFateTable FateTable { get; private set; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public JobGauges Gauges { get; private set; } = null!;
+    public IFlyTextGui FlyTexts { get; private set; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public KeyState KeyState { get; init; } = null!;
+    public IFramework Framework { get; init; } = null!;
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGameConfig GameConfig { get; init; } = null!;
+    */
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGameGui GameGui { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGameInteropProvider GameInteropProvider { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGameLifecycle GameLifecycle { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGameNetwork GameNetwork { get; init; } = null!;
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IGamepadState GamepadState { get; init; } = null!;
+    */
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IJobGauges Gauges { get; private set; } = null!;
+    */
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IKeyState KeyState { get; init; } = null!;
 
     /*[PluginService]
     [RequiredVersion("1.0")]
-    public LibcFunction LibC { get; private set; } = null!;*/
+    public ILibcFunction LibC { get; private set; } = null!;*/
 
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public ObjectTable ObjectTable { get; init; } = null!;
+    public IObjectTable ObjectTable { get; init; } = null!;
 
     /*[PluginService]
     [RequiredVersion("1.0")]
-    public PartyFinderGui PartyFinder { get; private set; } = null!;*/
+    public IPartyFinderGui PartyFinder { get; private set; } = null!;*/
 
     [PluginService]
     [RequiredVersion("1.0")]
-    public PartyList PartyList { get; init; } = null!;
+    public IPartyList PartyList { get; init; } = null!;
 
-    /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public SigScanner SigScanner { get; init; } = null!;
-
-    /// <inheritdoc/>
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public TargetManager TargetManager { get; init; } = null!;
+    public IPluginLog PluginLog { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public TitleScreenMenu TitleScreenMenu { get; init; } = null!;
+    public ISigScanner SigScanner { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public ITargetManager TargetManager { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public ITextureProvider TextureProvider { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public ITitleScreenMenu TitleScreenMenu { get; init; } = null!;
 
     /*[PluginService]
     [RequiredVersion("1.0")]
-    public ToastGui ToastGui { get; private set; } = null!;*/
+    public IToastGui ToastGui { get; private set; } = null!;*/
+
+    /// <inheritdoc/>
+    public object? GetInternalService(Type serviceType) => this.serviceGenericType?.MakeGenericType(serviceType).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, Array.Empty<object>(), null);
 }

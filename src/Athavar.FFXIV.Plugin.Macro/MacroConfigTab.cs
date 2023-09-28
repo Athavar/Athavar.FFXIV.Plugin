@@ -15,6 +15,7 @@ using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Managers;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Utility;
 using Dalamud.Logging;
 using ImGuiNET;
 

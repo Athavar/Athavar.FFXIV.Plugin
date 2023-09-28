@@ -5,11 +5,13 @@
 
 namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Logging;
+using Dalamud.Networking.Http;
 using Machina.FFXIV;
 
 internal sealed class OpcodeManager : IOpcodeManager
@@ -74,7 +76,14 @@ internal sealed class OpcodeManager : IOpcodeManager
         {
             try
             {
-                var updateConfigString = await Dalamud.Utility.Util.HttpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
+                using var happyEyeballsCallback = new HappyEyeballsCallback();
+                using var httpClient = new HttpClient(new SocketsHttpHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.All,
+                    ConnectCallback = happyEyeballsCallback.ConnectCallback,
+                });
+
+                var updateConfigString = await httpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
                 var updateConfig = JsonSerializer.Deserialize<UpdateConfig>(updateConfigString);
                 if (updateConfig?.GameVersion == this.configuration.GameVersion)
                 {

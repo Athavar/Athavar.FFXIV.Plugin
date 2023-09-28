@@ -26,8 +26,7 @@ internal abstract class UpdateFeature : IBaseFeature
     public UpdateFeature(string updateSig, YesModule module)
     {
         this.module = module;
-        this.HookAddress = module.DalamudServices.SigScanner.ScanText(updateSig);
-        this.updateHook = Hook<UpdateDelegate>.FromAddress(this.HookAddress, this.UpdateDetour);
+        this.updateHook = module.DalamudServices.GameInteropProvider.HookFromSignature(updateSig, (UpdateDelegate)this.UpdateDetour);
         this.updateHook.Enable();
     }
 
@@ -48,11 +47,6 @@ internal abstract class UpdateFeature : IBaseFeature
     ///     Gets the name of the addon being hooked.
     /// </summary>
     protected abstract string AddonName { get; }
-
-    /// <summary>
-    ///     Gets the address of the addon Update function.
-    /// </summary>
-    protected nint HookAddress { get; }
 
     /// <inheritdoc/>
     public void Dispose()

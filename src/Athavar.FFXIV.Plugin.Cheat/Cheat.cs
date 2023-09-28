@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Cheat;
 
 /// <summary>
@@ -25,7 +26,7 @@ internal abstract class Cheat
     /// </summary>
     public abstract void OnDisabled();
 
-    public virtual void OnTerritoryChange(object? sender, ushort e)
+    public virtual void OnTerritoryChange(ushort e)
     {
     }
 }

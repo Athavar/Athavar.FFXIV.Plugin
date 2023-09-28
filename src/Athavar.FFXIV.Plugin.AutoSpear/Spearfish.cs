@@ -2,11 +2,12 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.AutoSpear.Enum;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using ItemRow = Lumina.Excel.GeneratedSheets.Item;
 using SpearFishRow = Lumina.Excel.GeneratedSheets.SpearfishingItem;
 
@@ -14,7 +15,7 @@ internal sealed class SpearFish : IComparable<SpearFish>
 {
     private readonly object fishData;
 
-    public SpearFish(DataManager gameData, SpearFishRow fishRow)
+    public SpearFish(IDataManager gameData, SpearFishRow fishRow)
     {
         this.ItemData = fishRow.Item.Value ?? new ItemRow();
         this.fishData = fishRow;

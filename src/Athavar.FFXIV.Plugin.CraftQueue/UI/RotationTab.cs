@@ -2,8 +2,10 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
+using System.Numerics;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
@@ -12,8 +14,9 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Utility;
 using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Common.Math;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 internal sealed class RotationTab : Tab
@@ -96,8 +99,8 @@ internal sealed class RotationTab : Tab
 
                 var action = rotations[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(action);
-                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], false);
-                ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], ITextureProvider.IconFlags.None);
+                ImGui.Image(tex!.ImGuiHandle, new Vector2(tex.Height, tex.Width));
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();

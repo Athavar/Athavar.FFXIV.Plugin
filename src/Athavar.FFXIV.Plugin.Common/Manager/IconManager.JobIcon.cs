@@ -6,13 +6,14 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Config;
-using ImGuiScene;
+using Dalamud.Interface.Internal;
+using Dalamud.Plugin.Services;
 
 internal sealed partial class IconManager
 {
     private static readonly uint[] JobIconStyleOffset = { 62000, 62100, 62800, 62300, 91000, 91500, 92000, 92500, 93000, 93500, 94000, 94500 };
 
-    public TextureWrap? GetJobIcon(Job job, JobIconStyle style = JobIconStyle.Normal, bool hr = false)
+    public IDalamudTextureWrap? GetJobIcon(Job job, JobIconStyle style = JobIconStyle.Normal, bool hr = false)
     {
         uint ResolveJobIconId(Job j, JobIconStyle s)
         {
@@ -156,11 +157,11 @@ internal sealed partial class IconManager
                    _ => throw new ArgumentOutOfRangeException(nameof(job), job, null),
                };
 
-        return this.GetIcon(ResolveJobIconId(job, style), hr) ?? this.GetIcon(ResolveJobIconId(job, JobIconStyle.Normal), hr);
+        return this.GetIcon(ResolveJobIconId(job, style), ITextureProvider.IconFlags.HiRes) ?? this.GetIcon(ResolveJobIconId(job, JobIconStyle.Normal), ITextureProvider.IconFlags.HiRes);
     }
 
     /// <inheritdoc />
-    public bool TryGetJobIcon(Job job, JobIconStyle style, bool hr, [NotNullWhen(true)] out TextureWrap? textureWrap)
+    public bool TryGetJobIcon(Job job, JobIconStyle style, bool hr, [NotNullWhen(true)] out IDalamudTextureWrap? textureWrap)
     {
         textureWrap = this.GetJobIcon(job, style, hr);
         return textureWrap is not null;

@@ -27,7 +27,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     public AddonInclusionShopFeature(YesModule module)
         : base("85 D2 0F 8E ?? ?? ?? ?? 4C 8B DC 55 53 41 54", module)
     {
-        SignatureHelper.Initialise(this);
+        module.DalamudServices.GameInteropProvider.InitializeFromAttributes(this);
 
         this.agentReceiveEventHook.Enable();
     }

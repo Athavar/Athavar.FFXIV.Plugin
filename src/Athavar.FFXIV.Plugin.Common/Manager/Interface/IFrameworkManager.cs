@@ -5,11 +5,11 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
-using Dalamud.Game;
+using Dalamud.Plugin.Services;
 
 public interface IFrameworkManager
 {
-    void Subscribe(Framework.OnUpdateDelegate updateDelegate);
+    void Subscribe(IFramework.OnUpdateDelegate updateDelegate);
 
-    void Unsubscribe(Framework.OnUpdateDelegate updateDelegate);
+    void Unsubscribe(IFramework.OnUpdateDelegate updateDelegate);
 }

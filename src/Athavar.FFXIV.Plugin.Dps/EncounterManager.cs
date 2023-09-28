@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
@@ -10,14 +11,13 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
-using Dalamud.Game;
-using Dalamud.Game.ClientState.Objects;
+using Dalamud.Plugin.Services;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
 internal sealed partial class EncounterManager : IDisposable
 {
     private readonly IDalamudServices services;
-    private readonly ObjectTable objectTable;
+    private readonly IObjectTable objectTable;
     private readonly NetworkHandler networkHandler;
     private readonly IDefinitionManager definitions;
     private readonly ICommandInterface ci;
@@ -122,7 +122,7 @@ internal sealed partial class EncounterManager : IDisposable
         this.CurrentTerritoryEncounter = null;
     }
 
-    private void Update(Framework framework)
+    private void Update(IFramework framework)
     {
         var now = DateTime.UtcNow;
 

@@ -122,7 +122,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         }
 
         var onItemSelectedAddress = (nint)popupMenu->AtkEventListener.vfunc[3];
-        this.onItemSelectedHook = Hook<OnItemSelectedDelegate>.FromAddress(onItemSelectedAddress, this.OnItemSelectedDetour);
+        this.onItemSelectedHook = this.module.DalamudServices.GameInteropProvider.HookFromAddress(onItemSelectedAddress, (OnItemSelectedDelegate)this.OnItemSelectedDetour);
         this.onItemSelectedHook.Enable();
     }
 

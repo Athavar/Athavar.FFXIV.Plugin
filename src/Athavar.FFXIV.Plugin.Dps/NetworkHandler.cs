@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Game.Network;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Machina.FFXIV.Headers;
 using Server_ActorCast = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_ActorCast;
@@ -21,7 +22,7 @@ using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_Effect
 
 internal sealed partial class NetworkHandler : IDisposable
 {
-    private readonly GameNetwork gameNetwork;
+    private readonly IGameNetwork gameNetwork;
     private readonly IOpcodeManager opcodeManager;
     private readonly IDefinitionManager definitionManager;
     private readonly Utils utils;
