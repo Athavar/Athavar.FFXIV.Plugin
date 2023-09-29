@@ -7,7 +7,6 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
-using Dalamud.Plugin;
 
 /// <summary>
 ///     Basic module Configuration.
@@ -33,19 +32,5 @@ public abstract class BasicModuleConfig
     [JsonPropertyName("TabEnabled")]
     public bool TabEnabled { get; set; } = true;
 
-    [JsonIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    internal DalamudPluginInterface? Pi { get; set; }
-
     public abstract void Save(bool instant = false);
-
-    /// <summary>
-    ///     Setup <see cref="InstancinatorConfiguration"/>.
-    /// </summary>
-    /// <param name="conf">The <see cref="Configuration"/>.</param>
-    internal void Setup(Configuration conf)
-    {
-        this.Pi = conf.Pi;
-        this.Save(true);
-    }
 }

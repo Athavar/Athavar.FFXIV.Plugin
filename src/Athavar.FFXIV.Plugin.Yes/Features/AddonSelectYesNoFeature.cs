@@ -116,11 +116,11 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     }
 
     private bool EntryMatchesText(TextEntryNode node, string text)
-        => (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+        => (node.IsTextRegex && (node.TextRegex.Value?.IsMatch(text) ?? false)) ||
            (!node.IsTextRegex && text.Contains(node.Text));
 
     private bool EntryMatchesZoneName(TextEntryNode node, string zoneName)
-        => (node.ZoneIsRegex && (node.ZoneRegex?.IsMatch(zoneName) ?? false)) ||
+        => (node.ZoneIsRegex && (node.ZoneRegex.Value?.IsMatch(zoneName) ?? false)) ||
            (!node.ZoneIsRegex && zoneName.Contains(node.ZoneText));
 
     [StructLayout(LayoutKind.Explicit, Size = 0x10)]

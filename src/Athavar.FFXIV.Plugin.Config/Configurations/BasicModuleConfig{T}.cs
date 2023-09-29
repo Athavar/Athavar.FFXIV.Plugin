@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json;
@@ -25,6 +26,9 @@ public class BasicModuleConfig<T> : BasicModuleConfig
     };
 
     [JsonIgnore]
+    private DirectoryInfo? configDirectory;
+
+    [JsonIgnore]
     private Timer? saveTimer;
 
     [JsonIgnore]
@@ -43,7 +47,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
 
     public override void Save(bool instant = false)
     {
-        if (this.Pi is null || this.ConfigError)
+        if (this.configDirectory is null || this.ConfigError)
         {
             return;
         }
@@ -66,13 +70,13 @@ public class BasicModuleConfig<T> : BasicModuleConfig
             {
                 var data = JsonSerializer.Serialize(this, typeof(T), SerializerOptions);
 
-                var directory = this.Pi.ConfigDirectory.FullName;
+                var directory = this.configDirectory.FullName;
                 if (!Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                var file = Path.Combine(this.Pi.ConfigDirectory.FullName, GetConfigFileName());
+                var file = Path.Combine(this.configDirectory.FullName, GetConfigFileName());
                 File.WriteAllText(file, data);
             }
             catch (Exception e)
@@ -91,6 +95,17 @@ public class BasicModuleConfig<T> : BasicModuleConfig
             PluginLog.Information("Save {0} Triggered", typeof(T).Name);
 #endif
         }
+    }
+
+    /// <summary>
+    ///     Setup <see cref="InstancinatorConfiguration"/>.
+    /// </summary>
+    /// <param name="conf">The <see cref="Configuration"/>.</param>
+    internal void Setup(Configuration conf)
+    {
+        // migration only
+        this.configDirectory = conf.Pi?.ConfigDirectory;
+        this.Save(true);
     }
 
     private static T Load(DalamudPluginInterface pi)
@@ -119,7 +134,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         }
 
         config ??= new T();
-        config.Pi = pi;
+        config.configDirectory = pi.ConfigDirectory;
         return config;
     }
 

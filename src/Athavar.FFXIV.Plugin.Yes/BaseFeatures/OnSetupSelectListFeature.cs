@@ -20,10 +20,10 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     private Hook<OnItemSelectedDelegate>? onItemSelectedHook;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature" /> class.
+    ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature"/> class.
     /// </summary>
     /// <param name="onSetupSig">Signature to the OnSetup method.</param>
-    /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     protected OnSetupSelectListFeature(string onSetupSig, YesModule module)
         : base(onSetupSig, module)
     {
@@ -41,7 +41,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     /// <returns>Unknown.</returns>
     private delegate byte OnItemSelectedDelegate(nint popupMenu, uint index, nint a3, nint a4);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public new void Dispose()
     {
         this.onItemSelectedHook?.Disable();
@@ -196,10 +196,10 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     }
 
     private bool EntryMatchesText(ListEntryNode node, string text)
-        => (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+        => (node.IsTextRegex && (node.TextRegex.Value?.IsMatch(text) ?? false)) ||
            (!node.IsTextRegex && text.Contains(node.Text));
 
     private bool EntryMatchesTargetName(ListEntryNode node, string targetName)
-        => (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
+        => (node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false)) ||
            (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

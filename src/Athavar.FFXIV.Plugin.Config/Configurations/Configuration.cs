@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.RegularExpressions;
@@ -102,6 +103,7 @@ public sealed class Configuration : IPluginConfiguration
     /// <param name="interface">The <see cref="DalamudPluginInterface"/>.</param>
     private void Setup(DalamudPluginInterface @interface)
     {
+        // migration only
         this.Pi = @interface;
 
         this.Yes ??= new YesConfiguration();
@@ -124,7 +126,6 @@ public sealed class Configuration : IPluginConfiguration
 #pragma warning disable 612,618
         var cconfig = new CommonConfiguration
         {
-            Pi = @interface,
             Version = 2,
             Language = this.Language,
             ChatType = this.ChatType,
@@ -132,6 +133,7 @@ public sealed class Configuration : IPluginConfiguration
             ShowLaunchButton = this.ShowLaunchButton,
             ShowToolTips = this.ShowToolTips,
         };
+        cconfig.Setup(this);
 #pragma warning restore 612,618
         cconfig.Save();
     }
