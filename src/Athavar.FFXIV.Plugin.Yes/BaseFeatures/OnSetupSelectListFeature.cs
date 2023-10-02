@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Hooking;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -87,7 +86,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             {
                 if (!string.IsNullOrEmpty(targetName) && this.EntryMatchesTargetName(node, targetName))
                 {
-                    PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
+                    this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
                     this.module.LastSelectedListNode = node;
                     this.SelectItemExecute(addon, index);
                     return;
@@ -95,7 +94,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             }
             else
             {
-                PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
+                this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
                 this.module.LastSelectedListNode = node;
                 this.SelectItemExecute(addon, index);
                 return;
@@ -148,12 +147,12 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
                     ? this.module.GetSeStringText(target.Name)
                     : string.Empty;
 
-                PluginLog.Debug($"ItemSelected: target={targetName} text={entryText}");
+                this.module.Logger.Debug($"ItemSelected: target={targetName} text={entryText}");
             }
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Don't crash the game");
+            this.module.Logger.Error(ex, "Don't crash the game");
         }
 
         return this.onItemSelectedHook!.Original(popupMenu, index, a3, a4);
@@ -164,7 +163,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         var count = popupMenu->EntryCount;
         var entryTexts = new string?[count];
 
-        PluginLog.Debug($"SelectString: Reading {count} strings");
+        this.module.Logger.Debug($"SelectString: Reading {count} strings");
         for (var i = 0; i < count; i++)
         {
             var textPtr = popupMenu->EntryNames[i];

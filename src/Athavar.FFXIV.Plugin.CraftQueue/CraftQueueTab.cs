@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class CraftQueueTab : Tab
 {
-    private readonly TabBarHandler tabBarHandler = new("CraftQueueTabBar");
+    private readonly TabBarHandler tabBarHandler;
 
     private string debugInput = string.Empty;
 
@@ -32,9 +33,10 @@ internal sealed class CraftQueueTab : Tab
         var craftSkillManager = serviceProvider.GetRequiredService<ICraftDataManager>();
         this.ClientLanguage = dalamudServices.ClientState.ClientLanguage;
 
+        this.tabBarHandler = new TabBarHandler(dalamudServices.PluginLogger, "CraftQueueTabBar");
         this.tabBarHandler
            .Add(new StatsTab(gearsetManager, dataManager))
-           .Add(new RotationTab(this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
+           .Add(new RotationTab(dalamudServices.PluginLogger, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
            .Add(new QueueTab(iconCacheManager, craftSkillManager, craftQueue, this.Configuration, this.ClientLanguage))
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG

@@ -12,7 +12,6 @@ using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Common;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 
 public sealed class DefinitionManager : IDefinitionManager
@@ -65,7 +64,7 @@ public sealed class DefinitionManager : IDefinitionManager
         }
         catch (Exception e)
         {
-            PluginLog.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
+            services.PluginLogger.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
             return false;
         }
     }

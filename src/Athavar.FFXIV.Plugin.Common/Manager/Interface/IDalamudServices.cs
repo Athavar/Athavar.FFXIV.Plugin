@@ -40,6 +40,8 @@ public interface IDalamudServices
 
     IPartyList PartyList { get; }
 
+    IPluginLog PluginLogger { get; }
+
     ISigScanner SigScanner { get; }
 
     ITargetManager TargetManager { get; }

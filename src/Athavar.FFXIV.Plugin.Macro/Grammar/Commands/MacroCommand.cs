@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Macro.Managers;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -65,22 +65,27 @@ internal abstract class MacroCommand
     /// <summary>
     ///     Gets the <see cref="IChatManager"/>.
     /// </summary>
-    protected static IChatManager ChatManager => chatManager ?? throw new NullReferenceException("ChatManager is not set");
+    protected IChatManager ChatManager => chatManager ?? throw new NullReferenceException("ChatManager is not set");
 
     /// <summary>
     ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
-    protected static MacroManager MacroManager => macroManager ?? throw new NullReferenceException("MacroManager is not set");
+    protected MacroManager MacroManager => macroManager ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
     ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
-    protected static MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
+    protected MacroConfiguration Configuration => configuration ?? throw new NullReferenceException("MacroManager is not set");
 
     /// <summary>
     ///     Gets the <see cref="MacroManager"/>.
     /// </summary>
-    protected static ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
+    protected ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
+
+    /// <summary>
+    ///     Gets the <see cref="IPluginLog"/>.
+    /// </summary>
+    protected IPluginLog Logger => DalamudServices.PluginLogger;
 
     /// <summary>
     ///     Gets the milliseconds to wait.
@@ -134,13 +139,13 @@ internal abstract class MacroCommand
         if (this.WaitUntil == 0)
         {
             sleep = TimeSpan.FromMilliseconds(this.Wait);
-            PluginLog.Debug($"Sleeping for {sleep.TotalMilliseconds} millis");
+            this.Logger.Debug($"Sleeping for {sleep.TotalMilliseconds} millis");
         }
         else
         {
             var value = Rand.Next(this.Wait, this.WaitUntil);
             sleep = TimeSpan.FromMilliseconds(value);
-            PluginLog.Debug($"Sleeping for {sleep.TotalMilliseconds} millis ({this.Wait} to {this.WaitUntil})");
+            this.Logger.Debug($"Sleeping for {sleep.TotalMilliseconds} millis ({this.Wait} to {this.WaitUntil})");
         }
 
         await Task.Delay(sleep, token);

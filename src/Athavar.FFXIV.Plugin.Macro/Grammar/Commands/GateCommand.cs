@@ -9,7 +9,6 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /craft command.
@@ -24,7 +23,7 @@ internal class GateCommand : MacroCommand
     private int craftsRemaining;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="GateCommand" /> class.
+    ///     Initializes a new instance of the <see cref="GateCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="craftCount">Craft count.</param>
@@ -61,21 +60,21 @@ internal class GateCommand : MacroCommand
         return new GateCommand(text, countValue, waitModifier, echoModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        if (this.echoMod.PerformEcho || Configuration.LoopEcho)
+        if (this.echoMod.PerformEcho || this.Configuration.LoopEcho)
         {
             if (this.craftsRemaining == 0)
             {
-                ChatManager.PrintChat("No crafts remaining");
+                this.ChatManager.PrintChat("No crafts remaining");
             }
             else
             {
                 var noun = this.craftsRemaining == 1 ? "craft" : "crafts";
-                ChatManager.PrintChat($"{this.craftsRemaining} {noun} remaining");
+                this.ChatManager.PrintChat($"{this.craftsRemaining} {noun} remaining");
             }
         }
 

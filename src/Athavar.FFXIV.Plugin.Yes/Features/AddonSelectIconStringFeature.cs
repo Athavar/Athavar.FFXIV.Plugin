@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -16,19 +15,19 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 internal class AddonSelectIconStringFeature : OnSetupSelectListFeature
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AddonSelectIconStringFeature" /> class.
+    ///     Initializes a new instance of the <see cref="AddonSelectIconStringFeature"/> class.
     /// </summary>
-    /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectIconStringFeature(YesModule module)
         : base("40 53 56 57 41 54 41 57 48 83 EC 30 4D 8B F8 44 8B E2 48 8B F1 E8 ?? ?? ?? ??", module)
     {
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override string AddonName => "SelectIconString";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
     {
         var addonPtr = (AddonSelectIconString*)addon;
@@ -38,10 +37,10 @@ internal class AddonSelectIconStringFeature : OnSetupSelectListFeature
         this.CompareNodesToEntryTexts(addon, popupMenu);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override void SelectItemExecute(nint addon, int index)
     {
-        PluginLog.Debug($"AddonSelectIconString: Selecting {index}");
+        this.module.Logger.Debug($"AddonSelectIconString: Selecting {index}");
         ClickSelectIconString.Using(addon).SelectItem((ushort)index);
     }
 }

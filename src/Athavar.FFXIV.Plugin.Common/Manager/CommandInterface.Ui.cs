@@ -2,17 +2,17 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 internal sealed partial class CommandInterface
 {
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool IsAddonVisible(string addonName)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
@@ -25,7 +25,7 @@ internal sealed partial class CommandInterface
         return addon->IsVisible;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool IsAddonReady(string addonName)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
@@ -38,7 +38,7 @@ internal sealed partial class CommandInterface
         return addon->UldManager.LoadedState == AtkLoadState.Loaded;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe void CloseAddon(string addonName)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
@@ -54,7 +54,7 @@ internal sealed partial class CommandInterface
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe string GetNodeText(string addonName, params int[] nodeNumbers)
     {
         if (nodeNumbers.Length == 0)
@@ -111,7 +111,7 @@ internal sealed partial class CommandInterface
         return textNode->NodeText.ToString();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe string GetSelectStringText(int index)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString");
@@ -124,7 +124,7 @@ internal sealed partial class CommandInterface
         var popup = &addon->PopupMenu.PopupMenu;
 
         var count = popup->EntryCount;
-        PluginLog.Debug($"index={index} // Count={count} // {index < 0 || index > count}");
+        this.logger.Debug($"index={index} // Count={count} // {index < 0 || index > count}");
         if (index < 0 || index > count)
         {
             throw new AthavarPluginException("Index out of range");
@@ -139,7 +139,7 @@ internal sealed partial class CommandInterface
         return Marshal.PtrToStringUTF8((nint)textPtr) ?? string.Empty;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetSelectStringEntryCount()
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString");
@@ -154,7 +154,7 @@ internal sealed partial class CommandInterface
         return popup->EntryCount;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe string GetSelectIconStringText(int index)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectIconString");

@@ -8,12 +8,14 @@ namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
+using Dalamud.Plugin.Services;
 using Machina.FFXIV;
 using Machina.Infrastructure;
 
 internal sealed class DetectionProgram : IDisposable
 {
     public bool Debug;
+    private readonly IPluginLog logger;
     private readonly ScannerRegistry scannerRegistry;
     private readonly IOpcodeManager opcodeManager;
 
@@ -26,10 +28,12 @@ internal sealed class DetectionProgram : IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="DetectionProgram"/> class.
     /// </summary>
+    /// <param name="logger"><see cref="IPluginLog"/> added by DI.</param>
     /// <param name="opcodeManager"><see cref="IOpcodeManager"/> added by DI.</param>
     /// <param name="scannerRegistry"><see cref="ScannerRegistry"/> added by DI.</param>
-    public DetectionProgram(IOpcodeManager opcodeManager, ScannerRegistry scannerRegistry)
+    public DetectionProgram(IPluginLog logger, IOpcodeManager opcodeManager, ScannerRegistry scannerRegistry)
     {
+        this.logger = logger;
         this.opcodeManager = opcodeManager;
         this.scannerRegistry = scannerRegistry;
 
@@ -248,7 +252,7 @@ internal sealed class DetectionProgram : IDisposable
         {
             try
             {
-                var opcode = PacketScanner.Scan(this.pq, scanner, parameters, ref this.skipped, ref this.stopped, ref this.Debug, this.opcodeManager.Opcodes);
+                var opcode = PacketScanner.Scan(this.pq, scanner, parameters, ref this.skipped, ref this.stopped, this.Debug ? this.logger : null, this.opcodeManager.Opcodes);
 
                 if (this.skipped || this.stopped)
                 {
@@ -273,8 +277,13 @@ internal sealed class DetectionProgram : IDisposable
 
     private void OnMessageSent(TCPConnection connection, long epoch, byte[] data) => this.OnMessage(connection.ToString(), epoch, data, PacketSource.Client);
 
-    private void OnMessage(string connection, long epoch, byte[] data, PacketSource source)
+    private void OnMessage(string? connection, long epoch, byte[] data, PacketSource source)
     {
+        if (connection is null)
+        {
+            return;
+        }
+
         lock (this.pq)
         {
             this.pq.Enqueue(new Packet(

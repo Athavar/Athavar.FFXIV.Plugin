@@ -10,8 +10,8 @@ namespace Athavar.FFXIV.Plugin;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Timers;
-using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 public class BasicModuleConfig<T> : BasicModuleConfig
@@ -29,6 +29,9 @@ public class BasicModuleConfig<T> : BasicModuleConfig
     private DirectoryInfo? configDirectory;
 
     [JsonIgnore]
+    private IPluginLog? logger;
+
+    [JsonIgnore]
     private Timer? saveTimer;
 
     [JsonIgnore]
@@ -39,8 +42,9 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         provider.AddSingleton<T>(o =>
         {
             var pi = o.GetRequiredService<DalamudPluginInterface>();
+            var log = o.GetRequiredService<IPluginLog>();
 
-            return Load(pi);
+            return Load(pi, log);
         });
         return provider;
     }
@@ -81,18 +85,18 @@ public class BasicModuleConfig<T> : BasicModuleConfig
             }
             catch (Exception e)
             {
-                PluginLog.LogError(e, "Error during saving of configuration");
+                this.logger?.Error(e, "Error during saving of configuration");
             }
 
 #if DEBUG
-            PluginLog.Information("Save {0} Successful", typeof(T).Name);
+            this.logger?.Information("Save {0} Successful", typeof(T).Name);
 #endif
         }
         else if (!this.saveTimer.Enabled)
         {
             this.saveTimer.Start();
 #if DEBUG
-            PluginLog.Information("Save {0} Triggered", typeof(T).Name);
+            this.logger?.Information("Save {0} Triggered", typeof(T).Name);
 #endif
         }
     }
@@ -108,7 +112,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         this.Save(true);
     }
 
-    private static T Load(DalamudPluginInterface pi)
+    private static T Load(DalamudPluginInterface pi, IPluginLog log)
     {
         T? config = default;
 
@@ -116,7 +120,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         if (File.Exists(file))
         {
 #if DEBUG
-            PluginLog.Information("Load {0}", typeof(T).Name);
+            log.Information("Load {0}", typeof(T).Name);
 #endif
             var data = File.ReadAllText(file);
             try
@@ -125,7 +129,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
             }
             catch (Exception e)
             {
-                PluginLog.LogError(e, "Error during loading of configuration");
+                log.Error(e, "Error during loading of configuration");
                 config = new T
                 {
                     ConfigError = true,
@@ -135,6 +139,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
 
         config ??= new T();
         config.configDirectory = pi.ConfigDirectory;
+        config.logger = log;
         return config;
     }
 

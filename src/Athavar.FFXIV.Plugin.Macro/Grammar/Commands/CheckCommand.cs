@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -80,7 +79,7 @@ internal class CheckCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         var fulfilled = await this.LinearWait(StatusCheckInterval, this.maxWait, this.IsConditionFulfilled, token);
 

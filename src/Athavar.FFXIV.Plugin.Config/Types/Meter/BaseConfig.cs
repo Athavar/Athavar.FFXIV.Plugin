@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Dalamud.Logging;
 
 [JsonDerivedType(typeof(BarConfig), "BarConfig")]
 [JsonDerivedType(typeof(BarColorsConfig), "BarColorConfig")]
@@ -44,7 +43,8 @@ public abstract class BaseConfig : IConfig
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex.ToString());
+            // TODO: think about better way to log error.
+            // PluginLog.Error(ex.ToString());
         }
 
         return default;
@@ -66,7 +66,8 @@ public abstract class BaseConfig : IConfig
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex.ToString());
+            // TODO: think about better way to log error.
+            // PluginLog.Error(ex.ToString());
         }
 
         return null;

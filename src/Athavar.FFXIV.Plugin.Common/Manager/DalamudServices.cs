@@ -36,7 +36,7 @@ internal sealed class DalamudServices : IDalamudServices
         }
         catch (Exception e)
         {
-            this.PluginLog.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
+            this.PluginLogger.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
         }
     }
 
@@ -189,7 +189,7 @@ internal sealed class DalamudServices : IDalamudServices
 
     [PluginService]
     [RequiredVersion("1.0")]
-    public IPluginLog PluginLog { get; init; } = null!;
+    public IPluginLog PluginLogger { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]

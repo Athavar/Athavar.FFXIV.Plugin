@@ -18,9 +18,10 @@ internal sealed class InstancinatorWindow : Window, IDisposable
     private readonly WindowSystem windowSystem;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InstancinatorWindow" /> class.
+    ///     Initializes a new instance of the <see cref="InstancinatorWindow"/> class.
     /// </summary>
-    /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
+    /// <param name="windowSystem"><see cref="WindowSystem"/> added by DI.</param>
+    /// <param name="module"><see cref="InstancinatorModule"/> added by DI.</param>
     public InstancinatorWindow(WindowSystem windowSystem, InstancinatorModule module)
         : base("Instancinator")
     {
@@ -32,7 +33,7 @@ internal sealed class InstancinatorWindow : Window, IDisposable
 
     private unsafe int InstanceNumber => UIState.Instance()->AreaInstance.Instance;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         var selectedInst = this.module.SelectedInstance;
@@ -77,7 +78,7 @@ internal sealed class InstancinatorWindow : Window, IDisposable
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         if (this.windowSystem.Windows.Contains(this))

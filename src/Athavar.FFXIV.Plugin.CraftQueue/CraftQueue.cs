@@ -10,7 +10,6 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 
 internal sealed class CraftQueue : IDisposable
@@ -194,7 +193,7 @@ internal sealed class CraftQueue : IDisposable
         }
         catch (AthavarPluginException ex)
         {
-            PluginLog.LogError(ex, ex.Message);
+            this.DalamudServices.PluginLogger.Error(ex, ex.Message);
         }
     }
 }

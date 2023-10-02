@@ -13,7 +13,6 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Logging;
 using Dalamud.Memory;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
@@ -52,6 +51,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.provider = provider;
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
+        this.Logger = dalamudServices.PluginLogger;
         this.frameworkManager = frameworkManager;
 
         this.LoadTerritories();
@@ -69,7 +69,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
             ShowInHelp = true,
         });
 
-        PluginLog.LogDebug("Module 'Yes' init");
+        dalamudServices.PluginLogger.Debug("Module 'Yes' init");
     }
 
     /// <inheritdoc/>
@@ -86,6 +86,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     ///     Gets the <see cref="IChatManager"/>.
     /// </summary>
     internal IChatManager ChatManager { get; }
+
+    /// <summary>
+    ///     Gets the <see cref="IPluginLog"/>.
+    /// </summary>
+    internal IPluginLog Logger { get; }
 
     /// <summary>
     ///     Gets a mapping of territory IDs to names.

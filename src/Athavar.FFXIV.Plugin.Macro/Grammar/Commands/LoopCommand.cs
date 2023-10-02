@@ -9,7 +9,6 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /loop command.
@@ -25,7 +24,7 @@ internal class LoopCommand : MacroCommand
     private int loopsRemaining;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="LoopCommand" /> class.
+    ///     Initializes a new instance of the <see cref="LoopCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="loopCount">Loop count.</param>
@@ -37,7 +36,7 @@ internal class LoopCommand : MacroCommand
         this.loopsRemaining = loopCount >= 0 ? loopCount : MaxLoops;
         this.startingLoops = this.loopsRemaining;
 
-        if (Configuration.LoopTotal && this.loopsRemaining != 0 && this.loopsRemaining != MaxLoops)
+        if (this.Configuration.LoopTotal && this.loopsRemaining != 0 && this.loopsRemaining != MaxLoops)
         {
             this.loopsRemaining -= 1;
         }
@@ -69,16 +68,16 @@ internal class LoopCommand : MacroCommand
         return new LoopCommand(text, countValue, waitModifier, echoModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         if (this.loopsRemaining != MaxLoops)
         {
-            if (this.echoMod.PerformEcho || Configuration.LoopEcho)
+            if (this.echoMod.PerformEcho || this.Configuration.LoopEcho)
             {
-                ChatManager.PrintChat(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
+                this.ChatManager.PrintChat(this.loopsRemaining == 0 ? "No loops remaining" : $"{this.loopsRemaining} {(this.loopsRemaining == 1 ? "loop" : "loops")} remaining");
             }
 
             this.loopsRemaining--;
@@ -91,8 +90,8 @@ internal class LoopCommand : MacroCommand
         }
 
         macro.Loop();
-        MacroManager.LoopCheckForPause();
-        MacroManager.LoopCheckForStop();
+        this.MacroManager.LoopCheckForPause();
+        this.MacroManager.LoopCheckForStop();
 
         await this.PerformWait(token);
     }

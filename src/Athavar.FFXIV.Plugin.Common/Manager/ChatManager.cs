@@ -7,18 +7,15 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
 using System.Threading.Channels;
-using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
-using FFXIVClientStructs.FFXIV.Client.System.Memory;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
@@ -33,10 +30,6 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
     [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
     private readonly ProcessChatBoxDelegate processChatBox = null!;
-
-    // https://git.anna.lgbt/ascclemens/ChatTwo/src/branch/main/ChatTwo/GameFunctions/Chat.cs
-    [Signature("E8 ?? ?? ?? ?? EB 0A 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 8D")]
-    private readonly unsafe delegate* unmanaged<Utf8String*, int, nint, void> sanitiseString = null!;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatManager"/> class.
@@ -148,7 +141,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
         }
 
         var payloadMessage = message.ToString();
-        if (payloadMessage.Length != this.SanitiseText(payloadMessage).Length)
+        if (payloadMessage.Length != this.dalamud.PluginInterface.Sanitizer.Sanitize(payloadMessage).Length)
         {
             this.PrintErrorMessage("Message contained invalid characters");
             return;
@@ -185,27 +178,14 @@ internal sealed class ChatManager : IDisposable, IChatManager
         Marshal.FreeHGlobal(chatPayloadPtr);
     }
 
-    private unsafe string SanitiseText(string text)
-    {
-        if (this.sanitiseString == null)
-        {
-            throw new InvalidOperationException("Could not find signature for chat sanitisation");
-        }
-
-        var uText = Utf8String.FromString(text);
-        this.sanitiseString(uText, 0x27F, nint.Zero);
-        var sanitised = uText->ToString();
-        uText->Dtor();
-        IMemorySpace.Free(uText);
-        return sanitised;
-    }
-
 #if DEBUG
     private void OnChatMessageDebug(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {
         var sender2 = sender;
         var message2 = message;
+        /*
         AthavarPluginException.CatchCrash(() => { PluginLog.Debug($"SenderId={senderId},Sender={sender2.TextValue},Bytes={message2.Encode().Length},MessagePayloads={string.Join(';', message2.Payloads.Select(p => p.ToString()))}"); });
+         */
     }
 #endif
 

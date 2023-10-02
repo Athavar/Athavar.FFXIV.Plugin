@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Lumina.Excel.GeneratedSheets;
 
@@ -56,7 +55,7 @@ internal class RecipeCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         if (this.AddonSynthesisIsOpen())
         {
@@ -69,7 +68,7 @@ internal class RecipeCommand : MacroCommand
             throw new MacroCommandError("Recipe not found");
         }
 
-        PluginLog.Debug($"RecipeId found : {recipeId}");
+        this.Logger.Debug($"RecipeId found : {recipeId}");
         this.OpenRecipeNote(recipeId);
 
         await this.PerformWait(token);

@@ -12,7 +12,6 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Macro.Managers;
 using Dalamud.Game.Command;
-using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -47,14 +46,14 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
 
-        PluginLog.Information("MMEntries: {0}", configuration.GetAllNodes().Count());
+        this.dalamudServices.PluginLogger.Information("MMEntries: {0}", configuration.GetAllNodes().Count());
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
         {
             HelpMessage = "Commands of the macro module.",
             ShowInHelp = true,
         });
-        PluginLog.LogDebug("Module 'Macro' init");
+        this.dalamudServices.PluginLogger.Debug("Module 'Macro' init");
     }
 
     /// <inheritdoc/>

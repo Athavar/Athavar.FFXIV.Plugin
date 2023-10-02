@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /requirequality command.
@@ -23,7 +22,7 @@ internal class RequireQualityCommand : MacroCommand
     private readonly uint requiredQuality;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RequireQualityCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RequireQualityCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="quality">Quality value.</param>
@@ -53,12 +52,12 @@ internal class RequireQualityCommand : MacroCommand
         return new RequireQualityCommand(text, quality, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        var current = CommandInterface.GetQuality();
+        var current = this.CommandInterface.GetQuality();
         if (current < this.requiredQuality)
         {
             throw new MacroPause("Required quality was not found", IChatManager.UiColor.Red);

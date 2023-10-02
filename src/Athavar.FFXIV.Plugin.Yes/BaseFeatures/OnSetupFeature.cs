@@ -6,14 +6,13 @@
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
 using Dalamud.Hooking;
-using Dalamud.Logging;
 
 /// <summary>
 ///     An abstract that hooks OnSetup to provide a feature.
 /// </summary>
 internal abstract class OnSetupFeature : IBaseFeature
 {
-    private readonly YesModule module;
+    protected readonly YesModule module;
     private readonly Hook<OnSetupDelegate> onSetupHook;
 
     /// <summary>
@@ -64,7 +63,7 @@ internal abstract class OnSetupFeature : IBaseFeature
 
     private nint OnSetupDetour(nint addon, uint a2, nint data)
     {
-        PluginLog.Debug($"Addon{this.AddonName}.OnSetup");
+        this.module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
         var result = this.onSetupHook.Original(addon, a2, data);
 
         if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
@@ -83,7 +82,7 @@ internal abstract class OnSetupFeature : IBaseFeature
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Don't crash the game");
+            this.module.Logger.Error(ex, "Don't crash the game");
         }
 
         return result;

@@ -2,16 +2,22 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Logging;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Ipc.Exceptions;
+using Dalamud.Plugin.Services;
 
+/// <summary>
+///     IPC Manager. Currently no longer used with changes in Dalamud v9.
+/// </summary>
 internal sealed class IpcManager : IIpcManager, IDisposable
 {
+    private readonly IPluginLog logger;
+
     private ICallGateSubscriber<(int Breaking, int Features)> penumbraApiVersionsSubscriber;
     private ICallGateSubscriber<string, string>? penumbraResolveInterfacePathSubscriber;
 
@@ -19,15 +25,19 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     private ICallGateSubscriber<object> penumbraDisposedSubscriber;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="IpcManager" /> class.
+    ///     Initializes a new instance of the <see cref="IpcManager"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    public IpcManager(IDalamudServices dalamudServices) => this.Initialize(dalamudServices);
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    public IpcManager(IDalamudServices dalamudServices)
+    {
+        this.logger = dalamudServices.PluginLogger;
+        this.Initialize(dalamudServices);
+    }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public event EventHandler? PenumbraStatusChanged;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public (int Breaking, int Features) PenumbraApiVersion
     {
         get
@@ -47,10 +57,10 @@ internal sealed class IpcManager : IIpcManager, IDisposable
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool PenumbraEnabled { get; private set; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public string ResolvePenumbraPath(string path)
     {
         if (!this.PenumbraEnabled || this.penumbraResolveInterfacePathSubscriber is null)
@@ -65,12 +75,12 @@ internal sealed class IpcManager : IIpcManager, IDisposable
         }
         catch (IpcNotReadyError)
         {
-            PluginLog.Information("IpcNotReadyError");
+            this.logger.Information("IpcNotReadyError");
             return path;
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Failed while try to use Penumbra IPC. Disable integration");
+            this.logger.Error(ex, "Failed while try to use Penumbra IPC. Disable integration");
             this.PenumbraEnabled = false;
             return path;
         }

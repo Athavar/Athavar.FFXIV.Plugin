@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Dalamud;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -25,6 +25,7 @@ using Lumina.Excel.GeneratedSheets;
 internal sealed partial class CommandInterface : ICommandInterface
 {
     private readonly IDalamudServices dalamudServices;
+    private readonly IPluginLog logger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CommandInterface"/> class.
@@ -33,6 +34,7 @@ internal sealed partial class CommandInterface : ICommandInterface
     public CommandInterface(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
+        this.logger = dalamudServices.PluginLogger;
         var mainSheet = dalamudServices.DataManager.GetExcelSheet<MainCommand>(ClientLanguage.English)!;
         this.logOutId = mainSheet.FirstOrDefault(c => c.Name?.RawString == "Log Out")?.RowId ?? 0u;
     }
@@ -125,7 +127,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         }
 
         var res = ts->InteractWithObject(targetAddress);
-        PluginLog.LogInformation("Interaction Result: {0}", res);
+        this.logger.Debug("Interaction Result: {0}", res);
         return true;
     }
 

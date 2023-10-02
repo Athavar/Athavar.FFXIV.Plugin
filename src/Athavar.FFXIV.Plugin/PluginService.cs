@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.UI;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 internal sealed class PluginService
 {
     private readonly IDalamudServices dalamudServices;
+    private readonly IPluginLog logger;
     private readonly PluginWindow pluginWindow;
 
     private readonly WindowSystem windowSystem;
@@ -31,7 +32,6 @@ internal sealed class PluginService
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="pluginWindow"><see cref="IPluginWindow"/> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
     /// <param name="windowSystem"><see cref="WindowSystem"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="moduleManager"><see cref="IModuleManager"/> added by DI.</param>
@@ -43,6 +43,7 @@ internal sealed class PluginService
         IModuleManager moduleManager)
     {
         this.dalamudServices = dalamudServices;
+        this.logger = this.dalamudServices.PluginLogger;
         this.pluginWindow = pluginWindow as PluginWindow ?? throw new InvalidOperationException();
 
         this.windowSystem = windowSystem;
@@ -56,10 +57,10 @@ internal sealed class PluginService
     public void Start()
     {
         // 1.
-        PluginLog.LogDebug("Service Start");
+        this.logger.Debug("Service Start");
         this.windowSystem.AddWindow(this.pluginWindow);
 
-        PluginLog.LogDebug("Load Modules");
+        this.logger.Debug("Load Modules");
         this.moduleManager.LoadModules();
 
         this.dalamudServices.CommandManager.AddHandler(Plugin.CommandName, new CommandInfo(this.OnCommand)
@@ -69,7 +70,7 @@ internal sealed class PluginService
         });
         this.dalamudServices.PluginInterface.UiBuilder.Draw += this.windowSystem.Draw;
         this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi += this.OnOpenConfigUi;
-        PluginLog.LogDebug("Service Started");
+        this.logger.Debug("Service Started");
     }
 
     /// <summary>
@@ -77,12 +78,12 @@ internal sealed class PluginService
     /// </summary>
     public void Stop()
     {
-        PluginLog.LogDebug("Service Stop");
+        this.logger.Debug("Service Stop");
         this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi -= this.OnOpenConfigUi;
         this.dalamudServices.PluginInterface.UiBuilder.Draw -= this.windowSystem.Draw;
         this.dalamudServices.CommandManager.RemoveHandler(Plugin.CommandName);
         this.windowSystem.RemoveAllWindows();
-        PluginLog.LogDebug("Service Stopped");
+        this.logger.Debug("Service Stopped");
     }
 
     private void OnOpenConfigUi() => this.pluginWindow.Toggle();

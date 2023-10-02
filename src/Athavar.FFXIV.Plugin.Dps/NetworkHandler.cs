@@ -13,7 +13,6 @@ using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Dalamud.Game.Network;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Machina.FFXIV.Headers;
@@ -22,6 +21,7 @@ using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_Effect
 
 internal sealed partial class NetworkHandler : IDisposable
 {
+    private readonly IPluginLog logger;
     private readonly IGameNetwork gameNetwork;
     private readonly IOpcodeManager opcodeManager;
     private readonly IDefinitionManager definitionManager;
@@ -34,6 +34,7 @@ internal sealed partial class NetworkHandler : IDisposable
 
     public NetworkHandler(IDalamudServices dalamudServices, IOpcodeManager opcodeManager, Utils utils, IDefinitionManager definitionManager)
     {
+        this.logger = dalamudServices.PluginLogger;
         this.gameNetwork = dalamudServices.GameNetwork;
         this.opcodeManager = opcodeManager;
         this.utils = utils;
@@ -179,7 +180,7 @@ internal sealed partial class NetworkHandler : IDisposable
             var newDelta = (int)header->actionId - header->actionAnimationId;
             if (this.unkDelta != newDelta)
             {
-                PluginLog.LogVerbose($"Updating network delta: {this.unkDelta} -> {newDelta}");
+                this.logger.Verbose($"Updating network delta: {this.unkDelta} -> {newDelta}");
                 this.unkDelta = newDelta;
             }
         }

@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Cheat.List;
 
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 
 /// <summary>
@@ -73,7 +72,7 @@ internal class EnablePeepingTomPvP : Cheat
             }
             catch (KeyNotFoundException)
             {
-                PluginLog.Warning("Could not get territory for current zone");
+                this.dalamudServices.PluginLogger.Warning("Could not get territory for current zone");
             }
         });
 }

@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -41,11 +40,11 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
         }
 
         var text = this.module.LastSeenDialogText = this.module.GetSeStringText(dataPtr->TextPtr);
-        PluginLog.Debug($"AddonSelectYesNo: text={text}");
+        this.module.Logger.Debug($"AddonSelectYesNo: text={text}");
 
         if (this.module.ForcedYesKeyPressed)
         {
-            PluginLog.Debug("AddonSelectYesNo: Forced yes hotkey pressed");
+            this.module.Logger.Debug("AddonSelectYesNo: Forced yes hotkey pressed");
             this.AddonSelectYesNoExecute(addon, true);
             return;
         }
@@ -70,7 +69,7 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
                 {
                     if (zoneWarnOnce && !(zoneWarnOnce = false))
                     {
-                        PluginLog.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
+                        this.module.Logger.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
                         this.module.ChatManager.PrintChat("Unable to verify Zone Restricted entry, change zones to update value");
                     }
 
@@ -79,14 +78,14 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
 
                 if (!string.IsNullOrEmpty(zoneName) && this.EntryMatchesZoneName(node, zoneName))
                 {
-                    PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
+                    this.module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
                     this.AddonSelectYesNoExecute(addon, node.IsYes);
                     return;
                 }
             }
             else
             {
-                PluginLog.Debug($"AddonSelectYesNo: Matched on {node.Text}");
+                this.module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text}");
                 this.AddonSelectYesNoExecute(addon, node.IsYes);
                 return;
             }
@@ -101,16 +100,16 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
             var yesButton = addonPtr->YesButton;
             if (yesButton != null && !yesButton->IsEnabled)
             {
-                PluginLog.Debug("AddonSelectYesNo: Enabling yes button");
+                this.module.Logger.Debug("AddonSelectYesNo: Enabling yes button");
                 yesButton->AtkComponentBase.OwnerNode->AtkResNode.NodeFlags |= NodeFlags.Enabled;
             }
 
-            PluginLog.Debug("AddonSelectYesNo: Selecting yes");
+            this.module.Logger.Debug("AddonSelectYesNo: Selecting yes");
             ClickSelectYesNo.Using(addon).Yes();
         }
         else
         {
-            PluginLog.Debug("AddonSelectYesNo: Selecting no");
+            this.module.Logger.Debug("AddonSelectYesNo: Selecting no");
             ClickSelectYesNo.Using(addon).No();
         }
     }

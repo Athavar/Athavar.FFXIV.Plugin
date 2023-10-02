@@ -20,7 +20,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
 {
     private readonly IModuleManager manager;
 
-    private readonly TabBarHandler tabBarHandler = new("athavar-toolbox");
+    private readonly TabBarHandler tabBarHandler;
 
     private readonly SettingsTab settingsTab;
 
@@ -29,12 +29,15 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     /// </summary>
     /// <param name="localizeManager"><see cref="ILocalizeManager"/> added by DI.</param>
     /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
-    /// <param name="configuration"><see cref="Configuration"/> added by DI.</param>
+    /// <param name="configuration"><see cref="CommonConfiguration"/> added by DI.</param>
+    /// <param name="services"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="gearsetManager"><see cref="IGearsetManager"/> added by DI.</param>
     public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IGearsetManager gearsetManager)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
         this.LaunchButton = new PluginLaunchButton(services, this.Toggle);
+        this.tabBarHandler = new TabBarHandler(services.PluginLogger, "athavar-toolbox");
         if (configuration.ShowLaunchButton)
         {
             this.LaunchButton.AddEntry();
@@ -88,6 +91,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
         if (module.Enabled && data.TabEnabled)
         {
             this.tabBarHandler.Add(module.Tab);
+            this.tabBarHandler.Sort(1);
         }
         else
         {

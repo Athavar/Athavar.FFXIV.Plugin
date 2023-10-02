@@ -15,13 +15,13 @@ using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 internal sealed class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
+    private readonly IPluginLog logger;
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
     private readonly ICraftDataManager craftDataManager;
@@ -32,8 +32,9 @@ internal sealed class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
+    public RotationTab(IPluginLog logger, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
     {
+        this.logger = logger;
         this.Configuration = configuration;
         this.chatManager = chatManager;
         this.iconManager = iconManager;
@@ -168,7 +169,7 @@ internal sealed class RotationTab : Tab
             {
                 text = string.Empty;
                 this.chatManager.PrintErrorMessage("[Macro] Could not import from clipboard.");
-                PluginLog.Error(ex, "Clipboard import error");
+                this.logger.Error(ex, "Clipboard import error");
             }
 
             // Replace \r with \r\n, usually from copy/pasting from the in-game macro window

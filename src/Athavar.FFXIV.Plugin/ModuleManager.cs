@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Module = Athavar.FFXIV.Plugin.Common.Module;
 
@@ -21,37 +21,29 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
     private readonly Dictionary<string, ModuleDef> modules = new();
 
     private readonly IServiceProvider serviceProvider;
+    private readonly IPluginLog logger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleManager"/> class.
     /// </summary>
     /// <param name="serviceProvider"><see cref="IServiceProvider"/> added by DI.</param>
-    public ModuleManager(IServiceProvider serviceProvider) => this.serviceProvider = serviceProvider;
+    /// <param name="logger"><see cref="IPluginLog"/> added by DI.</param>
+    public ModuleManager(IServiceProvider serviceProvider, IPluginLog logger)
+    {
+        this.serviceProvider = serviceProvider;
+        this.logger = logger;
+    }
 
     public event IModuleManager.ModuleStateChange? StateChange;
 
     public void LoadModules()
     {
-        var moduleType = typeof(Module);
-
-        var context = AssemblyLoadContext.GetLoadContext(typeof(ModuleManager).Assembly);
-        if (context is null)
+        void LoadModule(Type moduleType)
         {
-            return;
-        }
-
-        PluginLog.Information("Load modules from AssemblyLoadContext: {0}", context.ToString());
-
-        foreach (var mType in context.Assemblies
-           .Where(a => !a.IsDynamic)
-           .Where(a => a.GetName().Name?.StartsWith("Athavar.FFXIV.Plugin") ?? false)
-           .SelectMany(a => a.GetTypes())
-           .Where(t => !t.IsAbstract && t.IsSubclassOf(moduleType)))
-        {
-            var attribute = mType.GetCustomAttribute<ModuleAttribute>();
+            var attribute = moduleType.GetCustomAttribute<ModuleAttribute>();
             if (attribute is null)
             {
-                continue;
+                return;
             }
 
             if (attribute.Debug)
@@ -61,14 +53,16 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 #endif
             }
 
-            var definition = new ModuleDef(this, attribute.Name, attribute.HasTab, attribute.Hidden, mType)
+            var definition = new ModuleDef(this, attribute.Name, attribute.HasTab, attribute.Hidden, moduleType)
             {
                 Enabled = true,
             };
 
             if (attribute.ModuleConfigurationType is not null)
             {
+                this.logger.Information("Get configuration for module {0}", attribute.Name);
                 var config = this.serviceProvider.GetRequiredService(attribute.ModuleConfigurationType);
+                this.logger.Information("Received configuration for module {0}", attribute.Name);
                 if (config is BasicModuleConfig moduleConfig)
                 {
                     definition.Enabled = moduleConfig.Enabled;
@@ -80,7 +74,9 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             {
                 if (definition.Enabled)
                 {
-                    var m = ActivatorUtilities.CreateInstance(this.serviceProvider, mType);
+                    this.logger.Debug("Create Module Instance for {0}", attribute.Name);
+                    var m = ActivatorUtilities.CreateInstance(this.serviceProvider, moduleType);
+                    this.logger.Debug("Finish creating Module Instance for {0}", attribute.Name);
                     if (m is Module module)
                     {
                         definition.Instance = module;
@@ -90,16 +86,36 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             }
             else
             {
-                PluginLog.LogVerbose("{0} was already added", attribute.Name);
+                this.logger.Verbose("{0} was already added", attribute.Name);
             }
         }
+
+        var moduleType = typeof(Module);
+
+        var context = AssemblyLoadContext.GetLoadContext(typeof(ModuleManager).Assembly);
+        if (context is null)
+        {
+            return;
+        }
+
+        this.logger.Information("Load modules from AssemblyLoadContext: {0}", context.ToString());
+
+        var moduleTypes = context.Assemblies
+           .Where(a => !a.IsDynamic)
+           .Where(a => a.GetName().Name?.StartsWith("Athavar.FFXIV.Plugin") ?? false)
+           .SelectMany(a => a.GetTypes())
+           .Where(t => !t.IsAbstract && t.IsSubclassOf(moduleType)).ToArray();
+
+        this.logger.Information("Start loading modules");
+        moduleTypes.AsParallel().WithDegreeOfParallelism(12).ForAll(LoadModule);
+        this.logger.Information("Finish loading modules");
     }
 
     /// <inheritdoc/>
     public IEnumerable<string> GetModuleNames() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Key);
 
     /// <inheritdoc/>
-    public IEnumerable<IModuleManager.IModuleData> GetModuleData() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Value.Data);
+    public IEnumerable<IModuleManager.IModuleData> GetModuleData() => this.modules.Where(m => !m.Value.Hidden).Select(m => m.Value.Data).Order();
 
     /// <inheritdoc/>
     public void Dispose()
@@ -138,9 +154,11 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
         internal Module? Instance { get; set; }
 
         internal BasicModuleConfig? Config { get; set; }
+
+        public int CompareTo(object? obj) => throw new NotImplementedException();
     }
 
-    private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData
+    private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData, IComparable<ModuleData>, IComparable
     {
         public bool Enabled
         {
@@ -198,6 +216,42 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                     }
                 }
             }
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return 0;
+            }
+
+            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
+        }
+
+        public int CompareTo(ModuleData? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
+            if (nameComparison != 0)
+            {
+                return nameComparison;
+            }
+
+            return this.HasTab.CompareTo(other.HasTab);
         }
     }
 }

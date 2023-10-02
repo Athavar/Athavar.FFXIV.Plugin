@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(CraftQueueConfiguration), HasTab = true)]
@@ -23,12 +23,13 @@ internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfigu
     /// </summary>
     /// <param name="configuration"><see cref="CraftQueueConfiguration"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
-    public CraftQueueModule(CraftQueueConfiguration configuration, IServiceProvider provider)
+    /// <param name="log"><see cref="IPluginLog"/> added by DI.</param>
+    public CraftQueueModule(CraftQueueConfiguration configuration, IServiceProvider provider, IPluginLog log)
         : base(configuration)
     {
         this.provider = provider;
 
-        PluginLog.LogDebug("Module 'CraftQueue' init");
+        log.Debug("Module 'CraftQueue' init");
     }
 
     /// <inheritdoc/>

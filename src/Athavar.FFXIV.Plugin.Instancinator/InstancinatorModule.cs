@@ -11,7 +11,6 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using Lumina;
@@ -84,7 +83,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             ShowInHelp = false,
         });
         frameworkManager.Subscribe(this.Tick);
-        PluginLog.LogDebug("Module 'Instancinator' init");
+        this.dalamudServices.PluginLogger.Debug("Module 'Instancinator' init");
     }
 
     /// <inheritdoc/>

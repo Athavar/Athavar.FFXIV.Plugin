@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /requiremateria command.
@@ -23,7 +22,7 @@ internal class RequireSpiritbondCommand : MacroCommand
     private readonly float within;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RequireSpiritbondCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RequireSpiritbondCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="within">Check if other items are within a certain percentage.</param>
@@ -54,12 +53,12 @@ internal class RequireSpiritbondCommand : MacroCommand
         return new RequireSpiritbondCommand(text, within, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text} with {this.within}");
+        this.Logger.Debug($"Executing: {this.Text} with {this.within}");
 
-        if (CommandInterface.CanExtractMateria(this.within))
+        if (this.CommandInterface.CanExtractMateria(this.within))
         {
             throw new MacroPause("You can extract materia now", IChatManager.UiColor.Green);
         }

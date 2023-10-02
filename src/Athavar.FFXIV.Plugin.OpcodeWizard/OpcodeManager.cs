@@ -10,19 +10,21 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Logging;
 using Dalamud.Networking.Http;
+using Dalamud.Plugin.Services;
 using Machina.FFXIV;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {
+    private readonly IPluginLog logger;
     private readonly OpcodeWizardConfiguration configuration;
     private readonly IDefinitionManager definitionManager;
 
     private readonly Dictionary<ushort, Opcode> opcodes = new();
 
-    public OpcodeManager(OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
+    public OpcodeManager(IPluginLog logger, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
     {
+        this.logger = logger;
         this.configuration = configuration;
         this.definitionManager = definitionManager;
         _ = this.Populate();
@@ -93,7 +95,7 @@ internal sealed class OpcodeManager : IOpcodeManager
                         Add(key, value);
                     }
 
-                    PluginLog.LogInformation("Opcodes updated from Remote");
+                    this.logger.Information("Opcodes updated from Remote");
 
                     this.configuration.RemoteUpdate = true;
                     this.configuration.Save();
@@ -101,7 +103,7 @@ internal sealed class OpcodeManager : IOpcodeManager
             }
             catch (Exception ex)
             {
-                PluginLog.LogError(ex, "Fail to update Opcodes from Remote");
+                this.logger.Error(ex, "Fail to update Opcodes from Remote");
             }
         }
 

@@ -732,7 +732,7 @@ internal sealed class ScannerRegistry
 
                 var endTime = startTime + duration;
 
-                // Allow local time. 
+                // Allow local time.
                 var now = DateTimeOffset.Now.ToUnixTimeSeconds();
                 var allowableError = 60;
 
