@@ -6,9 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Macro.Managers;
-using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -83,9 +83,9 @@ internal abstract class MacroCommand
     protected ICommandInterface CommandInterface => commandInterface ?? throw new NullReferenceException("CommandInterface is not set");
 
     /// <summary>
-    ///     Gets the <see cref="IPluginLog"/>.
+    ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
-    protected IPluginLog Logger => DalamudServices.PluginLogger;
+    protected IPluginLogger Logger => DalamudServices.PluginLogger;
 
     /// <summary>
     ///     Gets the milliseconds to wait.

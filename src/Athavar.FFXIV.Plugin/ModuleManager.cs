@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Module = Athavar.FFXIV.Plugin.Common.Module;
@@ -21,14 +22,14 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
     private readonly Dictionary<string, ModuleDef> modules = new();
 
     private readonly IServiceProvider serviceProvider;
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleManager"/> class.
     /// </summary>
     /// <param name="serviceProvider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="logger"><see cref="IPluginLog"/> added by DI.</param>
-    public ModuleManager(IServiceProvider serviceProvider, IPluginLog logger)
+    public ModuleManager(IServiceProvider serviceProvider, IPluginLogger logger)
     {
         this.serviceProvider = serviceProvider;
         this.logger = logger;
@@ -60,9 +61,9 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
             if (attribute.ModuleConfigurationType is not null)
             {
-                this.logger.Information("Get configuration for module {0}", attribute.Name);
+                this.logger.Debug("Get configuration for module {0}", attribute.Name);
                 var config = this.serviceProvider.GetRequiredService(attribute.ModuleConfigurationType);
-                this.logger.Information("Received configuration for module {0}", attribute.Name);
+                this.logger.Debug("Received configuration for module {0}", attribute.Name);
                 if (config is BasicModuleConfig moduleConfig)
                 {
                     definition.Enabled = moduleConfig.Enabled;
@@ -160,6 +161,42 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
     private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData, IComparable<ModuleData>, IComparable
     {
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return 0;
+            }
+
+            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
+        }
+
+        public int CompareTo(ModuleData? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
+            if (nameComparison != 0)
+            {
+                return nameComparison;
+            }
+
+            return this.HasTab.CompareTo(other.HasTab);
+        }
+
         public bool Enabled
         {
             get => this.Def.Enabled;
@@ -216,42 +253,6 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                     }
                 }
             }
-        }
-
-        public int CompareTo(object? obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return 1;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return 0;
-            }
-
-            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
-        }
-
-        public int CompareTo(ModuleData? other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return 0;
-            }
-
-            if (ReferenceEquals(null, other))
-            {
-                return 1;
-            }
-
-            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
-            if (nameComparison != 0)
-            {
-                return nameComparison;
-            }
-
-            return this.HasTab.CompareTo(other.HasTab);
         }
     }
 }

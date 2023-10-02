@@ -8,8 +8,8 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Interface;
-using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 public class FontsManager : IDisposable, IFontsManager
@@ -20,7 +20,7 @@ public class FontsManager : IDisposable, IFontsManager
     private static UiBuilder? uiBuilder;
     private static string userFontPath = string.Empty;
 
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly Dictionary<string, ImFontPtr> imGuiFonts;
     private IEnumerable<IFontsManager.FontData> fontData;
     private string[] fontList;

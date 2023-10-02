@@ -9,10 +9,10 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -25,7 +25,7 @@ using Lumina.Excel.GeneratedSheets;
 internal sealed partial class CommandInterface : ICommandInterface
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="CommandInterface"/> class.

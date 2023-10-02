@@ -8,6 +8,7 @@ namespace Athavar.FFXIV.Plugin.Yes;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
@@ -88,9 +89,9 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     internal IChatManager ChatManager { get; }
 
     /// <summary>
-    ///     Gets the <see cref="IPluginLog"/>.
+    ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
-    internal IPluginLog Logger { get; }
+    internal IPluginLogger Logger { get; }
 
     /// <summary>
     ///     Gets a mapping of territory IDs to names.

@@ -10,19 +10,19 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Networking.Http;
-using Dalamud.Plugin.Services;
 using Machina.FFXIV;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly OpcodeWizardConfiguration configuration;
     private readonly IDefinitionManager definitionManager;
 
     private readonly Dictionary<ushort, Opcode> opcodes = new();
 
-    public OpcodeManager(IPluginLog logger, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
+    public OpcodeManager(IPluginLogger logger, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
     {
         this.logger = logger;
         this.configuration = configuration;

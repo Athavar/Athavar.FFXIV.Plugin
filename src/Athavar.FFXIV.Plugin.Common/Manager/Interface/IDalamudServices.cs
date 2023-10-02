@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Plugin;
@@ -40,7 +41,7 @@ public interface IDalamudServices
 
     IPartyList PartyList { get; }
 
-    IPluginLog PluginLogger { get; }
+    IPluginLogger PluginLogger { get; }
 
     ISigScanner SigScanner { get; }
 

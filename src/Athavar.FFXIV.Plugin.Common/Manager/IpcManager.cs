@@ -7,16 +7,16 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Ipc.Exceptions;
-using Dalamud.Plugin.Services;
 
 /// <summary>
 ///     IPC Manager. Currently no longer used with changes in Dalamud v9.
 /// </summary>
 internal sealed class IpcManager : IIpcManager, IDisposable
 {
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
 
     private ICallGateSubscriber<(int Breaking, int Features)> penumbraApiVersionsSubscriber;
     private ICallGateSubscriber<string, string>? penumbraResolveInterfacePathSubscriber;

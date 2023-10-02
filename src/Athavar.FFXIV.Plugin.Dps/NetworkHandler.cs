@@ -8,6 +8,7 @@ namespace Athavar.FFXIV.Plugin.Dps;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
@@ -21,7 +22,7 @@ using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_Effect
 
 internal sealed partial class NetworkHandler : IDisposable
 {
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly IGameNetwork gameNetwork;
     private readonly IOpcodeManager opcodeManager;
     private readonly IDefinitionManager definitionManager;

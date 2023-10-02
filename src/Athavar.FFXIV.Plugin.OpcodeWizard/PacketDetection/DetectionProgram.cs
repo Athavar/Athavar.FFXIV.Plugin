@@ -7,15 +7,15 @@ namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
-using Dalamud.Plugin.Services;
 using Machina.FFXIV;
 using Machina.Infrastructure;
 
 internal sealed class DetectionProgram : IDisposable
 {
     public bool Debug;
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly ScannerRegistry scannerRegistry;
     private readonly IOpcodeManager opcodeManager;
 
@@ -28,10 +28,10 @@ internal sealed class DetectionProgram : IDisposable
     /// <summary>
     ///     Initializes a new instance of the <see cref="DetectionProgram"/> class.
     /// </summary>
-    /// <param name="logger"><see cref="IPluginLog"/> added by DI.</param>
+    /// <param name="logger"><see cref="IPluginLogger"/> added by DI.</param>
     /// <param name="opcodeManager"><see cref="IOpcodeManager"/> added by DI.</param>
     /// <param name="scannerRegistry"><see cref="ScannerRegistry"/> added by DI.</param>
-    public DetectionProgram(IPluginLog logger, IOpcodeManager opcodeManager, ScannerRegistry scannerRegistry)
+    public DetectionProgram(IPluginLogger logger, IOpcodeManager opcodeManager, ScannerRegistry scannerRegistry)
     {
         this.logger = logger;
         this.opcodeManager = opcodeManager;

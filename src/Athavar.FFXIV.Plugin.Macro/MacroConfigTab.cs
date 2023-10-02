@@ -11,12 +11,12 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Managers;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 /// <summary>
@@ -24,7 +24,7 @@ using ImGuiNET;
 /// </summary>
 internal sealed class MacroConfigTab : Tab
 {
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly IChatManager chatManager;
     private readonly MacroManager macroManager;
     private readonly MacroHelpWindow helpWindow;
@@ -36,12 +36,12 @@ internal sealed class MacroConfigTab : Tab
     /// <summary>
     ///     Initializes a new instance of the <see cref="MacroConfigTab"/> class.
     /// </summary>
-    /// <param name="logger"><see cref="IPluginLog"/> added by DI.</param>
+    /// <param name="logger"><see cref="IPluginLogger"/> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
     /// <param name="macroManager"><see cref="MacroModule"/> added by DI.</param>
     /// <param name="helpWindow"><see cref="MacroHelpWindow"/> added by DI.</param>
     /// <param name="configuration">The <see cref="MacroConfiguration"/> added by DI.</param>
-    public MacroConfigTab(IPluginLog logger, IChatManager chatManager, MacroManager macroManager, MacroHelpWindow helpWindow, MacroConfiguration configuration)
+    public MacroConfigTab(IPluginLogger logger, IChatManager chatManager, MacroManager macroManager, MacroHelpWindow helpWindow, MacroConfiguration configuration)
     {
         this.logger = logger;
         this.chatManager = chatManager;

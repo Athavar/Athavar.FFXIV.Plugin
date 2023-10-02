@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Plugin.Services;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -22,9 +22,9 @@ internal abstract class MacroModifier
     protected IDalamudServices DalamudServices => dalamudServices ?? throw new NullReferenceException("DalamudServices is not set");
 
     /// <summary>
-    ///     Gets the <see cref="IPluginLog"/>.
+    ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
-    protected IPluginLog Logger => this.DalamudServices.PluginLogger;
+    protected IPluginLogger Logger => this.DalamudServices.PluginLogger;
 
     /// <summary>
     ///     Setup the <see cref="IServiceProvider"/> for all commands.

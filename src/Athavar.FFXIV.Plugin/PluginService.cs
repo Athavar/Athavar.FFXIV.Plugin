@@ -6,10 +6,10 @@
 namespace Athavar.FFXIV.Plugin;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.UI;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
-using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 internal sealed class PluginService
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly PluginWindow pluginWindow;
 
     private readonly WindowSystem windowSystem;

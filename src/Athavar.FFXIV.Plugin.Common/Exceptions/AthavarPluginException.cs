@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Exceptions;
 
-using Dalamud.Plugin.Services;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 
 public class AthavarPluginException : Exception
 {
@@ -41,9 +41,9 @@ public class AthavarPluginException : Exception
     /// <summary>
     ///     Try to catch all exception.
     /// </summary>
-    /// <param name="log"><see cref="IPluginLog"/> to output the caught exception.</param>
+    /// <param name="log"><see cref="IPluginLogger"/> to output the caught exception.</param>
     /// <param name="action">Action that can throw exception.</param>
-    public static void CatchCrash(IPluginLog log, Action action)
+    public static void CatchCrash(IPluginLogger log, Action action)
     {
         try
         {

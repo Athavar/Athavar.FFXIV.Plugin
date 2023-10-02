@@ -5,15 +5,15 @@
 
 namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
-using Dalamud.Plugin.Services;
 
 internal static class PacketScanner
 {
     /// <summary>
     ///     Returns the opcode of the first packet to meet the conditions outlined by del.
     /// </summary>
-    public static ushort Scan(Queue<Packet> pq, Scanner scanner, string[] parameters, ref bool skipped, ref bool stopped, IPluginLog? logger, IReadOnlyDictionary<ushort, Opcode> alreadyKnown)
+    public static ushort Scan(Queue<Packet> pq, Scanner scanner, string[] parameters, ref bool skipped, ref bool stopped, IPluginLogger? logger, IReadOnlyDictionary<ushort, Opcode> alreadyKnown)
     {
         while (!skipped && !stopped)
         {

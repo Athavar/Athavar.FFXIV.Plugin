@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.IoC;
@@ -28,6 +29,7 @@ internal sealed class DalamudServices : IDalamudServices
     public DalamudServices(DalamudPluginInterface pluginInterface)
     {
         pluginInterface.Inject(this);
+        this.PluginLogger = new Logger(this.PluginLog);
 
         try
         {
@@ -39,6 +41,13 @@ internal sealed class DalamudServices : IDalamudServices
             this.PluginLogger.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
         }
     }
+
+    /*[PluginService]
+    [RequiredVersion("1.0")]
+    public IToastGui ToastGui { get; private set; } = null!;*/
+
+    /// <inheritdoc/>
+    public IPluginLogger PluginLogger { get; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
@@ -187,10 +196,6 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public IPartyList PartyList { get; init; } = null!;
 
-    [PluginService]
-    [RequiredVersion("1.0")]
-    public IPluginLog PluginLogger { get; init; } = null!;
-
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
@@ -211,9 +216,9 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public ITitleScreenMenu TitleScreenMenu { get; init; } = null!;
 
-    /*[PluginService]
+    [PluginService]
     [RequiredVersion("1.0")]
-    public IToastGui ToastGui { get; private set; } = null!;*/
+    internal IPluginLog PluginLog { get; init; } = null!;
 
     /// <inheritdoc/>
     public object? GetInternalService(Type serviceType) => this.serviceGenericType?.MakeGenericType(serviceType).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, Array.Empty<object>(), null);

@@ -10,8 +10,8 @@ namespace Athavar.FFXIV.Plugin;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Timers;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Plugin;
-using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 public class BasicModuleConfig<T> : BasicModuleConfig
@@ -29,7 +29,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
     private DirectoryInfo? configDirectory;
 
     [JsonIgnore]
-    private IPluginLog? logger;
+    private IPluginLogger? logger;
 
     [JsonIgnore]
     private Timer? saveTimer;
@@ -42,11 +42,60 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         provider.AddSingleton<T>(o =>
         {
             var pi = o.GetRequiredService<DalamudPluginInterface>();
-            var log = o.GetRequiredService<IPluginLog>();
+            var log = o.GetRequiredService<IPluginLogger>();
 
-            return Load(pi, log);
+            return Load(pi.ConfigDirectory, log);
         });
         return provider;
+    }
+
+    public static T Load(DirectoryInfo configDirectory, IPluginLogger log)
+    {
+        bool TryLoad(string f, out T? c)
+        {
+            c = null;
+            if (File.Exists(f))
+            {
+#if DEBUG
+                log.Information("Load file {0} for configuration {1}", f, GetConfigName());
+#endif
+                var data = File.ReadAllText(f);
+                try
+                {
+                    c = (T?)JsonSerializer.Deserialize(data, typeof(T), SerializerOptions);
+                }
+                catch (Exception e)
+                {
+                    log.Error(e, "Error during loading file {0} for configuration {1}", f, GetConfigName());
+                }
+
+                // file exists
+                return true;
+            }
+
+            // file not exists
+            return false;
+        }
+
+        var file = GetConfigFilePaths(configDirectory.FullName);
+
+        if (!TryLoad(file.File, out var config) && TryLoad(file.NewFile, out config) && TryLoad(file.BackupFile, out config))
+        {
+            // files don't exists. Create new configuration.
+            config = new T();
+        }
+        else
+        {
+            // file for configuration exists. If null loading failed.
+            config ??= new T
+            {
+                ConfigError = true,
+            };
+        }
+
+        config.configDirectory = configDirectory;
+        config.logger = log;
+        return config;
     }
 
     public override void Save(bool instant = false)
@@ -80,8 +129,19 @@ public class BasicModuleConfig<T> : BasicModuleConfig
                     Directory.CreateDirectory(directory);
                 }
 
-                var file = Path.Combine(this.configDirectory.FullName, GetConfigFileName());
-                File.WriteAllText(file, data);
+                var paths = GetConfigFilePaths(this.configDirectory.FullName);
+
+                // create new File
+                File.WriteAllText(paths.NewFile, data);
+
+                if (File.Exists(paths.File))
+                {
+                    // move current to backup
+                    File.Move(paths.File, paths.BackupFile, true);
+                }
+
+                // move new to current
+                File.Move(paths.NewFile, paths.File, true);
             }
             catch (Exception e)
             {
@@ -102,46 +162,23 @@ public class BasicModuleConfig<T> : BasicModuleConfig
     }
 
     /// <summary>
-    ///     Setup <see cref="InstancinatorConfiguration"/>.
+    ///     Setup <see cref="InstancinatorConfiguration"/>. Only used for migration.
     /// </summary>
-    /// <param name="conf">The <see cref="Configuration"/>.</param>
-    internal void Setup(Configuration conf)
+    /// <param name="directoryInfo">The configuration directory.</param>
+    internal void Setup(DirectoryInfo directoryInfo)
     {
         // migration only
-        this.configDirectory = conf.Pi?.ConfigDirectory;
+        this.configDirectory = directoryInfo;
         this.Save(true);
     }
 
-    private static T Load(DalamudPluginInterface pi, IPluginLog log)
-    {
-        T? config = default;
+    private static (string File, string NewFile, string BackupFile) GetConfigFilePaths(string directory) => (Path.Combine(directory, GetConfigFileName()), Path.Combine(directory, GetConfigFileNewName()), Path.Combine(directory, GetConfigFileBackupName()));
 
-        var file = Path.Combine(pi.ConfigDirectory.FullName, GetConfigFileName());
-        if (File.Exists(file))
-        {
-#if DEBUG
-            log.Information("Load {0}", typeof(T).Name);
-#endif
-            var data = File.ReadAllText(file);
-            try
-            {
-                config = (T?)JsonSerializer.Deserialize(data, typeof(T), SerializerOptions);
-            }
-            catch (Exception e)
-            {
-                log.Error(e, "Error during loading of configuration");
-                config = new T
-                {
-                    ConfigError = true,
-                };
-            }
-        }
+    private static string GetConfigFileName() => $"{GetConfigName()}.json";
 
-        config ??= new T();
-        config.configDirectory = pi.ConfigDirectory;
-        config.logger = log;
-        return config;
-    }
+    private static string GetConfigFileBackupName() => $"{GetConfigName()}.bak.json";
 
-    private static string GetConfigFileName() => $"{typeof(T).Name}.json";
+    private static string GetConfigFileNewName() => $"{GetConfigName()}.new.json";
+
+    private static string GetConfigName() => typeof(T).Name;
 }

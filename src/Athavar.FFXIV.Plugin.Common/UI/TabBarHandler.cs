@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.UI;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Dalamud.Plugin.Services;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using ImGuiNET;
 
 /// <summary>
@@ -15,7 +15,7 @@ using ImGuiNET;
 /// </summary>
 public sealed class TabBarHandler
 {
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly List<TabDefinition> tabs = new();
     private readonly string name;
     private readonly object lockObject = new();
@@ -26,9 +26,9 @@ public sealed class TabBarHandler
     /// <summary>
     ///     Initializes a new instance of the <see cref="TabBarHandler"/> class.
     /// </summary>
-    /// <param name="logger"><see cref="IPluginLog"/> to log events.</param>
+    /// <param name="logger"><see cref="IPluginLogger"/> to log events.</param>
     /// <param name="name">The name of the <see cref="TabBarHandler"/>.</param>
-    public TabBarHandler(IPluginLog logger, string name)
+    public TabBarHandler(IPluginLogger logger, string name)
     {
         this.logger = logger;
         this.name = $"##{name}";

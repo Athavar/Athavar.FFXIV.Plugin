@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
 using Dalamud.Interface;
@@ -21,7 +22,7 @@ using ImGuiNET;
 internal sealed class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
-    private readonly IPluginLog logger;
+    private readonly IPluginLogger logger;
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
     private readonly ICraftDataManager craftDataManager;
@@ -32,7 +33,7 @@ internal sealed class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(IPluginLog logger, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
+    public RotationTab(IPluginLogger logger, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
     {
         this.logger = logger;
         this.Configuration = configuration;
