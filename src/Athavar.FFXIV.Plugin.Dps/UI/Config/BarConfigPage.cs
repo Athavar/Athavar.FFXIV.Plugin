@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 
 using System.Numerics;
@@ -78,7 +79,7 @@ internal sealed class BarConfigPage : IConfigPage
 
         var general = this.window.Config.GeneralConfig;
         var keyState = this.services.KeyState;
-        if (general.ShowActionSummaryTooltip && (general.ShowActionSummaryModifyKey == VirtualKey.NO_KEY || keyState[general.ShowActionSummaryModifyKey]) && ImGui.IsMouseHoveringRect(localPos, localPos + barFillSize))
+        if (general.ShowActionSummaryTooltip && (general.ShowActionSummaryModifyKey == (ushort)VirtualKey.NO_KEY || keyState[general.ShowActionSummaryModifyKey]) && ImGui.IsMouseHoveringRect(localPos, localPos + barFillSize))
         {
             this.utils.DrawActionSummaryTooltip(baseCombatant, true, general.DataType);
         }

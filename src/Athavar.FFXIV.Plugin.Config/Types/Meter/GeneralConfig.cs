@@ -2,15 +2,19 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
 using System.Text.Json.Serialization;
-using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
 public sealed class GeneralConfig : BaseConfig
 {
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public static Vector2 SizeDefault { get; } = new((ImGui.GetMainViewport().Size.Y * 16) / 90, ImGui.GetMainViewport().Size.Y / 10);
+
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
     public bool Preview { get; set; } = false;
@@ -21,7 +25,7 @@ public sealed class GeneralConfig : BaseConfig
 
     [JsonInclude]
     [JsonPropertyName("Size")]
-    public Vector2 Size { get; set; } = new((ImGui.GetMainViewport().Size.Y * 16) / 90, ImGui.GetMainViewport().Size.Y / 10);
+    public Vector2? Size { get; set; }
 
     [JsonInclude]
     [JsonPropertyName("Enabled")]
@@ -65,7 +69,7 @@ public sealed class GeneralConfig : BaseConfig
 
     [JsonInclude]
     [JsonPropertyName("ShowActionSummaryModifyKey")]
-    public VirtualKey ShowActionSummaryModifyKey { get; set; } = VirtualKey.NO_KEY;
+    public ushort ShowActionSummaryModifyKey { get; set; }
 
     [JsonInclude]
     [JsonPropertyName("ReturnToCurrent")]

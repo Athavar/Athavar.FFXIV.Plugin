@@ -7,9 +7,11 @@
 
 namespace Athavar.FFXIV.Plugin;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Timers;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,14 +19,6 @@ using Microsoft.Extensions.DependencyInjection;
 public class BasicModuleConfig<T> : BasicModuleConfig
     where T : BasicModuleConfig<T>, new()
 {
-    // ReSharper disable once StaticMemberInGenericType
-    [JsonIgnore]
-    private static readonly JsonSerializerOptions SerializerOptions = new()
-    {
-        TypeInfoResolver = new PrivateConstructorContractResolver(),
-        IncludeFields = true,
-    };
-
     [JsonIgnore]
     private DirectoryInfo? configDirectory;
 
@@ -51,9 +45,8 @@ public class BasicModuleConfig<T> : BasicModuleConfig
 
     public static T Load(DirectoryInfo configDirectory, IPluginLogger log)
     {
-        bool TryLoad(string f, out T? c)
+        bool TryLoad(string f, [NotNullWhen(true)] ref T? c)
         {
-            c = null;
             if (File.Exists(f))
             {
 #if DEBUG
@@ -62,35 +55,37 @@ public class BasicModuleConfig<T> : BasicModuleConfig
                 var data = File.ReadAllText(f);
                 try
                 {
-                    c = (T?)JsonSerializer.Deserialize(data, typeof(T), SerializerOptions);
+                    c = (T?)JsonSerializer.Deserialize(data, typeof(T), ConfigurationJsonSerializerContext.Default);
+                    if (c is not null)
+                    {
+                        return true;
+                    }
                 }
                 catch (Exception e)
                 {
                     log.Error(e, "Error during loading file {0} for configuration {1}", f, GetConfigName());
+                    c = new T
+                    {
+                        ConfigError = true,
+                    };
                 }
-
-                // file exists
-                return true;
             }
 
-            // file not exists
             return false;
         }
 
         var file = GetConfigFilePaths(configDirectory.FullName);
 
-        if (!TryLoad(file.File, out var config) && TryLoad(file.NewFile, out config) && TryLoad(file.BackupFile, out config))
+        T? config = null;
+        if (!TryLoad(file.File, ref config) && !TryLoad(file.NewFile, ref config) && !TryLoad(file.BackupFile, ref config) && config is null)
         {
             // files don't exists. Create new configuration.
             config = new T();
         }
-        else
+
+        if (config.ConfigError)
         {
-            // file for configuration exists. If null loading failed.
-            config ??= new T
-            {
-                ConfigError = true,
-            };
+            log.Warning("Fail to load any configuration for {0} but files exists. Changes will not be saved. Please correct or delete existing files.", GetConfigName());
         }
 
         config.configDirectory = configDirectory;
@@ -121,7 +116,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
             this.saveTimer.Stop();
             try
             {
-                var data = JsonSerializer.Serialize(this, typeof(T), SerializerOptions);
+                var data = JsonSerializer.Serialize(this, typeof(T), ConfigurationJsonSerializerContext.Default);
 
                 var directory = this.configDirectory.FullName;
                 if (!Directory.Exists(directory))

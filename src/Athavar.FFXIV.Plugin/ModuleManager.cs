@@ -50,7 +50,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             if (attribute.Debug)
             {
 #if !DEBUG
-                continue;
+                return;
 #endif
             }
 

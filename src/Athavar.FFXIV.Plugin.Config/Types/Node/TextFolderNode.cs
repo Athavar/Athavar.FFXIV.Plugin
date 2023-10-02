@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -15,12 +16,12 @@ using Newtonsoft.Json;
 public sealed class TextFolderNode : Node
 {
     /// <summary>
-    ///     Gets the child nodes of this folder.
+    ///     Gets or sets the child nodes of this folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("Children")]
     [JsonProperty(ItemConverterType = typeof(ConcreteNodeConverter))]
-    public List<Node> Children { get; init; } = new();
+    public List<Node> Children { get; set; } = new();
 
     /// <inheritdoc/>
     public override string Name { get; set; } = string.Empty;

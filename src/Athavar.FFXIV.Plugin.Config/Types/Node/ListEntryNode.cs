@@ -10,6 +10,8 @@ namespace Athavar.FFXIV.Plugin;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 
 /// <summary>
 ///     List entry node type.
@@ -45,14 +47,16 @@ public sealed class ListEntryNode : Node
     /// <summary>
     ///     Gets the matching text as a compiled regex.
     /// </summary>
-    public Lazy<Regex?> TextRegex { get; private set; }
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public Lazy<IRegex?> TextRegex { get; private set; }
 
     /// <summary>
     ///     Gets the matching target text as a compiled regex.
     /// </summary>
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public Lazy<Regex?> TargetRegex { get; private set; }
+    public Lazy<IRegex?> TargetRegex { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the node is enabled.
@@ -116,32 +120,32 @@ public sealed class ListEntryNode : Node
     [MemberNotNull(nameof(TextRegex))]
     private void UpdateTextRegex()
         => this.TextRegex = this.IsTextRegex
-            ? new Lazy<Regex?>(() =>
+            ? new Lazy<IRegex?>(() =>
             {
                 try
                 {
-                    return new Regex(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return new RegexWrapper(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 }
                 catch
                 {
                     return null;
                 }
             })
-            : new Lazy<Regex?>();
+            : new Lazy<IRegex?>();
 
     [MemberNotNull(nameof(TargetRegex))]
     private void UpdateTargetRegex()
         => this.TargetRegex = this.TargetIsRegex
-            ? new Lazy<Regex?>(() =>
+            ? new Lazy<IRegex?>(() =>
             {
                 try
                 {
-                    return new Regex(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return new RegexWrapper(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 }
                 catch
                 {
                     return null;
                 }
             })
-            : new Lazy<Regex?>();
+            : new Lazy<IRegex?>();
 }

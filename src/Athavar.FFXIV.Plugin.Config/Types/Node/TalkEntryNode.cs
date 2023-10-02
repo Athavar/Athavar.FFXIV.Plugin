@@ -10,6 +10,8 @@ namespace Athavar.FFXIV.Plugin;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 
 /// <summary>
 ///     Text entry node type.
@@ -32,7 +34,7 @@ public sealed class TalkEntryNode : Node
     /// </summary>
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public Lazy<Regex?> TargetRegex { get; private set; }
+    public Lazy<IRegex?> TargetRegex { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the node is enabled.
@@ -71,16 +73,16 @@ public sealed class TalkEntryNode : Node
     [MemberNotNull(nameof(TargetRegex))]
     private void UpdateTargetRegex()
         => this.TargetRegex = this.TargetIsRegex
-            ? new Lazy<Regex?>(() =>
+            ? new Lazy<IRegex?>(() =>
             {
                 try
                 {
-                    return new Regex(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return new RegexWrapper(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 }
                 catch
                 {
                     return null;
                 }
             })
-            : new Lazy<Regex?>();
+            : new Lazy<IRegex?>();
 }

@@ -10,6 +10,8 @@ namespace Athavar.FFXIV.Plugin;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 
 /// <summary>
 ///     Text entry node type.
@@ -47,14 +49,14 @@ public sealed class TextEntryNode : Node
     /// </summary>
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public Lazy<Regex?> TextRegex { get; private set; }
+    public Lazy<IRegex?> TextRegex { get; private set; }
 
     /// <summary>
     ///     Gets the matching zone text as a compiled regex.
     /// </summary>
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public Lazy<Regex?> ZoneRegex { get; private set; }
+    public Lazy<IRegex?> ZoneRegex { get; private set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the node is enabled.
@@ -125,32 +127,32 @@ public sealed class TextEntryNode : Node
     [MemberNotNull(nameof(TextRegex))]
     private void UpdateTextRegex()
         => this.TextRegex = this.IsTextRegex
-            ? new Lazy<Regex?>(() =>
+            ? new Lazy<IRegex?>(() =>
             {
                 try
                 {
-                    return new Regex(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return new RegexWrapper(this.Text.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 }
                 catch
                 {
                     return null;
                 }
             })
-            : new Lazy<Regex?>();
+            : new Lazy<IRegex?>();
 
     [MemberNotNull(nameof(ZoneRegex))]
     private void UpdateZoneRegex()
         => this.ZoneRegex = this.ZoneIsRegex
-            ? new Lazy<Regex?>(() =>
+            ? new Lazy<IRegex?>(() =>
             {
                 try
                 {
-                    return new Regex(this.ZoneText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    return new RegexWrapper(this.ZoneText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 }
                 catch
                 {
                     return null;
                 }
             })
-            : new Lazy<Regex?>();
+            : new Lazy<IRegex?>();
 }
