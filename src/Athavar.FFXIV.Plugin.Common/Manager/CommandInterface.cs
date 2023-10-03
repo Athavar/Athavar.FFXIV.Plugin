@@ -47,7 +47,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
+        var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Action;
         return ActionManager.Instance()->GetActionStatus(actionType, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
@@ -59,7 +59,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Spell;
+        var actionType = actionId >= 100000U ? ActionType.CraftAction : ActionType.Action;
         return this.CanUseAction(actionId) && ActionManager.Instance()->UseAction(actionType, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
@@ -71,7 +71,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        return ActionManager.Instance()->GetActionStatus(ActionType.General, actionId, Constants.PlayerId, true, true, null) == 0U;
+        return ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
     /// <inheritdoc/>
@@ -82,7 +82,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        return this.CanUseGeneralAction(actionId) && ActionManager.Instance()->UseAction(ActionType.General, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
+        return this.CanUseGeneralAction(actionId) && ActionManager.Instance()->UseAction(ActionType.GeneralAction, actionId, Constants.PlayerId, 0U, 0U, 0U, null);
     }
 
     public bool IsTargetInReach(string targetName) => this.IsTargetInReach(targetName, null);
@@ -131,7 +131,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return true;
     }
 
-    private bool IsObjectInReach(GameObject gameObject, Vector3? playerPosition = null)
+    private bool IsObjectInReach(GameObject gameObject, Vector3? playerPosition = null, float distance = 10f)
     {
         playerPosition ??= this.dalamudServices.ClientState.LocalPlayer?.Position;
         if (playerPosition is null)
@@ -139,7 +139,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        return Vector3.Distance(playerPosition.Value, gameObject.Position) < 10f;
+        return Vector3.Distance(playerPosition.Value, gameObject.Position) < distance;
     }
 
     private GameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)

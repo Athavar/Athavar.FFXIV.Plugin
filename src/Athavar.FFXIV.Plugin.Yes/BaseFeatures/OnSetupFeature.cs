@@ -49,8 +49,8 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <inheritdoc/>
     public void Dispose()
     {
-        this.onSetupHook?.Disable();
-        this.onSetupHook?.Dispose();
+        this.onSetupHook.Disable();
+        this.onSetupHook.Dispose();
     }
 
     /// <summary>

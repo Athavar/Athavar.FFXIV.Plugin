@@ -176,7 +176,7 @@ internal sealed partial class NetworkHandler : IDisposable
             this.DumpActionEffect(header, effects, targetIds, maxTargets, targetPos);
         }
 
-        if ((byte)header->effectDisplayType == (byte)ActionType.Spell)
+        if ((byte)header->effectDisplayType == (byte)ActionType.Action)
         {
             var newDelta = (int)header->actionId - header->actionAnimationId;
             if (this.unkDelta != newDelta)
@@ -187,10 +187,10 @@ internal sealed partial class NetworkHandler : IDisposable
         }
 
         var actionType = (byte)header->effectDisplayType != (byte)ActionType.Mount
-            ? (byte)header->effectDisplayType != (byte)ActionType.Item ? ActionType.Spell : ActionType.Item
+            ? (byte)header->effectDisplayType != (byte)ActionType.Item ? ActionType.Action : ActionType.Item
             : ActionType.Mount;
 
-        var actionId = actionType == ActionType.Spell ? header->actionAnimationId : header->actionId;
+        var actionId = actionType == ActionType.Action ? header->actionAnimationId : header->actionId;
 
         var actionEffects = new List<CombatEvent.ActionEffectEvent>();
 
@@ -314,7 +314,7 @@ internal sealed partial class NetworkHandler : IDisposable
         var action = new ActionId(p->ActionType, p->SpellId);
         if (this.Debug)
         {
-            this.Log($"[Network] - AID={action} ({new ActionId(ActionType.Spell, p->SpellId)}), target={this.utils.ObjectString(p->TargetID)}, time={p->CastTime:f2} ({p->BaseCastTime100ms * 0.1f:f1}), rot={IntToFloatAngle(p->Rotation)}, targetpos={this.utils.Vec3String(IntToFloatCoords(p->PosX, p->PosY, p->PosZ))}, interruptible={p->Interruptible}, u1={p->U1:X2}, u2={this.utils.ObjectString(p->U2ObjID)}, u3={p->U3:X4}");
+            this.Log($"[Network] - AID={action} ({new ActionId(ActionType.Action, p->SpellId)}), target={this.utils.ObjectString(p->TargetID)}, time={p->CastTime:f2} ({p->BaseCastTime100ms * 0.1f:f1}), rot={IntToFloatAngle(p->Rotation)}, targetpos={this.utils.Vec3String(IntToFloatCoords(p->PosX, p->PosY, p->PosZ))}, interruptible={p->Interruptible}, u1={p->U1:X2}, u2={this.utils.ObjectString(p->U2ObjID)}, u3={p->U3:X4}");
         }
 
         this.EventActorCast?.Invoke(this, (actorId, action, p->CastTime, p->TargetID));

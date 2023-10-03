@@ -46,7 +46,7 @@ internal sealed class MacroModule : Module<MacroConfigTab, MacroConfiguration>
         this.dalamudServices = provider.GetRequiredService<IDalamudServices>();
         this.chatManager = provider.GetRequiredService<IChatManager>();
 
-        this.dalamudServices.PluginLogger.Information("MMEntries: {0}", configuration.GetAllNodes().Count());
+        this.dalamudServices.PluginLogger.Debug("MMEntries: {0}", configuration.GetAllNodes().Count());
 
         this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
         {

@@ -48,8 +48,8 @@ internal abstract class UpdateFeature : IBaseFeature
     /// <inheritdoc/>
     public void Dispose()
     {
-        this.updateHook?.Disable();
-        this.updateHook?.Dispose();
+        this.updateHook.Disable();
+        this.updateHook.Dispose();
     }
 
     /// <summary>
