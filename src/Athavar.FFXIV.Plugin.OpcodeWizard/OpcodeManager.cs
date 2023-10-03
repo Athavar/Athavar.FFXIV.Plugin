@@ -5,22 +5,26 @@
 
 namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Logging;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Dalamud.Networking.Http;
 using Machina.FFXIV;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {
+    private readonly IPluginLogger logger;
     private readonly OpcodeWizardConfiguration configuration;
     private readonly IDefinitionManager definitionManager;
 
     private readonly Dictionary<ushort, Opcode> opcodes = new();
 
-    public OpcodeManager(OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
+    public OpcodeManager(IPluginLogger logger, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
     {
+        this.logger = logger;
         this.configuration = configuration;
         this.definitionManager = definitionManager;
         _ = this.Populate();
@@ -74,7 +78,14 @@ internal sealed class OpcodeManager : IOpcodeManager
         {
             try
             {
-                var updateConfigString = await Dalamud.Utility.Util.HttpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
+                using var happyEyeballsCallback = new HappyEyeballsCallback();
+                using var httpClient = new HttpClient(new SocketsHttpHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.All,
+                    ConnectCallback = happyEyeballsCallback.ConnectCallback,
+                });
+
+                var updateConfigString = await httpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
                 var updateConfig = JsonSerializer.Deserialize<UpdateConfig>(updateConfigString);
                 if (updateConfig?.GameVersion == this.configuration.GameVersion)
                 {
@@ -84,7 +95,7 @@ internal sealed class OpcodeManager : IOpcodeManager
                         Add(key, value);
                     }
 
-                    PluginLog.LogInformation("Opcodes updated from Remote");
+                    this.logger.Information("Opcodes updated from Remote");
 
                     this.configuration.RemoteUpdate = true;
                     this.configuration.Save();
@@ -92,7 +103,7 @@ internal sealed class OpcodeManager : IOpcodeManager
             }
             catch (Exception ex)
             {
-                PluginLog.LogError(ex, "Fail to update Opcodes from Remote");
+                this.logger.Error(ex, "Fail to update Opcodes from Remote");
             }
         }
 

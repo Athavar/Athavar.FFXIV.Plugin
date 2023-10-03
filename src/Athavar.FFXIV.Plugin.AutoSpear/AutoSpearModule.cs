@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.Common;
-using Dalamud.Logging;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(AutoSpearConfiguration), HasTab = true)]
@@ -20,11 +20,12 @@ internal sealed class AutoSpearModule : Module<AutoSpear, AutoSpearConfiguration
     /// </summary>
     /// <param name="configuration"><see cref="AutoSpearConfiguration"/> added by DI.</param>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
-    public AutoSpearModule(AutoSpearConfiguration configuration, IServiceProvider provider)
+    /// <param name="log"><see cref="IPluginLogger"/> added by DI.</param>
+    public AutoSpearModule(AutoSpearConfiguration configuration, IServiceProvider provider, IPluginLogger log)
         : base(configuration)
     {
         this.provider = provider;
-        PluginLog.LogDebug("Module 'AutoSpear' init");
+        log.Debug("Module 'AutoSpear' init");
     }
 
     /// <inheritdoc/>

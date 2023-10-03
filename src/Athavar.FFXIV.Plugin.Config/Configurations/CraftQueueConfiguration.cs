@@ -3,6 +3,7 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -10,11 +11,11 @@ using System.Text.Json.Serialization;
 public sealed class CraftQueueConfiguration : BasicModuleConfig<CraftQueueConfiguration>
 {
     /// <summary>
-    ///     Gets the root folder.
+    ///     Gets or sets the root folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("RootFolder")]
-    public FolderNode RootFolder { get; init; } = new() { Name = "/" };
+    public FolderNode RootFolder { get; set; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets a value indicating whether to wait after a craft actions.

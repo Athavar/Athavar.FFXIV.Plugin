@@ -2,22 +2,23 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
 internal sealed class StatsTab : Tab
 {
     private readonly IGearsetManager gearsetManager;
-    private readonly DataManager dataManager;
+    private readonly IDataManager dataManager;
 
-    public StatsTab(IGearsetManager gearsetManager, DataManager dataManager)
+    public StatsTab(IGearsetManager gearsetManager, IDataManager dataManager)
     {
         this.gearsetManager = gearsetManager;
         this.dataManager = dataManager;

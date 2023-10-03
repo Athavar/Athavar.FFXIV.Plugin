@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /wait command.
@@ -19,7 +18,7 @@ internal class WaitCommand : MacroCommand
     private static readonly Regex Regex = new(@"^/wait\s+(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="WaitCommand" /> class.
+    ///     Initializes a new instance of the <see cref="WaitCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="wait">Wait value.</param>
@@ -58,10 +57,10 @@ internal class WaitCommand : MacroCommand
         return new WaitCommand(text, wait, until);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         await this.PerformWait(token);
     }

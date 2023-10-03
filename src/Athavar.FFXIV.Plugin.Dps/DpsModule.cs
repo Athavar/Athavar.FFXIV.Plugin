@@ -9,7 +9,6 @@ using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
-using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration), HasTab = true)]
@@ -38,7 +37,7 @@ internal sealed class DpsModule : Module<DpsTab, DpsConfiguration>
     {
         base.Dispose();
         this.meterManager?.Dispose();
-        PluginLog.LogVerbose("Dispose Dps");
+        this.services.PluginLogger.Verbose("Dispose Dps");
     }
 
     /// <inheritdoc/>

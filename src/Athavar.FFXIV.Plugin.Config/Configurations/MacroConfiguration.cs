@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -14,11 +15,11 @@ using System.Text.Json.Serialization;
 public sealed class MacroConfiguration : BasicModuleConfig<MacroConfiguration>
 {
     /// <summary>
-    ///     Gets the root folder.
+    ///     Gets or sets the root folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("RootFolder")]
-    public FolderNode RootFolder { get; init; } = new() { Name = "/" };
+    public FolderNode RootFolder { get; set; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets a value indicating whether to skip craft actions when not crafting.

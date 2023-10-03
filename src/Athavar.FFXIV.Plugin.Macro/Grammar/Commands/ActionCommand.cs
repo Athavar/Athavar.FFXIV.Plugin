@@ -11,7 +11,6 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -80,22 +79,22 @@ internal class ActionCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         if (IsCraftingAction(this.actionName))
         {
-            if (Configuration.CraftSkip)
+            if (this.Configuration.CraftSkip)
             {
-                if (CommandInterface.IsNotCrafting())
+                if (this.CommandInterface.IsNotCrafting())
                 {
-                    PluginLog.Debug($"Not crafting skip: {this.Text}");
+                    this.Logger.Debug($"Not crafting skip: {this.Text}");
                     await Task.Delay(10, token);
                     return;
                 }
 
-                if (CommandInterface.HasMaxProgress())
+                if (this.CommandInterface.HasMaxProgress())
                 {
-                    PluginLog.Debug($"Max progress skip: {this.Text}");
+                    this.Logger.Debug($"Max progress skip: {this.Text}");
                     await Task.Delay(10, token);
                     return;
                 }
@@ -103,21 +102,21 @@ internal class ActionCommand : MacroCommand
 
             if (!this.conditionMod.HasCondition())
             {
-                PluginLog.Debug($"Condition skip: {this.Text}");
+                this.Logger.Debug($"Condition skip: {this.Text}");
                 return;
             }
 
-            if (Configuration.QualitySkip && IsSkippableCraftingQualityAction(this.actionName) && CommandInterface.HasMaxQuality())
+            if (this.Configuration.QualitySkip && IsSkippableCraftingQualityAction(this.actionName) && this.CommandInterface.HasMaxQuality())
             {
-                PluginLog.Debug($"Max quality skip: {this.Text}");
+                this.Logger.Debug($"Max quality skip: {this.Text}");
                 return;
             }
 
             const int delayWait = 500;
 
-            ChatManager.SendMessage($"/ac \"{this.actionName}\"");
+            this.ChatManager.SendMessage($"/ac \"{this.actionName}\"");
 
-            if (!Configuration.CraftWaitSkip && (this.Wait != 0 || this.WaitUntil != 0))
+            if (!this.Configuration.CraftWaitSkip && (this.Wait != 0 || this.WaitUntil != 0))
             {
                 await this.PerformWait(token);
             }
@@ -134,7 +133,7 @@ internal class ActionCommand : MacroCommand
         }
         else
         {
-            ChatManager.SendMessage(this.Text);
+            this.ChatManager.SendMessage(this.Text);
 
             await this.PerformWait(token);
         }

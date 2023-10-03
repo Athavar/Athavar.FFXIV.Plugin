@@ -2,10 +2,10 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
@@ -20,7 +20,7 @@ internal sealed partial class CommandInterface
         InventoryType.Crystals,
     };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool CanUseItem(uint itemId, bool hq = false)
     {
         if (!this.IsLoggedIn())
@@ -32,7 +32,7 @@ internal sealed partial class CommandInterface
         return ActionManager.Instance()->GetActionStatus(ActionType.Item, actionId, Constants.PlayerId, true, true, null) == 0U;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool UseItem(uint itemId, bool hq = false)
     {
         if (!this.IsLoggedIn())
@@ -44,7 +44,7 @@ internal sealed partial class CommandInterface
         return this.CanUseItem(itemId, hq) && ActionManager.Instance()->UseAction(ActionType.Item, actionId, Constants.PlayerId, ushort.MaxValue, 0U, 0U, null);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe uint CountItem(uint itemId, bool hq = false)
     {
         if (!this.IsLoggedIn())
@@ -53,16 +53,15 @@ internal sealed partial class CommandInterface
         }
 
         var num = 0;
-        for (var index = 0; index < this.playerInventories.Length; index++)
+        foreach (var playerInventory in this.playerInventories)
         {
-            var playerInventory = this.playerInventories[index];
             num += InventoryManager.Instance()->GetItemCountInContainer(itemId, playerInventory, hq);
         }
 
         return (uint)num;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe uint FreeInventorySlots()
     {
         if (!this.IsLoggedIn())
@@ -87,7 +86,7 @@ internal sealed partial class CommandInterface
         return (uint)num;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool NeedsRepair()
     {
         if (!this.IsLoggedIn())
@@ -98,20 +97,20 @@ internal sealed partial class CommandInterface
         var im = InventoryManager.Instance();
         if (im == null)
         {
-            PluginLog.Error("InventoryManager was null");
+            this.logger.Error("InventoryManager was null");
             return false;
         }
 
         var equipped = im->GetInventoryContainer(InventoryType.EquippedItems);
         if (equipped == null)
         {
-            PluginLog.Error("InventoryContainer was null");
+            this.logger.Error("InventoryContainer was null");
             return false;
         }
 
         if (equipped->Loaded == 0)
         {
-            PluginLog.Error("InventoryContainer is not loaded");
+            this.logger.Error("InventoryContainer is not loaded");
             return false;
         }
 
@@ -132,7 +131,7 @@ internal sealed partial class CommandInterface
         return false;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool CanExtractMateria(float within = 100)
     {
         if (!this.IsLoggedIn())
@@ -143,20 +142,20 @@ internal sealed partial class CommandInterface
         var im = InventoryManager.Instance();
         if (im == null)
         {
-            PluginLog.Error("InventoryManager was null");
+            this.logger.Error("InventoryManager was null");
             return false;
         }
 
         var equipped = im->GetInventoryContainer(InventoryType.EquippedItems);
         if (equipped == null)
         {
-            PluginLog.Error("InventoryContainer was null");
+            this.logger.Error("InventoryContainer was null");
             return false;
         }
 
         if (equipped->Loaded == 0)
         {
-            PluginLog.Error("InventoryContainer is not loaded");
+            this.logger.Error("InventoryContainer is not loaded");
             return false;
         }
 
@@ -185,7 +184,7 @@ internal sealed partial class CommandInterface
 
         if (allExtract)
         {
-            PluginLog.Debug("All items are spiritbound, pausing");
+            this.logger.Debug("All items are spiritbound, pausing");
             return true;
         }
 
@@ -194,7 +193,7 @@ internal sealed partial class CommandInterface
             // Don't wait, extract immediately
             if (within == 100)
             {
-                PluginLog.Debug("An item is spiritbound, pausing");
+                this.logger.Debug("An item is spiritbound, pausing");
                 return true;
             }
 
@@ -202,18 +201,18 @@ internal sealed partial class CommandInterface
             // i.e. 100 and 99, do another craft to finish the 99.
             if (nextHighest >= within)
             {
-                PluginLog.Debug($"The next highest spiritbond is above ({nextHighest} >= {within}), keep going");
+                this.logger.Debug($"The next highest spiritbond is above ({nextHighest} >= {within}), keep going");
                 return false;
             }
 
-            PluginLog.Debug($"The next highest spiritbond is below ({nextHighest} < {within}), pausing");
+            this.logger.Debug($"The next highest spiritbond is below ({nextHighest} < {within}), pausing");
             return true;
         }
 
         return false;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool HasStats(uint craftsmanship, uint control, uint cp)
     {
         if (!this.IsLoggedIn())
@@ -224,7 +223,7 @@ internal sealed partial class CommandInterface
         var uiState = UIState.Instance();
         if (uiState == null)
         {
-            PluginLog.Error("UIState is null");
+            this.logger.Error("UIState is null");
             return false;
         }
 

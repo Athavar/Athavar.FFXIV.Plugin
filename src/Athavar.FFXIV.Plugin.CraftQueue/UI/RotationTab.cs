@@ -2,23 +2,27 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
+using System.Numerics;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
-using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Common.Math;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 internal sealed class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
+    private readonly IPluginLogger logger;
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
     private readonly ICraftDataManager craftDataManager;
@@ -29,8 +33,9 @@ internal sealed class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
+    public RotationTab(IPluginLogger logger, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
     {
+        this.logger = logger;
         this.Configuration = configuration;
         this.chatManager = chatManager;
         this.iconManager = iconManager;
@@ -96,8 +101,8 @@ internal sealed class RotationTab : Tab
 
                 var action = rotations[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(action);
-                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], false);
-                ImGui.Image(tex!.ImGuiHandle, new System.Numerics.Vector2(tex.Height, tex.Width));
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], ITextureProvider.IconFlags.None);
+                ImGui.Image(tex!.ImGuiHandle, new Vector2(tex.Height, tex.Width));
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
@@ -165,7 +170,7 @@ internal sealed class RotationTab : Tab
             {
                 text = string.Empty;
                 this.chatManager.PrintErrorMessage("[Macro] Could not import from clipboard.");
-                PluginLog.Error(ex, "Clipboard import error");
+                this.logger.Error(ex, "Clipboard import error");
             }
 
             // Replace \r with \r\n, usually from copy/pasting from the in-game macro window

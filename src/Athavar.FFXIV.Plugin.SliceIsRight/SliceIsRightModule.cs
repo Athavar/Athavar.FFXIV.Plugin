@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Interface;
+using Dalamud.Interface.Utility;
 using ImGuiNET;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(SliceIsRightConfiguration))]
@@ -79,7 +79,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         }
     }
 
-    private void TerritoryChanged(object? sender, ushort e)
+    private void TerritoryChanged(ushort e)
     {
         var oldState = this.IsInGoldSaucer;
         this.IsInGoldSaucer = e == GoldSaucerTerritoryId;

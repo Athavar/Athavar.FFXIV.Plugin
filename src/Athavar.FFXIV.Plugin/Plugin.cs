@@ -77,6 +77,7 @@ public sealed class Plugin : IDalamudPlugin
                 if (this.pluginInterface.ConfigFile.Exists)
                 {
                     // migrate old configuration
+                    // TODO: replace static PluginLog
                     PluginLog.LogInformation("Start the migrate of the configuration");
                     Configuration.Migrate(this.pluginInterface);
                     PluginLog.LogInformation("Finish the migrate of the configuration");

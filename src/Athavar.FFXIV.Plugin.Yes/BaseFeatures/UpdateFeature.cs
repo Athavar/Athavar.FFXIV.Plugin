@@ -5,9 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
-using Dalamud.Game;
 using Dalamud.Hooking;
-using Dalamud.Logging;
 
 /// <summary>
 ///     An abstract that hooks Update to provide a feature.
@@ -21,13 +19,11 @@ internal abstract class UpdateFeature : IBaseFeature
     ///     Initializes a new instance of the <see cref="UpdateFeature"/> class.
     /// </summary>
     /// <param name="updateSig">Signature to the Update method.</param>
-    /// <param name="scanner"><see cref="SigScanner"/> to scan after signature in memory.</param>
     /// <param name="module">The module.</param>
     public UpdateFeature(string updateSig, YesModule module)
     {
         this.module = module;
-        this.HookAddress = module.DalamudServices.SigScanner.ScanText(updateSig);
-        this.updateHook = Hook<UpdateDelegate>.FromAddress(this.HookAddress, this.UpdateDetour);
+        this.updateHook = module.DalamudServices.GameInteropProvider.HookFromSignature(updateSig, (UpdateDelegate)this.UpdateDetour);
         this.updateHook.Enable();
     }
 
@@ -49,16 +45,11 @@ internal abstract class UpdateFeature : IBaseFeature
     /// </summary>
     protected abstract string AddonName { get; }
 
-    /// <summary>
-    ///     Gets the address of the addon Update function.
-    /// </summary>
-    protected nint HookAddress { get; }
-
     /// <inheritdoc/>
     public void Dispose()
     {
-        this.updateHook?.Disable();
-        this.updateHook?.Dispose();
+        this.updateHook.Disable();
+        this.updateHook.Dispose();
     }
 
     /// <summary>
@@ -72,7 +63,7 @@ internal abstract class UpdateFeature : IBaseFeature
     private void UpdateDetour(nint addon, nint a2, nint a3)
     {
         // Update is noisy, dont echo here.
-        // PluginLog.Debug($"Addon{this.AddonName}.Update");
+        // this.module.Logger.Debug($"Addon{this.AddonName}.Update");
         this.updateHook.Original(addon, a2, a3);
 
         if (!this.Configuration.ModuleEnabled || this.module.DisableKeyPressed)
@@ -91,7 +82,7 @@ internal abstract class UpdateFeature : IBaseFeature
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Don't crash the game");
+            this.module.Logger.Error(ex, "Don't crash the game");
         }
     }
 }

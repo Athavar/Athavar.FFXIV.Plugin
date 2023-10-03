@@ -10,7 +10,6 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 
 /// <summary>
@@ -73,8 +72,8 @@ internal class RequireCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
-        bool IsStatusPresent() => CommandInterface.HasStatusId(this.statusIDs);
+        this.Logger.Debug($"Executing: {this.Text}");
+        bool IsStatusPresent() => this.CommandInterface.HasStatusId(this.statusIDs);
 
         var hasStatus = await this.LinearWait(StatusCheckInterval, this.maxWait, IsStatusPresent, token);
 

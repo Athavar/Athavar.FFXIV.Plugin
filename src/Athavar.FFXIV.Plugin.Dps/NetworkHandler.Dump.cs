@@ -2,13 +2,13 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Machina.FFXIV.Headers;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
@@ -227,7 +227,7 @@ internal sealed partial class NetworkHandler
         }
     }
 
-    private void Log(string messageTemplate, params object[] values) => PluginLog.LogInformation(messageTemplate, values);
+    private void Log(string messageTemplate, params object[] values) => this.logger.Information(messageTemplate, values);
 
     private unsafe void DumpActionEffect(Server_ActionEffectHeader* data, ActionEffect* effects, ulong* targetIDs, uint maxTargets, Vector3 targetPos)
     {

@@ -66,7 +66,7 @@ internal sealed unsafe class EquipmentScanner : IDisposable
     /// <inheritdoc />
     public void Dispose() => this.dalamudServices.ClientState.Login -= this.ClientStateOnOnLogin;
 
-    private void ClientStateOnOnLogin(object? sender, EventArgs e) => this.Setup();
+    private void ClientStateOnOnLogin() => this.Setup();
 
     private void Setup()
     {

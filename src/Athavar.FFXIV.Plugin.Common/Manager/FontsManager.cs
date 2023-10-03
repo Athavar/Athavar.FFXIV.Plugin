@@ -2,13 +2,14 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Interface;
-using Dalamud.Logging;
 using ImGuiNET;
 
 public class FontsManager : IDisposable, IFontsManager
@@ -18,12 +19,15 @@ public class FontsManager : IDisposable, IFontsManager
     private static FontsManager? instance;
     private static UiBuilder? uiBuilder;
     private static string userFontPath = string.Empty;
+
+    private readonly IPluginLogger logger;
     private readonly Dictionary<string, ImFontPtr> imGuiFonts;
     private IEnumerable<IFontsManager.FontData> fontData;
     private string[] fontList;
 
     public FontsManager(IDalamudServices services, IEnumerable<IFontsManager.FontData> fonts)
     {
+        this.logger = services.PluginLogger;
         instance = this;
         this.fontData = fonts;
         this.fontList = new[] { Constants.FontsManager.DalamudFontKey };
@@ -72,64 +76,6 @@ public class FontsManager : IDisposable, IFontsManager
         return key;
     }
 
-    public static void CopyPluginFontsToUserPath()
-    {
-        var pluginFontPath = GetPluginFontPath();
-        var userFontPath = GetUserFontPath();
-
-        if (string.IsNullOrEmpty(pluginFontPath) || string.IsNullOrEmpty(userFontPath))
-        {
-            return;
-        }
-
-        if (!Directory.Exists(userFontPath))
-        {
-            try
-            {
-                Directory.CreateDirectory(userFontPath);
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Warning($"Failed to create User Font Directory {ex}");
-            }
-        }
-
-        if (!Directory.Exists(userFontPath))
-        {
-            return;
-        }
-
-        string[] pluginFonts;
-        try
-        {
-            pluginFonts = Directory.GetFiles(pluginFontPath, "*.ttf");
-        }
-        catch
-        {
-            pluginFonts = new string[0];
-        }
-
-        foreach (var font in pluginFonts)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(font))
-                {
-                    var fileName = font.Replace(pluginFontPath, string.Empty);
-                    var copyPath = Path.Combine(userFontPath, fileName);
-                    if (!File.Exists(copyPath))
-                    {
-                        File.Copy(font, copyPath, false);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                PluginLog.Warning($"Failed to copy font {font} to User Font Directory: {ex}");
-            }
-        }
-    }
-
     public static string GetPluginFontPath()
     {
         var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -148,7 +94,7 @@ public class FontsManager : IDisposable, IFontsManager
     {
         if (string.IsNullOrEmpty(path))
         {
-            return new string[0];
+            return Array.Empty<string>();
         }
 
         string[] fonts;
@@ -158,7 +104,7 @@ public class FontsManager : IDisposable, IFontsManager
         }
         catch
         {
-            fonts = new string[0];
+            fonts = Array.Empty<string>();
         }
 
         return fonts
@@ -166,6 +112,64 @@ public class FontsManager : IDisposable, IFontsManager
                .Replace(path, string.Empty)
                .Replace(".ttf", string.Empty, StringComparison.OrdinalIgnoreCase))
            .ToArray();
+    }
+
+    public void CopyPluginFontsToUserPath()
+    {
+        var pluginFontPath = GetPluginFontPath();
+        var userFontPath = GetUserFontPath();
+
+        if (string.IsNullOrEmpty(pluginFontPath) || string.IsNullOrEmpty(userFontPath))
+        {
+            return;
+        }
+
+        if (!Directory.Exists(userFontPath))
+        {
+            try
+            {
+                Directory.CreateDirectory(userFontPath);
+            }
+            catch (Exception ex)
+            {
+                this.logger.Warning($"Failed to create User Font Directory {ex}");
+            }
+        }
+
+        if (!Directory.Exists(userFontPath))
+        {
+            return;
+        }
+
+        string[] pluginFonts;
+        try
+        {
+            pluginFonts = Directory.GetFiles(pluginFontPath, "*.ttf");
+        }
+        catch
+        {
+            pluginFonts = Array.Empty<string>();
+        }
+
+        foreach (var font in pluginFonts)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(font))
+                {
+                    var fileName = font.Replace(pluginFontPath, string.Empty);
+                    var copyPath = Path.Combine(userFontPath, fileName);
+                    if (!File.Exists(copyPath))
+                    {
+                        File.Copy(font, copyPath, false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.Warning($"Failed to copy font {font} to User Font Directory: {ex}");
+            }
+        }
     }
 
     public void BuildFonts()
@@ -200,8 +204,8 @@ public class FontsManager : IDisposable, IFontsManager
             }
             catch (Exception ex)
             {
-                PluginLog.Error($"Failed to load font from path [{fontPath}]!");
-                PluginLog.Error(ex.ToString());
+                this.logger.Error($"Failed to load font from path [{fontPath}]!");
+                this.logger.Error(ex.ToString());
             }
         }
 

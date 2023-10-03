@@ -57,7 +57,7 @@ internal static class RecipeExtensions
             recipe.RequiredCraftsmanship,
             recipe.RequiredControl,
             recipe.RequiredQuality,
-            Enum.GetValues<StepState>().Where(f => (f & (StepState)lvlTable.ConditionsFlag) == f).ToArray(),
+            Enum.GetValues<StepState>().Where(f => f != StepState.NONE).Where(f => (f & (StepState)lvlTable.ConditionsFlag) == f).ToArray(),
             ingredients)
         {
             ResultItemName = recipe.ItemResult.Value?.Name.ToDalamudString().ToString(),

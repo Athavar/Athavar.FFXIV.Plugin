@@ -2,11 +2,11 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Cheat.List;
 
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 
 /// <summary>
@@ -62,7 +62,7 @@ internal class EnablePeepingTomPvP : Cheat
         this.plugin = null;
     }
 
-    public override void OnTerritoryChange(object? sender, ushort e)
+    public override void OnTerritoryChange(ushort e)
         => Task.Run(() =>
         {
             try
@@ -72,7 +72,7 @@ internal class EnablePeepingTomPvP : Cheat
             }
             catch (KeyNotFoundException)
             {
-                PluginLog.Warning("Could not get territory for current zone");
+                this.dalamudServices.PluginLogger.Warning("Could not get territory for current zone");
             }
         });
 }

@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common.UI;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using ImGuiNET;
 
 /// <summary>
@@ -14,6 +15,7 @@ using ImGuiNET;
 /// </summary>
 public sealed class TabBarHandler
 {
+    private readonly IPluginLogger logger;
     private readonly List<TabDefinition> tabs = new();
     private readonly string name;
     private readonly object lockObject = new();
@@ -24,8 +26,13 @@ public sealed class TabBarHandler
     /// <summary>
     ///     Initializes a new instance of the <see cref="TabBarHandler"/> class.
     /// </summary>
+    /// <param name="logger"><see cref="IPluginLogger"/> to log events.</param>
     /// <param name="name">The name of the <see cref="TabBarHandler"/>.</param>
-    public TabBarHandler(string name) => this.name = $"##{name}";
+    public TabBarHandler(IPluginLogger logger, string name)
+    {
+        this.logger = logger;
+        this.name = $"##{name}";
+    }
 
     /// <summary>
     ///     Add a tab.
@@ -48,6 +55,14 @@ public sealed class TabBarHandler
     public string GetTabTitle() => this.lastSelectedTabTitle;
 
     public void SelectTab(string identifier) => this.selectTabIdentifier = identifier;
+
+    public void Sort(int index)
+    {
+        lock (this.lockObject)
+        {
+            this.tabs.Sort(index, this.tabs.Count - index, null);
+        }
+    }
 
     /// <summary>
     ///     Remove a tab.
@@ -101,7 +116,7 @@ public sealed class TabBarHandler
 
                 ImGui.PushID(tab.Identifier);
 
-                AthavarPluginException.CatchCrash(() => tab.Tab.Draw());
+                AthavarPluginException.CatchCrash(this.logger, () => tab.Tab.Draw());
 
                 ImGui.PopID();
 
@@ -112,5 +127,36 @@ public sealed class TabBarHandler
         }
     }
 
-    private record TabDefinition(ITab Tab, string Title, string Identifier);
+    private record TabDefinition(ITab Tab, string Title, string Identifier) : IComparable<TabDefinition>, IComparable
+    {
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return 0;
+            }
+
+            return obj is TabDefinition other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(TabDefinition)}");
+        }
+
+        public int CompareTo(TabDefinition? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            return string.Compare(this.Identifier, other.Identifier, StringComparison.Ordinal);
+        }
+    }
 }

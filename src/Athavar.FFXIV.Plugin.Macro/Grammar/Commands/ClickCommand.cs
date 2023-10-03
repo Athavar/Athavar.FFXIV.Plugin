@@ -11,7 +11,6 @@ using Athavar.FFXIV.Plugin.Click.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -62,7 +61,7 @@ internal class ClickCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         try
         {
@@ -74,7 +73,7 @@ internal class ClickCommand : MacroCommand
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Unexpected click error");
+            this.Logger.Error(ex, "Unexpected click error");
             throw new MacroCommandError("Unexpected click error", ex);
         }
 

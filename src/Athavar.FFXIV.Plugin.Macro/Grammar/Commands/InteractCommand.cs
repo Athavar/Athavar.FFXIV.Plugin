@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 [MacroCommand("interact", null, "Interact with new nearest selectable target with the given name.", new[] { "wait" }, new[] { "/interact Summoning Bell" }, RequireLogin = true)]
 internal class InteractCommand : MacroCommand
@@ -45,14 +44,14 @@ internal class InteractCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        if (!CommandInterface.IsTargetInReach(this.targetName))
+        if (!this.CommandInterface.IsTargetInReach(this.targetName))
         {
             throw new MacroCommandError($"Could not find target {this.targetName} in interaction range");
         }
 
-        if (!CommandInterface.InteractWithTarget(this.targetName))
+        if (!this.CommandInterface.InteractWithTarget(this.targetName))
         {
             throw new MacroCommandError($"Fail to interact with target {this.targetName}");
         }

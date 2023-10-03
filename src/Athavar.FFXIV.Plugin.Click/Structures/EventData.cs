@@ -19,7 +19,6 @@ public sealed unsafe class EventData : SharedBuffer
         var d = stackalloc byte[size];
         this.Data = (void**)Buffer.Add(d, size);
 
-
         if (this.Data == null)
         {
             throw new ArgumentNullException(null, "EventData could not be created, null");

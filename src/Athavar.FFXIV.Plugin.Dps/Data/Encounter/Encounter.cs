@@ -2,20 +2,21 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
-using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 
 internal sealed class Encounter : BaseEncounter<Combatant>
 {
-    internal static ObjectTable? ObjectTable;
+    internal static IObjectTable? ObjectTable;
 
     private readonly Dictionary<uint, Combatant> combatantMapping = new();
 

@@ -22,12 +22,12 @@ public static class DependencyInjection
            .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<IChatManager, ChatManager>()
            .AddSingleton<EquipmentScanner>()
-           .AddSingleton<KeyStateExtended>()
            .AddSingleton<IDefinitionManager, DefinitionManager>()
            .AddSingleton<IFontsManager, FontsManager>()
            .AddSingleton<IIpcManager, IpcManager>()
            .AddSingleton<IFrameworkManager, FrameworkManager>()
-           .AddSingleton<ICommandInterface, CommandInterface>();
+           .AddSingleton<ICommandInterface, CommandInterface>()
+           .AddSingleton(o => o.GetRequiredService<IDalamudServices>().PluginLogger);
         CommonConfiguration.AddToDependencyInjection(services);
 
         return services;

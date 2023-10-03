@@ -6,7 +6,6 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     A command handled by the game.
@@ -14,7 +13,7 @@ using Dalamud.Logging;
 internal sealed class NativeCommand : MacroCommand
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="NativeCommand" /> class.
+    ///     Initializes a new instance of the <see cref="NativeCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="waitMod">Wait value.</param>
@@ -35,12 +34,12 @@ internal sealed class NativeCommand : MacroCommand
         return new NativeCommand(text, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        ChatManager.SendMessage(this.Text);
+        this.ChatManager.SendMessage(this.Text);
 
         await this.PerformWait(token);
     }

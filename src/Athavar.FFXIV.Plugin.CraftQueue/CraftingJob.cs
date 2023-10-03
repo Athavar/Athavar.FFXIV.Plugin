@@ -15,7 +15,6 @@ using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Logging;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
@@ -76,12 +75,6 @@ internal sealed class CraftingJob
         };
     }
 
-    public BuffInfo? Food { get; }
-
-    public BuffInfo? Potion { get; }
-
-    public string RotationName { get; }
-
     [Flags]
     private enum BuffApplyTest
     {
@@ -90,6 +83,12 @@ internal sealed class CraftingJob
         Potion = 2,
         Both = Food | Potion,
     }
+
+    public BuffInfo? Food { get; }
+
+    public BuffInfo? Potion { get; }
+
+    public string RotationName { get; }
 
     internal uint Loops { get; }
 
@@ -525,7 +524,7 @@ internal sealed class CraftingJob
         }
         catch (AthavarPluginException ex)
         {
-            PluginLog.LogError(ex, "Error while try to check HasMaxQuality");
+            this.queue.DalamudServices.PluginLogger.Error(ex, "Error while try to check HasMaxQuality");
             return -100;
         }
 

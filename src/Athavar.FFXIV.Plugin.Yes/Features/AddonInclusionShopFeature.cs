@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 using Athavar.FFXIV.Plugin.Click.Structures;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Hooking;
-using Dalamud.Logging;
 using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -21,23 +20,23 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     private readonly Hook<AgentReceiveEventDelegate> agentReceiveEventHook = null!;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature" /> class.
+    ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature"/> class.
     /// </summary>
-    /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonInclusionShopFeature(YesModule module)
         : base("85 D2 0F 8E ?? ?? ?? ?? 4C 8B DC 55 53 41 54", module)
     {
-        SignatureHelper.Initialise(this);
+        module.DalamudServices.GameInteropProvider.InitializeFromAttributes(this);
 
         this.agentReceiveEventHook.Enable();
     }
 
     private unsafe delegate nint AgentReceiveEventDelegate(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override string AddonName => "InclusionShop";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public new void Dispose()
     {
         this.agentReceiveEventHook.Disable();
@@ -45,7 +44,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
         base.Dispose();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
     {
         if (!this.Configuration.InclusionShopRememberEnabled)
@@ -55,11 +54,11 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 
         var unitbase = (AtkUnitBase*)addon;
 
-        PluginLog.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
+        this.module.Logger.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
         using var categoryValues = new AtkValueArray(12, this.Configuration.InclusionShopRememberCategory);
         unitbase->FireCallback(2, categoryValues);
 
-        PluginLog.Debug($"Firing 13,{this.Configuration.InclusionShopRememberSubcategory}");
+        this.module.Logger.Debug($"Firing 13,{this.Configuration.InclusionShopRememberSubcategory}");
         using var subcategoryValues = new AtkValueArray(13, this.Configuration.InclusionShopRememberSubcategory);
         unitbase->FireCallback(2, subcategoryValues);
     }
@@ -85,7 +84,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberCategory)
             {
-                PluginLog.Debug($"Remembring InclusionShop category: {val1}");
+                this.module.Logger.Debug($"Remembring InclusionShop category: {val1}");
                 this.Configuration.InclusionShopRememberCategory = val1;
                 this.Configuration.InclusionShopRememberSubcategory = 0;
                 this.Configuration.Save();
@@ -96,7 +95,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberSubcategory)
             {
-                PluginLog.Debug($"Remembring InclusionShop subcategory: {val1}");
+                this.module.Logger.Debug($"Remembring InclusionShop subcategory: {val1}");
                 this.Configuration.InclusionShopRememberSubcategory = val1;
                 this.Configuration.Save();
             }

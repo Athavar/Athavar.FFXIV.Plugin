@@ -5,9 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.UI;
 
-using System;
 using System.Reflection;
-using System.Threading.Tasks;
+using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Game.ClientState.Keys;
@@ -30,7 +29,8 @@ internal class MacroTabUi
         this.dalamudServices = dalamudServices;
         try
         {
-            var getRefValue = typeof(KeyState).GetMethod("GetRefValue", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new Exception("Method GetRefValue not found in class KeyState");
+            var type = Type.GetType("Dalamud.Game.ClientState.Keys.KeyState") ?? throw new AthavarPluginException("Fail to get KeyState");
+            var getRefValue = type.GetMethod("GetRefValue", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new Exception("Method GetRefValue not found in class KeyState");
             var localgetRefValue = typeof(MacroTabUi).GetField("GetRefValue", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new Exception("Method GetRefValue not found in class MacroTabUi");
             var del = Delegate.CreateDelegate(localgetRefValue.FieldType, dalamudServices.KeyState, getRefValue);
             localgetRefValue.SetValue(this, del);

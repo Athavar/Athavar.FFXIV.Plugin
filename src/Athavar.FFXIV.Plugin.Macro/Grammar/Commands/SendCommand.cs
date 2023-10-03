@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using static Common.Native;
 
 /// <summary>
@@ -66,7 +65,7 @@ internal class SendCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         var mWnd = Process.GetCurrentProcess().MainWindowHandle;
 

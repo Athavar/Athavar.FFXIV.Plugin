@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
@@ -75,7 +76,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         var levelArray = PlayerState.Instance()->ClassJobLevelArray;
         for (var i = 0; i < 100; ++i)
         {
-            var gearsetEntryPtr = instance->Gearset[i];
+            var gearsetEntryPtr = instance->GetGearset(i);
             if ((nint)gearsetEntryPtr == nint.Zero || gearsetEntryPtr->ClassJob == 0 || (gearsetEntryPtr->Flags & RaptureGearsetModule.GearsetFlag.Exists) == 0)
             {
                 continue;
@@ -98,7 +99,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->Ears);
             this.GetItemStats(ref stats, &gearsetEntryPtr->Neck);
             this.GetItemStats(ref stats, &gearsetEntryPtr->Wrists);
-            this.GetItemStats(ref stats, &gearsetEntryPtr->RightLeft);
+            this.GetItemStats(ref stats, &gearsetEntryPtr->RingLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
             this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID));
@@ -142,9 +143,9 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         return items;
     }
 
-    private void ClientStateOnLogin(object? sender, EventArgs e) => this.UpdateGearsets();
+    private void ClientStateOnLogin() => this.UpdateGearsets();
 
-    private void ClientStateOnLogout(object? sender, EventArgs e) => this.Gearsets.Clear();
+    private void ClientStateOnLogout() => this.Gearsets.Clear();
 
     private unsafe void GetItemStats(ref uint[] stats, RaptureGearsetModule.GearsetItem* item)
     {

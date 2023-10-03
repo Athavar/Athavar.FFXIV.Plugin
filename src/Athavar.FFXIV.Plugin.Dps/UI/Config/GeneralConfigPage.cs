@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 
 using System.Numerics;
@@ -59,7 +60,8 @@ internal sealed class GeneralConfigPage : IConfigPage
                 change = true;
             }
 
-            if (ImGuiEx.DragFloat2("Size", c.Size, x => c.Size = x, 1, 0, screenSize.Y))
+            c.Size ??= GeneralConfig.SizeDefault;
+            if (ImGuiEx.DragFloat2("Size", c.Size.GetValueOrDefault(), x => c.Size = x, 1, 0, screenSize.Y))
             {
                 change = true;
             }
@@ -134,7 +136,7 @@ internal sealed class GeneralConfigPage : IConfigPage
                     ImGuiEx.DrawNestIndicator(2);
                     if (ImGui.Combo("On Hotkey", ref onHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
                     {
-                        c.ShowActionSummaryModifyKey = this.hotkeyValues[onHotkeyIndex];
+                        c.ShowActionSummaryModifyKey = (ushort)this.hotkeyValues[onHotkeyIndex];
                         change = true;
                     }
                 }

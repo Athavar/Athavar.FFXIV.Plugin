@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -266,6 +267,13 @@ public sealed partial class Simulation
             return;
         }
 
+        // If current state is GOOD_OMEN, then next one is GOOD
+        if (this.State == StepState.GOOD_OMEN)
+        {
+            this.State = StepState.GOOD;
+            return;
+        }
+
         var currentStats = this.CurrentStats;
         if (currentStats is null)
         {
@@ -306,6 +314,9 @@ public sealed partial class Simulation
                         break;
                     case StepState.PRIMED:
                         rate = 0.12;
+                        break;
+                    case StepState.GOOD_OMEN:
+                        rate = 0.1;
                         break;
                 }
 

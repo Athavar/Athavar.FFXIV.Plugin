@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Cheat;
 
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Game;
+using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -73,7 +73,7 @@ internal sealed class CheatModule : Module, IDisposable
         }
     }
 
-    private void FrameworkOnUpdate(Framework framework)
+    private void FrameworkOnUpdate(IFramework framework)
     {
         if (DateTimeOffset.UtcNow < this.nextTick)
         {
@@ -106,11 +106,11 @@ internal sealed class CheatModule : Module, IDisposable
         }
     }
 
-    private void OnTerritoryChange(object? sender, ushort e)
+    private void OnTerritoryChange(ushort e)
     {
         foreach (var cheat in this.cheats.Where(c => c.Value))
         {
-            cheat.Key.OnTerritoryChange(sender, e);
+            cheat.Key.OnTerritoryChange(e);
         }
     }
 }

@@ -2,18 +2,19 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Interface;
-using ImGuiScene;
+using Dalamud.Interface.Internal;
 
 internal sealed class PluginLaunchButton : IDisposable
 {
     private readonly IDalamudServices services;
     private readonly Action onTrigger;
-    private TextureWrap? icon;
-    private TitleScreenMenu.TitleScreenMenuEntry? entry;
+    private IDalamudTextureWrap? icon;
+    private TitleScreenMenuEntry? entry;
 
     public PluginLaunchButton(IDalamudServices services, Action onTrigger)
     {

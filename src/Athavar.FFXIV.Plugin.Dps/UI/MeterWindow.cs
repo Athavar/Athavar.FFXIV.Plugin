@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.UI;
 
 using System.Numerics;
@@ -152,7 +153,7 @@ internal sealed class MeterWindow : IConfigurable
 
         var generalConfig = this.Config.GeneralConfig;
         var localPos = pos + generalConfig.Position;
-        var size = generalConfig.Size;
+        var size = generalConfig.Size ??= GeneralConfig.SizeDefault;
 
         if (ImGui.IsMouseHoveringRect(localPos, localPos + size))
         {

@@ -9,7 +9,6 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
-using Dalamud.Logging;
 using NLua.Exceptions;
 
 /// <summary>
@@ -108,19 +107,19 @@ internal partial class MacroManager : IDisposable
             }
             catch (OperationCanceledException)
             {
-                PluginLog.Verbose("Event loop has been cancelled");
+                this.dalamudServices.PluginLogger.Verbose("Event loop has been cancelled");
                 this.State = LoopState.Stopped;
                 break;
             }
             catch (ObjectDisposedException)
             {
-                PluginLog.Verbose("Event loop has been disposed");
+                this.dalamudServices.PluginLogger.Verbose("Event loop has been disposed");
                 this.State = LoopState.Stopped;
                 break;
             }
             catch (Exception ex)
             {
-                PluginLog.Error(ex, "Unhandled exception occurred");
+                this.dalamudServices.PluginLogger.Error(ex, "Unhandled exception occurred");
                 this.chatManager.PrintErrorMessage("[Macro] Worker has encountered an accident.");
                 this.macroStack.Clear();
                 this.PlayErrorSound();

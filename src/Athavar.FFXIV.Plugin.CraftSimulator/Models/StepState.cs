@@ -3,10 +3,11 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ReSharper disable InconsistentNaming
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 [Flags]
-public enum StepState : ushort
+public enum StepState : uint
 {
     /// <summary>
     ///     Fails the step.
@@ -16,45 +17,50 @@ public enum StepState : ushort
     /// <summary>
     ///     Default state.
     /// </summary>
-    NORMAL = 0x00,
+    NORMAL = 0x01,
 
     /// <summary>
     ///     Quality multiplication of 1.5x for next command.
     /// </summary>
-    GOOD = 0x01,
+    GOOD = 0x02,
 
     /// <summary>
     ///     Quality multiplication of 2x for next command. Not available on expert recipes.
     /// </summary>
-    EXCELLENT = 0x02, // Not available on expert recipes
+    EXCELLENT = 0x04, // Not available on expert recipes
 
     /// <summary>
     ///     Quality multiplication of 0.5x for next command. Not available on expert recipes.
     /// </summary>
-    POOR = 0x04,
+    POOR = 0x08,
 
     /// <summary>
     ///     Only for expert recipes. Increase success rate by 25%.
     /// </summary>
-    CENTERED = 0x08,
+    CENTERED = 0x10,
 
     /// <summary>
     ///     Only for expert recipes. Reduces loss of durability by 50%, stacks with WN & WN2.
     /// </summary>
-    STURDY = 0x10,
+    STURDY = 0x20,
 
     /// <summary>
     ///     Only for expert recipes. Reduces CP cost by 50%.
     /// </summary>
-    PLIANT = 0x20,
+    PLIANT = 0x40,
 
     /// <summary>
     ///     Only for super expert recipes. Good, but for Progress. Doesn't proc Intensive/Precise.
     /// </summary>
-    MALLEABLE = 0x40,
+    MALLEABLE = 0x80,
 
     /// <summary>
     ///     Only for super expert recipes. Next status is +2 duration.
     /// </summary>
-    PRIMED = 0x80,
+    PRIMED = 0x100,
+
+    /// <summary>
+    ///     // Next step is GOOD condition.
+    /// </summary>
+    GOOD_OMEN = 0x200,
 }

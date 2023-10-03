@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.Json.Serialization;
@@ -22,25 +23,25 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     public bool ModuleEnabled => this.FunctionEnabled && this.Enabled;
 
     /// <summary>
-    ///     Gets the root folder.
+    ///     Gets or sets the root folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("RootFolder")]
-    public TextFolderNode RootFolder { get; init; } = new() { Name = "/" };
+    public TextFolderNode RootFolder { get; set; } = new() { Name = "/" };
 
     /// <summary>
-    ///     Gets the list root folder.
+    ///     Gets or sets the list root folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("ListRootFolder")]
-    public TextFolderNode ListRootFolder { get; init; } = new() { Name = "/" };
+    public TextFolderNode ListRootFolder { get; set; } = new() { Name = "/" };
 
     /// <summary>
-    ///     Gets the talk root folder.
+    ///     Gets or sets the talk root folder.
     /// </summary>
     [JsonInclude]
     [JsonPropertyName("TalkRootFolder")]
-    public TextFolderNode TalkRootFolder { get; init; } = new() { Name = "/" };
+    public TextFolderNode TalkRootFolder { get; set; } = new() { Name = "/" };
 
     /// <summary>
     ///     Gets or sets the hotkey to always click yes.

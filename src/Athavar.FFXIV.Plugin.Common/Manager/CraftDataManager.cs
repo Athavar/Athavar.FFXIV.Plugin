@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
-using Dalamud.Data;
+using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
 
 internal sealed class CraftDataManager : ICraftDataManager
@@ -34,7 +34,7 @@ internal sealed class CraftDataManager : ICraftDataManager
 
     private readonly Dictionary<CraftingSkills, ICraftDataManager.CraftSkillData> craftSkillDatas = new();
 
-    private readonly DataManager dataManager;
+    private readonly IDataManager dataManager;
 
     public CraftDataManager(IDalamudServices dalamudServices)
     {

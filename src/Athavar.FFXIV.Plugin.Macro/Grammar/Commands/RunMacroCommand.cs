@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -61,7 +60,7 @@ internal class RunMacroCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro1, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         var macroNode = this.configuration
            .GetAllNodes().OfType<MacroNode>()
@@ -72,7 +71,7 @@ internal class RunMacroCommand : MacroCommand
             throw new MacroCommandError("No macro with that name");
         }
 
-        MacroManager.EnqueueMacro(macroNode);
+        this.MacroManager.EnqueueMacro(macroNode);
 
         await this.PerformWait(token);
     }

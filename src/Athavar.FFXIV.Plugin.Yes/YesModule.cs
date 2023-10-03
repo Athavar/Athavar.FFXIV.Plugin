@@ -8,14 +8,14 @@ namespace Athavar.FFXIV.Plugin.Yes;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
-using Dalamud.Game;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Logging;
 using Dalamud.Memory;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using Lumina.Excel.GeneratedSheets;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,6 +52,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.provider = provider;
         this.DalamudServices = dalamudServices;
         this.ChatManager = chatManager;
+        this.Logger = dalamudServices.PluginLogger;
         this.frameworkManager = frameworkManager;
 
         this.LoadTerritories();
@@ -69,7 +70,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
             ShowInHelp = true,
         });
 
-        PluginLog.LogDebug("Module 'Yes' init");
+        dalamudServices.PluginLogger.Debug("Module 'Yes' init");
     }
 
     /// <inheritdoc/>
@@ -86,6 +87,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     ///     Gets the <see cref="IChatManager"/>.
     /// </summary>
     internal IChatManager ChatManager { get; }
+
+    /// <summary>
+    ///     Gets the <see cref="IPluginLogger"/>.
+    /// </summary>
+    internal IPluginLogger Logger { get; }
 
     /// <summary>
     ///     Gets a mapping of territory IDs to names.
@@ -259,7 +265,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         }
     }
 
-    private void FrameworkUpdate(Framework framework)
+    private void FrameworkUpdate(IFramework framework1)
     {
         this.DisableKeyPressed = this.ModuleConfig.DisableKey != (int)VirtualKey.NO_KEY && this.DalamudServices.KeyState[this.ModuleConfig.DisableKey];
 

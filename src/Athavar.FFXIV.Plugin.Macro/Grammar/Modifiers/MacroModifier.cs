@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -16,13 +17,18 @@ internal abstract class MacroModifier
     private static IDalamudServices? dalamudServices;
 
     /// <summary>
-    ///     Gets the <see cref="IDalamudServices" />.
+    ///     Gets the <see cref="IDalamudServices"/>.
     /// </summary>
-    protected static IDalamudServices DalamudServices => dalamudServices ?? throw new NullReferenceException("DalamudServices is not set");
+    protected IDalamudServices DalamudServices => dalamudServices ?? throw new NullReferenceException("DalamudServices is not set");
 
     /// <summary>
-    ///     Setup the <see cref="IServiceProvider" /> for all commands.
+    ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
-    /// <param name="serviceProvider">The <see cref="IServiceProvider" />.</param>
+    protected IPluginLogger Logger => this.DalamudServices.PluginLogger;
+
+    /// <summary>
+    ///     Setup the <see cref="IServiceProvider"/> for all commands.
+    /// </summary>
+    /// <param name="serviceProvider">The <see cref="IServiceProvider"/>.</param>
     internal static void SetServiceProvider(IServiceProvider serviceProvider) => dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
 }

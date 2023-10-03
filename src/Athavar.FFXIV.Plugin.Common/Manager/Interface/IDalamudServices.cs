@@ -5,52 +5,51 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
-using Dalamud.Data;
+using Athavar.FFXIV.Plugin.Config.Interfaces;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Conditions;
-using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.ClientState.Party;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Network;
-using Dalamud.Interface;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 
 public interface IDalamudServices
 {
     DalamudPluginInterface PluginInterface { get; }
 
-    CommandManager CommandManager { get; }
+    ICommandManager CommandManager { get; }
 
-    ChatGui ChatGui { get; }
+    IChatGui ChatGui { get; }
 
-    ChatHandlers ChatHandlers { get; }
+    IClientState ClientState { get; }
 
-    ClientState ClientState { get; }
+    ICondition Condition { get; }
 
-    Condition Condition { get; }
+    IDataManager DataManager { get; }
 
-    DataManager DataManager { get; }
+    IFramework Framework { get; }
 
-    Framework Framework { get; }
+    IGameGui GameGui { get; }
 
-    GameGui GameGui { get; }
+    IGameInteropProvider GameInteropProvider { get; }
 
-    GameLifecycle GameLifecycle { get; }
+    IGameLifecycle GameLifecycle { get; }
 
-    GameNetwork GameNetwork { get; }
+    IGameNetwork GameNetwork { get; }
 
-    KeyState KeyState { get; }
+    IKeyState KeyState { get; }
 
-    ObjectTable ObjectTable { get; }
+    IObjectTable ObjectTable { get; }
 
-    PartyList PartyList { get; }
+    IPartyList PartyList { get; }
 
-    SigScanner SigScanner { get; }
+    IPluginLogger PluginLogger { get; }
 
-    TargetManager TargetManager { get; }
+    ISigScanner SigScanner { get; }
 
-    TitleScreenMenu TitleScreenMenu { get; }
+    ITargetManager TargetManager { get; }
+
+    ITextureProvider TextureProvider { get; }
+
+    ITitleScreenMenu TitleScreenMenu { get; }
+
+    object? GetInternalService(Type serviceType);
 }

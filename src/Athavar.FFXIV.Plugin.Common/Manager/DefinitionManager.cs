@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
@@ -10,8 +11,7 @@ using System.Text.Json;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud;
-using Dalamud.Logging;
+using Dalamud.Common;
 using Dalamud.Plugin;
 
 public sealed class DefinitionManager : IDefinitionManager
@@ -25,7 +25,7 @@ public sealed class DefinitionManager : IDefinitionManager
     {
         this.LoadResources();
 
-        if (TryGetDalamudStartInfo(services.PluginInterface, out var dalamudStartInfo))
+        if (TryGetDalamudStartInfo(services, out var dalamudStartInfo))
         {
             this.StartInfo = dalamudStartInfo;
         }
@@ -43,14 +43,18 @@ public sealed class DefinitionManager : IDefinitionManager
     /// <inheritdoc/>
     public uint[] GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType procType) => this.statusEffectDefinitions.Where(x => x.Value.ReactiveProc?.Type == procType).Select(x => x.Key).ToArray();
 
-    private static bool TryGetDalamudStartInfo(DalamudPluginInterface pluginInterface, [NotNullWhen(true)] out DalamudStartInfo? dalamudStartInfo)
+    private static bool TryGetDalamudStartInfo(IDalamudServices services, [NotNullWhen(true)] out DalamudStartInfo? dalamudStartInfo)
     {
         dalamudStartInfo = null;
         try
         {
-            var info = pluginInterface.GetType().Assembly.GetType("Dalamud.Service`1", true)?.MakeGenericType(typeof(DalamudStartInfo)).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, Array.Empty<object>(), null);
+            var dalamudServiceType = typeof(DalamudPluginInterface).Assembly.GetType("Dalamud.Dalamud") ?? throw new Exception("Fail to get type of Dalamud.Dalamud");
+            var dalamudService = services.GetInternalService(dalamudServiceType);
 
-            if (info is DalamudStartInfo dInfo)
+            var startInfoProperty = dalamudServiceType.GetProperty("StartInfo", BindingFlags.NonPublic | BindingFlags.Instance) ?? throw new Exception("Dalamud has changed. StartInfo not found.");
+            var startInfo = startInfoProperty.GetMethod!.Invoke(dalamudService, BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<object>(), null);
+
+            if (startInfo is DalamudStartInfo dInfo)
             {
                 dalamudStartInfo = dInfo;
                 return true;
@@ -60,7 +64,7 @@ public sealed class DefinitionManager : IDefinitionManager
         }
         catch (Exception e)
         {
-            PluginLog.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
+            services.PluginLogger.Error($"{e.Message}\n{e.StackTrace ?? string.Empty}");
             return false;
         }
     }

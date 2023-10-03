@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /requirerepair command.
@@ -20,7 +19,7 @@ internal class RequireRepairCommand : MacroCommand
     private static readonly Regex Regex = new(@"^/requirerepair\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RequireRepairCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RequireRepairCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="wait">Wait value.</param>
@@ -47,12 +46,12 @@ internal class RequireRepairCommand : MacroCommand
         return new RequireRepairCommand(text, waitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        if (CommandInterface.NeedsRepair())
+        if (this.CommandInterface.NeedsRepair())
         {
             throw new MacroPause("You need to repair", IChatManager.UiColor.Yellow);
         }

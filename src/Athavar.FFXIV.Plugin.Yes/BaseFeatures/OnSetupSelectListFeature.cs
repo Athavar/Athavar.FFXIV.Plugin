@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Dalamud.Hooking;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -20,10 +19,10 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     private Hook<OnItemSelectedDelegate>? onItemSelectedHook;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature" /> class.
+    ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature"/> class.
     /// </summary>
     /// <param name="onSetupSig">Signature to the OnSetup method.</param>
-    /// <param name="module"><see cref="YesModule" />.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     protected OnSetupSelectListFeature(string onSetupSig, YesModule module)
         : base(onSetupSig, module)
     {
@@ -41,7 +40,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     /// <returns>Unknown.</returns>
     private delegate byte OnItemSelectedDelegate(nint popupMenu, uint index, nint a3, nint a4);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public new void Dispose()
     {
         this.onItemSelectedHook?.Disable();
@@ -87,7 +86,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             {
                 if (!string.IsNullOrEmpty(targetName) && this.EntryMatchesTargetName(node, targetName))
                 {
-                    PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
+                    this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
                     this.module.LastSelectedListNode = node;
                     this.SelectItemExecute(addon, index);
                     return;
@@ -95,7 +94,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             }
             else
             {
-                PluginLog.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
+                this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
                 this.module.LastSelectedListNode = node;
                 this.SelectItemExecute(addon, index);
                 return;
@@ -122,7 +121,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         }
 
         var onItemSelectedAddress = (nint)popupMenu->AtkEventListener.vfunc[3];
-        this.onItemSelectedHook = Hook<OnItemSelectedDelegate>.FromAddress(onItemSelectedAddress, this.OnItemSelectedDetour);
+        this.onItemSelectedHook = this.module.DalamudServices.GameInteropProvider.HookFromAddress(onItemSelectedAddress, (OnItemSelectedDelegate)this.OnItemSelectedDetour);
         this.onItemSelectedHook.Enable();
     }
 
@@ -148,12 +147,12 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
                     ? this.module.GetSeStringText(target.Name)
                     : string.Empty;
 
-                PluginLog.Debug($"ItemSelected: target={targetName} text={entryText}");
+                this.module.Logger.Debug($"ItemSelected: target={targetName} text={entryText}");
             }
         }
         catch (Exception ex)
         {
-            PluginLog.Error(ex, "Don't crash the game");
+            this.module.Logger.Error(ex, "Don't crash the game");
         }
 
         return this.onItemSelectedHook!.Original(popupMenu, index, a3, a4);
@@ -164,7 +163,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         var count = popupMenu->EntryCount;
         var entryTexts = new string?[count];
 
-        PluginLog.Debug($"SelectString: Reading {count} strings");
+        this.module.Logger.Debug($"SelectString: Reading {count} strings");
         for (var i = 0; i < count; i++)
         {
             var textPtr = popupMenu->EntryNames[i];
@@ -196,10 +195,10 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     }
 
     private bool EntryMatchesText(ListEntryNode node, string text)
-        => (node.IsTextRegex && (node.TextRegex?.IsMatch(text) ?? false)) ||
+        => (node.IsTextRegex && (node.TextRegex.Value?.IsMatch(text) ?? false)) ||
            (!node.IsTextRegex && text.Contains(node.Text));
 
     private bool EntryMatchesTargetName(ListEntryNode node, string targetName)
-        => (node.TargetIsRegex && (node.TargetRegex?.IsMatch(targetName) ?? false)) ||
+        => (node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false)) ||
            (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

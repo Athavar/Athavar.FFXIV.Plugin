@@ -3,6 +3,7 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Collections.Immutable;
@@ -28,7 +29,7 @@ public sealed class RotationNode : Node
     public int[] RotationArray
     {
         get => this.Rotations.ToArray();
-        init => this.Rotations = value.ToImmutableArray();
+        set => this.Rotations = value.ToImmutableArray();
     }
 
     /// <inheritdoc/>

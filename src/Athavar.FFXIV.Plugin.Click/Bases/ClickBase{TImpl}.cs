@@ -83,7 +83,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     /// <returns>Itself.</returns>
     protected TImpl HideAddon()
     {
-        this.UnitBase->Hide(false);
+        this.UnitBase->Hide(false, false, 0);
 
         return this;
     }

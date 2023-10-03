@@ -10,7 +10,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 
 /// <summary>
 ///     The /requirestats command.
@@ -29,7 +28,7 @@ internal class RequireStatsCommand : MacroCommand
     private readonly int maxWait;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="RequireStatsCommand" /> class.
+    ///     Initializes a new instance of the <see cref="RequireStatsCommand"/> class.
     /// </summary>
     /// <param name="text">Original text.</param>
     /// <param name="craftsmanship">Craftsmanship value.</param>
@@ -77,12 +76,12 @@ internal class RequireStatsCommand : MacroCommand
         return new RequireStatsCommand(text, craftsmanship, control, cp, waitModifier, maxWaitModifier);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
-        bool AreStatsGood() => CommandInterface.HasStats(this.requiredCraftsmanship, this.requiredControl, this.requiredCp);
+        bool AreStatsGood() => this.CommandInterface.HasStats(this.requiredCraftsmanship, this.requiredControl, this.requiredCp);
         var hasStats = await this.LinearWait(StatusCheckInterval, this.maxWait, AreStatsGood, token);
 
         if (!hasStats)

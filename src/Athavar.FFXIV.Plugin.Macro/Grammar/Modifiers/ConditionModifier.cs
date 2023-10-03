@@ -6,7 +6,6 @@
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 
 using System.Text.RegularExpressions;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -61,10 +60,10 @@ internal sealed class ConditionModifier : MacroModifier
             return true;
         }
 
-        var addon = DalamudServices.GameGui.GetAddonByName("Synthesis");
+        var addon = this.DalamudServices.GameGui.GetAddonByName("Synthesis");
         if (addon == nint.Zero)
         {
-            PluginLog.Debug("Could not find Synthesis addon");
+            this.Logger.Debug("Could not find Synthesis addon");
             return true;
         }
 

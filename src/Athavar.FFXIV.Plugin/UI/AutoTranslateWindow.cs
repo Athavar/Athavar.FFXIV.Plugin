@@ -5,20 +5,16 @@
 
 namespace Athavar.FFXIV.Plugin.UI;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Dalamud.Data;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using Action = Lumina.Excel.GeneratedSheets.Action;
 
 internal sealed class AutoTranslateWindow : Window
 {
@@ -54,7 +50,7 @@ internal sealed class AutoTranslateWindow : Window
         this.translationsFilter = Array.Empty<int>();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         ImGui.LabelText("##Filter", "Filter");
@@ -190,7 +186,7 @@ internal sealed class AutoTranslateWindow : Window
         private readonly List<(uint Index, int Length)> ranges = new();
         private readonly uint[] rowIds;
 
-        public LookUpGroup(DataManager dataManager, uint group, string lookUp)
+        public LookUpGroup(IDataManager dataManager, uint group, string lookUp)
         {
             var match = LookUpRegex.Match(lookUp);
             var sheet = match.Groups["Sheet"];
@@ -198,7 +194,7 @@ internal sealed class AutoTranslateWindow : Window
             var type = GetSheetType(sheet.Value);
             if (type is not null && type.IsSubclassOf(typeof(ExcelRow)))
             {
-                var methode = typeof(DataManager).GetMethods().FirstOrDefault(m => m.Name == "GetExcelSheet" && m.GetParameters().Length == 0 && m.IsGenericMethod)?.MakeGenericMethod(type);
+                var methode = typeof(IDataManager).GetMethods().FirstOrDefault(m => m.Name == "GetExcelSheet" && m.GetParameters().Length == 0 && m.IsGenericMethod)?.MakeGenericMethod(type);
                 var sheetObject = methode?.Invoke(dataManager, null);
 
                 this.sheet = sheetObject as IEnumerable<ExcelRow>;
@@ -254,57 +250,57 @@ internal sealed class AutoTranslateWindow : Window
             this.rowIds = ids.ToArray();
         }
 
-        public SeString? GetMessage(DataManager manager, uint key) => this.sheet is not null ? GetMessage(this.sheet, key) : null;
+        public SeString? GetMessage(IDataManager manager, uint key) => this.sheet is not null ? GetMessage(this.sheet, key) : null;
 
         public uint[] RowIds() => this.rowIds;
 
         private static Type? GetSheetType(string sheetName)
             => sheetName switch
-               {
-                   "Action" => typeof(Action),
-                   "ActionComboRoute" => typeof(ActionComboRoute),
-                   "BuddyAction" => typeof(BuddyAction),
-                   "ClassJob" => typeof(ClassJob),
-                   "Companion" => typeof(Companion),
-                   "CraftAction" => typeof(CraftAction),
-                   "GeneralAction" => typeof(GeneralAction),
-                   "GuardianDeity" => typeof(GuardianDeity),
-                   "MainCommand" => typeof(MainCommand),
-                   "Mount" => typeof(Mount),
-                   "Pet" => typeof(Pet),
-                   "PetAction" => typeof(PetMirage),
-                   "PetMirage" => typeof(PetAction),
-                   "PlaceName" => typeof(PlaceName),
-                   "Race" => typeof(Race),
-                   "TextCommand" => typeof(TextCommand),
-                   "Tribe" => typeof(Tribe),
-                   "Weather" => typeof(Weather),
-                   _ => null,
-               };
+            {
+                "Action" => typeof(Action),
+                "ActionComboRoute" => typeof(ActionComboRoute),
+                "BuddyAction" => typeof(BuddyAction),
+                "ClassJob" => typeof(ClassJob),
+                "Companion" => typeof(Companion),
+                "CraftAction" => typeof(CraftAction),
+                "GeneralAction" => typeof(GeneralAction),
+                "GuardianDeity" => typeof(GuardianDeity),
+                "MainCommand" => typeof(MainCommand),
+                "Mount" => typeof(Mount),
+                "Pet" => typeof(Pet),
+                "PetAction" => typeof(PetMirage),
+                "PetMirage" => typeof(PetAction),
+                "PlaceName" => typeof(PlaceName),
+                "Race" => typeof(Race),
+                "TextCommand" => typeof(TextCommand),
+                "Tribe" => typeof(Tribe),
+                "Weather" => typeof(Weather),
+                _ => null,
+            };
 
         private static SeString? GetMessage<T>(IEnumerable<T> sheet, uint rowId)
             where T : ExcelRow
             => sheet switch
-               {
-                   ExcelSheet<Action> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<ActionComboRoute> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<BuddyAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<ClassJob> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<Companion> excelSheet => excelSheet.GetRow(rowId)?.Singular.ToDalamudString(),
-                   ExcelSheet<CraftAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<GeneralAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<GuardianDeity> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<MainCommand> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<Mount> excelSheet => excelSheet.GetRow(rowId)?.Singular.ToDalamudString(),
-                   ExcelSheet<Pet> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<PetMirage> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<PetAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<PlaceName> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   ExcelSheet<Race> excelSheet => excelSheet.GetRow(rowId)?.Masculine.ToDalamudString(),
-                   ExcelSheet<TextCommand> excelSheet => excelSheet.GetRow(rowId)?.Command.ToDalamudString(),
-                   ExcelSheet<Tribe> excelSheet => excelSheet.GetRow(rowId)?.Masculine.ToDalamudString(),
-                   ExcelSheet<Weather> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
-                   _ => throw new Exception($"Not mapped Sheet of type {sheet.GetType().FullName}"),
-               };
+            {
+                ExcelSheet<Action> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<ActionComboRoute> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<BuddyAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<ClassJob> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<Companion> excelSheet => excelSheet.GetRow(rowId)?.Singular.ToDalamudString(),
+                ExcelSheet<CraftAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<GeneralAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<GuardianDeity> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<MainCommand> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<Mount> excelSheet => excelSheet.GetRow(rowId)?.Singular.ToDalamudString(),
+                ExcelSheet<Pet> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<PetMirage> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<PetAction> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<PlaceName> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                ExcelSheet<Race> excelSheet => excelSheet.GetRow(rowId)?.Masculine.ToDalamudString(),
+                ExcelSheet<TextCommand> excelSheet => excelSheet.GetRow(rowId)?.Command.ToDalamudString(),
+                ExcelSheet<Tribe> excelSheet => excelSheet.GetRow(rowId)?.Masculine.ToDalamudString(),
+                ExcelSheet<Weather> excelSheet => excelSheet.GetRow(rowId)?.Name.ToDalamudString(),
+                _ => throw new Exception($"Not mapped Sheet of type {sheet.GetType().FullName}"),
+            };
     }
 }

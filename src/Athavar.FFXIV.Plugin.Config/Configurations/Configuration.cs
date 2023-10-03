@@ -4,6 +4,7 @@
 // </copyright>
 
 // ReSharper disable once CheckNamespace
+
 namespace Athavar.FFXIV.Plugin;
 
 using System.Text.RegularExpressions;
@@ -102,6 +103,7 @@ public sealed class Configuration : IPluginConfiguration
     /// <param name="interface">The <see cref="DalamudPluginInterface"/>.</param>
     private void Setup(DalamudPluginInterface @interface)
     {
+        // migration only
         this.Pi = @interface;
 
         this.Yes ??= new YesConfiguration();
@@ -113,18 +115,18 @@ public sealed class Configuration : IPluginConfiguration
         this.Dps ??= new DpsConfiguration();
         this.SliceIsRight ??= new SliceIsRightConfiguration();
 
-        this.Yes.Setup(this);
-        this.Macro.Setup(this);
-        this.Instancinator.Setup(this);
-        this.AutoSpear.Setup(this);
-        this.CraftQueue.Setup(this);
-        this.OpcodeWizard.Setup(this);
-        this.Dps.Setup(this);
-        this.SliceIsRight.Setup(this);
+        var configDirectory = this.Pi.ConfigDirectory;
+        this.Yes.Setup(configDirectory);
+        this.Macro.Setup(configDirectory);
+        this.Instancinator.Setup(configDirectory);
+        this.AutoSpear.Setup(configDirectory);
+        this.CraftQueue.Setup(configDirectory);
+        this.OpcodeWizard.Setup(configDirectory);
+        this.Dps.Setup(configDirectory);
+        this.SliceIsRight.Setup(configDirectory);
 #pragma warning disable 612,618
         var cconfig = new CommonConfiguration
         {
-            Pi = @interface,
             Version = 2,
             Language = this.Language,
             ChatType = this.ChatType,
@@ -132,6 +134,7 @@ public sealed class Configuration : IPluginConfiguration
             ShowLaunchButton = this.ShowLaunchButton,
             ShowToolTips = this.ShowToolTips,
         };
+        cconfig.Setup(configDirectory);
 #pragma warning restore 612,618
         cconfig.Save();
     }

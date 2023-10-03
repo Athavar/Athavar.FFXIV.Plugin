@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
@@ -9,8 +10,7 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
-using Dalamud.Game;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 
 internal sealed class CraftQueue : IDisposable
 {
@@ -133,7 +133,7 @@ internal sealed class CraftQueue : IDisposable
         }
     }
 
-    private void FrameworkOnUpdate(Framework framework)
+    private void FrameworkOnUpdate(IFramework framework)
     {
         try
         {
@@ -193,7 +193,7 @@ internal sealed class CraftQueue : IDisposable
         }
         catch (AthavarPluginException ex)
         {
-            PluginLog.LogError(ex, ex.Message);
+            this.DalamudServices.PluginLogger.Error(ex, ex.Message);
         }
     }
 }

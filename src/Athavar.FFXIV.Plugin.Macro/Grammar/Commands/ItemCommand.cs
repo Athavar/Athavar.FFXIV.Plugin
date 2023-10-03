@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using Sheets = Lumina.Excel.GeneratedSheets;
@@ -63,13 +62,13 @@ internal class ItemCommand : MacroCommand
     /// <inheritdoc/>
     public override async Task Execute(ActiveMacro macro, CancellationToken token)
     {
-        PluginLog.Debug($"Executing: {this.Text}");
+        this.Logger.Debug($"Executing: {this.Text}");
 
         var itemId = this.SearchItemId(this.itemName);
-        PluginLog.Debug($"Item found: {itemId}");
+        this.Logger.Debug($"Item found: {itemId}");
 
         var count = this.GetInventoryItemCount(itemId, this.itemQualityMod.IsHq);
-        PluginLog.Debug($"Item Count: {count}");
+        this.Logger.Debug($"Item Count: {count}");
         if (count == 0)
         {
             throw new MacroCommandError("You do not have that item");
@@ -80,7 +79,7 @@ internal class ItemCommand : MacroCommand
         await this.PerformWait(token);
     }
 
-    private unsafe void UseItem(uint itemID, bool isHQ = false)
+    private unsafe void UseItem(uint itemId, bool isHQ = false)
     {
         var agent = AgentInventoryContext.Instance();
         if (agent == null)
@@ -90,17 +89,17 @@ internal class ItemCommand : MacroCommand
 
         if (isHQ)
         {
-            itemID += 1_000_000;
+            itemId += 1_000_000;
         }
 
-        var result = agent->UseItem(itemID);
+        var result = agent->UseItem(itemId);
         if (result != 0)
         {
             throw new MacroCommandError("Failed to use item");
         }
     }
 
-    private unsafe int GetInventoryItemCount(uint itemID, bool isHQ)
+    private unsafe int GetInventoryItemCount(uint itemId, bool isHQ)
     {
         var inventoryManager = InventoryManager.Instance();
         if (inventoryManager == null)
@@ -108,7 +107,7 @@ internal class ItemCommand : MacroCommand
             throw new MacroCommandError("InventoryManager not found");
         }
 
-        return inventoryManager->GetInventoryItemCount(itemID, isHQ);
+        return inventoryManager->GetInventoryItemCount(itemId, isHQ);
     }
 
     private uint SearchItemId(string itemName)

@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
@@ -18,8 +19,9 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using FFXIVClientStructs.FFXIV.Common.Math;
 using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
@@ -219,7 +221,7 @@ internal sealed class QueueTab : Tab
                         var obj = recipe.ItemResult.Value;
                         var text = this.classJobsSheet.GetRow((uint)job)?.Abbreviation.RawString ?? "???";
                         ImGui.TableSetColumnIndex(0);
-                        Vector2 cursorPos = ImGui.GetCursorPos();
+                        var cursorPos = ImGui.GetCursorPos();
                         if (ImGui.Selectable($"##recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             this.recipeIdx = num;
@@ -232,14 +234,14 @@ internal sealed class QueueTab : Tab
                             ImGui.CloseCurrentPopup();
                         }
 
-                        if (obj is not null && this.iconManager.TryHqGetIcon(obj.Icon, false, out var textureWrap))
+                        if (obj is not null && this.iconManager.TryGetIcon(obj.Icon, out var textureWrap))
                         {
                             ImGui.SetCursorPos(cursorPos);
                             ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                         }
                         else
                         {
-                            ImGui.Dummy(new System.Numerics.Vector2(ImGui.GetTextLineHeight(), ImGui.GetTextLineHeight()));
+                            ImGui.Dummy(new Vector2(ImGui.GetTextLineHeight(), ImGui.GetTextLineHeight()));
                         }
 
                         ImGui.TableSetColumnIndex(1);
@@ -305,7 +307,7 @@ internal sealed class QueueTab : Tab
                         var buffInfo = items[index];
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
-                        Vector2 cursorPos1 = ImGui.GetCursorPos();
+                        var cursorPos1 = ImGui.GetCursorPos();
                         if (ImGui.Selectable($"##{index}", idx == index, ImGuiSelectableFlags.SpanAllColumns))
                         {
                             idx = index;
@@ -314,7 +316,7 @@ internal sealed class QueueTab : Tab
                         }
 
                         ImGui.SetCursorPos(cursorPos1);
-                        var icon = this.iconManager.GetHqIcon(buffInfo.IconId, buffInfo.IsHq);
+                        var icon = this.iconManager.GetIcon(buffInfo.IconId, ITextureProvider.IconFlags.HiRes | (buffInfo.IsHq ? ITextureProvider.IconFlags.ItemHighQuality : 0));
                         if (icon != null)
                         {
                             ImGuiEx.ScaledImageY(icon.ImGuiHandle, icon.Width, icon.Height, ImGui.GetTextLineHeight());
@@ -434,7 +436,7 @@ internal sealed class QueueTab : Tab
                 if (ingredient.ItemId != 0)
                 {
                     ImGui.TableNextRow();
-                    if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryHqGetIcon(ingredient.Icon, false, out var textureWrap))
+                    if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryGetIcon(ingredient.Icon, out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                         ImGuiEx.TextTooltip(this.itemsSheet.GetRow(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
@@ -516,7 +518,7 @@ internal sealed class QueueTab : Tab
         ImGuiEx.TextColorCondition(this.simulationResult?.FailCause == SimulationFailCause.NOT_ENOUGH_CP, ImGuiColors.DalamudRed, $"{this.baseParamsSheet.GetRow(11)!.Name}: ");
         ImGui.SameLine();
         ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ImGuiColors.DalamudViolet);
-        ImGui.ProgressBar((float)this.craftingSimulation.AvailableCP / this.craftingSimulation.CurrentStats.CP, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), $"{this.craftingSimulation.AvailableCP} / {this.craftingSimulation.CurrentStats.CP}");
+        ImGui.ProgressBar((float)this.craftingSimulation.AvailableCP / this.craftingSimulation.CurrentStats.CP, new Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), $"{this.craftingSimulation.AvailableCP} / {this.craftingSimulation.CurrentStats.CP}");
         ImGui.PopStyleColor();
 
         ImGui.Separator();
@@ -535,7 +537,7 @@ internal sealed class QueueTab : Tab
         ImGuiEx.TextColorCondition(progress < 1, ImGuiColors.DalamudRed, $"{this.addonsSheet.GetRow(213)!.Text}: {progressText}");
         ImGui.SameLine();
         ImGui.PushStyleColor(ImGuiCol.PlotHistogram, progress >= 1 ? ImGuiColors.ParsedGreen : ImGuiColors.HealerGreen);
-        ImGui.ProgressBar(progress, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), progressText);
+        ImGui.ProgressBar(progress, new Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), progressText);
         ImGui.PopStyleColor();
 
         // Quality line
@@ -546,7 +548,7 @@ internal sealed class QueueTab : Tab
         ImGuiEx.TextColorCondition(this.craftingSimulation.Recipe.QualityReq > this.craftingSimulation.Quality, ImGuiColors.DalamudRed, $"{this.addonsSheet.GetRow(217)!.Text}: {this.simulationResult.HqPercent}%");
         ImGui.SameLine();
         ImGui.PushStyleColor(ImGuiCol.PlotHistogram, quality >= 1 ? ImGuiColors.ParsedBlue : ImGuiColors.TankBlue);
-        ImGui.ProgressBar(quality, new System.Numerics.Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), qualityText);
+        ImGui.ProgressBar(quality, new Vector2(ImGui.GetContentRegionAvail().X - 5, ImGui.GetTextLineHeight()), qualityText);
         ImGui.PopStyleColor();
 
         ImGui.SetNextItemWidth(-1);
@@ -561,13 +563,13 @@ internal sealed class QueueTab : Tab
 
                 var actionResult = rotationSteps[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(actionResult.Skill);
-                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[classIndex], false);
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[classIndex]);
                 if (tex is null)
                 {
                     continue;
                 }
 
-                var iconSize = new System.Numerics.Vector2(tex.Height, tex.Width);
+                var iconSize = new Vector2(tex.Height, tex.Width);
 
                 ImGui.Image(tex.ImGuiHandle, iconSize);
                 if (ImGui.IsItemHovered())
@@ -623,13 +625,13 @@ internal sealed class QueueTab : Tab
                     ImGui.TableSetColumnIndex(0);
                     ImGui.TextUnformatted($"{index}");
                     ImGui.TableSetColumnIndex(1);
-                    if (this.iconManager.TryGetIcon(craftSkillData.IconIds[classIndex], false, out var textureWrap))
+                    if (this.iconManager.TryGetIcon(craftSkillData.IconIds[classIndex], out var textureWrap))
                     {
                         ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
                     }
                     else
                     {
-                        ImGui.Dummy(new System.Numerics.Vector2(ImGui.GetTextLineHeight(), ImGui.GetTextLineHeight()));
+                        ImGui.Dummy(new Vector2(ImGui.GetTextLineHeight(), ImGui.GetTextLineHeight()));
                     }
 
                     if (ImGui.IsItemHovered())
@@ -848,7 +850,7 @@ internal sealed class QueueTab : Tab
             }
         }
 
-        if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history-table-child", new System.Numerics.Vector2(-1, ImGui.GetContentRegionAvail().Y)), ImGui.EndChild))
+        if (!raii.Begin(() => ImGui.BeginChild("##queue-and-history-table-child", new Vector2(-1, ImGui.GetContentRegionAvail().Y)), ImGui.EndChild))
         {
             return;
         }
