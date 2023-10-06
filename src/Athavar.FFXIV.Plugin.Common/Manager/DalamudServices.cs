@@ -54,18 +54,23 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public DalamudPluginInterface PluginInterface { get; init; } = null!;
 
-    /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
-    public IBuddyList Buddies { get; private set; } = null!;
-    */
+    public IAddonLifecycle AddonLifecycle { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public IAetheryteList AetheryteList { get; init; } = null!;
+    */
+
+    /*
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
+    public IBuddyList Buddies { get; private set; } = null!;
     */
 
     /// <inheritdoc/>

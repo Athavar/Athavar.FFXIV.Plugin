@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
@@ -15,20 +16,16 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly YesModule module;
     private Hook<OnItemSelectedDelegate>? onItemSelectedHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupSelectListFeature"/> class.
     /// </summary>
-    /// <param name="onSetupSig">Signature to the OnSetup method.</param>
     /// <param name="module"><see cref="YesModule"/>.</param>
-    protected OnSetupSelectListFeature(string onSetupSig, YesModule module)
-        : base(onSetupSig, module)
-    {
-        this.dalamudServices = module.DalamudServices;
-        this.module = module;
-    }
+    /// <param name="trigger">The event that triggers the feature.</param>
+    protected OnSetupSelectListFeature(YesModule module, AddonEvent trigger = AddonEvent.PostRequestedUpdate)
+        : base(module, trigger)
+        => this.dalamudServices = module.DalamudServices;
 
     /// <summary>
     ///     A delegate matching PopupMenu.OnItemSelected.

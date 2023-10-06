@@ -8,6 +8,7 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
+using Dalamud.Game.Addon.Lifecycle;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
@@ -22,24 +23,23 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
     ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature"/> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
-    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectYesNoFeature(YesModule module)
-        : base("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC 40 44 8B F2 0F 29 74 24 ??", module)
+        : base(module)
         => this.module = module;
 
     /// <inheritdoc/>
-    protected override string AddonName => "SelectYesNo";
+    protected override string AddonName => "SelectYesno";
 
     /// <inheritdoc/>
-    protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
+    protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        var dataPtr = (AddonSelectYesNoOnSetupData*)data;
-        if (dataPtr == null)
+        var addonPtr = (AddonSelectYesno*)addon;
+        if (addonPtr == null)
         {
             return;
         }
 
-        var text = this.module.LastSeenDialogText = this.module.GetSeStringText(dataPtr->TextPtr);
+        var text = this.module.LastSeenDialogText = this.module.GetSeStringText(addonPtr->PromptText->NodeText.StringPtr);
         this.module.Logger.Debug($"AddonSelectYesNo: text={text}");
 
         if (this.module.ForcedYesKeyPressed)

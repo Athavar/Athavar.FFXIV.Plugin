@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 
 using Athavar.FFXIV.Plugin.Click.Structures;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
+using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -24,7 +25,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonInclusionShopFeature(YesModule module)
-        : base("85 D2 0F 8E ?? ?? ?? ?? 4C 8B DC 55 53 41 54", module)
+        : base(module, AddonEvent.PostSetup)
     {
         module.DalamudServices.GameInteropProvider.InitializeFromAttributes(this);
 
@@ -45,7 +46,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     }
 
     /// <inheritdoc/>
-    protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
+    protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         if (!this.Configuration.InclusionShopRememberEnabled)
         {

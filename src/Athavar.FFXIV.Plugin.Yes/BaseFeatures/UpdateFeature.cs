@@ -5,7 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
-using Dalamud.Hooking;
+using Dalamud.Game.Addon.Lifecycle;
+using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 
 /// <summary>
 ///     An abstract that hooks Update to provide a feature.
@@ -13,18 +14,18 @@ using Dalamud.Hooking;
 internal abstract class UpdateFeature : IBaseFeature
 {
     private readonly YesModule module;
-    private readonly Hook<UpdateDelegate> updateHook;
+    private readonly AddonEvent trigger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="UpdateFeature"/> class.
     /// </summary>
-    /// <param name="updateSig">Signature to the Update method.</param>
     /// <param name="module">The module.</param>
-    public UpdateFeature(string updateSig, YesModule module)
+    /// <param name="trigger">The event that triggers the feature.</param>
+    protected UpdateFeature(YesModule module, AddonEvent trigger = AddonEvent.PostRequestedUpdate)
     {
         this.module = module;
-        this.updateHook = module.DalamudServices.GameInteropProvider.HookFromSignature(updateSig, (UpdateDelegate)this.UpdateDetour);
-        this.updateHook.Enable();
+        this.trigger = trigger;
+        module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
     }
 
     /// <summary>
@@ -46,39 +47,26 @@ internal abstract class UpdateFeature : IBaseFeature
     protected abstract string AddonName { get; }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        this.updateHook.Disable();
-        this.updateHook.Dispose();
-    }
+    public virtual void Dispose() => this.module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
 
     /// <summary>
     ///     A method that is run within the Update detour.
     /// </summary>
     /// <param name="addon">Addon address.</param>
-    /// <param name="a2">Unknown parameter 2.</param>
-    /// <param name="a3">Unknown parameter 3.</param>
-    protected abstract void UpdateImpl(nint addon, nint a2, nint a3);
+    /// <param name="addonEvent">Addon Event trigger type.</param>
+    protected abstract void UpdateImpl(IntPtr addon, AddonEvent addonEvent);
 
-    private void UpdateDetour(nint addon, nint a2, nint a3)
+    protected void TriggerHandler(AddonEvent type, AddonArgs args)
     {
-        // Update is noisy, dont echo here.
-        // this.module.Logger.Debug($"Addon{this.AddonName}.Update");
-        this.updateHook.Original(addon, a2, a3);
-
-        if (!this.Configuration.ModuleEnabled || this.module.DisableKeyPressed)
-        {
-            return;
-        }
-
-        if (addon == nint.Zero)
+        this.module.Logger.Debug($"Addon{this.AddonName}.Update");
+        if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
         {
             return;
         }
 
         try
         {
-            this.UpdateImpl(addon, a2, a3);
+            this.UpdateImpl(args.Addon, type);
         }
         catch (Exception ex)
         {
