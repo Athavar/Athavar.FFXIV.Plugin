@@ -72,7 +72,7 @@
       "17": "circle of scorn",
       "damage": [
         {
-          "potency": 120
+          "potency": 140
         }
       ]
     },
@@ -126,7 +126,7 @@
       "1CD7": "requiescat",
       "damage": [
         {
-          "potency": 300
+          "potency": 320
         }
       ]
     },

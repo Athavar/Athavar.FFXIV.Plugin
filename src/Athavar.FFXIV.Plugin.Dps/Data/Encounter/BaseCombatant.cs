@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using System.Reflection;
@@ -132,7 +133,7 @@ internal abstract class BaseCombatant
 
     public abstract void PostCalcStats();
 
-    public bool IsEnemy() => this.Kind is BattleNpcSubKind.Enemy or (BattleNpcSubKind)1;
+    public bool IsEnemy() => this.Kind is BattleNpcSubKind.Enemy or BattleNpcSubKind.BattleNpcPart or (BattleNpcSubKind)11;
 
     public bool IsAlly(PartyType filter) => this.PartyType <= filter;
 

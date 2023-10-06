@@ -144,11 +144,11 @@
       "5f49": "gluttony",
       "damage": [
         {
-          "potency": 500,
+          "potency": 520,
           "targetindex": 0
         },
         {
-          "potency": 375
+          "potency": 390
         }
       ]
     },
@@ -192,7 +192,7 @@
       "5f4f": "lemure's slice",
       "damage": [
         {
-          "potency": 220
+          "potency": 240
         }
       ]
     },
