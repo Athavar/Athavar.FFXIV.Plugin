@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.AutoSpear.Enum;
 
 internal enum Patch : ushort
@@ -35,4 +36,6 @@ internal enum Patch : ushort
     NewfoundAdventure = 610,
     BuriedMemory = 620,
     GodsRevelLandsTremble = 630,
+    TheDarkThrone = 640,
+    GrowingLight = 650,
 }

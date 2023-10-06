@@ -5,7 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
-using Dalamud.Hooking;
+using Dalamud.Game.Addon.Lifecycle;
+using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 
 /// <summary>
 ///     An abstract that hooks OnSetup to provide a feature.
@@ -13,18 +14,18 @@ using Dalamud.Hooking;
 internal abstract class OnSetupFeature : IBaseFeature
 {
     protected readonly YesModule module;
-    private readonly Hook<OnSetupDelegate> onSetupHook;
+    private readonly AddonEvent trigger;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupFeature"/> class.
     /// </summary>
-    /// <param name="onSetupSig">Signature to the OnSetup method.</param>
     /// <param name="module">The module.</param>
-    public OnSetupFeature(string onSetupSig, YesModule module)
+    /// <param name="trigger">The event that triggers the feature.</param>
+    protected OnSetupFeature(YesModule module, AddonEvent trigger = AddonEvent.PostRequestedUpdate)
     {
         this.module = module;
-        this.onSetupHook = this.module.DalamudServices.GameInteropProvider.HookFromSignature(onSetupSig, (OnSetupDelegate)this.OnSetupDetour);
-        this.onSetupHook.Enable();
+        this.trigger = trigger;
+        module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
     }
 
     /// <summary>
@@ -47,44 +48,30 @@ internal abstract class OnSetupFeature : IBaseFeature
     protected abstract string AddonName { get; }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-        this.onSetupHook.Disable();
-        this.onSetupHook.Dispose();
-    }
+    public void Dispose() => this.module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
 
     /// <summary>
     ///     A method that is run within the OnSetup detour.
     /// </summary>
     /// <param name="addon">Addon address.</param>
-    /// <param name="a2">Unknown paramater.</param>
-    /// <param name="data">Setup data address.</param>
-    protected abstract void OnSetupImpl(nint addon, uint a2, nint data);
+    /// <param name="addonEvent">Addon trigger event.</param>
+    protected abstract void OnSetupImpl(IntPtr addon, AddonEvent addonEvent);
 
-    private nint OnSetupDetour(nint addon, uint a2, nint data)
+    protected void TriggerHandler(AddonEvent type, AddonArgs args)
     {
         this.module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
-        var result = this.onSetupHook.Original(addon, a2, data);
-
         if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
         {
-            return result;
-        }
-
-        if (addon == nint.Zero)
-        {
-            return result;
+            return;
         }
 
         try
         {
-            this.OnSetupImpl(addon, a2, data);
+            this.OnSetupImpl(args.Addon, type);
         }
         catch (Exception ex)
         {
             this.module.Logger.Error(ex, "Don't crash the game");
         }
-
-        return result;
     }
 }

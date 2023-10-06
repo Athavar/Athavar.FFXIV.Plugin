@@ -35,6 +35,6 @@ public sealed unsafe class ClickRepair : ClickBase<ClickRepair, AddonRepair>
     /// <summary>
     ///     Click the repair all button.
     /// </summary>
-    [ClickName("repair_all")]
-    public void RepairAll() => this.ClickAddonButton(this.Addon->RepairAllButton, 0);
+    [ClickName("repair_allrepair_all")]
+    public void RepairAll() => this.ClickAddonButton(this.Addon->AtkUnitBase.UldManager.SearchNodeById(16)->GetAsAtkComponentButton(), 0);
 }

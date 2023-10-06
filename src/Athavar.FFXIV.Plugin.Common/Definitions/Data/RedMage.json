@@ -69,7 +69,7 @@
       "1D56": "verfire",
       "damage": [
         {
-          "potency": 330
+          "potency": 340
         }
       ]
     },
@@ -77,7 +77,7 @@
       "1D57": "verstone",
       "damage": [
         {
-          "potency": 330
+          "potency": 340
         }
       ]
     },
@@ -143,7 +143,7 @@
       "1D5F": "contre sixte",
       "damage": [
         {
-          "potency": 360
+          "potency": 380
         }
       ]
     },
@@ -151,7 +151,7 @@
       "1D64": "jolt ii",
       "damage": [
         {
-          "potency": 310
+          "potency": 320
         }
       ]
     },
@@ -167,11 +167,11 @@
       "1D65": "verflare",
       "damage": [
         {
-          "potency": 580,
+          "potency": 600,
           "targetindex": 0
         },
         {
-          "potency": 232
+          "potency": 240
         }
       ]
     },
@@ -179,11 +179,11 @@
       "1D66": "verholy",
       "damage": [
         {
-          "potency": 580,
+          "potency": 600,
           "targetindex": 0
         },
         {
-          "potency": 232
+          "potency": 240
         }
       ]
     },
@@ -273,7 +273,7 @@
       "4090": "enchanted reprise",
       "damage": [
         {
-          "potency": 330
+          "potency": 340
         }
       ]
     }

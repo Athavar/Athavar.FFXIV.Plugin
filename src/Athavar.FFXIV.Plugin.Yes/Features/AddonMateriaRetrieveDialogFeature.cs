@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
+using Dalamud.Game.Addon.Lifecycle;
 
 /// <summary>
 ///     AddonMateriaRetrieveDialog feature.
@@ -14,20 +15,19 @@ using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 internal class AddonMateriaRetrieveDialogFeature : OnSetupFeature
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="AddonMateriaRetrieveDialogFeature" /> class.
+    ///     Initializes a new instance of the <see cref="AddonMateriaRetrieveDialogFeature"/> class.
     /// </summary>
-    /// <param name="module"><see cref="YesModule" />.</param>
-    /// <param name="services">ServiceContainer of all dalamud services.</param>
+    /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonMateriaRetrieveDialogFeature(YesModule module)
-        : base("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 30 8B FA 49 8B D8 BA ?? ?? ?? ?? 48 8B F1 E8 ?? ?? ?? ?? 48 8B C8", module)
+        : base(module)
     {
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override string AddonName => "MateriaRetrieveDialog";
 
-    /// <inheritdoc />
-    protected override void OnSetupImpl(nint addon, uint a2, nint data)
+    /// <inheritdoc/>
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         if (!this.Configuration.MateriaRetrieveDialogEnabled)
         {

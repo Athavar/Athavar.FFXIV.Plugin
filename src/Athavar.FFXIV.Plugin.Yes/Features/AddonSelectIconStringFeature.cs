@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
+using Dalamud.Game.Addon.Lifecycle;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
@@ -18,9 +19,8 @@ internal class AddonSelectIconStringFeature : OnSetupSelectListFeature
     ///     Initializes a new instance of the <see cref="AddonSelectIconStringFeature"/> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
-    /// <param name="services">ServiceContainer of all dalamud services.</param>
     public AddonSelectIconStringFeature(YesModule module)
-        : base("40 53 56 57 41 54 41 57 48 83 EC 30 4D 8B F8 44 8B E2 48 8B F1 E8 ?? ?? ?? ??", module)
+        : base(module)
     {
     }
 
@@ -28,7 +28,7 @@ internal class AddonSelectIconStringFeature : OnSetupSelectListFeature
     protected override string AddonName => "SelectIconString";
 
     /// <inheritdoc/>
-    protected override unsafe void OnSetupImpl(nint addon, uint a2, nint data)
+    protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         var addonPtr = (AddonSelectIconString*)addon;
         var popupMenu = &addonPtr->PopupMenu.PopupMenu;

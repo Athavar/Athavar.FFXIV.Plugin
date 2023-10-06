@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.AutoSpear.Enum;
@@ -16,6 +17,7 @@ internal sealed partial class AutoSpear
         this.Data6_0(fishes);
         this.Data6_1(fishes);
         this.Data6_3(fishes);
+        this.Data6_5(fishes);
     }
 
     private void Data4_0(IDictionary<uint, SpearFish> data)
@@ -544,5 +546,13 @@ internal sealed partial class AutoSpear
            .Predators(data, 60, (38939, 4));
         data.Apply(38939, Patch.GodsRevelLandsTremble) // Verdigris Guppy
            .Spear(SpearfishSize.Small, SpearfishSpeed.Fast);
+    }
+
+    private void Data6_5(IDictionary<uint, SpearFish> data)
+    {
+        data.Apply(41060, Patch.GrowingLight) // Empyreal Spiral
+           .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
+        data.Apply(41062, Patch.GrowingLight) // Opal Tetra
+           .Spear(SpearfishSize.Small, SpearfishSpeed.Average);
     }
 }

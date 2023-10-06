@@ -77,7 +77,7 @@
       "DE6": "empyreal arrow",
       "damage": [
         {
-          "potency": 230
+          "potency": 240
         }
       ]
     },
@@ -101,7 +101,7 @@
       "DEA": "sidewinder",
       "damage": [
         {
-          "potency": 300
+          "potency": 320
         }
       ]
     },
