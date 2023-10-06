@@ -38,7 +38,7 @@ internal class EnablePeepingTomPvP : Cheat
     public override bool OnEnabled()
     {
         var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == "PeepingTom");
-        var type = assembly?.GetType("PeepingTom.PeepingTomPlugin");
+        var type = assembly?.GetType("PeepingTom.Plugin");
         if (type is null)
         {
             return false;
