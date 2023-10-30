@@ -144,7 +144,7 @@ internal sealed partial class CommandInterface
     public unsafe int GetPercentHQ()
     {
         var addon = this.GetSynthesisAddon();
-        if (addon->AtkUnitBase.UldManager.NodeList[33]->IsVisible)
+        if (!addon->AtkUnitBase.UldManager.NodeList[33]->IsVisible)
         {
             return 100;
         }
