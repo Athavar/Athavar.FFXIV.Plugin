@@ -9,7 +9,7 @@ using Lumina.Excel.GeneratedSheets;
 
 internal sealed partial class CommandInterface
 {
-    private static readonly uint[] GoldenSaucerIds = { 144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098 };
+    private static readonly uint[] GoldenSaucerIds = { 144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098, 1165, 1197 };
 
     private readonly uint logOutId;
 
