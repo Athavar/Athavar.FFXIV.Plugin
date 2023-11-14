@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Click.Clicks;
 
 using Athavar.FFXIV.Plugin.Click.Attributes;
@@ -10,7 +11,7 @@ using Athavar.FFXIV.Plugin.Click.Bases;
 public class ClickMaterialize : ClickBase<ClickMaterialize>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickMaterialize" /> class.
+    ///     Initializes a new instance of the <see cref="ClickMaterialize"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickMaterialize(nint addon = default)
@@ -25,10 +26,10 @@ public class ClickMaterialize : ClickBase<ClickMaterialize>
     /// </summary>
     /// <param name="addon">Addon to reference.</param>
     /// <returns>A click instance.</returns>
-    public static ClickCharaSelectListMenu Using(nint addon) => new(addon);
+    public static ClickMaterialize Using(nint addon) => new(addon);
 
     /// <summary>
-    ///     Click a retainer.
+    ///     Click item to extract materia.
     /// </summary>
     /// <param name="index">Retainer index.</param>
     public void Item(uint index) => this.FireCallback(2, index);

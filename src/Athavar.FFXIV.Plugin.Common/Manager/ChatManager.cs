@@ -29,20 +29,21 @@ internal sealed class ChatManager : IDisposable, IChatManager
     private readonly IFrameworkManager frameworkManager;
 
     [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
-    private readonly ProcessChatBoxDelegate processChatBox = null!;
+    private readonly ProcessChatBoxDelegate processChatBox;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatManager"/> class.
     /// </summary>
     /// <param name="dalamud"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
-    public ChatManager(IDalamudServices dalamud, IFrameworkManager frameworkManager)
+    /// <param name="addressResolver"><see cref="AddressResolver"/> added by DI.</param>
+    public ChatManager(IDalamudServices dalamud, IFrameworkManager frameworkManager, AddressResolver addressResolver)
     {
         this.dalamud = dalamud;
         this.frameworkManager = frameworkManager;
 
         // init processChatBox
-        dalamud.GameInteropProvider.InitializeFromAttributes(this);
+        this.processChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(addressResolver.ProcessChatBox);
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 #if DEBUG

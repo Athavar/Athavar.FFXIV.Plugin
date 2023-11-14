@@ -26,10 +26,10 @@ internal class AddonTalkFeature : UpdateFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonTalkFeature(YesModule module)
-        : base(module, AddonEvent.PostDraw)
+        : base(module, AddonEvent.PostUpdate)
     {
         this.module = module;
-        module.DalamudServices.AddonLifecycle.RegisterListener(AddonEvent.PostRequestedUpdate, this.AddonName, this.TriggerHandler);
+        module.DalamudServices.AddonLifecycle.RegisterListener(AddonEvent.PostDraw, this.AddonName, this.TriggerHandler);
     }
 
     /// <inheritdoc/>
@@ -38,7 +38,7 @@ internal class AddonTalkFeature : UpdateFeature
     public override void Dispose()
     {
         base.Dispose();
-        this.module.DalamudServices.AddonLifecycle.UnregisterListener(AddonEvent.PostRequestedUpdate, this.AddonName, this.TriggerHandler);
+        this.module.DalamudServices.AddonLifecycle.UnregisterListener(AddonEvent.PostDraw, this.AddonName, this.TriggerHandler);
     }
 
     /// <inheritdoc/>

@@ -58,7 +58,11 @@ internal abstract class UpdateFeature : IBaseFeature
 
     protected void TriggerHandler(AddonEvent type, AddonArgs args)
     {
-        this.module.Logger.Debug($"Addon{this.AddonName}.Update");
+        if (this.trigger != AddonEvent.PostUpdate)
+        {
+            this.module.Logger.Debug($"Addon{this.AddonName}.Update");
+        }
+
         if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
         {
             return;

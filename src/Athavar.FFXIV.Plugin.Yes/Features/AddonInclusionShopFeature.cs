@@ -17,18 +17,16 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// </summary>
 internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 {
-    [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2", DetourName = nameof(AgentReceiveEventDetour))]
-    private readonly Hook<AgentReceiveEventDelegate> agentReceiveEventHook = null!;
+    private readonly Hook<AgentReceiveEventDelegate> agentReceiveEventHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature"/> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
-    public AddonInclusionShopFeature(YesModule module)
+    public unsafe AddonInclusionShopFeature(YesModule module)
         : base(module, AddonEvent.PostSetup)
     {
-        module.DalamudServices.GameInteropProvider.InitializeFromAttributes(this);
-
+        this.agentReceiveEventHook = module.DalamudServices.GameInteropProvider.HookFromAddress<AgentReceiveEventDelegate>(module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour);
         this.agentReceiveEventHook.Enable();
     }
 

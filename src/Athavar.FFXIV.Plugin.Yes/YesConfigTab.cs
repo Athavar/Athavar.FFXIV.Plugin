@@ -268,6 +268,18 @@ internal sealed class YesConfigTab : Tab
                 IndentedTextColored(this.shadedColor, "Check the bulk desynthesis button when using the SalvageDialog feature.");
             }
 
+            // PurifyResult
+            {
+                var purifyResult = this.Configuration.AetherialReductionPurifyResultEnabled;
+                if (ImGui.Checkbox("PurifyResult", ref purifyResult))
+                {
+                    this.Configuration.AetherialReductionPurifyResultEnabled = purifyResult;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically closes the PurifyResult window when done reducing.");
+            }
+
             // MaterializeDialog
             {
                 var materialize = this.Configuration.MaterializeDialogEnabled;
@@ -344,6 +356,18 @@ internal sealed class YesConfigTab : Tab
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically send a retainer on the same venture as before when receiving an item.");
+            }
+
+            // RetainerItemTransferProgress
+            {
+                var retainerItemTransferProgress = this.Configuration.RetainerTransferProgressConfirmEnable;
+                if (ImGui.Checkbox("RetainerItemTransferProgress", ref retainerItemTransferProgress))
+                {
+                    this.Configuration.RetainerTransferProgressConfirmEnable = retainerItemTransferProgress;
+                    this.Configuration.Save();
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically closes the RetainerItemTransferProgress window when finished entrusting items.");
             }
 
             // GrandCompanySupplyReward

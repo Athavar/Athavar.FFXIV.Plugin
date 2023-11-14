@@ -178,6 +178,20 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     public uint InclusionShopRememberSubcategory { get; set; }
 
     /// <summary>
+    ///     Gets or sets a value indicating whether to auto-close the aetherial purify-result addon.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("AetherialReductionPurifyResultEnabled")]
+    public bool AetherialReductionPurifyResultEnabled { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to auto-close the RetainerTransferProgress addon.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("RetainerTransferProgressConfirmEnable")]
+    public bool RetainerTransferProgressConfirmEnable { get; set; }
+
+    /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>
     /// <returns>All the nodes.</returns>

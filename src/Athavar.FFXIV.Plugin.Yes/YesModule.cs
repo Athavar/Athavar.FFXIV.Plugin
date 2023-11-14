@@ -46,7 +46,9 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
-    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager)
+    /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
+    /// <param name="addressResolver"><see cref="AddressResolver"/> added by DI.</param>
+    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager, AddressResolver addressResolver)
         : base(configuration)
     {
         this.provider = provider;
@@ -54,6 +56,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.ChatManager = chatManager;
         this.Logger = dalamudServices.PluginLogger;
         this.frameworkManager = frameworkManager;
+        this.AddressResolver = addressResolver;
 
         this.LoadTerritories();
 
@@ -96,6 +99,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
     internal IPluginLogger Logger { get; }
+
+    /// <summary>
+    ///     Gets the <see cref="AddressResolver"/>.
+    /// </summary>
+    internal AddressResolver AddressResolver { get; }
 
     /// <summary>
     ///     Gets a mapping of territory IDs to names.
