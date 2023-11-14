@@ -5,8 +5,12 @@
 
 namespace Athavar.FFXIV.Plugin.Models.Interfaces;
 
+using Serilog.Events;
+
 public interface IPluginLogger
 {
+    public LogEventLevel MinimumLogLevel { get; }
+
     /// <summary>
     ///     Log a <see cref="F:Serilog.Events.LogEventLevel.Fatal"/> message to the Dalamud log for this plugin. This log level
     ///     should be
@@ -103,4 +107,18 @@ public interface IPluginLogger
     /// <inheritdoc cref="Verbose(string,object[])"/>
     /// <param name="exception">An (optional) exception that should be recorded alongside this event.</param>
     void Verbose(Exception? exception, string messageTemplate, params object[] values);
+
+    /// <summary>
+    ///     Write a raw log event to the plugin's log. Used for interoperability with other log systems, as well as
+    ///     advanced use cases.
+    /// </summary>
+    /// <param name="level">The log level for this event.</param>
+    /// <param name="exception">An (optional) exception that should be recorded alongside this event.</param>
+    /// <param name="messageTemplate">Message template describing the event.</param>
+    /// <param name="values">Objects positionally formatted into the message template.</param>
+    public void Write(
+        LogEventLevel level,
+        Exception? exception,
+        string messageTemplate,
+        params object[] values);
 }
