@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
 using Dalamud.Interface.Internal;
 

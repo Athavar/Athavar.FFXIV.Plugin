@@ -4,8 +4,8 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Extension;
 
-using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Models;
 
 public static class GearsetExtensions
 {

@@ -7,8 +7,8 @@ namespace Athavar.FFXIV.Plugin.Yes;
 
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;

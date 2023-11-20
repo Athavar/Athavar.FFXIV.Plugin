@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.UI;

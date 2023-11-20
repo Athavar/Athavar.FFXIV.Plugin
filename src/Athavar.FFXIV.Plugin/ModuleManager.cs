@@ -8,14 +8,15 @@ namespace Athavar.FFXIV.Plugin;
 using System.Reflection;
 using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Module = Athavar.FFXIV.Plugin.Common.Module;
+using Module = Athavar.FFXIV.Plugin.Models.Module;
 
 /// <summary>
-///     Manage instances of <see cref="Common.Module"/>.
+///     Manage instances of <see cref="Models.Module"/>.
 /// </summary>
 internal sealed class ModuleManager : IModuleManager, IDisposable
 {

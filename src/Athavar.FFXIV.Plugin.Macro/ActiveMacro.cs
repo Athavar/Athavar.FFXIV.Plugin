@@ -8,11 +8,11 @@ namespace Athavar.FFXIV.Plugin.Macro;
 using System.Reflection;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using Athavar.FFXIV.Plugin.Macro.Managers;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using NLua;
 

@@ -26,6 +26,7 @@ public class M000_Init : Migration
            .WithTimeStamp()
            .WithColumn(ContentEncounterDto.ColumnContentRouletteId).AsUInt32(ContentEncounterDto.ColumnContentRouletteId).NotNullable()
            .WithColumn(ContentEncounterDto.ColumnTerritoryTypeId).AsUInt32(ContentEncounterDto.ColumnTerritoryTypeId).NotNullable()
+           .WithColumn(ContentEncounterDto.ColumnPlayerContentId).AsUInt64(ContentEncounterDto.ColumnPlayerContentId).NotNullable().Indexed(ContentEncounterDto.IndexPlayerContentId)
            .WithColumn(ContentEncounterDto.ColumnClassJobId).AsUInt32(ContentEncounterDto.ColumnClassJobId).NotNullable()
            .WithColumn(ContentEncounterDto.ColumnCompleted).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnStartDate).AsInt64().NotNullable()

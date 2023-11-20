@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Definitions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel.GeneratedSheets;
 
 internal static class ActionEffectParser

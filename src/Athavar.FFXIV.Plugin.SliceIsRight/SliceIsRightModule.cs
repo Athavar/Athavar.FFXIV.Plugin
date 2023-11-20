@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.SliceIsRight;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Utility;

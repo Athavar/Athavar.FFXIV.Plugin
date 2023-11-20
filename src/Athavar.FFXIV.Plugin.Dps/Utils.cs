@@ -6,12 +6,12 @@ namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Globalization;
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using ImGuiNET;

@@ -6,7 +6,8 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin.Services;

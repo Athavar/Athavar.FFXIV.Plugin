@@ -7,8 +7,10 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
-using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftQueue.UI;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;

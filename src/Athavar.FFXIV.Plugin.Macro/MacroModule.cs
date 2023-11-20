@@ -7,10 +7,10 @@ namespace Athavar.FFXIV.Plugin.Macro;
 
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Macro.Managers;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.Command;
 using Microsoft.Extensions.DependencyInjection;
 

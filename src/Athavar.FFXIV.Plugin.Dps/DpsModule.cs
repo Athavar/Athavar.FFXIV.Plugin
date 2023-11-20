@@ -6,9 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(DpsConfiguration), HasTab = true)]

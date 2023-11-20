@@ -6,8 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using Lumina.Excel.GeneratedSheets;

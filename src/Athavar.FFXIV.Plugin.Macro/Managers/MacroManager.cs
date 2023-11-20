@@ -5,10 +5,10 @@
 
 namespace Athavar.FFXIV.Plugin.Macro.Managers;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using NLua.Exceptions;
 
 /// <summary>

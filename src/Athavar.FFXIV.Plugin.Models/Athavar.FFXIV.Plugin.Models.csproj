@@ -1,3 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(SolutionDir)\src\dalamud.targets"/>
+    <ItemGroup>
+        <Folder Include="Models\JobDefinitions\"/>
+    </ItemGroup>
 </Project>

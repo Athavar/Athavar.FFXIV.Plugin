@@ -6,9 +6,10 @@
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface.Utility;
 using ImGuiNET;
 

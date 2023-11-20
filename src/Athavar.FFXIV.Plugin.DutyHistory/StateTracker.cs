@@ -5,12 +5,12 @@
 
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Common.Manager.Models;
 using Athavar.FFXIV.Plugin.Data;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
+using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 
 public sealed class StateTracker : IDisposable
@@ -57,6 +57,7 @@ public sealed class StateTracker : IDisposable
             TerritoryType = args.DutyInfo.TerritoryType,
             ContentFinderCondition = args.DutyInfo.TerritoryType.ContentFinderCondition.Value,
             /* Known case where classJob is null/0: JoinInProgress + NotCompleted. TODO: Fix this */
+            PlayerContentId = this.clientState.LocalContentId,
             ClassJobId = this.clientState.LocalPlayer?.ClassJob.Id ?? this.classJobId ?? 0,
             Completed = args.Completed,
             StartDate = args.StartTime,
@@ -83,7 +84,7 @@ public sealed class StateTracker : IDisposable
         }
     }
 
-    private unsafe void OnDutyStarted(DutyStartedEventArgs args)
+    private void OnDutyStarted(DutyStartedEventArgs args)
     {
         this.classJobId = this.clientState.LocalPlayer?.ClassJob.Id;
 #if DEBUG

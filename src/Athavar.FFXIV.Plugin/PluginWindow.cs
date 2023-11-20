@@ -6,10 +6,11 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 

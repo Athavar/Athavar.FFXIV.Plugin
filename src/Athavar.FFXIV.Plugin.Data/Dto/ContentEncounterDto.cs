@@ -15,6 +15,7 @@ internal sealed class ContentEncounterDto : BaseDto
 
     public const string ColumnContentRouletteId = nameof(ContentRouletteId);
     public const string ColumnTerritoryTypeId = nameof(TerritoryTypeId);
+    public const string ColumnPlayerContentId = nameof(PlayerContentId);
     public const string ColumnClassJobId = nameof(ClassJobId);
     public const string ColumnCompleted = nameof(Completed);
     public const string ColumnStartDate = nameof(StartDate);
@@ -28,9 +29,13 @@ internal sealed class ContentEncounterDto : BaseDto
     public const string ColumnQueuePlayerCount = nameof(QueuePlayerCount);
     public const string ColumnWipes = nameof(Wipes);
 
+    public const string IndexPlayerContentId = $"idx_{TableName}_{ColumnPlayerContentId}";
+
     public uint ContentRouletteId { get; set; }
 
     public uint TerritoryTypeId { get; set; }
+
+    public ulong PlayerContentId { get; set; }
 
     public uint ClassJobId { get; set; }
 
@@ -65,6 +70,7 @@ internal sealed class ContentEncounterDto : BaseDto
             Id = c.Id,
             ContentRouletteId = c.ContentRouletteId,
             TerritoryTypeId = c.TerritoryTypeId,
+            PlayerContentId = c.PlayerContentId,
             ClassJobId = c.ClassJobId,
             Completed = c.Completed,
             StartDate = c.StartDate.ToUnixTimeMilliseconds(),
@@ -85,6 +91,7 @@ internal sealed class ContentEncounterDto : BaseDto
             Id = c.Id,
             ContentRouletteId = c.ContentRouletteId,
             TerritoryTypeId = c.TerritoryTypeId,
+            PlayerContentId = c.PlayerContentId,
             ClassJobId = c.ClassJobId,
             Completed = c.Completed,
             StartDate = DateTimeOffset.FromUnixTimeMilliseconds(c.StartDate),

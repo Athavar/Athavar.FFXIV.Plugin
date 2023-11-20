@@ -16,6 +16,8 @@ using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;

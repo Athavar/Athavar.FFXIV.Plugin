@@ -54,7 +54,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     /// <summary>
     ///     Close Addon.
     /// </summary>
-    public void Close() => this.FireCallback(-1);
+    public void Close() => this.UnitBase->Close(true);
 
     /// <summary>
     ///     Fire an addon callback.

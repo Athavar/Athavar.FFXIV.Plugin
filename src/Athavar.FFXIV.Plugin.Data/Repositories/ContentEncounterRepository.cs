@@ -28,6 +28,8 @@ public sealed class ContentEncounterRepository : BaseRepository
         return this.FillData(x.Select(e => (ContentEncounter)e).ToList());
     }
 
+    public IList<ContentEncounter> GetAllContentEncounterForPlayerId(ulong playerId) => this.GetContentEncounter(new ContentEncounterQueryParameter { PlayerId = playerId });
+
     public IList<ContentEncounter> GetContentEncounter(ContentEncounterQueryParameter parameter)
     {
         const string queryStart = $"SELECT * FROM {ContentEncounterDto.TableName}";
@@ -35,6 +37,11 @@ public sealed class ContentEncounterRepository : BaseRepository
         sb.Append(queryStart);
 
         var whereQuery = new List<string>();
+        if (parameter.PlayerId is { } playerId)
+        {
+            whereQuery.Add($"{ContentEncounterDto.ColumnPlayerContentId} == {playerId}");
+        }
+
         if (parameter.StartDate is { } startDate)
         {
             whereQuery.Add($"{ContentEncounterDto.ColumnStartDate} >= {startDate.ToUnixTimeMilliseconds()}");
@@ -118,6 +125,8 @@ public sealed class ContentEncounterRepository : BaseRepository
 
     public sealed class ContentEncounterQueryParameter
     {
+        public ulong? PlayerId { get; set; }
+
         public DateTimeOffset? StartDate { get; set; }
 
         public DateTimeOffset? StartDateEnd { get; set; }

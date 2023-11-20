@@ -6,7 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Cheat;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 

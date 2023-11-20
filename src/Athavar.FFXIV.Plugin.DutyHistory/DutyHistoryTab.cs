@@ -6,24 +6,47 @@
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
 using Athavar.FFXIV.Plugin.Common.UI;
-using Athavar.FFXIV.Plugin.Models.Data;
-using Dalamud.Interface.Utility.Table;
+using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 public sealed class DutyHistoryTab : Tab
 {
     private const string TabIdentifier = "dutyhistory";
-    private readonly Table<ContentEncounter> table;
+    private readonly DutyHistoryTable table;
+    private readonly IClientState clientState;
 
-    public DutyHistoryTab(DutyHistoryTable table) => this.table = table;
+    public DutyHistoryTab(DutyHistoryTable table, IClientState clientState)
+    {
+        this.table = table;
+        this.clientState = clientState;
 
+        if (this.clientState.IsLoggedIn)
+        {
+            table.Update(this.clientState.LocalContentId);
+        }
+
+        this.clientState.Login += this.OnLogin;
+    }
+
+    /// <inheritdoc/>
     public override string Name => DutyHistoryModule.ModuleName;
 
+    /// <inheritdoc/>
     public override string Identifier => TabIdentifier;
 
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        this.clientState.Login -= this.OnLogin;
+        base.Dispose();
+    }
+
+    /// <inheritdoc/>
     public override void Draw()
     {
         ImGui.Separator();
         this.table.Draw(ImGui.GetTextLineHeightWithSpacing());
     }
+
+    private void OnLogin() => this.table.Update(this.clientState.LocalContentId);
 }

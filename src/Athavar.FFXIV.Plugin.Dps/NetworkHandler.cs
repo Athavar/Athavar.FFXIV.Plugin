@@ -12,6 +12,7 @@ using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.Network;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;

@@ -5,10 +5,10 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Common.Utils.Constants;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Constants;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 

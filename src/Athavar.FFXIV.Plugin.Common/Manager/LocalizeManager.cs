@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Lumina.Data;
 
 internal sealed class LocalizeManager : ILocalizeManager

@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Macro;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 

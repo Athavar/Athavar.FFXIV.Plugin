@@ -6,9 +6,10 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Common.Manager.Models;
+using Athavar.FFXIV.Plugin.Common.Extension;
+using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
@@ -107,7 +108,7 @@ public class DutyManager : IDisposable, IDutyManager
     private void OnDutyStarted(object? sender, ushort territory) => this.StartDuty(territory);
 
     // This gets called before DutyState.DutyCompleted, so we can intercept in case the duty is abandoned instead of completed.
-    private void OnTerritoryChanged(ushort territoryType)
+    private void OnTerritoryChanged(ushort territoryTypeId)
     {
         if (this.dutyStarted && this.dutyState.IsDutyStarted == false)
         {
@@ -116,7 +117,17 @@ public class DutyManager : IDisposable, IDutyManager
 
         if (this.lastCfPopData is { JoinInProgress: true })
         {
-            this.StartDuty(territoryType);
+            this.StartDuty(territoryTypeId);
+        }
+
+        if (this.lastCfPopData is not null)
+        {
+            var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId);
+            if (territoryType?.GetTerritoryIntendedUse().IsDuty() == false)
+            {
+                // clear data. Territory is no duty.
+                this.lastCfPopData = null;
+            }
         }
     }
 
@@ -127,32 +138,44 @@ public class DutyManager : IDisposable, IDutyManager
             return;
         }
 
-        var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territory);
-        if (territoryType is null || this.lastCfPopData is not { } cfPopData)
+        if (this.lastCfPopData is not { } cfPopData || this.CreateDutyInfo(territory, cfPopData) is not { } dutyInfo)
         {
             return;
         }
 
-        var territoryIntendedUse = (TerritoryIntendedUse)territoryType.TerritoryIntendedUse;
+        this.currentDutyInfo = dutyInfo;
+
+        this.dutyStartTime = DateTimeOffset.UtcNow;
+        this.dutyStarted = true;
+        var eventArgs = new DutyStartedEventArgs { DutyInfo = this.currentDutyInfo, StartTime = this.dutyStartTime.Value };
+
+        this.DutyStarted?.Invoke(eventArgs);
+    }
+
+    private DutyInfo? CreateDutyInfo(ushort territoryTypeId, CfPopData cfPopData)
+    {
+        var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId);
+        if (territoryType is null)
+        {
+            return null;
+        }
+
+        var territoryIntendedUse = territoryType.GetTerritoryIntendedUse();
         if (!territoryIntendedUse.IsDuty())
         {
+            // exit, no duty
 #if DEBUG
             if (!Enum.IsDefined(typeof(TerritoryIntendedUse), territoryType.TerritoryIntendedUse))
             {
                 // TODO: find undefined value.
             }
 #endif
-            return;
+            return null;
         }
 
-        this.dutyStartTime = DateTimeOffset.UtcNow;
-        this.dutyStarted = true;
         var contentRoulette = this.dataManager.Excel.GetSheet<ContentRoulette>()?.GetRow(cfPopData.ContentRouletteId) ?? throw new AthavarPluginException("Entry in ContentRoulette not found");
 
-        this.currentDutyInfo = new DutyInfo { TerritoryType = territoryType, ContentRoulette = contentRoulette, ActiveContentCondition = cfPopData.GetActiveContentCondition(), JoinInProgress = cfPopData.JoinInProgress, QueuePlayerCount = cfPopData.PlayerCount };
-        var eventArgs = new DutyStartedEventArgs { DutyInfo = this.currentDutyInfo, StartTime = this.dutyStartTime.Value };
-
-        this.DutyStarted?.Invoke(eventArgs);
+        return new DutyInfo { TerritoryType = territoryType, ContentRoulette = contentRoulette, ActiveContentCondition = cfPopData.GetActiveContentCondition(), JoinInProgress = cfPopData.JoinInProgress, QueuePlayerCount = cfPopData.PlayerCount };
     }
 
     private void EndDuty(bool completed)
@@ -166,6 +189,7 @@ public class DutyManager : IDisposable, IDutyManager
             this.DutyEnded?.Invoke(new DutyEndedEventArgs { Completed = completed, StartTime = start, EndTime = end, Duration = duration, DutyInfo = this.currentDutyInfo, Wipes = this.wipeCount });
         }
 
+        this.lastCfPopData = null;
         this.dutyStarted = false;
         this.dutyStartTime = null;
         this.currentDutyInfo = null;

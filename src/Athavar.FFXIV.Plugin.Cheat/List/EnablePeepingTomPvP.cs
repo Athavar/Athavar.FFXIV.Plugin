@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Cheat.List;
 
 using System.Reflection;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Plugin;
 
 /// <summary>

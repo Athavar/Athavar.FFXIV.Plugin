@@ -5,7 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 
 internal class FrameworkManager : IDisposable, IFrameworkManager

@@ -34,25 +34,33 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     private static float completeColumnWidth;
     private static float joinInProgressColumnWidth;
 
+    private readonly RepositoryContext context;
     private readonly IDataManager dataManager;
     private readonly StateTracker stateTracker;
 
     public DutyHistoryTable(RepositoryContext context, StateTracker stateTracker, IDataManager dataManager)
         : base("dutyTrackerTable", new List<ContentEncounter>(), ContentRouletteColumnValue, ContentFinderNameColumnValue, StartDateColumnValue, DurationColumnValue, CompleteColumnValue, JoinInProgressColumnValue)
     {
+        this.context = context;
         this.stateTracker = stateTracker;
         this.dataManager = dataManager;
-        Task.Run(() =>
-        {
-            var list = this.Items as List<ContentEncounter>;
-            list?.AddRange(context.ContentEncounter.GetAllContentEncounter());
-            this.filterDirty = true;
-            this.sortDirty = true;
-        });
         this.stateTracker.NewContentEncounter += this.OnNewContentEncounter;
     }
 
     public void Dispose() => this.stateTracker.NewContentEncounter -= this.OnNewContentEncounter;
+
+    public void Update(ulong playerId)
+        => Task.Run(() =>
+        {
+            if (this.Items is List<ContentEncounter> list)
+            {
+                list.Clear();
+                list.AddRange(this.context.ContentEncounter.GetAllContentEncounterForPlayerId(playerId));
+            }
+
+            this.filterDirty = true;
+            this.sortDirty = true;
+        });
 
     protected override void PreDraw()
     {

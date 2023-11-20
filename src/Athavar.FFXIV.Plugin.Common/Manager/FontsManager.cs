@@ -6,9 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface;
 using ImGuiNET;
 

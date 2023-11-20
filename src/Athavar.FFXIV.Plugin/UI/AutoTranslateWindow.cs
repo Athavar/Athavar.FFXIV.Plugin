@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.UI;
 
 using System.Numerics;
 using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;

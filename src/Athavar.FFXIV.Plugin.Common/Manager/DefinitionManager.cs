@@ -11,6 +11,7 @@ using System.Text.Json;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Common;
 using Dalamud.Plugin;
 

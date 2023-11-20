@@ -4,6 +4,8 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.UI;
 
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+
 public abstract class Tab : IDisposable, ITab
 {
     /// <summary>

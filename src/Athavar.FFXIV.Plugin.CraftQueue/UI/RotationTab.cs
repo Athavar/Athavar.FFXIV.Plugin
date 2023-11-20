@@ -12,6 +12,7 @@ using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;

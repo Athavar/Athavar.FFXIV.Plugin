@@ -7,9 +7,10 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
 using System.Threading.Channels;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
