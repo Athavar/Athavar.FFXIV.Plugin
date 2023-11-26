@@ -40,4 +40,12 @@ public sealed class CommonConfiguration : BasicModuleConfig<CommonConfiguration>
     [JsonInclude]
     [JsonPropertyName("ErrorChatType")]
     public XivChatType ErrorChatType { get; set; } = XivChatType.Urgent;
+
+    /// <summary>
+    ///     Gets or sets a <see cref="Dictionary{TKey,TValue}"/> of <see cref="SavedDutyInfo"/>. Key is ContentId of the local
+    ///     player.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("SavedDutyInfo")]
+    public Dictionary<ulong, SavedDutyInfo> SavedDutyInfos { get; set; } = new();
 }

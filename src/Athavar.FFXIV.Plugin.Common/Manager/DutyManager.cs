@@ -7,6 +7,8 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
+using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
@@ -15,12 +17,15 @@ using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
 using Lumina.Extensions;
 
-public class DutyManager : IDisposable, IDutyManager
+internal sealed partial class DutyManager : IDisposable, IDutyManager
 {
     private readonly IDutyState dutyState;
     private readonly IDataManager dataManager;
     private readonly IClientState clientState;
+    private readonly IPartyList partyList;
     private readonly IPluginLogger logger;
+    private readonly EventCaptureManager eventCaptureManager;
+    private readonly CommonConfiguration configuration;
 
     private readonly Hook<CfPopDelegate> cfPopHook;
 
@@ -30,23 +35,26 @@ public class DutyManager : IDisposable, IDutyManager
     private DutyInfo? currentDutyInfo;
     private int wipeCount;
 
-    public DutyManager(IDalamudServices dalamudServices, AddressResolver addressResolver)
+    public DutyManager(IDalamudServices dalamudServices, AddressResolver addressResolver, EventCaptureManager eventCaptureManager, CommonConfiguration configuration)
     {
         this.dutyState = dalamudServices.DutyState;
         this.dataManager = dalamudServices.DataManager;
         this.clientState = dalamudServices.ClientState;
+        this.partyList = dalamudServices.PartyList;
         this.logger = dalamudServices.PluginLogger;
+        this.eventCaptureManager = eventCaptureManager;
+        this.configuration = configuration;
 
         this.dutyState.DutyStarted += this.OnDutyStarted;
         this.dutyState.DutyWiped += this.OnDutyWiped;
         this.dutyState.DutyRecommenced += this.OnDutyRecommenced;
         this.dutyState.DutyCompleted += this.OnDutyCompleted;
         this.clientState.TerritoryChanged += this.OnTerritoryChanged;
-        this.clientState.CfPop += condition => dalamudServices.PluginLogger.Debug("CfPop: ContentFinderCondition id:{0}", condition.RowId);
+        this.Restore();
+        this.clientState.Login += this.OnLogin;
+
         this.cfPopHook = dalamudServices.GameInteropProvider.HookFromAddress<CfPopDelegate>(addressResolver.CfPopPacketHandler, this.CfPopDetour);
         this.cfPopHook.Enable();
-
-        // TODO: Handle game crash cases. Restore "lastCfPopData", "dutyStartTime", "dutyStarted"
     }
 
     private delegate nint CfPopDelegate(nint packetData);
@@ -70,6 +78,7 @@ public class DutyManager : IDisposable, IDutyManager
         this.dutyState.DutyRecommenced -= this.OnDutyRecommenced;
         this.dutyState.DutyCompleted -= this.OnDutyCompleted;
         this.clientState.TerritoryChanged -= this.OnTerritoryChanged;
+        this.clientState.Login -= this.OnLogin;
     }
 
     private unsafe nint CfPopDetour(nint packetData)
@@ -131,6 +140,14 @@ public class DutyManager : IDisposable, IDutyManager
         }
     }
 
+    private void OnLogin() => this.Restore();
+}
+
+/// <summary>
+///     Duty Control.
+/// </summary>
+internal sealed partial class DutyManager
+{
     private void StartDuty(ushort territory)
     {
         if (this.dutyStarted)
@@ -138,7 +155,7 @@ public class DutyManager : IDisposable, IDutyManager
             return;
         }
 
-        if (this.lastCfPopData is not { } cfPopData || this.CreateDutyInfo(territory, cfPopData) is not { } dutyInfo)
+        if (this.CreateDutyInfo(territory, this.lastCfPopData) is not { } dutyInfo)
         {
             return;
         }
@@ -148,11 +165,12 @@ public class DutyManager : IDisposable, IDutyManager
         this.dutyStartTime = DateTimeOffset.UtcNow;
         this.dutyStarted = true;
         var eventArgs = new DutyStartedEventArgs { DutyInfo = this.currentDutyInfo, StartTime = this.dutyStartTime.Value };
+        this.Save();
 
         this.DutyStarted?.Invoke(eventArgs);
     }
 
-    private DutyInfo? CreateDutyInfo(ushort territoryTypeId, CfPopData cfPopData)
+    private DutyInfo? CreateDutyInfo(ushort territoryTypeId, CfPopData? cfPopData)
     {
         var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId);
         if (territoryType is null)
@@ -173,9 +191,22 @@ public class DutyManager : IDisposable, IDutyManager
             return null;
         }
 
-        var contentRoulette = this.dataManager.Excel.GetSheet<ContentRoulette>()?.GetRow(cfPopData.ContentRouletteId) ?? throw new AthavarPluginException("Entry in ContentRoulette not found");
+        var playerCount = cfPopData?.PlayerCount ?? this.partyList.Length;
+        if (playerCount == 0)
+        {
+            playerCount = 1;
+        }
 
-        return new DutyInfo { TerritoryType = territoryType, ContentRoulette = contentRoulette, ActiveContentCondition = cfPopData.GetActiveContentCondition(), JoinInProgress = cfPopData.JoinInProgress, QueuePlayerCount = cfPopData.PlayerCount };
+        var contentRoulette = this.dataManager.Excel.GetSheet<ContentRoulette>()?.GetRow(cfPopData?.ContentRouletteId ?? 0) ?? throw new AthavarPluginException("Entry in ContentRoulette not found");
+
+        return new DutyInfo
+        {
+            TerritoryType = territoryType,
+            ContentRoulette = contentRoulette,
+            ActiveContentCondition = cfPopData?.GetActiveContentCondition() ?? ContentCondition.None,
+            JoinInProgress = cfPopData?.JoinInProgress ?? false,
+            QueuePlayerCount = playerCount,
+        };
     }
 
     private void EndDuty(bool completed)
@@ -189,10 +220,74 @@ public class DutyManager : IDisposable, IDutyManager
             this.DutyEnded?.Invoke(new DutyEndedEventArgs { Completed = completed, StartTime = start, EndTime = end, Duration = duration, DutyInfo = this.currentDutyInfo, Wipes = this.wipeCount });
         }
 
+        this.Clear();
+    }
+}
+
+/// <summary>
+///     Duty Config Saving.
+/// </summary>
+internal sealed partial class DutyManager
+{
+    private void Restore()
+    {
+        if (!this.clientState.IsLoggedIn)
+        {
+            return;
+        }
+
+        this.logger.Verbose("Check if configuration contains dutyInfo for restore");
+
+        if (this.configuration.SavedDutyInfos.TryGetValue(this.clientState.LocalContentId, out var savedDutyInfo))
+        {
+            // we have saved duty info. set duty to started.
+            this.dutyStarted = true;
+            this.currentDutyInfo = savedDutyInfo.GetDutyInfo(this.dataManager);
+            this.dutyStartTime = savedDutyInfo.DutyStartTime;
+            this.logger.Verbose("Restore dutyInfo for localContentId {0}", this.clientState.LocalContentId);
+
+            // check if player is currently in saved duty.
+            if (this.currentDutyInfo is not null && this.clientState.TerritoryType != this.currentDutyInfo?.TerritoryType.RowId)
+            {
+                // current territory is not matching saved duty-info. End duty is clearing the saved data.
+                this.EndDuty(false);
+            }
+        }
+    }
+
+    private void Save()
+    {
+        if (this.currentDutyInfo is null || this.dutyStartTime is null)
+        {
+            // we are currently not in a duty. clear state.
+            this.Clear();
+        }
+        else
+        {
+            // save current data.
+            this.configuration.SavedDutyInfos[this.clientState.LocalContentId] = new SavedDutyInfo(this.currentDutyInfo, this.dutyStartTime.Value);
+            this.configuration.Save();
+        }
+    }
+
+    private void Clear()
+    {
         this.lastCfPopData = null;
         this.dutyStarted = false;
         this.dutyStartTime = null;
         this.currentDutyInfo = null;
         this.wipeCount = 0;
+
+        if (this.configuration.SavedDutyInfos.Remove(this.clientState.LocalContentId))
+        {
+            this.configuration.Save();
+        }
     }
+}
+
+/// <summary>
+///     Death Tracking.
+/// </summary>
+internal sealed partial class DutyManager
+{
 }

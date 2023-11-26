@@ -41,6 +41,7 @@ public static class DependencyInjection
                 ds.PluginLogger.Debug("Finish Setup AddressResolver");
                 return resolver;
             })
+           .AddSingleton<EventCaptureManager>()
            .AddSingleton<IPluginLogger>(o => o.GetRequiredService<IDalamudServices>().PluginLogger)
            .AddSingleton<IDataManager>(o => o.GetRequiredService<IDalamudServices>().DataManager)
            .AddSingleton<IClientState>(o => o.GetRequiredService<IDalamudServices>().ClientState);

@@ -8,10 +8,11 @@ namespace Athavar.FFXIV.Plugin.Models;
 [Flags]
 public enum ContentCondition
 {
-    JoinInProgress,
-    UnrestrictedParty,
-    MinimalIL,
-    LevelSync,
-    SilenceEcho,
-    ExplorerMode,
+    None = 0x0,
+    JoinInProgress = 0x1,
+    UnrestrictedParty = 0x2,
+    MinimalIL = 0x4,
+    LevelSync = 0x8,
+    SilenceEcho = 0x10,
+    ExplorerMode = 0x20,
 }
