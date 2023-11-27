@@ -27,6 +27,11 @@ internal sealed partial class EncounterManager
             return;
         }
 
+        if (!this.tmpObjectList.ContainsKey(actor.ObjectId) && this.objectTable.SearchById(actor.ObjectId) is { } gameObject)
+        {
+            this.tmpObjectList.Add(actor.ObjectId, gameObject);
+        }
+
         switch (@event)
         {
             case CombatEvent.Action action:

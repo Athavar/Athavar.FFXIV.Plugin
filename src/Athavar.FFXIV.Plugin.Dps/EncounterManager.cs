@@ -13,6 +13,8 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
@@ -34,9 +36,11 @@ internal sealed partial class EncounterManager : IDisposable
     private readonly uint[] damageReceivedProcs;
     private readonly uint[] limitBreaks;
     private readonly RollingList<TerritoryEncounter> encounterHistory = new(20, true);
+    private readonly Dictionary<ulong, GameObject> tmpObjectList = new();
 
     private DateTime nextUpdate = DateTime.MinValue;
     private DateTime nextStatUpdate = DateTime.MinValue;
+
 
     public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration, IFrameworkManager frameworkManager)
     {
@@ -140,8 +144,9 @@ internal sealed partial class EncounterManager : IDisposable
             ce.Filter = this.configuration.PartyFilter;
             ce.CalcStats();
 
-            if (!this.ci.IsInCombat() && ce.LastDamageEvent.AddSeconds(10) < now)
+            if (this.CurrentEncounter is not null && !this.ci.IsInCombat() && this.CurrentEncounter.AllyCombatants.Select(c => this.tmpObjectList[c.ObjectId]).Cast<Character>().All(go => (go.StatusFlags & StatusFlags.InCombat) == 0))
             {
+                ;
                 // if encounter is not valid, it will not life for 10 seconds because of nextUpdate
                 this.EndEncounter();
                 this.UpdateCurrentTerritoryEncounter();

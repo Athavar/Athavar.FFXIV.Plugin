@@ -18,6 +18,7 @@ internal sealed partial class EncounterManager
             return;
         }
 
+        this.tmpObjectList.Clear();
         var ce = this.CurrentEncounter;
         this.CurrentEncounter = new Encounter();
 
