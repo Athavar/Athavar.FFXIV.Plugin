@@ -28,6 +28,7 @@ internal sealed partial class EncounterManager : IDisposable
     private readonly Utils utils;
     private readonly DpsConfiguration configuration;
     private readonly IFrameworkManager frameworkManager;
+    private readonly IPluginLogger logger;
 
     private readonly uint[] damageDealtHealProcs;
     private readonly uint[] damageReceivedHealProcs;
@@ -36,13 +37,11 @@ internal sealed partial class EncounterManager : IDisposable
     private readonly uint[] damageReceivedProcs;
     private readonly uint[] limitBreaks;
     private readonly RollingList<TerritoryEncounter> encounterHistory = new(20, true);
-    private readonly Dictionary<ulong, GameObject> tmpObjectList = new();
 
     private DateTime nextUpdate = DateTime.MinValue;
     private DateTime nextStatUpdate = DateTime.MinValue;
 
-
-    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration, IFrameworkManager frameworkManager)
+    public EncounterManager(IDalamudServices services, NetworkHandler networkHandler, IDefinitionManager definitions, Utils utils, ICommandInterface ci, DpsConfiguration configuration, IFrameworkManager frameworkManager, IPluginLogger logger)
     {
         this.services = services;
         this.networkHandler = networkHandler;
@@ -51,6 +50,7 @@ internal sealed partial class EncounterManager : IDisposable
         this.ci = ci;
         this.configuration = configuration;
         this.frameworkManager = frameworkManager;
+        this.logger = logger;
 
         this.objectTable = services.ObjectTable;
         Encounter.ObjectTable = services.ObjectTable;
@@ -144,15 +144,20 @@ internal sealed partial class EncounterManager : IDisposable
             ce.Filter = this.configuration.PartyFilter;
             ce.CalcStats();
 
-            if (this.CurrentEncounter is not null && !this.ci.IsInCombat() && this.CurrentEncounter.AllyCombatants.Select(c => this.tmpObjectList[c.ObjectId]).Cast<Character>().All(go => (go.StatusFlags & StatusFlags.InCombat) == 0))
+            if (this.CurrentEncounter is not null && !this.ci.IsInCombat() && ce.Start.AddSeconds(2) < now && this.CurrentEncounter!.AllyCombatants.Select(c => this.objectTable.SearchById(c.ObjectId)).Cast<Character>().All(go => (go.StatusFlags & StatusFlags.InCombat) == 0))
             {
-                ;
-                // if encounter is not valid, it will not life for 10 seconds because of nextUpdate
+                /*
+                 * - player is not in combat
+                 * - start of encounter was 2 seconds ago. necessary, because combat state is not directly updated.
+                 * - all ally combatants are no longer in combat.
+                 */
+                this.logger.Verbose("End CurrentEncounter - CombatCheck");
                 this.EndEncounter();
                 this.UpdateCurrentTerritoryEncounter();
             }
             else if (this.CurrentTerritoryEncounter is not null && this.CurrentTerritoryEncounter.Territory != this.ci.GetCurrentTerritory())
             {
+                this.logger.Verbose("End CurrentEncounter - TerritoryCheck");
                 this.EndEncounter();
                 this.EndCurrentTerritoryEncounter();
             }
@@ -168,6 +173,7 @@ internal sealed partial class EncounterManager : IDisposable
 
             if (!ce.IsValid())
             {
+                this.logger.Verbose("End CurrentEncounter - CurrentInvalid");
                 this.EndEncounter(true);
                 return;
             }

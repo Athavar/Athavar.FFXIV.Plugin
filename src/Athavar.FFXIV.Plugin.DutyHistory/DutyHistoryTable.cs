@@ -5,8 +5,11 @@
 
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
+using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Data;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.Models.Types;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Table;
@@ -21,8 +24,9 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     private static readonly ContentRouletteColumn ContentRouletteColumnValue = new() { Label = "Roulette" };
     private static readonly StartDateColumn StartDateColumnValue = new() { Label = "StartTime" };
     private static readonly DurationColumn DurationColumnValue = new() { Label = "Duration" };
-    private static readonly CompleteColumn CompleteColumnValue = new() { Label = "Complete" };
-    private static readonly JoinInProgressColumn JoinInProgressColumnValue = new() { Label = "JoinInProgress" };
+    private static readonly CompleteColumn CompleteColumnValue = new() { Label = "C", Tooltip = "Complete" };
+    private static readonly JoinInProgressColumn JoinInProgressColumnValue = new() { Label = "JIP", Tooltip = "JoinInProgress" };
+    private static readonly ConditionColumn ConditionColumnValue = new() { Label = "DutySettings" };
 
     private static float globalScale;
     private static float itemSpacingX;
@@ -33,18 +37,20 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     private static float durationTimeColumnWidth;
     private static float completeColumnWidth;
     private static float joinInProgressColumnWidth;
+    private static float conditionColumnWidth;
 
     private readonly RepositoryContext context;
     private readonly IDataManager dataManager;
     private readonly StateTracker stateTracker;
 
-    public DutyHistoryTable(RepositoryContext context, StateTracker stateTracker, IDataManager dataManager)
-        : base("dutyTrackerTable", new List<ContentEncounter>(), ContentRouletteColumnValue, ContentFinderNameColumnValue, StartDateColumnValue, DurationColumnValue, CompleteColumnValue, JoinInProgressColumnValue)
+    public DutyHistoryTable(RepositoryContext context, StateTracker stateTracker, IDataManager dataManager, IIconManager iconManager)
+        : base("dutyTrackerTable", new List<ContentEncounter>(), ContentRouletteColumnValue, ContentFinderNameColumnValue, StartDateColumnValue, DurationColumnValue, CompleteColumnValue, JoinInProgressColumnValue, ConditionColumnValue)
     {
         this.context = context;
         this.stateTracker = stateTracker;
         this.dataManager = dataManager;
         this.stateTracker.NewContentEncounter += this.OnNewContentEncounter;
+        ConditionColumnValue.Init(dataManager, iconManager);
     }
 
     public void Dispose() => this.stateTracker.NewContentEncounter -= this.OnNewContentEncounter;
@@ -74,7 +80,8 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
             startTimeColumnWidth = (ImGui.CalcTextSize("000-00-00T00:00:00").X + (itemSpacingX * 2)) / globalScale;
             durationTimeColumnWidth = (ImGui.CalcTextSize("0:00:00.000").X + (itemSpacingX * 2)) / globalScale;
             completeColumnWidth = (ImGui.CalcTextSize(CompleteColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
-            completeColumnWidth = (ImGui.CalcTextSize(JoinInProgressColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
+            joinInProgressColumnWidth = (ImGui.CalcTextSize(JoinInProgressColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
+            conditionColumnWidth = (ImGui.CalcTextSize(ConditionColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
         }
     }
 
@@ -133,8 +140,112 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
 
     private sealed class JoinInProgressColumn : ColumnBool<ContentEncounter>
     {
-        public override float Width => completeColumnWidth * ImGuiHelpers.GlobalScale;
+        public override float Width => joinInProgressColumnWidth * ImGuiHelpers.GlobalScale;
 
         public override bool ToBool(ContentEncounter item) => item.JoinInProgress;
+    }
+
+    private sealed class ConditionColumn : ColumnFlags<ContentCondition, ContentEncounter>
+    {
+        private string[] flagNames = Enum.GetValues<ContentCondition>()
+           .Select(p => p.ToString())
+           .ToArray();
+
+        private ContentCondition currentFilter;
+
+        private IIconManager? icons;
+
+        public ConditionColumn() => this.AllFlags = Enum.GetValues<ContentCondition>().Aggregate((l, r) => l | r);
+
+        public override float Width => conditionColumnWidth * ImGuiHelpers.GlobalScale;
+
+        public override ContentCondition FilterValue => ~this.currentFilter;
+
+        protected override string[] Names => this.flagNames;
+
+        public void Init(IDataManager dataManager, IIconManager iconManager)
+        {
+            this.icons = iconManager;
+            var sheet = dataManager.GetExcelSheet<Addon>();
+            var names = new string[this.Values.Count];
+            for (var index = 0; index < this.Values.Count; index++)
+            {
+                var flag = this.Values[index];
+                names[index] = sheet?.GetRow(GetTooltipId(flag))?.Text.RawString ?? flag.ToString();
+            }
+
+            this.flagNames = names;
+        }
+
+        public override bool FilterFunc(ContentEncounter item)
+        {
+            if (item.ActiveContentCondition == 0)
+            {
+                // encounter has no condition. Filter out.
+                return this.FilterValue.HasFlag(ContentCondition.SelectNone);
+            }
+
+            return this.FilterValue.HasFlag(item.ActiveContentCondition);
+        }
+
+        public override int Compare(ContentEncounter lhs, ContentEncounter rhs) => lhs.ActiveContentCondition.CompareTo(rhs.ActiveContentCondition);
+
+        public override void DrawColumn(ContentEncounter item, int i)
+        {
+            var first = false;
+            var index = 0;
+            foreach (var flag in this.Values)
+            {
+                if ((item.ActiveContentCondition & flag) != 0 && this.icons is not null && this.icons.TryGetIcon(GetIconId(flag), ITextureProvider.IconFlags.HiRes, out var textureWrap))
+                {
+                    if (first)
+                    {
+                        ImGui.SameLine();
+                    }
+                    else
+                    {
+                        first = true;
+                    }
+
+                    ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Size, ImGui.GetTextLineHeight());
+                    ImGuiEx.TextTooltip(this.Names[index]);
+                }
+
+                index++;
+            }
+        }
+
+        protected override void SetValue(ContentCondition value, bool enable)
+        {
+            var currentFilter = enable ? this.currentFilter & ~value : this.currentFilter | value;
+            this.currentFilter = currentFilter;
+        }
+
+        private static uint GetIconId(ContentCondition condition)
+            => condition switch
+            {
+                ContentCondition.JoinInProgress => 60644,
+                ContentCondition.UnrestrictedParty => 60641,
+                ContentCondition.MinimalIL => 60642,
+                ContentCondition.LevelSync => 60649,
+                ContentCondition.SilenceEcho => 60647,
+                ContentCondition.ExplorerMode => 60648,
+                ContentCondition.LimitedLevelingRoulette => 60640,
+                _ => 0,
+            };
+
+        private static uint GetTooltipId(ContentCondition condition)
+            => condition switch
+            {
+                ContentCondition.JoinInProgress => 2519,
+                ContentCondition.UnrestrictedParty => 10008,
+                ContentCondition.MinimalIL => 10010,
+                ContentCondition.LevelSync => 12696,
+                ContentCondition.SilenceEcho => 12691,
+                ContentCondition.ExplorerMode => 13038,
+                ContentCondition.LimitedLevelingRoulette => 13030,
+                ContentCondition.SelectNone => 14727,
+                _ => 0,
+            };
     }
 }

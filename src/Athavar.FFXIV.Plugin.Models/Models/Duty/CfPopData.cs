@@ -94,7 +94,7 @@ public struct CfPopData
 
     public bool Unk3X40 => (this.cc3 & 0x40) != 0;
 
-    public bool IsExplorerModeEnabled => (this.cc4 & 0x10) != 0;
+    public bool IsExplorerModeEnabled => (this.cc4 & 0x01) != 0;
 
     public int Tanks => this.tankCount;
 

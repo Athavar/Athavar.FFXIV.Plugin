@@ -169,6 +169,15 @@ public static class ImGuiEx
     ///     Scales a Image after height.
     /// </summary>
     /// <param name="handle">Pointer to the image texture.</param>
+    /// <param name="size">Image size.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ScaledImageY(nint handle, Vector2 size, float scaledHeight) => ScaledImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
+    /// <param name="handle">Pointer to the image texture.</param>
     /// <param name="iconWidth">Image width.</param>
     /// <param name="iconHeight">Image height.</param>
     /// <param name="scaledHeight">Scaled height.</param>

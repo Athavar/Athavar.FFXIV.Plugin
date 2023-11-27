@@ -1,5 +1,10 @@
 # Athavar.FFXIV.Plugin
 
+## Installation
+
+- Add `https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/pluginmaster.json` to your list of repos
+  in /xlsettings
+
 ## Moduls
 
 - `AutoSpear`: Catch fishes during spearfishing by name.

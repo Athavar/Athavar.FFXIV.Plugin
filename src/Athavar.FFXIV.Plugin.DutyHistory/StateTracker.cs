@@ -6,7 +6,6 @@
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
 using Athavar.FFXIV.Plugin.Data;
-using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
 using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
@@ -56,20 +55,17 @@ public sealed class StateTracker : IDisposable
             TerritoryTypeId = args.DutyInfo.TerritoryType.RowId,
             TerritoryType = args.DutyInfo.TerritoryType,
             ContentFinderCondition = args.DutyInfo.TerritoryType.ContentFinderCondition.Value,
-            /* Known case where classJob is null/0: JoinInProgress + NotCompleted. TODO: Fix this */
             PlayerContentId = this.clientState.LocalContentId,
-            ClassJobId = this.clientState.LocalPlayer?.ClassJob.Id ?? this.classJobId ?? 0,
+            ClassJobId = this.clientState.LocalPlayer?.ClassJob.Id ?? this.classJobId ?? this.clientState.LocalPlayer?.ClassJob.Id ?? 0,
             Completed = args.Completed,
             StartDate = args.StartTime,
             EndDate = args.EndTime,
-            UnrestrictedParty = (args.DutyInfo.ActiveContentCondition & ContentCondition.UnrestrictedParty) != 0,
-            MinimalIL = (args.DutyInfo.ActiveContentCondition & ContentCondition.MinimalIL) != 0,
-            LevelSync = (args.DutyInfo.ActiveContentCondition & ContentCondition.LevelSync) != 0,
-            SilenceEcho = (args.DutyInfo.ActiveContentCondition & ContentCondition.SilenceEcho) != 0,
-            ExplorerMode = (args.DutyInfo.ActiveContentCondition & ContentCondition.ExplorerMode) != 0,
+            ActiveContentCondition = args.DutyInfo.ActiveContentCondition,
             JoinInProgress = args.DutyInfo.JoinInProgress,
             QueuePlayerCount = args.DutyInfo.QueuePlayerCount,
             Wipes = args.Wipes,
+            PlayerDeathCount = args.PlayerDeaths,
+            TrackingWasInterrupted = args.TrackingWasInterrupted,
         };
 
         this.NewContentEncounter?.Invoke(encounter);

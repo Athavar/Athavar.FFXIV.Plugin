@@ -17,5 +17,9 @@ public sealed class DutyEndedEventArgs : EventArgs
 
     public required int Wipes { get; init; }
 
+    public required int PlayerDeaths { get; init; }
+
     public required DutyInfo DutyInfo { get; init; }
+
+    public required bool TrackingWasInterrupted { get; init; }
 }

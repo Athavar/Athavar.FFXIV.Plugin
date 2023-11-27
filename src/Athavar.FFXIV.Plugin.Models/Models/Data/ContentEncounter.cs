@@ -33,19 +33,15 @@ public sealed class ContentEncounter
 
     public required DateTimeOffset EndDate { get; init; } = DateTimeOffset.MinValue;
 
-    public required bool UnrestrictedParty { get; init; } = false;
-
-    public required bool MinimalIL { get; init; } = false;
-
-    public required bool LevelSync { get; init; } = false;
-
-    public required bool SilenceEcho { get; init; } = false;
-
-    public required bool ExplorerMode { get; init; } = false;
+    public ContentCondition ActiveContentCondition { get; set; }
 
     public required bool JoinInProgress { get; init; } = false;
 
     public required int QueuePlayerCount { get; init; }
 
     public required int Wipes { get; init; }
+
+    public required int PlayerDeathCount { get; init; }
+
+    public required bool TrackingWasInterrupted { get; init; } = false;
 }

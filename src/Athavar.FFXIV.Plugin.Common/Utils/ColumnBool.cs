@@ -16,6 +16,8 @@ public class ColumnBool<TItem> : Column<TItem>
 {
     private bool? filterValue;
 
+    public string? Tooltip { get; set; }
+
     public virtual bool ToBool(TItem item) => true;
 
     public override bool DrawFilter()
@@ -35,7 +37,7 @@ public class ColumnBool<TItem> : Column<TItem>
 
         if (ImGui.IsItemHovered())
         {
-            ImGui.SetTooltip(this.Label);
+            ImGui.SetTooltip(this.Tooltip ?? this.Label);
         }
 
         if (!all && ImGui.IsItemHovered())

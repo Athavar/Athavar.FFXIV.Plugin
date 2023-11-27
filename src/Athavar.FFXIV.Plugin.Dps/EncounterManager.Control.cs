@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps;
 
 using System.Diagnostics.CodeAnalysis;
@@ -18,7 +19,6 @@ internal sealed partial class EncounterManager
             return;
         }
 
-        this.tmpObjectList.Clear();
         var ce = this.CurrentEncounter;
         this.CurrentEncounter = new Encounter();
 
@@ -57,6 +57,8 @@ internal sealed partial class EncounterManager
             return;
         }
 
+        this.logger.Verbose("Save Encounter To CurrentTerritoryEncounter");
+
         TerritoryEncounter? te;
         if (this.CurrentTerritoryEncounter is null)
         {
@@ -74,6 +76,7 @@ internal sealed partial class EncounterManager
     {
         if (this.CurrentEncounter is not null)
         {
+            this.logger.Verbose("End CurrentEncounter - StartEncounter - start not set");
             this.EndEncounter();
         }
 

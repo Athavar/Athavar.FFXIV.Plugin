@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Data.Dto;
 
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
 using Dapper.Contrib.Extensions;
 
@@ -20,6 +21,7 @@ internal sealed class ContentEncounterDto : BaseDto
     public const string ColumnCompleted = nameof(Completed);
     public const string ColumnStartDate = nameof(StartDate);
     public const string ColumnEndDate = nameof(EndDate);
+    public const string ColumnJoinInProgressEnabled = nameof(JoinInProgressEnabled);
     public const string ColumnUnrestrictedParty = nameof(UnrestrictedParty);
     public const string ColumnMinimalIL = nameof(MinimalIL);
     public const string ColumnLevelSync = nameof(LevelSync);
@@ -28,6 +30,8 @@ internal sealed class ContentEncounterDto : BaseDto
     public const string ColumnJoinInProgress = nameof(JoinInProgress);
     public const string ColumnQueuePlayerCount = nameof(QueuePlayerCount);
     public const string ColumnWipes = nameof(Wipes);
+    public const string ColumnPlayerDeathCount = nameof(PlayerDeathCount);
+    public const string ColumnInterrupted = nameof(Interrupted);
 
     public const string IndexPlayerContentId = $"idx_{TableName}_{ColumnPlayerContentId}";
 
@@ -44,6 +48,8 @@ internal sealed class ContentEncounterDto : BaseDto
     public long StartDate { get; set; }
 
     public long EndDate { get; set; }
+
+    public bool JoinInProgressEnabled { get; set; }
 
     public bool UnrestrictedParty { get; set; }
 
@@ -64,6 +70,13 @@ internal sealed class ContentEncounterDto : BaseDto
 
     public int Wipes { get; set; }
 
+    public int PlayerDeathCount { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the content encounter data may not be complete/correct.
+    /// </summary>
+    public bool Interrupted { get; set; }
+
     public static implicit operator ContentEncounterDto(ContentEncounter c)
         => new()
         {
@@ -75,14 +88,17 @@ internal sealed class ContentEncounterDto : BaseDto
             Completed = c.Completed,
             StartDate = c.StartDate.ToUnixTimeMilliseconds(),
             EndDate = c.EndDate.ToUnixTimeMilliseconds(),
-            UnrestrictedParty = c.UnrestrictedParty,
-            MinimalIL = c.MinimalIL,
-            LevelSync = c.LevelSync,
-            SilenceEcho = c.SilenceEcho,
-            ExplorerMode = c.ExplorerMode,
+            JoinInProgressEnabled = (c.ActiveContentCondition & ContentCondition.JoinInProgress) != 0,
+            UnrestrictedParty = (c.ActiveContentCondition & ContentCondition.UnrestrictedParty) != 0,
+            MinimalIL = (c.ActiveContentCondition & ContentCondition.MinimalIL) != 0,
+            LevelSync = (c.ActiveContentCondition & ContentCondition.LevelSync) != 0,
+            SilenceEcho = (c.ActiveContentCondition & ContentCondition.SilenceEcho) != 0,
+            ExplorerMode = (c.ActiveContentCondition & ContentCondition.ExplorerMode) != 0,
             JoinInProgress = c.JoinInProgress,
             QueuePlayerCount = c.QueuePlayerCount,
             Wipes = c.Wipes,
+            PlayerDeathCount = c.PlayerDeathCount,
+            Interrupted = c.TrackingWasInterrupted,
         };
 
     public static implicit operator ContentEncounter(ContentEncounterDto c)
@@ -96,13 +112,15 @@ internal sealed class ContentEncounterDto : BaseDto
             Completed = c.Completed,
             StartDate = DateTimeOffset.FromUnixTimeMilliseconds(c.StartDate),
             EndDate = DateTimeOffset.FromUnixTimeMilliseconds(c.EndDate),
-            UnrestrictedParty = c.UnrestrictedParty,
-            MinimalIL = c.MinimalIL,
-            LevelSync = c.LevelSync,
-            SilenceEcho = c.SilenceEcho,
-            ExplorerMode = c.ExplorerMode,
+            ActiveContentCondition = (c.JoinInProgressEnabled ? ContentCondition.JoinInProgress : 0) |
+                                     (c.UnrestrictedParty ? ContentCondition.UnrestrictedParty : 0) |
+                                     (c.LevelSync ? ContentCondition.LevelSync : 0) |
+                                     (c.SilenceEcho ? ContentCondition.SilenceEcho : 0) |
+                                     (c.ExplorerMode ? ContentCondition.ExplorerMode : 0),
             JoinInProgress = c.JoinInProgress,
             QueuePlayerCount = c.QueuePlayerCount,
             Wipes = c.Wipes,
+            PlayerDeathCount = c.PlayerDeathCount,
+            TrackingWasInterrupted = c.Interrupted,
         };
 }

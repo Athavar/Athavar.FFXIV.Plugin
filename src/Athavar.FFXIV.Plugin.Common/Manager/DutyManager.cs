@@ -8,10 +8,11 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using Lumina.Excel.GeneratedSheets;
@@ -32,8 +33,10 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
     private CfPopData? lastCfPopData;
     private DateTimeOffset? dutyStartTime;
     private bool dutyStarted;
+    private bool dirtyTracking;
     private DutyInfo? currentDutyInfo;
     private int wipeCount;
+    private int playerDeathCount;
 
     public DutyManager(IDalamudServices dalamudServices, AddressResolver addressResolver, EventCaptureManager eventCaptureManager, CommonConfiguration configuration)
     {
@@ -52,6 +55,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         this.clientState.TerritoryChanged += this.OnTerritoryChanged;
         this.Restore();
         this.clientState.Login += this.OnLogin;
+        this.eventCaptureManager.ActorDeath += this.OnActorDeath;
 
         this.cfPopHook = dalamudServices.GameInteropProvider.HookFromAddress<CfPopDelegate>(addressResolver.CfPopPacketHandler, this.CfPopDetour);
         this.cfPopHook.Enable();
@@ -79,6 +83,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         this.dutyState.DutyCompleted -= this.OnDutyCompleted;
         this.clientState.TerritoryChanged -= this.OnTerritoryChanged;
         this.clientState.Login -= this.OnLogin;
+        this.eventCaptureManager.ActorDeath -= this.OnActorDeath;
     }
 
     private unsafe nint CfPopDetour(nint packetData)
@@ -160,8 +165,9 @@ internal sealed partial class DutyManager
             return;
         }
 
-        this.currentDutyInfo = dutyInfo;
+        this.Clear();
 
+        this.currentDutyInfo = dutyInfo;
         this.dutyStartTime = DateTimeOffset.UtcNow;
         this.dutyStarted = true;
         var eventArgs = new DutyStartedEventArgs { DutyInfo = this.currentDutyInfo, StartTime = this.dutyStartTime.Value };
@@ -203,7 +209,7 @@ internal sealed partial class DutyManager
         {
             TerritoryType = territoryType,
             ContentRoulette = contentRoulette,
-            ActiveContentCondition = cfPopData?.GetActiveContentCondition() ?? ContentCondition.None,
+            ActiveContentCondition = cfPopData?.GetActiveContentCondition() ?? 0,
             JoinInProgress = cfPopData?.JoinInProgress ?? false,
             QueuePlayerCount = playerCount,
         };
@@ -217,7 +223,7 @@ internal sealed partial class DutyManager
             var end = DateTimeOffset.UtcNow;
             var duration = end - start;
 
-            this.DutyEnded?.Invoke(new DutyEndedEventArgs { Completed = completed, StartTime = start, EndTime = end, Duration = duration, DutyInfo = this.currentDutyInfo, Wipes = this.wipeCount });
+            this.DutyEnded?.Invoke(new DutyEndedEventArgs { Completed = completed, StartTime = start, EndTime = end, Duration = duration, DutyInfo = this.currentDutyInfo, Wipes = this.wipeCount, PlayerDeaths = this.playerDeathCount, TrackingWasInterrupted = this.dirtyTracking });
         }
 
         this.Clear();
@@ -242,6 +248,7 @@ internal sealed partial class DutyManager
         {
             // we have saved duty info. set duty to started.
             this.dutyStarted = true;
+            this.dirtyTracking = true;
             this.currentDutyInfo = savedDutyInfo.GetDutyInfo(this.dataManager);
             this.dutyStartTime = savedDutyInfo.DutyStartTime;
             this.logger.Verbose("Restore dutyInfo for localContentId {0}", this.clientState.LocalContentId);
@@ -277,6 +284,8 @@ internal sealed partial class DutyManager
         this.dutyStartTime = null;
         this.currentDutyInfo = null;
         this.wipeCount = 0;
+        this.playerDeathCount = 0;
+        this.dirtyTracking = false;
 
         if (this.configuration.SavedDutyInfos.Remove(this.clientState.LocalContentId))
         {
@@ -290,4 +299,13 @@ internal sealed partial class DutyManager
 /// </summary>
 internal sealed partial class DutyManager
 {
+    private void OnActorDeath(GameObject actor, GameObject? causeActor)
+    {
+        if (!this.dutyStarted || actor is not PlayerCharacter playerCharacter)
+        {
+            return;
+        }
+
+        this.playerDeathCount++;
+    }
 }

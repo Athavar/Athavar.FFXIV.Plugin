@@ -31,6 +31,7 @@ public class M000_Init : Migration
            .WithColumn(ContentEncounterDto.ColumnCompleted).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnStartDate).AsInt64().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnEndDate).AsInt64().NotNullable()
+           .WithColumn(ContentEncounterDto.ColumnJoinInProgressEnabled).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnUnrestrictedParty).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnMinimalIL).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnLevelSync).AsBoolean().NotNullable()
@@ -38,6 +39,8 @@ public class M000_Init : Migration
            .WithColumn(ContentEncounterDto.ColumnExplorerMode).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnJoinInProgress).AsBoolean().NotNullable()
            .WithColumn(ContentEncounterDto.ColumnQueuePlayerCount).AsInt32().NotNullable()
-           .WithColumn(ContentEncounterDto.ColumnWipes).AsInt32().NotNullable();
+           .WithColumn(ContentEncounterDto.ColumnWipes).AsInt32().NotNullable()
+           .WithColumn(ContentEncounterDto.ColumnPlayerDeathCount).AsInt32().NotNullable()
+           .WithColumn(ContentEncounterDto.ColumnInterrupted).AsBoolean().NotNullable();
     }
 }
