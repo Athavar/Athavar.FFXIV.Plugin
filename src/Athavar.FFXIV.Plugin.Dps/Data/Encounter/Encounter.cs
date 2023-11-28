@@ -171,7 +171,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
         this.AllyCombatants = combatants.Where(c => !c.IsEnemy() && c.IsActive() && c.IsAlly(this.Filter)).ToList();
     }
 
-    public override bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy);
+    public override bool IsValid() => this.Start != DateTime.MinValue && this.AllyCombatants.Any() && this.Combatants.Any(c => c.Kind == BattleNpcSubKind.Enemy && c.IsActive());
 
     public void CalcAllStats()
     {

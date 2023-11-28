@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
+using System.Runtime.CompilerServices;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Data;
 using Athavar.FFXIV.Plugin.Models;
@@ -27,6 +28,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     private static readonly CompleteColumn CompleteColumnValue = new() { Label = "C", Tooltip = "Complete" };
     private static readonly JoinInProgressColumn JoinInProgressColumnValue = new() { Label = "JIP", Tooltip = "JoinInProgress" };
     private static readonly ConditionColumn ConditionColumnValue = new() { Label = "DutySettings" };
+    private static readonly ClassJobColumn ClassJobColumnValue = new() { Label = "Job" };
 
     private static float globalScale;
     private static float itemSpacingX;
@@ -38,18 +40,20 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     private static float completeColumnWidth;
     private static float joinInProgressColumnWidth;
     private static float conditionColumnWidth;
+    private static float classJobColumnWidth;
 
     private readonly RepositoryContext context;
     private readonly IDataManager dataManager;
     private readonly StateTracker stateTracker;
 
     public DutyHistoryTable(RepositoryContext context, StateTracker stateTracker, IDataManager dataManager, IIconManager iconManager)
-        : base("dutyTrackerTable", new List<ContentEncounter>(), ContentRouletteColumnValue, ContentFinderNameColumnValue, StartDateColumnValue, DurationColumnValue, CompleteColumnValue, JoinInProgressColumnValue, ConditionColumnValue)
+        : base("dutyTrackerTable", new List<ContentEncounter>(), ContentFinderNameColumnValue, ContentRouletteColumnValue, StartDateColumnValue, DurationColumnValue, ClassJobColumnValue, CompleteColumnValue, ConditionColumnValue, JoinInProgressColumnValue)
     {
         this.context = context;
         this.stateTracker = stateTracker;
         this.dataManager = dataManager;
         this.stateTracker.NewContentEncounter += this.OnNewContentEncounter;
+        ClassJobColumnValue.Init(dataManager, iconManager);
         ConditionColumnValue.Init(dataManager, iconManager);
     }
 
@@ -82,6 +86,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
             completeColumnWidth = (ImGui.CalcTextSize(CompleteColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
             joinInProgressColumnWidth = (ImGui.CalcTextSize(JoinInProgressColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
             conditionColumnWidth = (ImGui.CalcTextSize(ConditionColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
+            classJobColumnWidth = (ImGui.CalcTextSize(ClassJobColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
         }
     }
 
@@ -247,5 +252,60 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
                 ContentCondition.SelectNone => 14727,
                 _ => 0,
             };
+    }
+
+    private sealed class ClassJobColumn : ColumnFlags<JobFlag, ContentEncounter>
+    {
+        private string[] flagNames = Enum.GetValues<JobFlag>()
+           .Select(p => p.ToString())
+           .ToArray();
+
+        private JobFlag currentFilter;
+
+        private IIconManager? icons;
+
+        public ClassJobColumn() => this.AllFlags = Enum.GetValues<JobFlag>().Aggregate((l, r) => l | r);
+
+        public override float Width => classJobColumnWidth * ImGuiHelpers.GlobalScale;
+
+        public override JobFlag FilterValue => ~this.currentFilter;
+
+        protected override string[] Names => this.flagNames;
+
+        public void Init(IDataManager dataManager, IIconManager iconManager)
+        {
+            this.icons = iconManager;
+            var sheet = dataManager.GetExcelSheet<ClassJob>();
+            var names = new string[this.Values.Count];
+            for (var index = 0; index < this.Values.Count; index++)
+            {
+                var flag = this.Values[index];
+                names[index] = sheet?.GetRow((uint)index)?.Name.RawString ?? flag.ToString();
+            }
+
+            this.flagNames = names;
+        }
+
+        public override bool FilterFunc(ContentEncounter item) => (this.FilterValue & ToFlag(item.ClassJobId)) != 0;
+
+        public override int Compare(ContentEncounter lhs, ContentEncounter rhs) => lhs.ClassJobId.CompareTo(rhs.ClassJobId);
+
+        public override void DrawColumn(ContentEncounter encounter, int i)
+        {
+            if (this.icons is not null && this.icons.TryGetJobIcon((Job)encounter.ClassJobId, JobIconStyle.Framed, true, out var textureWrap))
+            {
+                ImGuiEx.ScaledCenterImageY(textureWrap.ImGuiHandle, textureWrap.Size, ImGui.GetTextLineHeight());
+                ImGuiEx.TextTooltip(this.Names[encounter.ClassJobId]);
+            }
+        }
+
+        protected override void SetValue(JobFlag value, bool enable)
+        {
+            var currentFilter = enable ? this.currentFilter & ~value : this.currentFilter | value;
+            this.currentFilter = currentFilter;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static JobFlag ToFlag(uint jobId) => (JobFlag)(1 << (int)jobId);
     }
 }

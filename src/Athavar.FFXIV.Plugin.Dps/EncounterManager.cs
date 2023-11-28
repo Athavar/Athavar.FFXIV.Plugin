@@ -132,8 +132,7 @@ internal sealed partial class EncounterManager : IDisposable
     {
         var now = DateTime.UtcNow;
 
-        var ce = this.CurrentEncounter;
-        if (ce is null || ce.Start == DateTime.MinValue)
+        if (this.CurrentEncounter is not { } ce || ce.Start == DateTime.MinValue)
         {
             return;
         }
@@ -144,7 +143,7 @@ internal sealed partial class EncounterManager : IDisposable
             ce.Filter = this.configuration.PartyFilter;
             ce.CalcStats();
 
-            if (this.CurrentEncounter is not null && !this.ci.IsInCombat() && ce.Start.AddSeconds(2) < now && this.CurrentEncounter!.AllyCombatants.Select(c => this.objectTable.SearchById(c.ObjectId)).Cast<Character>().All(go => (go.StatusFlags & StatusFlags.InCombat) == 0))
+            if (!this.ci.IsInCombat() && ce.Start.AddSeconds(2) < now && ce.LastDamageEvent.AddSeconds(2.5) < now && !ce.AllyCombatants.Select(c => this.objectTable.SearchById(c.ObjectId)).OfType<Character>().Any(go => go.IsValid() && (go.StatusFlags & StatusFlags.InCombat) != 0))
             {
                 /*
                  * - player is not in combat
@@ -154,12 +153,15 @@ internal sealed partial class EncounterManager : IDisposable
                 this.logger.Verbose("End CurrentEncounter - CombatCheck");
                 this.EndEncounter();
                 this.UpdateCurrentTerritoryEncounter();
+                return;
             }
-            else if (this.CurrentTerritoryEncounter is not null && this.CurrentTerritoryEncounter.Territory != this.ci.GetCurrentTerritory())
+
+            if (this.CurrentTerritoryEncounter is not null && this.CurrentTerritoryEncounter.Territory != this.ci.GetCurrentTerritory())
             {
                 this.logger.Verbose("End CurrentEncounter - TerritoryCheck");
                 this.EndEncounter();
                 this.EndCurrentTerritoryEncounter();
+                return;
             }
         }
 

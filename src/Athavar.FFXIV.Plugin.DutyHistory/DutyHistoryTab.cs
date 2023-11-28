@@ -44,7 +44,12 @@ public sealed class DutyHistoryTab : Tab
     /// <inheritdoc/>
     public override void Draw()
     {
-        ImGui.Separator();
+        if (!this.clientState.IsLoggedIn)
+        {
+            ImGui.TextUnformatted("Please login.");
+            return;
+        }
+
         this.table.Draw(ImGui.GetTextLineHeightWithSpacing());
     }
 

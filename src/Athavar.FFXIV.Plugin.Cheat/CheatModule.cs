@@ -99,7 +99,7 @@ internal sealed class CheatModule : Module, IDisposable
                 if (cheat.Value)
                 {
                     cheat.Key.OnDisabled();
-                    this.cheats[cheat.Key] = true;
+                    this.cheats[cheat.Key] = false;
                 }
             }
         }

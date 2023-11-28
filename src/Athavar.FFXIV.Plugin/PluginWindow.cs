@@ -32,8 +32,8 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
     /// <param name="configuration"><see cref="CommonConfiguration"/> added by DI.</param>
     /// <param name="services"><see cref="IDalamudServices"/> added by DI.</param>
-    /// <param name="gearsetManager"><see cref="IGearsetManager"/> added by DI.</param>
-    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IGearsetManager gearsetManager)
+    /// <param name="serviceProvider"><see cref="IServiceProvider"/> added by DI.</param>
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IServiceProvider serviceProvider)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
@@ -44,7 +44,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
             this.LaunchButton.AddEntry();
         }
 
-        this.settingsTab = new SettingsTab(this, services, this.manager, localizeManager, configuration, gearsetManager);
+        this.settingsTab = new SettingsTab(this, services, this.manager, localizeManager, configuration, serviceProvider);
         this.tabBarHandler.Add(this.settingsTab);
 
         this.Size = new Vector2(525, 600);

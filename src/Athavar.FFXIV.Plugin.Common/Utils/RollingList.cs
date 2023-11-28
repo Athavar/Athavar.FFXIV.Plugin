@@ -35,6 +35,11 @@ public sealed class RollingList<T> : IReadOnlyList<T>
                 throw new ArgumentOutOfRangeException();
             }
 
+            if (index == 0)
+            {
+                return this.list.First!.Value;
+            }
+
             return this.list.Skip(index).First();
         }
     }

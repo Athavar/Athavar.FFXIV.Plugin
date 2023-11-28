@@ -28,7 +28,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
     private readonly EventCaptureManager eventCaptureManager;
     private readonly CommonConfiguration configuration;
 
-    private readonly Hook<CfPopDelegate> cfPopHook;
+    private Hook<CfPopDelegate>? cfPopHook;
 
     private CfPopData? lastCfPopData;
     private DateTimeOffset? dutyStartTime;
@@ -57,8 +57,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         this.clientState.Login += this.OnLogin;
         this.eventCaptureManager.ActorDeath += this.OnActorDeath;
 
-        this.cfPopHook = dalamudServices.GameInteropProvider.HookFromAddress<CfPopDelegate>(addressResolver.CfPopPacketHandler, this.CfPopDetour);
-        this.cfPopHook.Enable();
+        dalamudServices.SafeEnableHookFromAddress<CfPopDelegate>("DutyManager:cfPopHook", addressResolver.CfPopPacketHandler, this.CfPopDetour, h => this.cfPopHook = h);
     }
 
     private delegate nint CfPopDelegate(nint packetData);
@@ -74,8 +73,8 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
     /// <inheritdoc/>
     public void Dispose()
     {
-        this.cfPopHook.Disable();
-        this.cfPopHook.Dispose();
+        this.cfPopHook?.Disable();
+        this.cfPopHook?.Dispose();
 
         this.dutyState.DutyStarted -= this.OnDutyStarted;
         this.dutyState.DutyWiped -= this.OnDutyWiped;
@@ -88,7 +87,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
 
     private unsafe nint CfPopDetour(nint packetData)
     {
-        var result = this.cfPopHook.OriginalDisposeSafe(packetData);
+        var result = this.cfPopHook!.OriginalDisposeSafe(packetData);
 
         // https://github.com/goatcorp/Dalamud/blob/e30c904ad62bdcb527c72eaf6721418a23ef5078/Dalamud/Game/Network/Internal/NetworkHandlers.cs#L239
         using var stream = new UnmanagedMemoryStream((byte*)packetData, 40);

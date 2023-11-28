@@ -5,6 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using System.Diagnostics;
+using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
@@ -12,29 +14,41 @@ using Dalamud.Plugin.Services;
 internal class FrameworkManager : IDisposable, IFrameworkManager
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly List<IFramework.OnUpdateDelegate> onUpdateDelegates;
+    private readonly List<RegisteredDelegation> onUpdateDelegates;
+    private readonly Stopwatch stopwatch = new();
 
-    private IFramework.OnUpdateDelegate[] onUpdateDelegatesArray;
+    private RegisteredDelegation[] onUpdateDelegatesArray;
 
     public FrameworkManager(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
 
-        this.onUpdateDelegates = new List<IFramework.OnUpdateDelegate>();
-        this.onUpdateDelegatesArray = Array.Empty<IFramework.OnUpdateDelegate>();
+        this.onUpdateDelegates = new List<RegisteredDelegation>();
+        this.onUpdateDelegatesArray = Array.Empty<RegisteredDelegation>();
         this.dalamudServices.Framework.Update += this.FrameworkOnUpdate;
     }
 
+    public IReadOnlyList<IFrameworkManager.IRegisteredDelegation> RegisteredDelegations => this.onUpdateDelegates.AsReadOnly();
+
     public void Subscribe(IFramework.OnUpdateDelegate updateDelegate)
     {
-        this.onUpdateDelegates.Add(updateDelegate);
+        var methode = updateDelegate.Method;
+        this.onUpdateDelegates.Add(new RegisteredDelegation
+        {
+            Name = $"{methode.DeclaringType?.FullName}::{methode.Name}",
+            UpdateDelegate = updateDelegate,
+        });
         this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
     }
 
     public void Unsubscribe(IFramework.OnUpdateDelegate updateDelegate)
     {
-        this.onUpdateDelegates.Remove(updateDelegate);
-        this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
+        var match = this.onUpdateDelegates.Find(o => o.UpdateDelegate == updateDelegate);
+        if (match is not null)
+        {
+            this.onUpdateDelegates.Remove(match);
+            this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
+        }
     }
 
     public void Dispose() => this.dalamudServices.Framework.Update -= this.FrameworkOnUpdate;
@@ -43,7 +57,21 @@ internal class FrameworkManager : IDisposable, IFrameworkManager
     {
         foreach (var updateDelegate in this.onUpdateDelegatesArray)
         {
-            updateDelegate(framework);
+            this.stopwatch.Restart();
+            updateDelegate.UpdateDelegate(framework);
+            this.stopwatch.Stop();
+            updateDelegate.Times.Add(this.stopwatch.Elapsed);
         }
+    }
+
+    private sealed class RegisteredDelegation : IFrameworkManager.IRegisteredDelegation
+    {
+        public IReadOnlyList<TimeSpan> Duration => new List<TimeSpan>(this.Times);
+
+        public string Name { get; init; }
+
+        public IFramework.OnUpdateDelegate UpdateDelegate { get; set; }
+
+        internal RollingList<TimeSpan> Times { get; } = new(60);
     }
 }

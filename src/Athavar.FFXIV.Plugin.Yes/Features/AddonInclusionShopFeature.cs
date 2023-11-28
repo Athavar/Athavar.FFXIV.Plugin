@@ -9,7 +9,6 @@ using Athavar.FFXIV.Plugin.Click.Structures;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
-using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
@@ -17,7 +16,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// </summary>
 internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 {
-    private readonly Hook<AgentReceiveEventDelegate> agentReceiveEventHook;
+    private Hook<AgentReceiveEventDelegate>? agentReceiveEventHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature"/> class.
@@ -25,10 +24,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     /// <param name="module"><see cref="YesModule"/>.</param>
     public unsafe AddonInclusionShopFeature(YesModule module)
         : base(module, AddonEvent.PostSetup)
-    {
-        this.agentReceiveEventHook = module.DalamudServices.GameInteropProvider.HookFromAddress<AgentReceiveEventDelegate>(module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour);
-        this.agentReceiveEventHook.Enable();
-    }
+        => module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
 
     private unsafe delegate nint AgentReceiveEventDelegate(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind);
 
@@ -38,8 +34,8 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     /// <inheritdoc/>
     public new void Dispose()
     {
-        this.agentReceiveEventHook.Disable();
-        this.agentReceiveEventHook.Dispose();
+        this.agentReceiveEventHook?.Disable();
+        this.agentReceiveEventHook?.Dispose();
         base.Dispose();
     }
 
@@ -64,7 +60,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 
     private unsafe nint AgentReceiveEventDetour(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind)
     {
-        var result = this.agentReceiveEventHook.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind);
+        var result = this.agentReceiveEventHook!.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind);
 
         if (valueCount != 2)
         {

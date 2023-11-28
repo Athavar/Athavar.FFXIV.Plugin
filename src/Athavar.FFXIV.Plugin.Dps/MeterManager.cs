@@ -100,7 +100,7 @@ internal sealed class MeterManager : IDisposable
 
     private void Draw()
     {
-        if (!this.CheckRequiredOpcodes() || !this.services.ClientState.IsLoggedIn)
+        if (!this.CheckRequiredOpcodes() || !this.services.ClientState.IsLoggedIn || this.services.ClientState.IsPvPExcludingDen)
         {
             return;
         }

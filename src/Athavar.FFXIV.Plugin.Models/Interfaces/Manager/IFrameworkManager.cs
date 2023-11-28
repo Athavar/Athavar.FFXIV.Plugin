@@ -9,6 +9,15 @@ using Dalamud.Plugin.Services;
 
 public interface IFrameworkManager
 {
+    public interface IRegisteredDelegation
+    {
+        public string Name { get; }
+
+        public IReadOnlyList<TimeSpan> Duration { get; }
+    }
+
+    IReadOnlyList<IRegisteredDelegation> RegisteredDelegations { get; }
+
     void Subscribe(IFramework.OnUpdateDelegate updateDelegate);
 
     void Unsubscribe(IFramework.OnUpdateDelegate updateDelegate);

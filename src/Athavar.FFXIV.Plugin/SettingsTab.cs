@@ -21,16 +21,16 @@ internal sealed partial class SettingsTab : Tab
     private readonly ILocalizeManager localizeManager;
     private readonly string[] languages = Enum.GetNames<Language>();
     private readonly CommonConfiguration configuration;
-    private readonly IGearsetManager gearsetManager;
+    private readonly IServiceProvider serviceProvider;
 
-    public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, CommonConfiguration configuration, IGearsetManager gearsetManager)
+    public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, CommonConfiguration configuration, IServiceProvider serviceProvider)
     {
         this.window = window;
         this.dalamudServices = dalamudServices;
         this.manager = manager;
         this.localizeManager = localizeManager;
         this.configuration = configuration;
-        this.gearsetManager = gearsetManager;
+        this.serviceProvider = serviceProvider;
     }
 
     public override string Name => "Settings";

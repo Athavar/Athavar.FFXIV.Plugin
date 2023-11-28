@@ -12,38 +12,36 @@ using Lumina.Excel.GeneratedSheets;
 
 internal sealed partial class EncounterManager
 {
-    public void EndEncounter(bool inValid = false)
+    private void EndEncounter(bool inValid = false)
     {
-        if (this.CurrentEncounter is null)
+        if (this.CurrentEncounter is not { } ce)
         {
             return;
         }
-
-        var ce = this.CurrentEncounter;
-        this.CurrentEncounter = new Encounter();
 
         if (!inValid && ce.IsValid())
         {
             ce.End = ce.LastEvent;
         }
+
+        this.CurrentEncounter = new Encounter();
     }
 
     private void EndCurrentTerritoryEncounter()
     {
-        if (this.CurrentTerritoryEncounter is null)
+        if (this.CurrentTerritoryEncounter is not { } territoryEncounter)
         {
             return;
         }
 
         this.UpdateCurrentTerritoryEncounter();
-        this.CurrentTerritoryEncounter.EndEncounter();
+        territoryEncounter.EndEncounter();
         this.CurrentTerritoryEncounter = null;
     }
 
     private void UpdateCurrentTerritoryEncounter()
     {
-        var currentTerritoryEncounter = this.CurrentTerritoryEncounter;
-        if (currentTerritoryEncounter != null)
+        if (this.CurrentTerritoryEncounter is { } currentTerritoryEncounter)
         {
             currentTerritoryEncounter.Filter = this.configuration.PartyFilter;
             currentTerritoryEncounter.CalcStats();
@@ -66,15 +64,18 @@ internal sealed partial class EncounterManager
             this.CurrentTerritoryEncounter = te;
             this.encounterHistory.Add(te);
         }
+        else
+        {
+            te = this.CurrentTerritoryEncounter;
+        }
 
-        te = this.CurrentTerritoryEncounter;
         te.AddEncounter(ce);
     }
 
     [MemberNotNull(nameof(CurrentEncounter))]
     private void StartEncounter(DateTime? time = null)
     {
-        if (this.CurrentEncounter is not null)
+        if (this.CurrentEncounter is { } oldEncounter && this.CurrentEncounter.Start == DateTime.MinValue)
         {
             this.logger.Verbose("End CurrentEncounter - StartEncounter - start not set");
             this.EndEncounter();
