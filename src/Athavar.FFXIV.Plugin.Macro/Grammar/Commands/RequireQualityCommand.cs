@@ -7,9 +7,9 @@ namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
 
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 /// <summary>
 ///     The /requirequality command.

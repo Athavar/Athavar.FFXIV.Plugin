@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 /// <summary>
 ///     Text entry node type.

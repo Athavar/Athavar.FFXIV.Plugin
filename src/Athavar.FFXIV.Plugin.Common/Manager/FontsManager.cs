@@ -6,9 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface;
 using ImGuiNET;
 
@@ -35,7 +35,7 @@ public class FontsManager : IDisposable, IFontsManager
 
         uiBuilder = services.PluginInterface.UiBuilder;
         uiBuilder.BuildFonts += this.BuildFonts;
-        uiBuilder.RebuildFonts();
+        /* uiBuilder.RebuildFonts(); */
         userFontPath = $"{services.PluginInterface.GetPluginConfigDirectory()}\\Fonts\\";
     }
 

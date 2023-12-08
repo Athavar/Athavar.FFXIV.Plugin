@@ -27,13 +27,11 @@ internal class AddonContentsFinderConfirmFeature : OnSetupFeature
     protected override string AddonName => "ContentsFinderConfirm";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.ContentsFinderOneTimeConfirmEnabled;
+
+    /// <inheritdoc/>
     protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.ContentsFinderConfirmEnabled)
-        {
-            return;
-        }
-
         ClickContentsFinderConfirm.Using(addon).Commence();
 
         if (this.Configuration.ContentsFinderOneTimeConfirmEnabled)
@@ -41,6 +39,7 @@ internal class AddonContentsFinderConfirmFeature : OnSetupFeature
             this.Configuration.ContentsFinderConfirmEnabled = false;
             this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
             this.Configuration.Save();
+            this.UpdateEnableState();
         }
     }
 }

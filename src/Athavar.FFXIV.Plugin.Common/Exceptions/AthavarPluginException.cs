@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Exceptions;
 
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 public class AthavarPluginException : Exception
 {

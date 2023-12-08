@@ -16,6 +16,8 @@ internal abstract class OnSetupFeature : IBaseFeature
     protected readonly YesModule module;
     private readonly AddonEvent trigger;
 
+    private bool enabled;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="OnSetupFeature"/> class.
     /// </summary>
@@ -25,17 +27,7 @@ internal abstract class OnSetupFeature : IBaseFeature
     {
         this.module = module;
         this.trigger = trigger;
-        module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
     }
-
-    /// <summary>
-    ///     A delegate matching AtkUnitBase.OnSetup.
-    /// </summary>
-    /// <param name="addon">Addon address.</param>
-    /// <param name="a2">Unused for our purposes.</param>
-    /// <param name="data">Data address.</param>
-    /// <returns>The addon address.</returns>
-    internal delegate nint OnSetupDelegate(nint addon, uint a2, nint data);
 
     /// <summary>
     ///     Gets the <see cref="YesConfiguration"/>.
@@ -47,8 +39,53 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// </summary>
     protected abstract string AddonName { get; }
 
+    /// <summary>
+    ///     Gets a value indicating whether the feature is enable in the configuration.
+    /// </summary>
+    protected abstract bool ConfigurationEnableState { get; }
+
     /// <inheritdoc/>
-    public void Dispose() => this.module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
+    public void Dispose() => this.OnDisable();
+
+    public void UpdateEnableState()
+    {
+        if (this.ConfigurationEnableState)
+        {
+            this.OnEnable();
+        }
+        else
+        {
+            this.OnDisable();
+        }
+    }
+
+    public virtual bool OnEnable()
+    {
+        if (this.enabled)
+        {
+            // is already enabled.
+            return false;
+        }
+
+        this.enabled = true;
+
+        this.module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
+        return true;
+    }
+
+    public virtual bool OnDisable()
+    {
+        if (!this.enabled)
+        {
+            // can't disable a non enabled state.
+            return false;
+        }
+
+        this.enabled = false;
+
+        this.module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
+        return true;
+    }
 
     /// <summary>
     ///     A method that is run within the OnSetup detour.
@@ -57,10 +94,19 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <param name="addonEvent">Addon trigger event.</param>
     protected abstract void OnSetupImpl(IntPtr addon, AddonEvent addonEvent);
 
-    protected void TriggerHandler(AddonEvent type, AddonArgs args)
+    private void TriggerHandler(AddonEvent type, AddonArgs args)
     {
-        this.module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
+        // if (this.trigger is not (AddonEvent.PostUpdate or AddonEvent.PostDraw))
+        {
+            this.module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
+        }
+
         if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
+        {
+            return;
+        }
+
+        if (!this.ConfigurationEnableState)
         {
             return;
         }

@@ -8,8 +8,9 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 
 internal sealed class CraftQueue : IDisposable

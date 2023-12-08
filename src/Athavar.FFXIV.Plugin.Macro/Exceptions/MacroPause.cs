@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Macro.Exceptions;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 /// <summary>
 ///     Error thrown when a macro needs to pause, but not treat it like an error.

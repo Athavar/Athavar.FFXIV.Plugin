@@ -7,8 +7,9 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.AutoSpear.SeFunctions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;

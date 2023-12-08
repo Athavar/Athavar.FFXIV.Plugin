@@ -5,11 +5,14 @@
 
 namespace Athavar.FFXIV.Plugin.Common;
 
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Serilog.Events;
 
 public abstract class BaseLogger : IPluginLogger
 {
+    /// <inheritdoc/>
+    public abstract LogEventLevel MinimumLogLevel { get; }
+
     /// <inheritdoc/>
     public void Fatal(string messageTemplate, params object[] values) => this.Fatal(null, messageTemplate, values);
 
@@ -52,15 +55,8 @@ public abstract class BaseLogger : IPluginLogger
     /// <inheritdoc/>
     public void Verbose(Exception? exception, string messageTemplate, params object[] values) => this.Write(LogEventLevel.Verbose, exception, messageTemplate, values);
 
-    /// <summary>
-    ///     Write a raw log event to the plugin's log. Used for interoperability with other log systems, as well as
-    ///     advanced use cases.
-    /// </summary>
-    /// <param name="level">The log level for this event.</param>
-    /// <param name="exception">An (optional) exception that should be recorded alongside this event.</param>
-    /// <param name="messageTemplate">Message template describing the event.</param>
-    /// <param name="values">Objects positionally formatted into the message template.</param>
-    protected abstract void Write(
+    /// <inheritdoc/>
+    public abstract void Write(
         LogEventLevel level,
         Exception? exception,
         string messageTemplate,

@@ -27,13 +27,8 @@ internal class AddonMateriaRetrieveDialogFeature : OnSetupFeature
     protected override string AddonName => "MateriaRetrieveDialog";
 
     /// <inheritdoc/>
-    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
-    {
-        if (!this.Configuration.MateriaRetrieveDialogEnabled)
-        {
-            return;
-        }
+    protected override bool ConfigurationEnableState => this.Configuration.MateriaRetrieveDialogEnabled;
 
-        ClickMateriaRetrieveDialog.Using(addon).Begin();
-    }
+    /// <inheritdoc/>
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent) => ClickMateriaRetrieveDialog.Using(addon).Begin();
 }

@@ -5,9 +5,11 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
+using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.Text;
 using ImGuiNET;
 
@@ -19,16 +21,16 @@ internal sealed partial class SettingsTab : Tab
     private readonly ILocalizeManager localizeManager;
     private readonly string[] languages = Enum.GetNames<Language>();
     private readonly CommonConfiguration configuration;
-    private readonly IGearsetManager gearsetManager;
+    private readonly IServiceProvider serviceProvider;
 
-    public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, CommonConfiguration configuration, IGearsetManager gearsetManager)
+    public SettingsTab(PluginWindow window, IDalamudServices dalamudServices, IModuleManager manager, ILocalizeManager localizeManager, CommonConfiguration configuration, IServiceProvider serviceProvider)
     {
         this.window = window;
         this.dalamudServices = dalamudServices;
         this.manager = manager;
         this.localizeManager = localizeManager;
         this.configuration = configuration;
-        this.gearsetManager = gearsetManager;
+        this.serviceProvider = serviceProvider;
     }
 
     public override string Name => "Settings";
@@ -128,40 +130,40 @@ internal sealed partial class SettingsTab : Tab
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableSetupColumn("Tab", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableHeadersRow();
-            }
 
-            var index = 0;
-            foreach (var module in this.manager.GetModuleData())
-            {
-                ImGui.TableNextRow();
-                ImGui.TableSetColumnIndex(0);
-
-                // enabled row
-                var val = module.Enabled;
-                if (ImGui.Checkbox("###enabled" + index, ref val))
+                var index = 0;
+                foreach (var module in this.manager.GetModuleData())
                 {
-                    module.Enabled = val;
-                }
+                    ImGui.TableNextRow();
+                    ImGui.TableSetColumnIndex(0);
 
-                // name row
-                ImGui.TableSetColumnIndex(1);
-                ImGui.TextUnformatted(module.Name);
-
-                // tab row
-                ImGui.TableSetColumnIndex(2);
-                if (module.HasTab)
-                {
-                    val = module.TabEnabled;
-                    if (ImGui.Checkbox("###tab" + index, ref val))
+                    // enabled row
+                    var val = module.Enabled;
+                    if (ImGui.Checkbox("###enabled" + index, ref val))
                     {
-                        module.TabEnabled = val;
+                        module.Enabled = val;
                     }
+
+                    // name row
+                    ImGui.TableSetColumnIndex(1);
+                    ImGui.TextUnformatted(module.Name);
+
+                    // tab row
+                    ImGui.TableSetColumnIndex(2);
+                    if (module.HasTab)
+                    {
+                        val = module.TabEnabled;
+                        if (ImGui.Checkbox("###tab" + index, ref val))
+                        {
+                            module.TabEnabled = val;
+                        }
+                    }
+
+                    index++;
                 }
 
-                index++;
+                ImGui.EndTable();
             }
-
-            ImGui.EndTable();
         }
 
         if (change)
@@ -170,9 +172,12 @@ internal sealed partial class SettingsTab : Tab
         }
 
 #if DEBUG
-        if (ImGui.CollapsingHeader(this.localizeManager.Localize("Test") + "##test-collapse"))
         {
-            this.DrawTest();
+            using var g = ImGuiRaii.NewGroup();
+            if (ImGui.CollapsingHeader(this.localizeManager.Localize("Test") + "##test-collapse"))
+            {
+                this.DrawTest();
+            }
         }
 #endif
     }

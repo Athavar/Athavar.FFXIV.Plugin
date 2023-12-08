@@ -1,11 +1,17 @@
 # Athavar.FFXIV.Plugin
 
+## Installation
+
+- Add `https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/pluginmaster.json` to your list of repos
+  in /xlsettings
+
 ## Moduls
 
 - `AutoSpear`: Catch fishes during spearfishing by name.
 - `CraftQueue`: Tool to verify crafting rotations and queue crafts.
 - `Dps`: Damage meter without the use of ACT. Note: Dot&Hot are assigned to players by potency of current target status.
   effects. Buffs and gear are not taken into account.
+- `DutyHistory`: Track duties runs.
 - `Instancinator`: Open window for fast instance change on aetheryte.
 - `Macro`: Save and run unlimited Text macros.
 - `SliceIsRight`: Shows where Bamboo falls during the Gate "The Slice Is Right".

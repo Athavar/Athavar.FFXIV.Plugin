@@ -28,13 +28,11 @@ internal class AddonRetainerTaskResultFeature : OnSetupFeature
     protected override string AddonName => "RetainerTaskResult";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.RetainerTaskResultEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.RetainerTaskResultEnabled)
-        {
-            return;
-        }
-
         var addonPtr = (AddonRetainerTaskResult*)addon;
         var buttonText = addonPtr->ReassignButton->ButtonTextNode->NodeText.ToString();
         if (buttonText is "Recall" or "中断する" or "Zurückrufen" or "Interrompre")

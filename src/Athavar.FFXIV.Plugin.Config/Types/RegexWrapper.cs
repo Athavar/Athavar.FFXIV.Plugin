@@ -1,7 +1,7 @@
 namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 public class RegexWrapper : Regex, IRegex
 {

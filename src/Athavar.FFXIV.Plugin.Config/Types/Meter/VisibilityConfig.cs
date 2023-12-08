@@ -5,6 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Text.Json.Serialization;
+using Athavar.FFXIV.Plugin.Models;
 
 public sealed class VisibilityConfig : BaseConfig
 {

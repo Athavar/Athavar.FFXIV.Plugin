@@ -7,8 +7,8 @@ namespace Athavar.FFXIV.Plugin.Yes;
 
 using System.Text;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.Command;
@@ -46,7 +46,9 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="provider"><see cref="IServiceProvider"/> added by DI.</param>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="chatManager"><see cref="IChatManager"/> added by DI.</param>
-    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager)
+    /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
+    /// <param name="addressResolver"><see cref="AddressResolver"/> added by DI.</param>
+    public YesModule(YesConfiguration configuration, IServiceProvider provider, IDalamudServices dalamudServices, IChatManager chatManager, IFrameworkManager frameworkManager, AddressResolver addressResolver)
         : base(configuration)
     {
         this.provider = provider;
@@ -54,21 +56,30 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.ChatManager = chatManager;
         this.Logger = dalamudServices.PluginLogger;
         this.frameworkManager = frameworkManager;
+        this.AddressResolver = addressResolver;
 
         this.LoadTerritories();
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 
-        this.features = new List<IBaseFeature>(this.GetType()
+        this.features = new List<IBaseFeature>();
+        foreach (var baseFeatureTypes in this.GetType()
            .Assembly.GetTypes()
-           .Where(t => !t.IsAbstract && !t.IsInterface && t.IsAssignableTo(typeof(IBaseFeature)))
-           .Select(t => (IBaseFeature)Activator.CreateInstance(t, this)!));
-
-        this.DalamudServices.CommandManager.AddHandler(Command, new CommandInfo(this.OnChatCommand)
+           .Where(t => t is { IsAbstract: false, IsInterface: false } && t.IsAssignableTo(typeof(IBaseFeature))))
         {
-            HelpMessage = "Commands that control the yes module.",
-            ShowInHelp = true,
-        });
+            this.Logger.Verbose("[Yes] Create IBaseFeature {0}", baseFeatureTypes.FullName!);
+            this.features.Add((IBaseFeature)Activator.CreateInstance(baseFeatureTypes, this)!);
+        }
+
+        this.UpdateEnableState();
+
+        this.DalamudServices.CommandManager.AddHandler(
+            Command,
+            new CommandInfo(this.OnChatCommand)
+            {
+                HelpMessage = "Commands that control the yes module.",
+                ShowInHelp = true,
+            });
 
         dalamudServices.PluginLogger.Debug("Module 'Yes' init");
     }
@@ -92,6 +103,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     ///     Gets the <see cref="IPluginLogger"/>.
     /// </summary>
     internal IPluginLogger Logger { get; }
+
+    /// <summary>
+    ///     Gets the <see cref="AddressResolver"/>.
+    /// </summary>
+    internal AddressResolver AddressResolver { get; }
 
     /// <summary>
     ///     Gets a mapping of territory IDs to names.
@@ -154,6 +170,14 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.zoneListWindow?.Dispose();
     }
 
+    internal void UpdateEnableState()
+    {
+        foreach (var feature in this.features)
+        {
+            feature.UpdateEnableState();
+        }
+    }
+
     /// <summary>
     ///     Create a new node with various options.
     /// </summary>
@@ -161,7 +185,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="zoneRestricted">Create the node restricted to the current zone.</param>
     /// <param name="createFolder">Create a zone named subfolder.</param>
     /// <param name="selectNo">Select no instead.</param>
-    public void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
+    internal void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
     {
         var newNode = new TextEntryNode { Enabled = true, Text = this.LastSeenDialogText };
         var chosenFolder = folder;

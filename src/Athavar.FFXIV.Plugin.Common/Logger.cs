@@ -19,5 +19,8 @@ internal sealed class Logger : BaseLogger
     public Logger(IPluginLog pluginLog) => this.pluginLog = pluginLog;
 
     /// <inheritdoc/>
-    protected override void Write(LogEventLevel level, Exception? exception, string messageTemplate, params object[] values) => this.pluginLog.Write(level, exception, messageTemplate, values);
+    public override LogEventLevel MinimumLogLevel => this.pluginLog.MinimumLogLevel;
+
+    /// <inheritdoc/>
+    public override void Write(LogEventLevel level, Exception? exception, string messageTemplate, params object[] values) => this.pluginLog.Write(level, exception, messageTemplate, values);
 }

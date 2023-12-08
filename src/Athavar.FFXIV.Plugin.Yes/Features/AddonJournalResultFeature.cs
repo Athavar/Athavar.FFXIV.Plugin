@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
-using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     AddonJournalResult feature.
@@ -28,16 +27,13 @@ internal class AddonJournalResultFeature : OnSetupFeature
     protected override string AddonName => "JournalResult";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.JournalResultCompleteEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.JournalResultCompleteEnabled)
-        {
-            return;
-        }
-
-        var addonPtr = (AddonJournalResult*)addon;
-        var completeButton = addonPtr->CompleteButton;
-        if (!addonPtr->CompleteButton->IsEnabled)
+        ClickJournalResult journalResult = addon;
+        if (!journalResult.Addon->CompleteButton->IsEnabled)
         {
             return;
         }

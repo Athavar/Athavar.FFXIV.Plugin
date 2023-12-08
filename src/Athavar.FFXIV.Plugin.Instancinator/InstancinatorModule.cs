@@ -6,7 +6,8 @@
 namespace Athavar.FFXIV.Plugin.Instancinator;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.Command;
@@ -88,9 +89,6 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
 
     /// <inheritdoc/>
     public override string Name => ModuleName;
-
-    /// <inheritdoc/>
-    public override bool Hidden => false;
 
     /// <summary>
     ///     Gets current selected Instance.

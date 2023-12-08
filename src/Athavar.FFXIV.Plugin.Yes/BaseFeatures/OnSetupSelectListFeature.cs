@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.UI;
@@ -124,9 +124,11 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
 
     private unsafe byte OnItemSelectedDetour(nint popupMenu, uint index, nint a3, nint a4)
     {
+        var result = this.onItemSelectedHook!.OriginalDisposeSafe(popupMenu, index, a3, a4);
+
         if (popupMenu == nint.Zero)
         {
-            return this.onItemSelectedHook!.Original(popupMenu, index, a3, a4);
+            return result;
         }
 
         try
@@ -152,7 +154,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             this.module.Logger.Error(ex, "Don't crash the game");
         }
 
-        return this.onItemSelectedHook!.Original(popupMenu, index, a3, a4);
+        return result;
     }
 
     private unsafe string?[] GetEntryTexts(PopupMenu* popupMenu)

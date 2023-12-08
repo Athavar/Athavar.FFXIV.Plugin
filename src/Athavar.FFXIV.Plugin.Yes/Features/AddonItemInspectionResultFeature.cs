@@ -17,7 +17,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// </summary>
 internal class AddonItemInspectionResultFeature : OnSetupFeature
 {
-    private readonly YesModule module;
     private int itemInspectionCount;
 
     /// <summary>
@@ -26,19 +25,18 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
     /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonItemInspectionResultFeature(YesModule module)
         : base(module)
-        => this.module = module;
+    {
+    }
 
     /// <inheritdoc/>
     protected override string AddonName => "ItemInspectionResult";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.ItemInspectionResultEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.ItemInspectionResultEnabled)
-        {
-            return;
-        }
-
         var addonPtr = (AddonItemInspectionResult*)addon;
         if (addonPtr->AtkUnitBase.UldManager.NodeListCount < 64)
         {

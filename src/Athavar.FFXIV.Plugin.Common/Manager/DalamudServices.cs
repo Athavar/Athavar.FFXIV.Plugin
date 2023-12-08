@@ -3,13 +3,15 @@
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Reflection;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
+using Dalamud.Hooking;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -105,12 +107,10 @@ internal sealed class DalamudServices : IDalamudServices
     [RequiredVersion("1.0")]
     public IDataManager DataManager { get; init; } = null!;
 
-    /*
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
     public IDutyState DutyState { get; init; } = null!;
-    */
 
     /*
     /// <inheritdoc/>
@@ -227,4 +227,39 @@ internal sealed class DalamudServices : IDalamudServices
 
     /// <inheritdoc/>
     public object? GetInternalService(Type serviceType) => this.serviceGenericType?.MakeGenericType(serviceType).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, Array.Empty<object>(), null);
+
+    /// <summary>
+    ///     Creates and enable a hook. Hooking address is inferred by calling to GetProcAddress() function.
+    ///     The hook is not activated until Enable() method is called.
+    ///     Please do not use MinHook unless you have thoroughly troubleshot why Reloaded does not work.
+    /// </summary>
+    /// <param name="hookName">Name of the hook. Used in Logging..</param>
+    /// <param name="procAddress">A memory address to install a hook.</param>
+    /// <param name="detour">Callback function. Delegate must have a same original function prototype.</param>
+    /// <param name="setHook">Callback function to give the hook back.</param>
+    /// <typeparam name="TDelegate">Delegate of detour.</typeparam>
+    public void SafeEnableHookFromAddress<TDelegate>(string hookName, nint procAddress, TDelegate detour, Action<Hook<TDelegate>> setHook)
+        where TDelegate : Delegate
+    {
+        Hook<TDelegate>? hook = null;
+        Task.Run(
+            () =>
+            {
+                this.PluginLog.Verbose("Create Hook {0}", hookName);
+                hook = this.GameInteropProvider.HookFromAddress(procAddress, detour);
+                this.PluginLog.Verbose("Enable Hook {0}", hookName);
+                hook.Enable();
+                setHook(hook);
+                this.PluginLog.Verbose("Finish Enabling Hook {0}", hookName);
+            });
+        Task.Run(
+            async () =>
+            {
+                await Task.Delay(7000);
+                if (hook is null)
+                {
+                    this.PluginLog.Warning("Hook {0} was not created in time", hookName);
+                }
+            });
+    }
 }

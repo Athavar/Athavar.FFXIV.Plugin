@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 
 internal static class PacketScanner

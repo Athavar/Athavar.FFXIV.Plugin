@@ -7,9 +7,10 @@ namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 using System.Numerics;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using ImGuiNET;
 
 internal sealed class VisibilityConfigPage : IConfigPage

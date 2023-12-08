@@ -7,8 +7,9 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;

@@ -17,18 +17,20 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// </summary>
 internal class AddonSelectYesNoFeature : OnSetupFeature
 {
-    private readonly YesModule module;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonSelectYesNoFeature"/> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonSelectYesNoFeature(YesModule module)
         : base(module)
-        => this.module = module;
+    {
+    }
 
     /// <inheritdoc/>
     protected override string AddonName => "SelectYesno";
+
+    /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.FunctionEnabled;
 
     /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)

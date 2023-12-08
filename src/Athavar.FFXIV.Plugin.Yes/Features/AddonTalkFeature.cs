@@ -13,13 +13,10 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 /// <summary>
 ///     AddonTalk feature.
 /// </summary>
-internal class AddonTalkFeature : UpdateFeature
+internal class AddonTalkFeature : OnSetupFeature
 {
-    private readonly YesModule module;
     private ClickTalk? clickTalk;
     private nint lastTalkAddon = nint.Zero;
-
-    private AddonEvent lastEvent = AddonEvent.PreFinalize;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonTalkFeature"/> class.
@@ -28,29 +25,22 @@ internal class AddonTalkFeature : UpdateFeature
     public AddonTalkFeature(YesModule module)
         : base(module, AddonEvent.PostDraw)
     {
-        this.module = module;
-        module.DalamudServices.AddonLifecycle.RegisterListener(AddonEvent.PostRequestedUpdate, this.AddonName, this.TriggerHandler);
     }
 
     /// <inheritdoc/>
     protected override string AddonName => "Talk";
 
-    public override void Dispose()
-    {
-        base.Dispose();
-        this.module.DalamudServices.AddonLifecycle.UnregisterListener(AddonEvent.PostRequestedUpdate, this.AddonName, this.TriggerHandler);
-    }
+    /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.FunctionEnabled;
 
     /// <inheritdoc/>
-    protected override unsafe void UpdateImpl(IntPtr addon, AddonEvent addonEvent)
+    protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         var addonPtr = (AddonTalk*)addon;
-        if (!addonPtr->AtkUnitBase.IsVisible || addonEvent == this.lastEvent)
+        if (!addonPtr->AtkUnitBase.IsVisible)
         {
             return;
         }
-
-        this.lastEvent = addonEvent;
 
         var target = this.module.DalamudServices.TargetManager.Target;
         var targetName = this.module.LastSeenTalkTarget = target != null

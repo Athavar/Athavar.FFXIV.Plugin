@@ -6,10 +6,11 @@
 namespace Athavar.FFXIV.Plugin;
 
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
@@ -31,8 +32,8 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
     /// <param name="manager"><see cref="IModuleManager"/> added by DI.</param>
     /// <param name="configuration"><see cref="CommonConfiguration"/> added by DI.</param>
     /// <param name="services"><see cref="IDalamudServices"/> added by DI.</param>
-    /// <param name="gearsetManager"><see cref="IGearsetManager"/> added by DI.</param>
-    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IGearsetManager gearsetManager)
+    /// <param name="serviceProvider"><see cref="IServiceProvider"/> added by DI.</param>
+    public PluginWindow(ILocalizeManager localizeManager, IModuleManager manager, CommonConfiguration configuration, IDalamudServices services, IServiceProvider serviceProvider)
         : base("ConfigRoot###mainWindow")
     {
         this.manager = manager;
@@ -43,7 +44,7 @@ internal sealed class PluginWindow : Window, IDisposable, IPluginWindow
             this.LaunchButton.AddEntry();
         }
 
-        this.settingsTab = new SettingsTab(this, services, this.manager, localizeManager, configuration, gearsetManager);
+        this.settingsTab = new SettingsTab(this, services, this.manager, localizeManager, configuration, serviceProvider);
         this.tabBarHandler.Add(this.settingsTab);
 
         this.Size = new Vector2(525, 600);

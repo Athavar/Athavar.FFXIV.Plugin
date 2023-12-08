@@ -7,7 +7,8 @@ namespace Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using Machina.FFXIV;
 using Machina.Infrastructure;

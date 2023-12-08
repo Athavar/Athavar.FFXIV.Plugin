@@ -4,6 +4,8 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common;
 
+using Athavar.FFXIV.Plugin.Models;
+
 public abstract class Module<TConfig> : Module
     where TConfig : BasicModuleConfig
 {

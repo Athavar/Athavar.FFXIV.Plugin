@@ -2,7 +2,7 @@
   "Author": "Athavar",
   "Name": "Athavar's ToolBox",
   "Punchline": "Various tools for private use.",
-  "Description": "Various tools for private use. Module: AutoSpear, CraftQueue, Dps, Instancinator, Macro, OpcodeWizard, Yes",
+  "Description": "Various tools for private use. Module: AutoSpear, CraftQueue, Dps, DutyHistory, Instancinator, Macro, OpcodeWizard, SliceIsRight, Yes",
   "RepoUrl": "https://github.com/Athavar/Athavar.FFXIV.Plugin",
   "ImageUrls": [],
   "IconUrl": "https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/plugins/Athavar.FFXIV.Plugin/images/icon.png",

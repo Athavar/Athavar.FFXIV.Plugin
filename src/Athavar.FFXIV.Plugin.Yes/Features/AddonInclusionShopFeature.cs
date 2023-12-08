@@ -9,7 +9,6 @@ using Athavar.FFXIV.Plugin.Click.Structures;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Hooking;
-using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
@@ -17,8 +16,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// </summary>
 internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 {
-    [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2", DetourName = nameof(AgentReceiveEventDetour))]
-    private readonly Hook<AgentReceiveEventDelegate> agentReceiveEventHook = null!;
+    private Hook<AgentReceiveEventDelegate>? agentReceiveEventHook;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature"/> class.
@@ -27,9 +25,6 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     public AddonInclusionShopFeature(YesModule module)
         : base(module, AddonEvent.PostSetup)
     {
-        module.DalamudServices.GameInteropProvider.InitializeFromAttributes(this);
-
-        this.agentReceiveEventHook.Enable();
     }
 
     private unsafe delegate nint AgentReceiveEventDelegate(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind);
@@ -38,21 +33,37 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     protected override string AddonName => "InclusionShop";
 
     /// <inheritdoc/>
-    public new void Dispose()
+    protected override bool ConfigurationEnableState => this.Configuration.InclusionShopRememberEnabled;
+
+    /// <inheritdoc/>
+    public override unsafe bool OnEnable()
     {
-        this.agentReceiveEventHook.Disable();
-        this.agentReceiveEventHook.Dispose();
-        base.Dispose();
+        if (!base.OnEnable())
+        {
+            return false;
+        }
+
+        this.module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", this.module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override bool OnDisable()
+    {
+        if (!base.OnDisable())
+        {
+            return false;
+        }
+
+        this.agentReceiveEventHook?.Disable();
+        this.agentReceiveEventHook?.Dispose();
+        this.agentReceiveEventHook = null;
+        return true;
     }
 
     /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.InclusionShopRememberEnabled)
-        {
-            return;
-        }
-
         var unitbase = (AtkUnitBase*)addon;
 
         this.module.Logger.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
@@ -66,17 +77,17 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 
     private unsafe nint AgentReceiveEventDetour(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind)
     {
-        nint Original() => this.agentReceiveEventHook.Original(agent, eventData, values, valueCount, eventKind);
+        var result = this.agentReceiveEventHook!.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind);
 
         if (valueCount != 2)
         {
-            return Original();
+            return result;
         }
 
         var atkValue0 = values[0];
         if (atkValue0.Type != ValueType.Int)
         {
-            return Original();
+            return result;
         }
 
         var val0 = atkValue0.Int;
@@ -102,6 +113,6 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             }
         }
 
-        return Original();
+        return result;
     }
 }

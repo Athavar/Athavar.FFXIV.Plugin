@@ -157,21 +157,48 @@ public static class ImGuiEx
         }
     }
 
-    /// <summary>
-    ///     Get a list clipper.
-    /// </summary>
-    /// <param name="itemsCount">Amount of items in the list.</param>
-    /// <returns>A RGBA vec4.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ImGuiListClipperPtr Clipper(int itemsCount)
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    public static void Center(string text)
     {
-        unsafe
-        {
-            var guiListClipperPtr = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
-            guiListClipperPtr.Begin(itemsCount);
-            return guiListClipperPtr;
-        }
+        var offset = (ImGui.GetContentRegionAvail().X - ImGui.CalcTextSize(text).X) / 2;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
+        ImGui.TextUnformatted(text);
     }
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
+    /// <param name="handle">Pointer to the image texture.</param>
+    /// <param name="size">Image size.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ScaledCenterImageY(nint handle, Vector2 size, float scaledHeight) => ScaledCenterImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
+    /// <param name="handle">Pointer to the image texture.</param>
+    /// <param name="iconWidth">Image width.</param>
+    /// <param name="iconHeight">Image height.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ScaledCenterImageY(nint handle, int iconWidth, int iconHeight, float scaledHeight)
+    {
+        var num = scaledHeight / iconHeight;
+        var x = iconWidth * num;
+        var offset = (ImGui.GetContentRegionAvail().X - x) / 2;
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
+        ImGui.Image(handle, new Vector2(x, scaledHeight));
+    }
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
+    /// <param name="handle">Pointer to the image texture.</param>
+    /// <param name="size">Image size.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ScaledImageY(nint handle, Vector2 size, float scaledHeight) => ScaledImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
 
     /// <summary>
     ///     Scales a Image after height.
@@ -212,7 +239,7 @@ public static class ImGuiEx
     /// </summary>
     /// <param name="values">The input values.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void TableRow(object[] values)
+    public static void TableRow(params object[] values)
     {
         for (var columnIndex = 0; columnIndex < values.Length; ++columnIndex)
         {

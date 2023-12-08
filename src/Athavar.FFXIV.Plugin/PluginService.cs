@@ -5,8 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.UI;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
@@ -69,7 +69,7 @@ internal sealed class PluginService
                 "Open the Configuration of Athavar's ToolsBox.",
         });
         this.dalamudServices.PluginInterface.UiBuilder.Draw += this.windowSystem.Draw;
-        this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi += this.OnOpenConfigUi;
+        this.dalamudServices.PluginInterface.UiBuilder.OpenMainUi += this.OnOpenConfigUi;
         this.logger.Debug("Service Started");
     }
 
@@ -79,7 +79,7 @@ internal sealed class PluginService
     public void Stop()
     {
         this.logger.Debug("Service Stop");
-        this.dalamudServices.PluginInterface.UiBuilder.OpenConfigUi -= this.OnOpenConfigUi;
+        this.dalamudServices.PluginInterface.UiBuilder.OpenMainUi -= this.OnOpenConfigUi;
         this.dalamudServices.PluginInterface.UiBuilder.Draw -= this.windowSystem.Draw;
         this.dalamudServices.CommandManager.RemoveHandler(Plugin.CommandName);
         this.windowSystem.RemoveAllWindows();

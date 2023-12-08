@@ -17,7 +17,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     where TImpl : class
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickBase{TImpl}" /> class.
+    ///     Initializes a new instance of the <see cref="ClickBase{TImpl}"/> class.
     /// </summary>
     /// <param name="name">Addon name.</param>
     /// <param name="addon">Addon address.</param>
@@ -50,6 +50,11 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     protected nint AddonAddress { get; init; }
 
     public static implicit operator TImpl(ClickBase<TImpl> cb) => (cb as TImpl)!;
+
+    /// <summary>
+    ///     Close Addon.
+    /// </summary>
+    public void Close() => this.UnitBase->Close(true);
 
     /// <summary>
     ///     Fire an addon callback.

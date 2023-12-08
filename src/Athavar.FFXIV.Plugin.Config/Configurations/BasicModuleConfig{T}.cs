@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Timers;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
 

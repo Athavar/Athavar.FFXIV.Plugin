@@ -6,11 +6,11 @@ namespace Athavar.FFXIV.Plugin.Dps.UI;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Internal.Notifications;

@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(AutoSpearConfiguration), HasTab = true)]
@@ -30,9 +30,6 @@ internal sealed class AutoSpearModule : Module<AutoSpear, AutoSpearConfiguration
 
     /// <inheritdoc/>
     public override string Name => ModuleName;
-
-    /// <inheritdoc/>
-    public override bool Hidden => false;
 
     protected override AutoSpear InitTab() => ActivatorUtilities.CreateInstance<AutoSpear>(this.provider);
 }

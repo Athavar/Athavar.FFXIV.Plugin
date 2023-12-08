@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Cheat.List;
 
 using System.Reflection;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Plugin;
 
 /// <summary>
@@ -32,7 +32,7 @@ internal class EnablePeepingTomPvP : Cheat
     }
 
     /// <inheritdoc/>
-    public override bool Enabled => this.dalamudServices.PluginInterface.InstalledPlugins.FirstOrDefault(ip => ip.Name == "Peeping Tom") is not null;
+    public override bool Enabled => this.dalamudServices.PluginInterface.InstalledPlugins.Any(ip => ip.Name == "Peeping Tom");
 
     /// <inheritdoc/>
     public override bool OnEnabled()

@@ -9,7 +9,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using FFXIVClientStructs.FFXIV.Client.Game;
 

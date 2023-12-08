@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using FFXIVClientStructs.FFXIV.Client.Game;
 
 internal sealed unsafe class EquipmentScanner : IDisposable

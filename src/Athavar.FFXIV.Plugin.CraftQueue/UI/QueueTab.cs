@@ -12,10 +12,12 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
@@ -211,13 +213,13 @@ internal sealed class QueueTab : Tab
                 ImGui.TableSetupColumn("Name##name", ImGuiTableColumnFlags.WidthStretch);
                 ImGui.TableSetupScrollFreeze(0, 1);
                 ImGui.TableHeadersRow();
-                var guiListClipperPtr = ImGuiEx.Clipper(this.filteredRecipes.Count);
-                while (guiListClipperPtr.Step())
-                {
-                    for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
+
+                ImGuiClip.ClippedDraw(
+                    this.filteredRecipes,
+                    filteredRecipe =>
                     {
                         ImGui.TableNextRow();
-                        var (num, recipe, job) = this.filteredRecipes[index];
+                        var (num, recipe, job) = filteredRecipe;
                         var obj = recipe.ItemResult.Value;
                         var text = this.classJobsSheet.GetRow((uint)job)?.Abbreviation.RawString ?? "???";
                         ImGui.TableSetColumnIndex(0);
@@ -250,11 +252,8 @@ internal sealed class QueueTab : Tab
                         ImGui.TextUnformatted($"{recipe.RecipeLevelTable.Row}");
                         ImGui.TableSetColumnIndex(3);
                         ImGui.TextUnformatted(obj?.Name.ToDalamudString().TextValue);
-                    }
-                }
-
-                guiListClipperPtr.End();
-                guiListClipperPtr.Destroy();
+                    },
+                    ImGui.GetStyle().ItemSpacing.Y);
 
                 ImGui.EndTable();
                 ImGui.EndChild();
@@ -298,20 +297,22 @@ internal sealed class QueueTab : Tab
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.TextUnformatted("None");
-                var guiListClipperPtr = ImGuiEx.Clipper(items.Count);
 
-                while (guiListClipperPtr.Step())
-                {
-                    for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
+                // copy ref to local variables
+                var selIndex = idx;
+                var selItem = selected;
+
+                ImGuiClip.ClippedDraw(
+                    items,
+                    (buffInfo, index) =>
                     {
-                        var buffInfo = items[index];
                         ImGui.TableNextRow();
                         ImGui.TableSetColumnIndex(0);
                         var cursorPos1 = ImGui.GetCursorPos();
-                        if (ImGui.Selectable($"##{index}", idx == index, ImGuiSelectableFlags.SpanAllColumns))
+                        if (ImGui.Selectable($"##{index}", selIndex == index, ImGuiSelectableFlags.SpanAllColumns))
                         {
-                            idx = index;
-                            selected = items[index];
+                            selIndex = index;
+                            selItem = items[index];
                             this.selectionChanged = true;
                         }
 
@@ -331,11 +332,12 @@ internal sealed class QueueTab : Tab
                         {
                             ImGui.TextUnformatted(buffInfo.Name);
                         }
-                    }
-                }
+                    },
+                    ImGui.GetStyle().ItemSpacing.Y);
 
-                guiListClipperPtr.End();
-                guiListClipperPtr.Destroy();
+                // restore local variables to ref
+                selected = selItem;
+                idx = selIndex;
 
                 ImGui.EndTable();
             }
@@ -597,7 +599,7 @@ internal sealed class QueueTab : Tab
         var rotationSteps = this.simulationResult.Steps;
 
         ImGui.SetNextItemWidth(-1);
-        if (ImGui.CollapsingHeader("Steps##step-table-collapsing") && ImGui.BeginTable("##step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders))
+        if (ImGui.CollapsingHeader("Steps##step-table-collapsing") && ImGui.BeginTable("##step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders, new Vector2(10.0f, 10.0f)))
         {
             ImGui.TableSetupColumn("Step##index", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
@@ -607,13 +609,12 @@ internal sealed class QueueTab : Tab
             ImGui.TableSetupColumn("Progress##progress", ImGuiTableColumnFlags.WidthStretch);
             ImGui.TableSetupScrollFreeze(0, 1);
             ImGui.TableHeadersRow();
-            var guiListClipperPtr = ImGuiEx.Clipper(rotationSteps.Count);
+
             var classIndex = (int)this.selectedRecipe.Class;
-            while (guiListClipperPtr.Step())
-            {
-                for (var index = guiListClipperPtr.DisplayStart; index < guiListClipperPtr.DisplayEnd; ++index)
+            ImGuiClip.ClippedDraw(
+                rotationSteps,
+                (step, index) =>
                 {
-                    var step = rotationSteps[index];
                     var craftSkillData = this.craftDataManager.GetCraftSkillData(step.Skill);
                     if (step.Skipped)
                     {
@@ -654,11 +655,8 @@ internal sealed class QueueTab : Tab
                     {
                         ImGui.PopStyleColor();
                     }
-                }
-            }
-
-            guiListClipperPtr.End();
-            guiListClipperPtr.Destroy();
+                },
+                ImGui.GetStyle().ItemSpacing.Y);
 
             ImGui.EndTable();
         }

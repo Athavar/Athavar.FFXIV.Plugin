@@ -9,10 +9,12 @@ using System.Numerics;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Manager;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 

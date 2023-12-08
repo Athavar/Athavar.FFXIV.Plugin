@@ -27,13 +27,8 @@ internal class AddonGrandCompanySupplyRewardFeature : OnSetupFeature
     protected override string AddonName => "GrandCompanySupplyReward";
 
     /// <inheritdoc/>
-    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
-    {
-        if (!this.Configuration.GrandCompanySupplyReward)
-        {
-            return;
-        }
+    protected override bool ConfigurationEnableState => this.Configuration.GrandCompanySupplyReward;
 
-        ClickGrandCompanySupplyReward.Using(addon).Deliver();
-    }
+    /// <inheritdoc/>
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent) => ClickGrandCompanySupplyReward.Using(addon).Deliver();
 }

@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel.GeneratedSheets;
 
 internal sealed class FishingSpot

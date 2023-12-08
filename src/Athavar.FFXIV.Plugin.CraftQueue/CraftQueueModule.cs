@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Config.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(CraftQueueConfiguration), HasTab = true)]
@@ -34,9 +34,6 @@ internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfigu
 
     /// <inheritdoc/>
     public override string Name => ModuleName;
-
-    /// <inheritdoc/>
-    public override bool Hidden => false;
 
     /// <inheritdoc/>
     public override void Dispose()

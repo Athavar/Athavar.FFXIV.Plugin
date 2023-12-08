@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Yes;
 
 using System.Numerics;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 

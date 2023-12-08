@@ -6,7 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Cheat;
 
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -45,9 +47,6 @@ internal sealed class CheatModule : Module, IDisposable
 
     /// <inheritdoc/>
     public override string Name => ModuleName;
-
-    /// <inheritdoc/>
-    public override bool Hidden => true;
 
     /// <inheritdoc/>
     public override (Func<bool> Get, Action<bool> Set) GetEnableStateAction()
@@ -100,7 +99,7 @@ internal sealed class CheatModule : Module, IDisposable
                 if (cheat.Value)
                 {
                     cheat.Key.OnDisabled();
-                    this.cheats[cheat.Key] = true;
+                    this.cheats[cheat.Key] = false;
                 }
             }
         }

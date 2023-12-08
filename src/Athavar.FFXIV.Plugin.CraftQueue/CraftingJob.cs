@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
+using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
 using Lumina.Excel.GeneratedSheets;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;

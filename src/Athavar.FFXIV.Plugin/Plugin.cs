@@ -9,20 +9,24 @@ using Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.Cheat;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.Data;
 using Athavar.FFXIV.Plugin.Dps;
+using Athavar.FFXIV.Plugin.DutyHistory;
 using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
+using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Athavar.FFXIV.Plugin.SliceIsRight;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog.Events;
 
 /// <summary>
 ///     Main plugin implementation.
@@ -60,9 +64,6 @@ public sealed class Plugin : IDalamudPlugin
     }
 
     /// <inheritdoc/>
-    public string Name => PluginName;
-
-    /// <inheritdoc/>
     public void Dispose()
     {
         this.servive.Stop();
@@ -76,11 +77,7 @@ public sealed class Plugin : IDalamudPlugin
             {
                 if (this.pluginInterface.ConfigFile.Exists)
                 {
-                    // migrate old configuration
-                    // TODO: replace static PluginLog
-                    PluginLog.LogInformation("Start the migrate of the configuration");
                     Configuration.Migrate(this.pluginInterface);
-                    PluginLog.LogInformation("Finish the migrate of the configuration");
                 }
 
                 return this.pluginInterface;
@@ -89,6 +86,7 @@ public sealed class Plugin : IDalamudPlugin
            .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
            .AddCommon()
+           .AddData()
            .AddAutoSpearModule()
            .AddClick()
            .AddMacroModule()
@@ -99,10 +97,64 @@ public sealed class Plugin : IDalamudPlugin
            .AddDps()
            .AddOpcodeWizard()
            .AddSliceIsRightModule()
+           .AddDutyHistory()
 #if DEBUG
 #endif
            .AddSingleton<AutoTranslateWindow>()
            .AddSingleton<PluginService>()
+           .AddSingleton<ILoggerProvider, HostLoggerProvider>()
            .BuildServiceProvider();
+    }
+
+    private sealed class HostLoggerProvider : ILoggerProvider
+    {
+        private readonly IPluginLogger pluginLog;
+
+        public HostLoggerProvider(IPluginLogger pluginLog) => this.pluginLog = pluginLog;
+
+        public void Dispose()
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName) => new HostLogger(this.pluginLog);
+    }
+
+    private sealed class HostLogger : ILogger
+    {
+        private readonly IPluginLogger pluginLogger;
+
+        public HostLogger(IPluginLogger pluginLogger) => this.pluginLogger = pluginLogger;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        {
+            var level = this.Convert(logLevel);
+            this.pluginLogger.Write(level, exception, formatter(state, exception));
+        }
+
+        public bool IsEnabled(LogLevel logLevel) => this.pluginLogger.MinimumLogLevel <= this.Convert(logLevel);
+
+        public IDisposable BeginScope<TState>(TState state) => NoopDisposable.Instance;
+
+        private LogEventLevel Convert(LogLevel logLevel)
+            => logLevel switch
+            {
+                LogLevel.Trace => LogEventLevel.Verbose,
+                LogLevel.Debug => LogEventLevel.Debug,
+                LogLevel.Information => LogEventLevel.Information,
+                LogLevel.Warning => LogEventLevel.Warning,
+                LogLevel.Error => LogEventLevel.Error,
+                LogLevel.Critical => LogEventLevel.Fatal,
+                LogLevel.None => LogEventLevel.Fatal,
+                _ => LogEventLevel.Fatal,
+            };
+
+        private sealed class NoopDisposable : IDisposable
+        {
+            public static readonly NoopDisposable Instance = new();
+
+            public void Dispose()
+            {
+            }
+        }
     }
 }
