@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Yes.Features;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
-using FFXIVClientStructs.FFXIV.Client.UI;
 
 /// <summary>
 ///     AddonSalvageDialog feature.
@@ -28,18 +27,23 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
     protected override string AddonName => "SalvageDialog";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.DesynthDialogEnabled || this.Configuration.DesynthBulkDialogEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
+        ClickSalvageDialog salvageDialog = addon;
+
         if (this.Configuration.DesynthBulkDialogEnabled)
         {
-            ((AddonSalvageDialog*)addon)->BulkDesynthEnabled = true;
+            salvageDialog.Addon->BulkDesynthEnabled = true;
         }
 
         if (this.Configuration.DesynthDialogEnabled)
         {
-            var clickAddon = ClickSalvageDialog.Using(addon);
-            clickAddon.CheckBox();
-            clickAddon.Desynthesize();
+            this.module.Logger.Debug("Advanced Salvage Dialog menu");
+            salvageDialog.CheckBox();
+            salvageDialog.Desynthesize();
         }
     }
 }

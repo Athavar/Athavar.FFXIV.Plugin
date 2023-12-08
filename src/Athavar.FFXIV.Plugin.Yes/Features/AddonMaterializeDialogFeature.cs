@@ -27,13 +27,8 @@ internal class AddonMaterializeDialogFeature : OnSetupFeature
     protected override string AddonName => "MaterializeDialog";
 
     /// <inheritdoc/>
-    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
-    {
-        if (!this.Configuration.MaterializeDialogEnabled)
-        {
-            return;
-        }
+    protected override bool ConfigurationEnableState => this.Configuration.MaterializeDialogEnabled;
 
-        ClickMaterializeDialog.Using(addon).Materialize();
-    }
+    /// <inheritdoc/>
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent) => ClickMaterializeDialog.Using(addon).Materialize();
 }

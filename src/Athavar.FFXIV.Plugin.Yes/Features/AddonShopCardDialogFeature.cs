@@ -29,13 +29,11 @@ internal class AddonShopCardDialogFeature : OnSetupFeature
     protected override string AddonName => "ShopCardDialog";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.ShopCardDialog;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.ShopCardDialog)
-        {
-            return;
-        }
-
         var addonPtr = (AddonShopCardDialog*)addon;
         if (addonPtr->CardQuantityInput != null)
         {

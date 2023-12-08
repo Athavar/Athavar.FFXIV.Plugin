@@ -28,6 +28,9 @@ internal class AddonSelectStringFeature : OnSetupSelectListFeature
     protected override string AddonName => "SelectString";
 
     /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.FunctionEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         var addonPtr = (AddonSelectString*)addon;

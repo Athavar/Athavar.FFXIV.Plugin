@@ -27,13 +27,8 @@ internal class AddonRetainerTaskAskFeature : OnSetupFeature
     protected override string AddonName => "RetainerTaskAsk";
 
     /// <inheritdoc/>
-    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
-    {
-        if (!this.Configuration.RetainerTaskAskEnabled)
-        {
-            return;
-        }
+    protected override bool ConfigurationEnableState => this.Configuration.RetainerTaskAskEnabled;
 
-        ClickRetainerTaskAsk.Using(addon).Assign();
-    }
+    /// <inheritdoc/>
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent) => ClickRetainerTaskAsk.Using(addon).Assign();
 }

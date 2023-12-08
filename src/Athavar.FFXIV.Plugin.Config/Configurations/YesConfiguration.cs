@@ -60,6 +60,7 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     /// <summary>
     ///     Gets or sets a value indicating whether the module functionality is enabled.
     /// </summary>
+
     // ReSharper disable once RedundantDefaultMemberInitializer
     [JsonInclude]
     [JsonPropertyName("FunctionEnabled")]
@@ -78,6 +79,12 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     [JsonInclude]
     [JsonPropertyName("DesynthBulkDialogEnabled")]
     public bool DesynthBulkDialogEnabled { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether the desynth result setting is enabled.
+    /// </summary>
+    [JsonPropertyName("DesynthResultEnabled")]
+    public bool DesynthResultsEnabled { get; set; }
 
     /// <summary>
     ///     Gets or sets a value indicating whether the materialize dialog setting is enabled.
@@ -190,6 +197,13 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     [JsonInclude]
     [JsonPropertyName("RetainerTransferProgressConfirmEnable")]
     public bool RetainerTransferProgressConfirmEnable { get; set; }
+
+    /// <summary>
+    ///     Gets or sets a value indicating whether to auto-confirm the RetainerItemTransferList addon.
+    /// </summary>
+    [JsonInclude]
+    [JsonPropertyName("RetainerTransferListConfirmEnabled")]
+    public bool RetainerTransferListConfirmEnabled { get; set; }
 
     /// <summary>
     ///     Get all nodes in the tree.

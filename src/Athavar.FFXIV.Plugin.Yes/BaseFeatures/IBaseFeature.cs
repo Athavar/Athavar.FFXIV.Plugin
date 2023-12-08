@@ -10,4 +10,5 @@ namespace Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 /// </summary>
 internal interface IBaseFeature : IDisposable
 {
+    void UpdateEnableState();
 }

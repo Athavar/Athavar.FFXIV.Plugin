@@ -205,6 +205,7 @@ internal sealed class YesConfigTab : Tab
         }
 
         ImGui.PushID("BotherOptions");
+        var change = false;
 
         if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail(), false))
         {
@@ -212,7 +213,7 @@ internal sealed class YesConfigTab : Tab
             if (!this.hotkeyValues.Contains(this.Configuration.DisableKey))
             {
                 this.Configuration.DisableKey = VirtualKey.NO_KEY;
-                this.Configuration.Save();
+                change = true;
             }
 
             var disableHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.DisableKey);
@@ -221,7 +222,7 @@ internal sealed class YesConfigTab : Tab
             if (ImGui.Combo("Disable Hotkey", ref disableHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
             {
                 this.Configuration.DisableKey = this.hotkeyValues[disableHotkeyIndex];
-                this.Configuration.Save();
+                change = true;
             }
 
             IndentedTextColored(this.shadedColor, "While this key is held, the plugin is disabled.");
@@ -230,7 +231,7 @@ internal sealed class YesConfigTab : Tab
             if (!this.hotkeyValues.Contains(this.Configuration.ForcedYesKey))
             {
                 this.Configuration.ForcedYesKey = VirtualKey.NO_KEY;
-                this.Configuration.Save();
+                change = true;
             }
 
             var forcedYesHotkeyIndex = Array.IndexOf(this.hotkeyValues, this.Configuration.ForcedYesKey);
@@ -239,7 +240,7 @@ internal sealed class YesConfigTab : Tab
             if (ImGui.Combo("Forced Yes Hotkey", ref forcedYesHotkeyIndex, this.hotkeyChoices, this.hotkeyChoices.Length))
             {
                 this.Configuration.ForcedYesKey = this.hotkeyValues[forcedYesHotkeyIndex];
-                this.Configuration.Save();
+                change = true;
             }
 
             IndentedTextColored(this.shadedColor, "While this key is held, any Yes/No prompt will always default to yes. Be careful.");
@@ -250,7 +251,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("SalvageDialog", ref desynthDialog))
                 {
                     this.Configuration.DesynthDialogEnabled = desynthDialog;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Remove the Desynthesis menu confirmation.");
@@ -262,10 +263,21 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("SalvageDialog (Bulk)", ref desynthBulkDialog))
                 {
                     this.Configuration.DesynthBulkDialogEnabled = desynthBulkDialog;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Check the bulk desynthesis button when using the SalvageDialog feature.");
+            }
+
+            {
+                var desynthResultsDialog = this.Configuration.DesynthResultsEnabled;
+                if (ImGui.Checkbox("SalvageResults", ref desynthResultsDialog))
+                {
+                    this.Configuration.DesynthResultsEnabled = desynthResultsDialog;
+                    change = true;
+                }
+
+                IndentedTextColored(this.shadedColor, "Automatically closes the SalvageResults window when done desynthing.");
             }
 
             // PurifyResult
@@ -274,7 +286,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("PurifyResult", ref purifyResult))
                 {
                     this.Configuration.AetherialReductionPurifyResultEnabled = purifyResult;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically closes the PurifyResult window when done reducing.");
@@ -286,7 +298,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("MaterializeDialog", ref materialize))
                 {
                     this.Configuration.MaterializeDialogEnabled = materialize;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Remove the create new (extract) materia confirmation.");
@@ -298,7 +310,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("MateriaRetrieveDialog", ref materiaRetrieve))
                 {
                     this.Configuration.MateriaRetrieveDialogEnabled = materiaRetrieve;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Remove the retrieve materia confirmation.");
@@ -310,7 +322,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("ItemInspectionResult", ref itemInspection))
                 {
                     this.Configuration.ItemInspectionResultEnabled = itemInspection;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Eureka/Bozja lockboxes, forgotten fragments, and more.\nWarning: this does not check if you are maxed on items.");
@@ -329,7 +341,7 @@ internal sealed class YesConfigTab : Tab
                     else
                     {
                         this.Configuration.ItemInspectionResultRateLimiter = itemInspectionResultLimiter;
-                        this.Configuration.Save();
+                        change = true;
                     }
                 }
             }
@@ -340,7 +352,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("RetainerTaskAsk", ref retainerTaskAsk))
                 {
                     this.Configuration.RetainerTaskAskEnabled = retainerTaskAsk;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Skip the confirmation in the final dialog before sending out a retainer.");
@@ -352,10 +364,22 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("RetainerTaskResult", ref retainerTaskResult))
                 {
                     this.Configuration.RetainerTaskResultEnabled = retainerTaskResult;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically send a retainer on the same venture as before when receiving an item.");
+            }
+
+            // RetainerItemTransferList
+            {
+                var retainerListDialog = this.Configuration.RetainerTransferListConfirmEnabled;
+                if (ImGui.Checkbox("RetainerTransferListConfirm", ref retainerListDialog))
+                {
+                    this.Configuration.RetainerTransferListConfirmEnabled = retainerListDialog;
+                    change = true;
+                }
+
+                IndentedTextColored(this.shadedColor, "Skip the confirmation in the RetainerItemTransferList window to entrust all items to the retainer.");
             }
 
             // RetainerItemTransferProgress
@@ -364,7 +388,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("RetainerItemTransferProgress", ref retainerItemTransferProgress))
                 {
                     this.Configuration.RetainerTransferProgressConfirmEnable = retainerItemTransferProgress;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically closes the RetainerItemTransferProgress window when finished entrusting items.");
@@ -376,7 +400,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("GrandCompanySupplyReward", ref grandCompanySupplyReward))
                 {
                     this.Configuration.GrandCompanySupplyReward = grandCompanySupplyReward;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Skip the confirmation when submitting Grand Company expert delivery items.");
@@ -388,7 +412,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("ShopCardDialog", ref shopCard))
                 {
                     this.Configuration.ShopCardDialog = shopCard;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically confirm selling Triple Triad cards in the saucer.");
@@ -400,7 +424,7 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("JournalResultComplete", ref journalResultComplete))
                 {
                     this.Configuration.JournalResultCompleteEnabled = journalResultComplete;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically confirm quest reward acceptance when there is nothing to choose.");
@@ -418,7 +442,7 @@ internal sealed class YesConfigTab : Tab
                         this.Configuration.ContentsFinderOneTimeConfirmEnabled = false;
                     }
 
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically commence duties when ready.");
@@ -436,7 +460,7 @@ internal sealed class YesConfigTab : Tab
                         this.Configuration.ContentsFinderConfirmEnabled = true;
                     }
 
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Automatically commence duties when ready, but only once.\nRequires Contents Finder Confirm, and disables both after activation.");
@@ -448,13 +472,19 @@ internal sealed class YesConfigTab : Tab
                 if (ImGui.Checkbox("InclusionShopRemember", ref inclusionShopRemember))
                 {
                     this.Configuration.InclusionShopRememberEnabled = inclusionShopRemember;
-                    this.Configuration.Save();
+                    change = true;
                 }
 
                 IndentedTextColored(this.shadedColor, "Remember the last panel visited on the scrip exchange window.");
             }
 
             ImGui.EndChild();
+        }
+
+        if (change)
+        {
+            this.Configuration.Save();
+            this.module.UpdateEnableState();
         }
 
         ImGui.PopID();

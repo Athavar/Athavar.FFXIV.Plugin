@@ -71,11 +71,15 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
             this.features.Add((IBaseFeature)Activator.CreateInstance(baseFeatureTypes, this)!);
         }
 
-        this.DalamudServices.CommandManager.AddHandler(Command, new CommandInfo(this.OnChatCommand)
-        {
-            HelpMessage = "Commands that control the yes module.",
-            ShowInHelp = true,
-        });
+        this.UpdateEnableState();
+
+        this.DalamudServices.CommandManager.AddHandler(
+            Command,
+            new CommandInfo(this.OnChatCommand)
+            {
+                HelpMessage = "Commands that control the yes module.",
+                ShowInHelp = true,
+            });
 
         dalamudServices.PluginLogger.Debug("Module 'Yes' init");
     }
@@ -166,6 +170,14 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         this.zoneListWindow?.Dispose();
     }
 
+    internal void UpdateEnableState()
+    {
+        foreach (var feature in this.features)
+        {
+            feature.UpdateEnableState();
+        }
+    }
+
     /// <summary>
     ///     Create a new node with various options.
     /// </summary>
@@ -173,7 +185,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="zoneRestricted">Create the node restricted to the current zone.</param>
     /// <param name="createFolder">Create a zone named subfolder.</param>
     /// <param name="selectNo">Select no instead.</param>
-    public void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
+    internal void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
     {
         var newNode = new TextEntryNode { Enabled = true, Text = this.LastSeenDialogText };
         var chosenFolder = folder;

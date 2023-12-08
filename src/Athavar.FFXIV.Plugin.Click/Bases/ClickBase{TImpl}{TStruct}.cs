@@ -32,7 +32,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     where TStruct : unmanaged
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickBase{TImpl,TStruct}" /> class.
+    ///     Initializes a new instance of the <see cref="ClickBase{TImpl,TStruct}"/> class.
     /// </summary>
     /// <param name="name">Addon name.</param>
     /// <param name="addon">Addon address.</param>
@@ -44,7 +44,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <summary>
     ///     Gets a pointer to the type.
     /// </summary>
-    protected TStruct* Addon => (TStruct*)this.UnitBase;
+    public TStruct* Addon => (TStruct*)this.UnitBase;
 
     /// <summary>
     ///     Send a click.

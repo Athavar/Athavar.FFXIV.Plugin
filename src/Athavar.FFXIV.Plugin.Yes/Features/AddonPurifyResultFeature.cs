@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.Yes.Features;
 
-using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
@@ -23,22 +22,22 @@ internal class AddonPurifyResultFeature : OnSetupFeature
         : base(module)
         => this.aetherialReductionSuccessfulText = this.module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(2171)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 2171 not found");
 
+    /// <inheritdoc/>
     protected override string AddonName => "PurifyResult";
 
+    /// <inheritdoc/>
+    protected override bool ConfigurationEnableState => this.Configuration.AetherialReductionPurifyResultEnabled;
+
+    /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        var addonPtr = (AtkUnitBase*)addon;
-
-        if (!this.Configuration.AetherialReductionPurifyResultEnabled)
-        {
-            return;
-        }
+        var unitBase = (AtkUnitBase*)addon;
 
         // close only if successful.
-        if (addonPtr->UldManager.NodeList[17]->GetAsAtkTextNode()->NodeText.ToString() == this.aetherialReductionSuccessfulText)
+        if (unitBase->UldManager.NodeList[17]->GetAsAtkTextNode()->NodeText.ToString() == this.aetherialReductionSuccessfulText)
         {
             this.module.Logger.Debug("Closing Purify Results menu");
-            ClickPurifyResult.Using(addon).Close();
+            unitBase->Close(true);
         }
     }
 }

@@ -22,9 +22,10 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     ///     Initializes a new instance of the <see cref="AddonInclusionShopFeature"/> class.
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
-    public unsafe AddonInclusionShopFeature(YesModule module)
+    public AddonInclusionShopFeature(YesModule module)
         : base(module, AddonEvent.PostSetup)
-        => module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
+    {
+    }
 
     private unsafe delegate nint AgentReceiveEventDelegate(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind);
 
@@ -32,21 +33,37 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     protected override string AddonName => "InclusionShop";
 
     /// <inheritdoc/>
-    public new void Dispose()
+    protected override bool ConfigurationEnableState => this.Configuration.InclusionShopRememberEnabled;
+
+    /// <inheritdoc/>
+    public override unsafe bool OnEnable()
     {
+        if (!base.OnEnable())
+        {
+            return false;
+        }
+
+        this.module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", this.module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override bool OnDisable()
+    {
+        if (!base.OnDisable())
+        {
+            return false;
+        }
+
         this.agentReceiveEventHook?.Disable();
         this.agentReceiveEventHook?.Dispose();
-        base.Dispose();
+        this.agentReceiveEventHook = null;
+        return true;
     }
 
     /// <inheritdoc/>
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
-        if (!this.Configuration.InclusionShopRememberEnabled)
-        {
-            return;
-        }
-
         var unitbase = (AtkUnitBase*)addon;
 
         this.module.Logger.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
