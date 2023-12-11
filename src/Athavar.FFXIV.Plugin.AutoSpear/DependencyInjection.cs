@@ -10,7 +10,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAutoSpearModule(this IServiceCollection services)
     {
-        services.AddTransient<AutoSpearModule>();
         AutoSpearConfiguration.AddToDependencyInjection(services);
 
         return services;

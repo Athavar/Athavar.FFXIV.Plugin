@@ -10,7 +10,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCheatModule(this IServiceCollection services)
     {
-        services.AddTransient<CheatModule>();
         services.AddSingleton<PluginManagerWrapper>();
 
         return services;

@@ -11,7 +11,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddMacroModule(this IServiceCollection services)
     {
-        services.AddTransient<MacroModule>();
         services.AddSingleton<ConditionCheck>();
         services.AddSingleton<MacroManager>();
         services.AddSingleton<MacroHelpWindow>();
