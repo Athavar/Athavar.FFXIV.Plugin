@@ -10,7 +10,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCraftQueueModule(this IServiceCollection services)
     {
-        services.AddTransient<CraftQueueModule>();
         CraftQueueConfiguration.AddToDependencyInjection(services);
 
         return services;

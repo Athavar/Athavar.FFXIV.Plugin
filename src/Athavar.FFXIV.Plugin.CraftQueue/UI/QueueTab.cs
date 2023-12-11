@@ -27,7 +27,7 @@ using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using Action = System.Action;
+using Action = Action;
 using CurrentIngredient = Tuple<(uint ItemId, ushort Icon, byte Amount, ushort NqCount, uint NqAvailable, bool HaveAllNq, int HqIndex, ushort HqCount, uint HqAvailable, bool HaveAllHq)>;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
@@ -253,7 +253,7 @@ internal sealed class QueueTab : Tab
                         ImGui.TableSetColumnIndex(3);
                         ImGui.TextUnformatted(obj?.Name.ToDalamudString().TextValue);
                     },
-                    ImGui.GetStyle().ItemSpacing.Y);
+                    ImGui.GetTextLineHeightWithSpacing());
 
                 ImGui.EndTable();
                 ImGui.EndChild();
@@ -333,7 +333,7 @@ internal sealed class QueueTab : Tab
                             ImGui.TextUnformatted(buffInfo.Name);
                         }
                     },
-                    ImGui.GetStyle().ItemSpacing.Y);
+                    ImGui.GetTextLineHeightWithSpacing());
 
                 // restore local variables to ref
                 selected = selItem;

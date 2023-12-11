@@ -12,7 +12,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDutyHistory(this IServiceCollection services)
     {
-        services.AddTransient<DutyHistoryModule>();
         services.AddSingleton<StateTracker>();
         services.AddSingleton<DutyHistoryTable>();
         DutyHistoryConfiguration.AddToDependencyInjection(services);

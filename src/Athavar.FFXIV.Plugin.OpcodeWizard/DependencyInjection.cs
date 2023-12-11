@@ -13,7 +13,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddOpcodeWizard(this IServiceCollection services)
     {
-        services.AddTransient<OpcodeWizardModule>();
         services.AddSingleton<DetectionProgram>();
         services.AddSingleton<ScannerRegistry>();
         OpcodeWizardConfiguration.AddToDependencyInjection(services);

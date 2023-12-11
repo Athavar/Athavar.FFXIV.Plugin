@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public sealed unsafe class ClickRepair : ClickBase<ClickRepair, AddonRepair>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickRepair" /> class.
+    ///     Initializes a new instance of the <see cref="ClickRepair"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickRepair(nint addon = default)
@@ -35,6 +35,6 @@ public sealed unsafe class ClickRepair : ClickBase<ClickRepair, AddonRepair>
     /// <summary>
     ///     Click the repair all button.
     /// </summary>
-    [ClickName("repair_allrepair_all")]
+    [ClickName("repair_all")]
     public void RepairAll() => this.ClickAddonButton(this.Addon->AtkUnitBase.UldManager.SearchNodeById(16)->GetAsAtkComponentButton(), 0);
 }

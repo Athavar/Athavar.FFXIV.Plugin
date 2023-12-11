@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin;
 using System.Reflection;
 using System.Runtime.Loader;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
@@ -77,7 +76,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                 if (definition.Enabled)
                 {
                     this.logger.Debug("Create Module Instance for {0}", attribute.Name);
-                    var m = ActivatorUtilities.CreateInstance(this.serviceProvider, moduleType);
+                    var m = this.CreateModule(moduleType);
                     this.logger.Debug("Finish creating Module Instance for {0}", attribute.Name);
                     if (m is Module module)
                     {
