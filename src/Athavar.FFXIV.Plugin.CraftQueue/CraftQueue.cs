@@ -56,7 +56,7 @@ internal sealed class CraftQueue : IDisposable
 
     internal QueueState Paused { get; set; } = QueueState.Paused;
 
-    public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
+    public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         var gs = this.GearsetManager.AllGearsets.FirstOrDefault(g => g.GetCraftingJob() == recipe.Class);
         if (gs is null)
@@ -64,7 +64,7 @@ internal sealed class CraftQueue : IDisposable
             return false;
         }
 
-        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gs.ToCrafterStats(), count, food, potion, hqIngredients));
+        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gs.ToCrafterStats(), count, food, potion, hqIngredients, flags));
         return true;
     }
 
