@@ -656,7 +656,7 @@ internal sealed class QueueTab : Tab
                         ImGui.PopStyleColor();
                     }
                 },
-                ImGui.GetStyle().ItemSpacing.Y);
+                ImGui.GetTextLineHeight());
 
             ImGui.EndTable();
         }
@@ -822,7 +822,7 @@ internal sealed class QueueTab : Tab
                 ImGui.SameLine();
                 if (ImGuiEx.IconButton(FontAwesomeIcon.Play, "Resume"))
                 {
-                    this.craftQueue.Paused = QueueState.Running;
+                    this.craftQueue.Start();
                 }
 
                 break;
@@ -833,7 +833,7 @@ internal sealed class QueueTab : Tab
                 {
                     var io = ImGui.GetIO();
                     var ctrlHeld = io.KeyCtrl;
-                    this.craftQueue.Paused = ctrlHeld ? QueueState.PausedSoon : QueueState.Paused;
+                    this.craftQueue.Pause(ctrlHeld);
                 }
 
                 break;
