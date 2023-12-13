@@ -17,6 +17,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
 using Lumina.Excel.GeneratedSheets;
+using Reloaded.Memory.Extensions;
 using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
 internal sealed class CraftingJob
@@ -30,6 +31,7 @@ internal sealed class CraftingJob
     private readonly CraftingSkills[] rotation;
 
     private readonly int hqPercent;
+    private readonly CraftingJobFlags flags;
     private readonly bool trial;
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
 
@@ -37,7 +39,7 @@ internal sealed class CraftingJob
 
     private int waitMs;
 
-    public CraftingJob(CraftQueue queue, Recipe recipe, RotationNode node, CrafterStats crafterStats, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
+    public CraftingJob(CraftQueue queue, Recipe recipe, RotationNode node, CrafterStats crafterStats, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         this.queue = queue;
         this.Recipe = recipe;
@@ -45,6 +47,7 @@ internal sealed class CraftingJob
 
         this.Food = food;
         this.Potion = potion;
+        this.flags = flags;
 
         this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
@@ -625,6 +628,19 @@ internal sealed class CraftingJob
     private BuffApplyTest? TestStatModifier()
     {
         var currentStatModifier = this.CurrentStatModifier();
+
+        // check forced food apply
+        if (this.Food is not null && this.flags.HasFlagFast(CraftingJobFlags.ForceFood) && currentStatModifier[0] == null)
+        {
+            return BuffApplyTest.Food;
+        }
+
+        // check forced potion apply
+        if (this.Potion is not null && this.flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
+        {
+            return BuffApplyTest.Food;
+        }
+
         this.simulation.CurrentStatModifiers = (StatModifiers?[])currentStatModifier.Clone();
 
         var buffApplyStats = BuffApplyTest.None;

@@ -59,6 +59,7 @@ internal sealed class QueueTab : Tab
 
     private int foodIdx = -1;
     private int potionIdx = -1;
+    private CraftingJobFlags flags = CraftingJobFlags.None;
 
     private bool selectionChanged;
 
@@ -263,16 +264,17 @@ internal sealed class QueueTab : Tab
         }
     }
 
-    private void DisplayFoodSelect() => this.DisplayItemPicker(this.foodLabel, "food", this.craftQueueData.Foods, ref this.foodIdx, ref this.selectedFood);
+    private void DisplayFoodSelect() => this.DisplayItemPicker(this.foodLabel, "food", this.craftQueueData.Foods, ref this.foodIdx, ref this.selectedFood, CraftingJobFlags.ForceFood);
 
-    private void DisplayPotionSelect() => this.DisplayItemPicker(this.potionLabel, "potion", this.craftQueueData.Potions, ref this.potionIdx, ref this.selectedPotion);
+    private void DisplayPotionSelect() => this.DisplayItemPicker(this.potionLabel, "potion", this.craftQueueData.Potions, ref this.potionIdx, ref this.selectedPotion, CraftingJobFlags.ForcePotion);
 
     private void DisplayItemPicker(
         string label,
         string id,
         IReadOnlyList<BuffInfo> items,
         ref int idx,
-        ref BuffInfo? selected)
+        ref BuffInfo? selected,
+        CraftingJobFlags forcedFlag)
     {
         var previewValue = selected == null ? "None" : selected.Name;
         if (selected?.IsHq == true)
@@ -344,6 +346,15 @@ internal sealed class QueueTab : Tab
 
             ImGui.EndCombo();
         }
+
+        ImGui.SameLine();
+        var val = (this.flags & forcedFlag) != 0;
+        if (ImGui.Checkbox("force##forced-checkbox-" + id, ref val))
+        {
+            this.flags ^= forcedFlag;
+        }
+
+        ImGuiEx.TextTooltip($"Force the usage of {label}");
     }
 
     private void DisplayRotationSelect()
@@ -402,7 +413,7 @@ internal sealed class QueueTab : Tab
 
         if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedRotation is not null)
         {
-            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients);
+            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, this.flags);
         }
 
         if (!valid)
