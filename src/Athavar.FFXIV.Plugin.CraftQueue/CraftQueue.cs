@@ -13,7 +13,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 
-internal sealed class CraftQueue : IDisposable
+internal sealed partial class CraftQueue : IDisposable
 {
     private readonly List<CraftingJob> queuedJobs = new();
     private readonly List<CraftingJob> completedJobs = new();
@@ -54,7 +54,7 @@ internal sealed class CraftQueue : IDisposable
 
     internal CraftingJob? CurrentJob { get; private set; }
 
-    internal QueueState Paused { get; set; } = QueueState.Paused;
+    internal QueueState Paused { get; private set; } = QueueState.Paused;
 
     public bool CreateJob(Recipe recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients)
     {
@@ -197,4 +197,11 @@ internal sealed class CraftQueue : IDisposable
             this.DalamudServices.PluginLogger.Error(ex, ex.Message);
         }
     }
+}
+
+internal sealed partial class CraftQueue
+{
+    public void Start() => this.Paused = QueueState.Running;
+
+    public void Pause(bool soon = false) => this.Paused = soon ? QueueState.PausedSoon : QueueState.Paused;
 }

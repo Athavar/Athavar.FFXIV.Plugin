@@ -64,6 +64,7 @@ internal sealed class CraftingJob
 
         this.stepArray = new[]
         {
+            this.EnsureInventorySpace,
             this.SwitchToJob,
             this.EnsureRepair,
             this.EnsureMateriaExtracted,
@@ -186,6 +187,17 @@ internal sealed class CraftingJob
         }
 
         this.waitMs = Math.Abs(num);
+    }
+
+    private int EnsureInventorySpace()
+    {
+        if (this.queue.CommandInterface.FreeInventorySlots() <= 0)
+        {
+            this.queue.Pause();
+            return -1000;
+        }
+
+        return 0;
     }
 
     private int SwitchToJob()
