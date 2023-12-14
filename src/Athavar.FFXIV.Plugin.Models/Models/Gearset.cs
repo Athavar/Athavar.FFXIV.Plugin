@@ -21,7 +21,8 @@ public sealed class Gearset
     /// <param name="stats">The stats.</param>
     /// <param name="hasSoulStone">The soulstone check.</param>
     /// <param name="mainHandItemId">The main hand item id.</param>
-    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone, uint mainHandItemId)
+    /// <param name="itemIds">Ids of the equipped items.</param>
+    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone, uint mainHandItemId, IEnumerable<uint> itemIds)
     {
         this.Name = name;
         this.Id = id;
@@ -30,6 +31,7 @@ public sealed class Gearset
         this.stats = stats;
         this.HasSoulStone = hasSoulStone;
         this.MainHandItemId = mainHandItemId;
+        this.ItemIds = itemIds as uint[] ?? itemIds.ToArray();
     }
 
     /// <summary>
@@ -58,6 +60,11 @@ public sealed class Gearset
     public bool HasSoulStone { get; }
 
     public uint MainHandItemId { get; }
+
+    /// <summary>
+    ///     Gets a id list of equipped items.
+    /// </summary>
+    public uint[] ItemIds { get; }
 
 #pragma warning disable SA1516
 #pragma warning disable SA1600

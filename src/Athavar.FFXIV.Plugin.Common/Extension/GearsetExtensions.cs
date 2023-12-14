@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Common.Extension;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -22,15 +23,10 @@ public static class GearsetExtensions
     }
 
     public static bool HasSplendorousTools(this Gearset gearset)
-        => gearset.MainHandItemId is 38737 or // crystalline saw
-                                     38738 or // crystalline cross-pein hammer
-                                     38739 or // crystalline raising hammer
-                                     38740 or // crystalline mallet
-                                     38741 or // crystalline round knife
-                                     38742 or // crystalline needle
-                                     38743 or // crystalline alembic
-                                     38744 or // crystalline frypan
-                                     38745 or // crystalline pickaxe
-                                     38746 or // crystalline hatchet
-                                     38747;   // crystalline fishing rod
+        => gearset.MainHandItemId
+            is >= 38737 and <= 38747 or // crystalline
+               >= 39732 and <= 39742 or // Chora-Zoi's crystalline
+               >= 39743 and <= 39753 or // brilliant
+               >= 41180 and <= 41190 or // vrandtic
+               >= 41191 and <= 41201;   // lodestar
 }

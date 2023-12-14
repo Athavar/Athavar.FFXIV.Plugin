@@ -18,12 +18,12 @@ using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
 using Lumina.Excel.GeneratedSheets;
 using Reloaded.Memory.Extensions;
-using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
 
 internal sealed class CraftingJob
 {
     private readonly string localizedExcellent;
     private readonly Func<int>[] stepArray;
+    private readonly int stepCraftStartIndex;
 
     private readonly CraftQueue queue;
     private readonly Simulation simulation;
@@ -39,7 +39,7 @@ internal sealed class CraftingJob
 
     private int waitMs;
 
-    public CraftingJob(CraftQueue queue, Recipe recipe, RotationNode node, CrafterStats crafterStats, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public CraftingJob(CraftQueue queue, RecipeExtended recipe, RotationNode node, CrafterStats crafterStats, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         this.queue = queue;
         this.Recipe = recipe;
@@ -78,6 +78,8 @@ internal sealed class CraftingJob
             this.WaitSynthesis,
             this.DoRotationAction,
         };
+
+        this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.StartCraft);
     }
 
     [Flags]
@@ -99,7 +101,7 @@ internal sealed class CraftingJob
 
     internal uint RemainingLoops => this.Loops - this.CurrentLoop;
 
-    internal Recipe Recipe { get; }
+    internal RecipeExtended Recipe { get; }
 
     internal (uint ItemId, byte Amount)[] HqIngredients { get; }
 
@@ -127,10 +129,20 @@ internal sealed class CraftingJob
 
     internal void Pause()
     {
+        if (this.Status == JobStatus.Paused)
+        {
+            return;
+        }
+
         this.Status = JobStatus.Paused;
         if (this.DurationWatch.IsRunning)
         {
             this.DurationWatch.Stop();
+        }
+
+        if (this.CurrentStep <= this.stepCraftStartIndex)
+        {
+            this.CurrentStep = 0;
         }
     }
 
