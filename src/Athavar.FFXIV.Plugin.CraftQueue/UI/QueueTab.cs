@@ -610,7 +610,11 @@ internal sealed class QueueTab : Tab
         var rotationSteps = this.simulationResult.Steps;
 
         ImGui.SetNextItemWidth(-1);
-        if (ImGui.CollapsingHeader("Steps##step-table-collapsing") && ImGui.BeginTable("##step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders, new Vector2(10.0f, 10.0f)))
+        var maxRows = rotationSteps.Count + 1;
+        var yAvail = ImGui.GetContentRegionAvail().Y;
+        var height = ImGui.GetTextLineHeightWithSpacing() * Math.Min(4, maxRows);
+        var maxHeight = maxRows * ImGui.GetTextLineHeightWithSpacing();
+        if (ImGui.CollapsingHeader("Steps##step-table-collapsing") && ImGui.BeginTable("##step-table", 6, ImGuiTableFlags.ScrollY | ImGuiTableFlags.Borders, new Vector2(0.0f, yAvail < height ? height : yAvail > maxHeight + ImGui.GetTextLineHeightWithSpacing() ? maxHeight : 0.0f)))
         {
             ImGui.TableSetupColumn("Step##index", ImGuiTableColumnFlags.WidthFixed);
             ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
@@ -667,7 +671,7 @@ internal sealed class QueueTab : Tab
                         ImGui.PopStyleColor();
                     }
                 },
-                ImGui.GetTextLineHeight());
+                ImGui.GetTextLineHeightWithSpacing());
 
             ImGui.EndTable();
         }
