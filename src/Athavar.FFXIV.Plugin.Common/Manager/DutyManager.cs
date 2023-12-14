@@ -118,7 +118,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
 
     private void OnDutyRecommenced(object? o, ushort territory) => this.DutyRecommenced?.Invoke();
 
-    private void OnDutyStarted(object? sender, ushort territory) => this.StartDuty(territory);
+    private void OnDutyStarted(object? sender, ushort territory) => this.StartDuty(territory, true);
 
     // This gets called before DutyState.DutyCompleted, so we can intercept in case the duty is abandoned instead of completed.
     private void OnTerritoryChanged(ushort territoryTypeId)
@@ -152,9 +152,9 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
 /// </summary>
 internal sealed partial class DutyManager
 {
-    private void StartDuty(ushort territory)
+    private void StartDuty(ushort territory, bool startOverride = false)
     {
-        if (this.dutyStarted)
+        if (!startOverride && this.dutyStarted)
         {
             return;
         }
