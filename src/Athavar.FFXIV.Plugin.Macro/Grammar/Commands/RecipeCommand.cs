@@ -93,7 +93,12 @@ internal class RecipeCommand : MacroCommand
 
     private uint SearchRecipeId(string recipeName)
     {
-        var recipes = DalamudServices.DataManager.GetExcelSheet<Recipe>()!;
+        var recipes = DalamudServices.DataManager.GetExcelSheet<Recipe>();
+        if (recipes is null)
+        {
+            throw new MacroCommandError("ExcelSheet Recipe not found");
+        }
+
         var founds = recipes.Where(r => r.ItemResult.Value?.Name.ToString() == recipeName).ToList();
         switch (founds.Count)
         {

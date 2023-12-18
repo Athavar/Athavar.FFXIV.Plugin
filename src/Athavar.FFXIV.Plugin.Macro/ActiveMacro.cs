@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Macro;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
@@ -205,12 +206,12 @@ internal sealed partial class ActiveMacro : IDisposable
     {
         if (this.Node.IsLua)
         {
-            if (this.lua == null)
+            if (this.lua == null || this.luaGenerator is null)
             {
                 this.InitLuaScript();
             }
 
-            var results = this.luaGenerator!.Call();
+            var results = this.luaGenerator.Call();
             if (results.Length == 0)
             {
                 return null;
@@ -223,10 +224,7 @@ internal sealed partial class ActiveMacro : IDisposable
 
             var command = MacroParser.ParseLine(text);
 
-            if (command is not null)
-            {
-                this.Steps.Add(command);
-            }
+            this.Steps.Add(command);
 
             return command;
         }
@@ -249,6 +247,7 @@ internal sealed partial class ActiveMacro : IDisposable
         commandInterface = sp.GetRequiredService<ICommandInterface>();
     }
 
+    [MemberNotNull(nameof(luaGenerator), nameof(lua))]
     private void InitLuaScript()
     {
         var script = this.Node.Contents

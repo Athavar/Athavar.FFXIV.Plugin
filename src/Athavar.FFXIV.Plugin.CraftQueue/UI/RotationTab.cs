@@ -361,7 +361,7 @@ internal sealed class RotationTab : Tab
 
                 if (targetNode is FolderNode targetFolderNode && !ImGui.IsKeyDown(ImGuiKey.ModShift))
                 {
-                    draggedNodeParent!.Children.Remove(this.draggedNode);
+                    draggedNodeParent.Children.Remove(this.draggedNode);
                     targetFolderNode.Children.Add(this.draggedNode);
                     this.Configuration.Save();
                 }
@@ -372,7 +372,7 @@ internal sealed class RotationTab : Tab
                         throw new Exception($"Could not find parent of node \"{targetNode.Name}\"");
                     }
 
-                    var targetNodeIndex = targetNodeParent!.Children.IndexOf(targetNode);
+                    var targetNodeIndex = targetNodeParent.Children.IndexOf(targetNode);
                     if (targetNodeParent == draggedNodeParent)
                     {
                         var draggedNodeIndex = targetNodeParent.Children.IndexOf(this.draggedNode);
@@ -382,7 +382,7 @@ internal sealed class RotationTab : Tab
                         }
                     }
 
-                    draggedNodeParent!.Children.Remove(this.draggedNode);
+                    draggedNodeParent.Children.Remove(this.draggedNode);
                     targetNodeParent.Children.Insert(targetNodeIndex, this.draggedNode);
                     this.Configuration.Save();
                 }

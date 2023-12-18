@@ -660,11 +660,9 @@ internal sealed class YesConfigTab : Tab
         if (ImGuiEx.IconButton(FontAwesomeIcon.SearchPlus, "Add current target as a new entry"))
         {
             var target = this.dalamudServices.TargetManager.Target;
-            var targetName = this.module is null
-                ? string.Empty
-                : this.module.LastSeenTalkTarget = target != null
-                    ? this.module.GetSeStringText(target.Name)
-                    : string.Empty;
+            var targetName = this.module.LastSeenTalkTarget = target != null
+                ? this.module.GetSeStringText(target.Name)
+                : string.Empty;
 
             var newNode = new TalkEntryNode { Enabled = true, TargetText = targetName };
             this.TalkRootFolder.Children.Add(newNode);
@@ -741,8 +739,8 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayTextEntryNode(TextEntryNode node)
     {
-        var validRegex = (node.IsTextRegex && node.TextRegex != null) || !node.IsTextRegex;
-        var validZone = !node.ZoneRestricted || (node.ZoneIsRegex && node.ZoneRegex != null) || !node.ZoneIsRegex;
+        var validRegex = node is { IsTextRegex                       : true, TextRegex: not null } || !node.IsTextRegex;
+        var validZone = !node.ZoneRestricted || node is { ZoneIsRegex: true, ZoneRegex: not null } || !node.ZoneIsRegex;
 
         if (!node.Enabled && (!validRegex || !validZone))
         {
@@ -790,11 +788,11 @@ internal sealed class YesConfigTab : Tab
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
             {
                 var io = ImGui.GetIO();
-                if (io.KeyCtrl && io.KeyShift)
+                if (io is { KeyCtrl: true, KeyShift: true })
                 {
                     if (this.Configuration.TryFindParent(node, out var parent))
                     {
-                        parent!.Children.Remove(node);
+                        parent.Children.Remove(node);
                         this.Configuration.Save();
                     }
 
@@ -811,8 +809,8 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayListEntryNode(ListEntryNode node)
     {
-        var validRegex = (node.IsTextRegex && node.TextRegex != null) || !node.IsTextRegex;
-        var validTarget = !node.TargetRestricted || (node.TargetIsRegex && node.TargetRegex != null) || !node.TargetIsRegex;
+        var validRegex = node is { IsTextRegex                             : true, TextRegex  : not null } || !node.IsTextRegex;
+        var validTarget = !node.TargetRestricted || node is { TargetIsRegex: true, TargetRegex: not null } || !node.TargetIsRegex;
 
         if (!node.Enabled && (!validRegex || !validTarget))
         {
@@ -860,11 +858,11 @@ internal sealed class YesConfigTab : Tab
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
             {
                 var io = ImGui.GetIO();
-                if (io.KeyCtrl && io.KeyShift)
+                if (io is { KeyCtrl: true, KeyShift: true })
                 {
                     if (this.Configuration.TryFindParent(node, out var parent))
                     {
-                        parent!.Children.Remove(node);
+                        parent.Children.Remove(node);
                         this.Configuration.Save();
                     }
 
@@ -925,7 +923,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parent))
                     {
-                        parent!.Children.Remove(node);
+                        parent.Children.Remove(node);
                         this.Configuration.Save();
                     }
 
@@ -953,7 +951,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parent))
                     {
-                        parent!.Children.Remove(node);
+                        parent.Children.Remove(node);
                         this.Configuration.Save();
                     }
 
@@ -1012,7 +1010,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
                     }
                 }
@@ -1084,7 +1082,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
                     }
                 }
@@ -1151,7 +1149,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
                     }
                 }
@@ -1249,7 +1247,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
                     }
                 }
@@ -1296,7 +1294,7 @@ internal sealed class YesConfigTab : Tab
                 {
                     if (targetNode is TextFolderNode targetFolderNode && !ImGui.IsKeyDown(ImGuiKey.ModShift))
                     {
-                        draggedNodeParent!.Children.Remove(this.draggedNode);
+                        draggedNodeParent.Children.Remove(this.draggedNode);
                         targetFolderNode.Children.Add(this.draggedNode);
                         this.Configuration.Save();
                     }
@@ -1304,7 +1302,7 @@ internal sealed class YesConfigTab : Tab
                     {
                         if (this.Configuration.TryFindParent(targetNode, out var targetNodeParent))
                         {
-                            var targetNodeIndex = targetNodeParent!.Children.IndexOf(targetNode);
+                            var targetNodeIndex = targetNodeParent.Children.IndexOf(targetNode);
                             if (targetNodeParent == draggedNodeParent)
                             {
                                 var draggedNodeIndex = targetNodeParent.Children.IndexOf(this.draggedNode);
@@ -1314,7 +1312,7 @@ internal sealed class YesConfigTab : Tab
                                 }
                             }
 
-                            draggedNodeParent!.Children.Remove(this.draggedNode);
+                            draggedNodeParent.Children.Remove(this.draggedNode);
                             targetNodeParent.Children.Insert(targetNodeIndex, this.draggedNode);
                             this.Configuration.Save();
                         }

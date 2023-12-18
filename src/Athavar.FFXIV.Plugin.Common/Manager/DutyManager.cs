@@ -87,7 +87,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
 
     private unsafe nint CfPopDetour(nint packetData)
     {
-        var result = this.cfPopHook!.OriginalDisposeSafe(packetData);
+        var result = this.cfPopHook?.OriginalDisposeSafe(packetData) ?? nint.Zero;
 
         // https://github.com/goatcorp/Dalamud/blob/e30c904ad62bdcb527c72eaf6721418a23ef5078/Dalamud/Game/Network/Internal/NetworkHandlers.cs#L239
         using var stream = new UnmanagedMemoryStream((byte*)packetData, 40);

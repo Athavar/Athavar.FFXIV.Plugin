@@ -6,6 +6,7 @@
 
 namespace Athavar.FFXIV.Plugin;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 public sealed class CraftQueueConfiguration : BasicModuleConfig<CraftQueueConfiguration>
@@ -88,7 +89,7 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig<CraftQueueConfig
     /// <param name="node">Node to check.</param>
     /// <param name="parent">Parent of the node or null.</param>
     /// <returns>A value indicating whether the parent was found.</returns>
-    public bool TryFindParent(Node node, out FolderNode? parent)
+    public bool TryFindParent(Node node, [NotNullWhen(true)] out FolderNode? parent)
     {
         foreach (var candidate in this.GetAllNodes())
         {

@@ -7,6 +7,7 @@
 
 namespace Athavar.FFXIV.Plugin;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Dalamud.Game.ClientState.Keys;
 
@@ -247,7 +248,7 @@ public sealed class YesConfiguration : BasicModuleConfig<YesConfiguration>
     /// <param name="node">Node to check.</param>
     /// <param name="parent">Parent of the node or null.</param>
     /// <returns>A value indicating whether the parent was found.</returns>
-    public bool TryFindParent(Node node, out TextFolderNode? parent)
+    public bool TryFindParent(Node node, [NotNullWhen(true)] out TextFolderNode? parent)
     {
         foreach (var candidate in this.GetAllNodes())
         {

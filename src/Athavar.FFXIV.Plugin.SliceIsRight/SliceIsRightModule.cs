@@ -57,7 +57,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
 
         this.enableState = true;
         this.IsInGoldSaucer = this.dalamudServices.ClientState.TerritoryType == GoldSaucerTerritoryId;
-        this.dalamudServices.ClientState!.TerritoryChanged += this.TerritoryChanged;
+        this.dalamudServices.ClientState.TerritoryChanged += this.TerritoryChanged;
         if (this.IsInGoldSaucer)
         {
             this.dalamudServices.PluginInterface.UiBuilder.Draw += this.DrawUi;
