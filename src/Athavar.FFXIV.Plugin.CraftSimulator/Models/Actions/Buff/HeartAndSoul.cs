@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
@@ -64,14 +65,16 @@ internal sealed class HeartAndSoul : BuffAction
         return base.BaseCanBeUsed(simulation);
     }
 
-    private new void OnTick(Simulation simulation, CraftingAction action)
+    private new bool OnTick(Simulation simulation, CraftingAction action)
     {
         var usedOnNonGoodOrExcellent = simulation.State is not (StepState.GOOD or StepState.EXCELLENT);
 
         // If linear, this buff will be removed if last action is one of the buffed ones.
         if (usedOnNonGoodOrExcellent && action is PreciseTouch or IntensiveSynthesis or TricksOfTheTrade)
         {
-            simulation.RemoveBuff(this.GetBuff());
+            return true;
         }
+
+        return false;
     }
 }

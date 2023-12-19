@@ -285,45 +285,46 @@ public sealed partial class Simulation
 
         var statesAndRates = this.Recipe.PossibleConditions
            .Where(condition => condition != StepState.NORMAL)
-           .Select(condition =>
-            {
-                // Default rate - most conditions are 12% so here we are.
-                var rate = 0.12;
-                switch (condition)
+           .Select(
+                condition =>
                 {
-                    case StepState.GOOD:
-                        rate = this.Recipe.Expert ? 0.12 : goodChance;
-                        break;
-                    case StepState.EXCELLENT:
-                        rate = this.Recipe.Expert ? 0 : 0.04;
-                        break;
-                    case StepState.POOR:
-                        rate = 0;
-                        break;
-                    case StepState.CENTERED:
-                        rate = 0.15;
-                        break;
-                    case StepState.PLIANT:
-                        rate = 0.12;
-                        break;
-                    case StepState.STURDY:
-                        rate = 0.15;
-                        break;
-                    case StepState.MALLEABLE:
-                        rate = 0.12;
-                        break;
-                    case StepState.PRIMED:
-                        rate = 0.12;
-                        break;
-                    case StepState.GOOD_OMEN:
-                        rate = 0.1;
-                        break;
-                }
+                    // Default rate - most conditions are 12% so here we are.
+                    var rate = 0.12;
+                    switch (condition)
+                    {
+                        case StepState.GOOD:
+                            rate = this.Recipe.Expert ? 0.12 : goodChance;
+                            break;
+                        case StepState.EXCELLENT:
+                            rate = this.Recipe.Expert ? 0 : 0.04;
+                            break;
+                        case StepState.POOR:
+                            rate = 0;
+                            break;
+                        case StepState.CENTERED:
+                            rate = 0.15;
+                            break;
+                        case StepState.PLIANT:
+                            rate = 0.12;
+                            break;
+                        case StepState.STURDY:
+                            rate = 0.15;
+                            break;
+                        case StepState.MALLEABLE:
+                            rate = 0.12;
+                            break;
+                        case StepState.PRIMED:
+                            rate = 0.12;
+                            break;
+                        case StepState.GOOD_OMEN:
+                            rate = 0.1;
+                            break;
+                    }
 
-                return (
-                    item: condition,
-                    weight: rate);
-            }).ToList();
+                    return (
+                        item: condition,
+                        weight: rate);
+                }).ToList();
 
         var nonNormalRate = statesAndRates
            .Select(val => val.weight)
@@ -436,9 +437,16 @@ public sealed partial class Simulation
             if (effectiveBuff.AppliedStep < this.Steps.Count)
             {
                 // If the buff has something to do, let it do it
-                effectiveBuff.TickAction?.Invoke(this, action);
-
-                effectiveBuff.Duration--;
+                var result = effectiveBuff.TickAction?.Invoke(this, action);
+                if (result == true)
+                {
+                    // buff will be removed with next step.
+                    effectiveBuff.Duration = 0;
+                }
+                else
+                {
+                    effectiveBuff.Duration--;
+                }
             }
         }
 
