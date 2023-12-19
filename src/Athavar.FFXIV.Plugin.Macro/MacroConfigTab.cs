@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Macro;
 using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
@@ -193,7 +192,7 @@ internal sealed class MacroConfigTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
                     }
                 }
@@ -549,7 +548,7 @@ internal sealed class MacroConfigTab : Tab
 
                 if (targetNode is FolderNode targetFolderNode && !ImGui.IsKeyDown(ImGuiKey.ModShift))
                 {
-                    draggedNodeParent!.Children.Remove(this.draggedNode);
+                    draggedNodeParent.Children.Remove(this.draggedNode);
                     targetFolderNode.Children.Add(this.draggedNode);
                     this.Configuration.Save();
                 }
@@ -560,7 +559,7 @@ internal sealed class MacroConfigTab : Tab
                         throw new Exception($"Could not find parent of node \"{targetNode.Name}\"");
                     }
 
-                    var targetNodeIndex = targetNodeParent!.Children.IndexOf(targetNode);
+                    var targetNodeIndex = targetNodeParent.Children.IndexOf(targetNode);
                     if (targetNodeParent == draggedNodeParent)
                     {
                         var draggedNodeIndex = targetNodeParent.Children.IndexOf(this.draggedNode);
@@ -570,7 +569,7 @@ internal sealed class MacroConfigTab : Tab
                         }
                     }
 
-                    draggedNodeParent!.Children.Remove(this.draggedNode);
+                    draggedNodeParent.Children.Remove(this.draggedNode);
                     targetNodeParent.Children.Insert(targetNodeIndex, this.draggedNode);
                     this.Configuration.Save();
                 }

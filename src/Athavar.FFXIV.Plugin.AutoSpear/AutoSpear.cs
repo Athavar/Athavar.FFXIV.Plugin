@@ -70,7 +70,7 @@ internal sealed partial class AutoSpear : Tab
 
         // We go through all fishingspots and correspond them to their gathering point base.
         var baseNodes = fishingSpots
-           .Where(fs => fs.Spearfishing)
+           .Where(fs => fs is { Spearfishing: true, SpearfishingSpotData: not null })
            .ToDictionary(fs => fs.SpearfishingSpotData!.GatheringPointBase.Row, fs => fs);
 
         // Now we correspond all gathering nodes to their associated fishing spot.

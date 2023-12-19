@@ -10,25 +10,26 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Dalamud.Utility;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using Recipe = Athavar.FFXIV.Plugin.CraftSimulator.Models.Recipe;
+using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
 internal static class RecipeExtensions
 {
-    public static Recipe ToCraftSimulatorRecipe(this Lumina.Excel.GeneratedSheets.Recipe recipe, ExcelSheet<Item> sheets)
+    public static RecipeExtended ToCraftSimulatorRecipe(this Recipe recipe, ExcelSheet<Item> sheets)
     {
         var lvlTable = recipe.RecipeLevelTable.Value ?? throw new AthavarPluginException();
         var maxQuality = (lvlTable.Quality * recipe.QualityFactor) / 100;
 
-        Ingredient[] ingredients = recipe.UnkData5.Select(i =>
-        {
-            var item = sheets.GetRow((uint)i.ItemIngredient);
-            if (item is null || item.RowId == 0)
+        Ingredient[] ingredients = recipe.UnkData5.Select(
+            i =>
             {
-                return null;
-            }
+                var item = sheets.GetRow((uint)i.ItemIngredient);
+                if (item is null || item.RowId == 0)
+                {
+                    return null;
+                }
 
-            return new Ingredient(item.RowId, item.Icon, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
-        }).Where(i => i is not null).ToArray()!;
+                return new Ingredient(item.RowId, item.Icon, item.LevelItem.Row, i.AmountIngredient) { CanBeHq = item.CanBeHq };
+            }).Where(i => i is not null).ToArray()!;
         var totalItemLevel = ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
         var totalContribution = (maxQuality * recipe.MaterialQualityFactor) / 100;
 
@@ -41,26 +42,28 @@ internal static class RecipeExtensions
             }
         }
 
-        return new Recipe(
-            recipe.RowId,
-            lvlTable.RowId,
-            maxQuality,
-            ((uint)lvlTable.Difficulty * recipe.DifficultyFactor) / 100,
-            (lvlTable.Durability * recipe.DurabilityFactor) / 100,
-            lvlTable.ProgressDivider,
-            lvlTable.QualityDivider,
-            lvlTable.ProgressModifier,
-            lvlTable.QualityModifier,
-            (CraftingClass)recipe.CraftType.Row,
-            lvlTable.ClassJobLevel,
-            recipe.IsExpert,
-            recipe.RequiredCraftsmanship,
-            recipe.RequiredControl,
-            recipe.RequiredQuality,
-            Enum.GetValues<StepState>().Where(f => f != StepState.NONE).Where(f => (f & (StepState)lvlTable.ConditionsFlag) == f).ToArray(),
-            ingredients)
+        return new RecipeExtended
         {
+            RecipeId = recipe.RowId,
+            RecipeLevel = lvlTable.RowId,
+            Level = lvlTable.ClassJobLevel,
+            MaxQuality = maxQuality,
+            Durability = (lvlTable.Durability * recipe.DurabilityFactor) / 100,
+            Progress = ((uint)lvlTable.Difficulty * recipe.DifficultyFactor) / 100,
+            ProgressDivider = lvlTable.ProgressDivider,
+            QualityDivider = lvlTable.QualityDivider,
+            ProgressModifier = lvlTable.ProgressModifier,
+            QualityModifier = lvlTable.QualityModifier,
+            Class = (CraftingClass)recipe.CraftType.Row,
+            Expert = recipe.IsExpert,
+            CraftsmanshipReq = recipe.RequiredCraftsmanship,
+            ControlReq = recipe.RequiredControl,
+            QualityReq = recipe.RequiredQuality,
+            ItemReq = recipe.ItemRequired.Row,
+            PossibleConditions = Enum.GetValues<StepState>().Where(f => f != StepState.NONE).Where(f => (f & (StepState)lvlTable.ConditionsFlag) == f).ToArray(),
+            Ingredients = ingredients,
             ResultItemName = recipe.ItemResult.Value?.Name.ToDalamudString().ToString(),
+            RequiredItemName = recipe.ItemRequired.Value?.Name.ToDalamudString().ToString(),
         };
     }
 }

@@ -63,7 +63,8 @@ internal sealed class QueueTab : Tab
 
     private bool selectionChanged;
 
-    private CraftSimulator.Models.Recipe? selectedRecipe;
+    private RecipeExtended? selectedRecipe;
+    private Gearset? selectedGearset;
     private RotationNode? selectedRotation;
     private BuffInfo? selectedFood;
     private BuffInfo? selectedPotion;
@@ -797,22 +798,25 @@ internal sealed class QueueTab : Tab
 
                 cancel();
             });
-            ImGuiEx.TableRow(values, ImGui.IsItemHovered, index =>
-            {
-                ImGui.BeginTooltip();
-                ImGui.TextUnformatted("Rotation: " + drawnJob.RotationName);
-                if (drawnJob.Food != null)
+            ImGuiEx.TableRow(
+                values,
+                ImGui.IsItemHovered,
+                index =>
                 {
-                    ImGui.TextUnformatted(this.foodLabel + ": " + drawnJob.Food!.Name + (drawnJob.Food!.IsHq ? " \ue03c" : string.Empty));
-                }
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted("Rotation: " + drawnJob.RotationName);
+                    if (drawnJob.Food != null)
+                    {
+                        ImGui.TextUnformatted(this.foodLabel + ": " + drawnJob.Food!.Name + (drawnJob.Food!.IsHq ? " \ue03c" : string.Empty));
+                    }
 
-                if (drawnJob.Potion != null)
-                {
-                    ImGui.TextUnformatted(this.potionLabel + ": " + drawnJob.Potion!.Name + (drawnJob.Potion!.IsHq ? " \ue03c" : string.Empty));
-                }
+                    if (drawnJob.Potion != null)
+                    {
+                        ImGui.TextUnformatted(this.potionLabel + ": " + drawnJob.Potion!.Name + (drawnJob.Potion!.IsHq ? " \ue03c" : string.Empty));
+                    }
 
-                ImGui.EndTooltip();
-            });
+                    ImGui.EndTooltip();
+                });
 
             if (drawnJob.Status == JobStatus.Failure)
             {
@@ -894,14 +898,14 @@ internal sealed class QueueTab : Tab
 
         var job = this.selectedRecipe.Class.GetJob();
 
-        var gs = this.gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == job);
-        if (gs == null)
+        this.selectedGearset = this.gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == job);
+        if (this.selectedGearset == null)
         {
             return;
         }
 
         this.craftingSimulation = new Simulation(
-            gs.ToCrafterStats(),
+            this.selectedGearset.ToCrafterStats(),
             this.selectedRecipe);
     }
 
@@ -951,11 +955,18 @@ internal sealed class QueueTab : Tab
 
     private bool UpdateQueueChecklist([NotNullWhen(false)] out Action? action)
     {
+        if (this.selectedRecipe is null || this.selectedGearset is null)
+        {
+            action = () => { };
+            return false;
+        }
+
         var ci = this.craftQueue.CommandInterface;
 
         var recipeSelected = this.recipeIdx > -1;
         var rotationSelected = this.selectedRotation is not null;
         var haveGearset = this.simulationResult?.Success == true;
+        var haveReqItem = this.selectedRecipe.ItemReq is null || this.selectedGearset.ItemIds.Contains(this.selectedRecipe.ItemReq.GetValueOrDefault());
         var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.ItemId, this.selectedFood.IsHq) > 0;
         var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.ItemId, this.selectedPotion.IsHq) > 0;
         var valid = recipeSelected & rotationSelected & haveGearset & this.haveAllIngredient & haveFood & havePotion;
@@ -971,6 +982,12 @@ internal sealed class QueueTab : Tab
                 ImGui.Spacing();
                 ImGui.Checkbox("Rotation selected", ref rotationSelected);
                 ImGui.Checkbox("Have gearset with required stats and rotation for success", ref haveGearset);
+
+                if (this.selectedRecipe.ItemReq is not null)
+                {
+                    ImGui.Checkbox($"Have {this.selectedRecipe.RequiredItemName} equipped", ref haveReqItem);
+                }
+
                 ImGui.Checkbox("Have food", ref haveFood);
                 ImGui.Checkbox("Have potion", ref havePotion);
                 ImGui.EndDisabled();

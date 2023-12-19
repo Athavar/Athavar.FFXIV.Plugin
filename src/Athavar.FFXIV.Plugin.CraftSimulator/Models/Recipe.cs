@@ -2,108 +2,76 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
-public sealed class Recipe
+public class Recipe
 {
-    public Recipe(
-        uint id,
-        uint recipeLevel,
-        uint maxQuality,
-        uint progress,
-        int durability,
-        byte progressDivider,
-        byte qualityDivider,
-        byte progressModifier,
-        byte qualityModifier,
-        CraftingClass craftingClass = CraftingClass.ANY,
-        int level = 90,
-        bool isExpert = false,
-        int requiredCraftsmanship = 0,
-        int requiredControl = 0,
-        uint requiredQuality = 0,
-        StepState[]? possibleConditions = null,
-        Ingredient[]? ingredients = null)
-    {
-        this.RecipeId = id;
-        this.RecipeLevel = recipeLevel;
-        this.Level = level;
-        this.Class = craftingClass;
-
-        this.MaxQuality = maxQuality;
-        this.Progress = progress;
-        this.Durability = durability;
-
-        this.Expert = isExpert;
-
-        this.CraftsmanshipReq = requiredCraftsmanship == 0 ? null : requiredCraftsmanship;
-        this.ControlReq = requiredControl == 0 ? null : requiredControl;
-        this.QualityReq = requiredQuality == 0 ? null : requiredQuality;
-
-        this.PossibleConditions = possibleConditions ?? new[] { StepState.NORMAL, StepState.GOOD, StepState.EXCELLENT, StepState.POOR };
-
-        this.ProgressDivider = progressDivider;
-        this.QualityDivider = qualityDivider;
-        this.ProgressModifier = progressModifier;
-        this.QualityModifier = qualityModifier;
-
-        this.Ingredients = ingredients ?? Array.Empty<Ingredient>();
-    }
+    private readonly int? craftsmanshipReq;
+    private readonly int? controlReq;
+    private readonly uint? qualityReq;
 
     /// <summary>
     ///     Gets the recipe id.
     /// </summary>
-    public uint RecipeId { get; }
+    public required uint RecipeId { get; init; }
 
     /// <summary>
     ///     Gets the lvl.
     /// </summary>
-    public int Level { get; }
+    public int Level { get; init; } = 10;
 
     /// <summary>
     ///     Gets the rlvl.
     /// </summary>
-    public uint RecipeLevel { get; }
+    public required uint RecipeLevel { get; init; }
 
     /// <summary>
     ///     Gets the max quality of the recipe.
     /// </summary>
-    public uint MaxQuality { get; }
+    public required uint MaxQuality { get; init; }
 
     /// <summary>
-    ///     Gets or sets the progress of the recipe.
+    ///     Gets the progress of the recipe.
     /// </summary>
-    public uint Progress { get; }
+    public required uint Progress { get; init; }
 
     /// <summary>
-    ///     Gets or sets the durability of the recipe.
+    ///     Gets the durability of the recipe.
     /// </summary>
-    public int Durability { get; }
+    public required int Durability { get; init; }
 
-    public bool Expert { get; }
+    public required bool Expert { get; init; }
 
-    public int? CraftsmanshipReq { get; }
+    public int? CraftsmanshipReq
+    {
+        get => this.craftsmanshipReq;
+        init => this.craftsmanshipReq = value == 0 ? null : value;
+    }
 
-    public int? ControlReq { get; }
+    public int? ControlReq
+    {
+        get => this.controlReq;
+        init => this.controlReq = value == 0 ? null : value;
+    }
 
-    public uint? QualityReq { get; }
+    public uint? QualityReq
+    {
+        get => this.qualityReq;
+        init => this.qualityReq = value == 0 ? null : value;
+    }
 
-    public StepState[] PossibleConditions { get; }
+    public StepState[] PossibleConditions { get; init; } = { StepState.NORMAL, StepState.GOOD, StepState.EXCELLENT, StepState.POOR };
 
-    public byte ProgressDivider { get; }
+    public required byte ProgressDivider { get; init; }
 
-    public byte QualityDivider { get; }
+    public required byte QualityDivider { get; init; }
 
-    public byte ProgressModifier { get; }
+    public required byte ProgressModifier { get; init; }
 
-    public byte QualityModifier { get; }
+    public required byte QualityModifier { get; init; }
 
-    public Ingredient[] Ingredients { get; }
+    public required Ingredient[] Ingredients { get; init; }
 
-    /// <summary>
-    ///     Gets or sets the result item name of the recipe.
-    /// </summary>
-    public string? ResultItemName { get; set; } = null;
-
-    public CraftingClass Class { get; set; }
+    public required CraftingClass Class { get; set; }
 }

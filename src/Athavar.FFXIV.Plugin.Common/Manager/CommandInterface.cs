@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud;
@@ -144,12 +143,12 @@ internal sealed partial class CommandInterface : ICommandInterface
 
     private GameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)
     {
-        if (!this.IsLoggedIn())
+        if (!this.IsLoggedIn() || this.dalamudServices.ClientState.LocalPlayer is not { } player)
         {
             return null;
         }
 
-        var playerPosition = this.dalamudServices.ClientState.LocalPlayer!.Position;
+        var playerPosition = player.Position;
 
         IEnumerable<GameObject> objects = this.dalamudServices.ObjectTable;
         if (objectKind is not null)

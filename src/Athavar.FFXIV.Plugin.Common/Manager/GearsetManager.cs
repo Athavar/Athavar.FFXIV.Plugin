@@ -90,6 +90,14 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             }
 
             var stats = new uint[StatLength];
+            List<uint> itemIds = new();
+            foreach (var item in gearsetEntryPtr->ItemsSpan)
+            {
+                itemIds.Add(item.ItemID);
+                this.GetItemStats(ref stats, &item);
+            }
+
+            /*
             this.GetItemStats(ref stats, &gearsetEntryPtr->MainHand);
             this.GetItemStats(ref stats, &gearsetEntryPtr->OffHand);
             this.GetItemStats(ref stats, &gearsetEntryPtr->Head);
@@ -102,8 +110,8 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->Wrists);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
-            this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);
-            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID));
+            this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);*/
+            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID, itemIds));
         }
     }
 
@@ -116,14 +124,19 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             return null;
         }
 
+        List<uint> itemIds = new();
         foreach (var inventoryItem in equipmentItems)
         {
             this.GetItemStats(ref stats, inventoryItem);
+            if (inventoryItem.ItemID > 0)
+            {
+                itemIds.Add(inventoryItem.ItemID);
+            }
         }
 
         var player = this.dalamudServices.ClientState.LocalPlayer;
 
-        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0);
+        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0, itemIds);
     }
 
     private unsafe InventoryItem[]? CurrentEquipment()

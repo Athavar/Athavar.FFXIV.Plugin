@@ -124,7 +124,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
 
     private unsafe byte OnItemSelectedDetour(nint popupMenu, uint index, nint a3, nint a4)
     {
-        var result = this.onItemSelectedHook!.OriginalDisposeSafe(popupMenu, index, a3, a4);
+        var result = this.onItemSelectedHook?.OriginalDisposeSafe(popupMenu, index, a3, a4) ?? 0;
 
         if (popupMenu == nint.Zero)
         {

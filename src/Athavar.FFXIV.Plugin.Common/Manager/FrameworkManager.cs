@@ -33,11 +33,12 @@ internal class FrameworkManager : IDisposable, IFrameworkManager
     public void Subscribe(IFramework.OnUpdateDelegate updateDelegate)
     {
         var methode = updateDelegate.Method;
-        this.onUpdateDelegates.Add(new RegisteredDelegation
-        {
-            Name = $"{methode.DeclaringType?.FullName}::{methode.Name}",
-            UpdateDelegate = updateDelegate,
-        });
+        this.onUpdateDelegates.Add(
+            new RegisteredDelegation
+            {
+                Name = $"{methode.DeclaringType?.FullName}::{methode.Name}",
+                UpdateDelegate = updateDelegate,
+            });
         this.onUpdateDelegatesArray = this.onUpdateDelegates.ToArray();
     }
 
@@ -68,9 +69,9 @@ internal class FrameworkManager : IDisposable, IFrameworkManager
     {
         public IReadOnlyList<TimeSpan> Duration => new List<TimeSpan>(this.Times);
 
-        public string Name { get; init; }
+        public required string Name { get; init; }
 
-        public IFramework.OnUpdateDelegate UpdateDelegate { get; set; }
+        public required IFramework.OnUpdateDelegate UpdateDelegate { get; init; }
 
         internal RollingList<TimeSpan> Times { get; } = new(60);
     }

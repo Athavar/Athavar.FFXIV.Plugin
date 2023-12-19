@@ -77,7 +77,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 
     private unsafe nint AgentReceiveEventDetour(nint agent, nint eventData, AtkValue* values, uint valueCount, ulong eventKind)
     {
-        var result = this.agentReceiveEventHook!.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind);
+        var result = this.agentReceiveEventHook?.OriginalDisposeSafe(agent, eventData, values, valueCount, eventKind) ?? nint.Zero;
 
         if (valueCount != 2)
         {
