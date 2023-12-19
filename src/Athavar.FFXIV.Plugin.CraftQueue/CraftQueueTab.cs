@@ -37,9 +37,9 @@ internal sealed class CraftQueueTab : Tab
 
         this.tabBarHandler = new TabBarHandler(dalamudServices.PluginLogger, "CraftQueueTabBar");
         this.tabBarHandler
-           .Add(new StatsTab(gearsetManager, dataManager))
-           .Add(new RotationTab(dalamudServices.PluginLogger, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
-           .Add(new QueueTab(iconCacheManager, craftSkillManager, craftQueue, this.Configuration, this.ClientLanguage))
+           .Add(new StatsTab(craftQueue))
+           .Add(new RotationTab(craftQueue, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
+           .Add(new QueueTab(craftQueue, iconCacheManager, craftSkillManager, this.Configuration, this.ClientLanguage))
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG
            .Add(new DebugTab(gearsetManager, commandInterface, craftQueue))

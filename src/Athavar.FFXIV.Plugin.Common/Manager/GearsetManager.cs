@@ -61,7 +61,14 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         clientState.Logout -= this.ClientStateOnLogout;
     }
 
-    public unsafe void EquipGearset(int gearsetId) => RaptureGearsetModule.Instance()->EquipGearset(gearsetId);
+    public unsafe void EquipGearset(int gearsetId)
+    {
+        var gearsetModule = this.GetGearsetModule();
+        if (gearsetId >= 0 && gearsetModule->IsValidGearset(gearsetId))
+        {
+            gearsetModule->EquipGearset(gearsetId);
+        }
+    }
 
     /// <inheritdoc/>
     public unsafe void UpdateGearsets()
@@ -73,7 +80,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             return;
         }
 
-        var instance = RaptureGearsetModule.Instance();
+        var instance = this.GetGearsetModule();
         var levelArray = PlayerState.Instance()->ClassJobLevelArray;
         for (var i = 0; i < 100; ++i)
         {
@@ -111,11 +118,11 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);*/
-            this.Gearsets.Add(new Gearset(Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) ?? "<???>", gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID, itemIds));
+            this.Gearsets.Add(new Gearset(this.GetName(gearsetEntryPtr), gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID, itemIds));
         }
     }
 
-    public Gearset? GetCurrentEquipment()
+    public unsafe Gearset? GetCurrentEquipment()
     {
         var stats = new uint[StatLength];
         var equipmentItems = this.CurrentEquipment();
@@ -134,9 +141,13 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             }
         }
 
+        var instance = this.GetGearsetModule();
+        var gearsetId = instance->CurrentGearsetIndex;
+        var name = this.GetName(gearsetId >= 0 ? instance->GetGearset(gearsetId) : null);
         var player = this.dalamudServices.ClientState.LocalPlayer;
+        instance->GetGearset(gearsetId);
 
-        return new Gearset("<???>", 0, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0, itemIds);
+        return new Gearset(name, gearsetId, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0, itemIds);
     }
 
     private unsafe InventoryItem[]? CurrentEquipment()
@@ -327,4 +338,8 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
     }
 
     private unsafe InventoryManager* GetInventoryManager() => InventoryManager.Instance();
+
+    private unsafe RaptureGearsetModule* GetGearsetModule() => RaptureGearsetModule.Instance();
+
+    private unsafe string GetName(RaptureGearsetModule.GearsetEntry* gearsetEntryPtr) => (gearsetEntryPtr is not null ? Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) : null) ?? "<???>";
 }

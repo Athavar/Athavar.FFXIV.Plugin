@@ -15,6 +15,8 @@ public interface IDalamudServices
 {
     DalamudPluginInterface PluginInterface { get; }
 
+    IAddonEventManager AddonEventManager { get; }
+
     IAddonLifecycle AddonLifecycle { get; }
 
     ICommandManager CommandManager { get; }

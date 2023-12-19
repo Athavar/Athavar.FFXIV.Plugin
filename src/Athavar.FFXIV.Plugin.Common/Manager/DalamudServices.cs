@@ -59,6 +59,11 @@ internal sealed class DalamudServices : IDalamudServices
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
+    public IAddonEventManager AddonEventManager { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
     public IAddonLifecycle AddonLifecycle { get; init; } = null!;
 
     /*

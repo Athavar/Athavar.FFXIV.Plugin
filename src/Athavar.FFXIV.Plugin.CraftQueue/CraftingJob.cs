@@ -28,6 +28,7 @@ internal sealed class CraftingJob
     private readonly CraftQueue queue;
     private readonly Simulation simulation;
 
+    private readonly Gearset gearset;
     private readonly CraftingSkills[] rotation;
 
     private readonly int hqPercent;
@@ -39,11 +40,12 @@ internal sealed class CraftingJob
 
     private int waitMs;
 
-    public CraftingJob(CraftQueue queue, RecipeExtended recipe, RotationNode node, CrafterStats crafterStats, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public CraftingJob(CraftQueue queue, RecipeExtended recipe, RotationNode node, Gearset gearset, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         this.queue = queue;
         this.Recipe = recipe;
         this.Loops = count;
+        this.gearset = gearset;
 
         this.Food = food;
         this.Potion = potion;
@@ -57,7 +59,7 @@ internal sealed class CraftingJob
         // clone hqIngredients
         this.HqIngredients = hqIngredients.Select(i => (i.ItemId, i.Amount)).ToArray();
 
-        this.simulation = new Simulation(crafterStats, this.Recipe)
+        this.simulation = new Simulation(gearset.ToCrafterStats(), this.Recipe)
         {
             CurrentStatModifiers = new[] { food?.Stats, potion?.Stats },
         };
@@ -68,7 +70,7 @@ internal sealed class CraftingJob
         this.stepArray = new[]
         {
             this.EnsureInventorySpace,
-            this.SwitchToJob,
+            this.SwitchToGearset,
             this.EnsureRepair,
             this.EnsureMateriaExtracted,
             this.EnsureStats,
@@ -215,14 +217,14 @@ internal sealed class CraftingJob
         return 0;
     }
 
-    private int SwitchToJob()
+    private int SwitchToGearset()
     {
+        var current = this.queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
         var ci = this.queue.CommandInterface;
-        var playerJob = (Job?)this.queue.DalamudServices.ClientState.LocalPlayer?.ClassJob.Id ?? Job.Adventurer;
-        var recipeJob = this.Recipe.Class.GetJob();
-        if (playerJob == recipeJob)
+
+        this.queue.DalamudServices.PluginLogger.Information(" selected:{0} current:{1}", this.gearset.Id, current.Id);
+        if (this.gearset.Id == current.Id)
         {
-            var current = this.queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
             this.simulation.CrafterStats = current.ToCrafterStats();
             return 0;
         }
@@ -240,13 +242,7 @@ internal sealed class CraftingJob
 
         var gearsetManager = this.queue.GearsetManager;
 
-        var gs = gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == recipeJob);
-        if (gs is null)
-        {
-            throw new CraftingJobException("Could not find a gearset with the required job.");
-        }
-
-        gearsetManager.EquipGearset(gs.Id);
+        gearsetManager.EquipGearset(this.gearset.Id);
         return -500;
     }
 
