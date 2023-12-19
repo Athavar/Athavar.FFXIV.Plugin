@@ -28,7 +28,6 @@ using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 using Action = Action;
-using CurrentIngredient = Tuple<(uint ItemId, ushort Icon, byte Amount, ushort NqCount, uint NqAvailable, bool HaveAllNq, int HqIndex, ushort HqCount, uint HqAvailable, bool HaveAllHq)>;
 using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
 internal sealed class QueueTab : Tab
@@ -74,6 +73,7 @@ internal sealed class QueueTab : Tab
 
     private Simulation? craftingSimulation;
     private SimulationResult? simulationResult;
+    private int requiredCrafterDelineations;
 
     private bool init;
     private uint updateTick;
@@ -446,7 +446,7 @@ internal sealed class QueueTab : Tab
             ImGui.TableHeadersRow();
             for (var index = 0; index < this.currentIngredients.Length; ++index)
             {
-                var ingredient = this.currentIngredients[index].Item1;
+                var ingredient = this.currentIngredients[index];
                 if (ingredient.ItemId != 0)
                 {
                     ImGui.TableNextRow();
@@ -917,10 +917,12 @@ internal sealed class QueueTab : Tab
             if (this.selectedRotation is not null)
             {
                 this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations, true);
+                this.requiredCrafterDelineations = this.simulationResult.Steps.Count(s => s is { Success: true, Skill.Skill: CraftingSkills.HearthAndSoul or CraftingSkills.CarefulObservation });
             }
             else
             {
                 this.craftingSimulation.Reset();
+                this.requiredCrafterDelineations = 0;
             }
 
             this.selectionChanged = false;
@@ -1012,9 +1014,22 @@ internal sealed class QueueTab : Tab
 
         this.haveAllIngredient = true;
 
-        var result = new CurrentIngredient[this.selectedRecipe.Ingredients.Length];
+        var ingredientsCount = this.selectedRecipe.Ingredients.Length;
+        var resultCount = ingredientsCount + (this.requiredCrafterDelineations > 0 ? 1 : 0);
+        var result = new CurrentIngredient[resultCount];
+        if (this.requiredCrafterDelineations > 0)
+        {
+            // Crafter's Delineation
+            const uint itemId = 28724;
+            const ushort iconId = 26188;
+            var amount = (byte)this.requiredCrafterDelineations;
+            var available = this.ci.CountItem(itemId) - this.craftQueue.CountItemInQueueAndCurrent(itemId, false);
+            var haveAll = available >= amount * this.craftCount;
+            result[resultCount - 1] = new CurrentIngredient(itemId, iconId, amount, amount, available, haveAll, -1, 0, 0, true);
+            this.haveAllIngredient = haveAll;
+        }
 
-        for (var index = 0; index < result.Length; index++)
+        for (var index = 0; index < ingredientsCount; index++)
         {
             var ingredient = this.selectedRecipe.Ingredients[index];
 
@@ -1022,7 +1037,7 @@ internal sealed class QueueTab : Tab
 
             var total = ingredient.Amount;
 
-            ushort nqAmount = 0;
+            ushort nqAmount;
             var nqAvailable = this.ci.CountItem(itemId) - this.craftQueue.CountItemInQueueAndCurrent(itemId, false);
             if (nqAvailable > 0x100000)
             {
@@ -1061,7 +1076,7 @@ internal sealed class QueueTab : Tab
                 this.haveAllIngredient = false;
             }
 
-            result[index] = new CurrentIngredient((ItemId: itemId, ingredient.IconId, ingredient.Amount, NqCount: nqAmount, NqAvailable: nqAvailable, HaveAllNq: haveAllNq, HqIndex: hqIndex, HqCount: hqAmount, HqAvailable: hqAvailable, HaveAllHq: haveAllHq));
+            result[index] = new CurrentIngredient(itemId, ingredient.IconId, ingredient.Amount, nqAmount, nqAvailable, haveAllNq, hqIndex, hqAmount, hqAvailable, haveAllHq);
         }
 
         this.currentIngredients = result;
@@ -1112,4 +1127,6 @@ internal sealed class QueueTab : Tab
         this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
         this.selectionChanged = true;
     }
+
+    private sealed record CurrentIngredient(uint ItemId, ushort Icon, byte Amount, ushort NqCount, uint NqAvailable, bool HaveAllNq, int HqIndex, ushort HqCount, uint HqAvailable, bool HaveAllHq);
 }

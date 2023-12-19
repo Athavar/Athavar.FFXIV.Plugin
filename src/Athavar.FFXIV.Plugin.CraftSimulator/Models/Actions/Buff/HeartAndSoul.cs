@@ -38,6 +38,9 @@ internal sealed class HeartAndSoul : BuffAction
     public override int GetInitialStacks() => 0;
 
     /// <inheritdoc/>
+    public override bool IsSkipsBuffTicks() => true;
+
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
