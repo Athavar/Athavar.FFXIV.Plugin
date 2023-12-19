@@ -2,15 +2,16 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 
 public abstract class BuffAction : CraftingAction
 {
-    public delegate void OnTick(Simulation simulation, CraftingAction action);
+    public delegate bool OnTick(Simulation simulation, CraftingAction action);
 
     public delegate void OnExpire(Simulation simulation);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Buff;
 
     public override void Execute(Simulation simulation)
@@ -25,12 +26,12 @@ public abstract class BuffAction : CraftingAction
 
     public abstract int GetDuration(Simulation simulation);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 0;
 
     public virtual IEnumerable<Buffs> GetOverrides() => new[] { this.GetBuff() };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool SkipOnFail() => true;
 
     public abstract Buffs GetBuff();
@@ -49,7 +50,7 @@ public abstract class BuffAction : CraftingAction
         return !simulation.HasBuff(this.GetBuff());
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
     protected abstract OnTick? GetOnTick();

@@ -8,38 +8,42 @@ internal sealed class Manipulation : BuffAction
 {
     private static readonly uint[] IdsValue = { 4574, 4575, 4576, 4577, 4578, 4579, 4580, 4581 };
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 65;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Repair;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 96;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDuration(Simulation simulation) => 8;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Buffs GetBuff() => Buffs.MANIPULATION;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetInitialStacks() => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetWaitDuration() => 2;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override OnTick? GetOnTick() => this.OnTick;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 
-    private new void OnTick(Simulation simulation, CraftingAction action) => simulation.Repair(5);
+    private new bool OnTick(Simulation simulation, CraftingAction action)
+    {
+        simulation.Repair(5);
+        return false;
+    }
 }
