@@ -584,12 +584,24 @@ internal sealed class QueueTab : Tab
 
                 var iconSize = new Vector2(tex.Height, tex.Width);
 
+                var cursorBeforeImage = ImGui.GetCursorPos();
                 ImGui.Image(tex.ImGuiHandle, iconSize);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
                     ImGui.TextUnformatted(craftSkillData.Name[this.ClientLanguage] + (actionResult.FailCause is not null ? ": " + actionResult.FailCause : string.Empty));
                     ImGui.EndTooltip();
+                }
+
+                if (actionResult.FailCause is not null)
+                {
+                    tex = this.iconManager.GetIcon(61502, ITextureProvider.IconFlags.HiRes);
+                    if (tex != null)
+                    {
+                        ImGui.SameLine();
+                        ImGui.SetCursorPos(cursorBeforeImage);
+                        ImGui.Image(tex.ImGuiHandle, iconSize);
+                    }
                 }
 
                 if (index != rotationSteps.Count - 1 && 80.0 + ImGui.GetStyle().ItemSpacing.X <= x)
