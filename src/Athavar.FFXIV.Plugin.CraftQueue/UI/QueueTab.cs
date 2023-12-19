@@ -42,9 +42,12 @@ internal sealed class QueueTab : Tab
     private readonly ExcelSheet<ClassJob> classJobsSheet;
     private readonly ExcelSheet<BaseParam> baseParamsSheet;
     private readonly ExcelSheet<Addon> addonsSheet;
+    private readonly string gearsetLabel;
     private readonly string potionLabel;
     private readonly string foodLabel;
     private readonly List<(int Index, Recipe Recipe, Job Job)> filteredRecipes = new();
+
+    private Gearset[]? validGearsets;
 
     private int craftCount = 1;
 
@@ -78,7 +81,9 @@ internal sealed class QueueTab : Tab
     private bool init;
     private uint updateTick;
 
-    public QueueTab(IIconManager iconManager, ICraftDataManager craftDataManager, CraftQueue craftQueue, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
+    private ImGuiStylePtr style;
+
+    public QueueTab(CraftQueue craftQueue, IIconManager iconManager, ICraftDataManager craftDataManager, CraftQueueConfiguration configuration, ClientLanguage clientLanguage)
     {
         this.craftQueue = craftQueue;
         this.craftQueueData = craftQueue.Data;
@@ -95,6 +100,7 @@ internal sealed class QueueTab : Tab
         this.baseParamsSheet = dataManager.GetExcelSheet<BaseParam>() ?? throw new AthavarPluginException();
         this.addonsSheet = dataManager.GetExcelSheet<Addon>() ?? throw new AthavarPluginException();
         var sheet = dataManager.GetExcelSheet<ItemSearchCategory>();
+        this.gearsetLabel = this.addonsSheet.GetRow(756)?.Text ?? string.Empty;
         this.foodLabel = sheet?.GetRow(45)?.Name ?? string.Empty;
         this.potionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
     }
@@ -112,22 +118,27 @@ internal sealed class QueueTab : Tab
     /// <inheritdoc/>
     public override void Draw()
     {
+        this.style = ImGui.GetStyle();
         if (!this.init)
         {
             this.init = true;
             this.PopulateData();
         }
 
-        if (this.rotations is null)
-        {
-            this.rotations = this.Configuration.GetAllNodes().Where(node => node is RotationNode).Cast<RotationNode>().ToArray();
-            this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
-        }
-
         if (!this.craftQueue.DalamudServices.ClientState.IsLoggedIn)
         {
             ImGui.TextUnformatted("Please login.");
+            this.rotations = null;
             return;
+        }
+
+        // tab is open. rotations is set to null if tab is not visible or on first run.
+        if (this.rotations is null)
+        {
+            // refresh data that could have changed.
+            this.rotations = this.Configuration.GetAllNodes().Where(node => node is RotationNode).Cast<RotationNode>().ToArray();
+            this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
+            this.SetupSimulation();
         }
 
         this.updateTick++;
@@ -154,6 +165,8 @@ internal sealed class QueueTab : Tab
         if (this.rotations is not null)
         {
             this.rotations = null;
+            this.craftingSimulation = null;
+            this.validGearsets = null;
             this.rotationIdx = -1;
         }
     }
@@ -173,6 +186,12 @@ internal sealed class QueueTab : Tab
         {
             this.DisplayRecipeSelect();
             ImGui.Separator();
+            if (this.validGearsets is not null && this.validGearsets.Length > 1)
+            {
+                this.DisplayGearsetSelect();
+                ImGui.Separator();
+            }
+
             this.DisplayFoodSelect();
             ImGui.Separator();
             this.DisplayPotionSelect();
@@ -233,7 +252,7 @@ internal sealed class QueueTab : Tab
                             this.hqIngredients = this.selectedRecipe.Ingredients.Where(i => i.CanBeHq).Select(i => (ItemId: i.Id, Amount: (byte)0)).ToArray();
                             this.craftCount = 1;
                             this.UpdateCurrentIngredients();
-                            this.SetSimulation();
+                            this.SetupSimulation();
                             this.selectionChanged = true;
                             ImGui.CloseCurrentPopup();
                         }
@@ -259,6 +278,29 @@ internal sealed class QueueTab : Tab
 
                 ImGui.EndTable();
                 ImGui.EndChild();
+            }
+
+            ImGui.EndCombo();
+        }
+    }
+
+    private void DisplayGearsetSelect()
+    {
+        [return: NotNullIfNotNull("gs")]
+        string? GetName(Gearset? gs) => gs is null ? null : $"{gs.Id + 1} - {gs.Name}";
+
+        var previewValue = GetName(this.selectedGearset) ?? "Select a gearset";
+        if (ImGui.BeginCombo(this.gearsetLabel + "##cq-gearset-picker", previewValue))
+        {
+            for (var index = 0; index < this.validGearsets?.Length; ++index)
+            {
+                var gearset = this.validGearsets[index];
+                if (ImGui.Selectable($"{GetName(gearset)}##cq-gearset-{index}", gearset == this.selectedGearset))
+                {
+                    this.selectedGearset = gearset;
+                    this.selectionChanged = true;
+                    this.SetupSimulation();
+                }
             }
 
             ImGui.EndCombo();
@@ -349,8 +391,10 @@ internal sealed class QueueTab : Tab
         }
 
         ImGui.SameLine();
+
+        const string text = "force";
         var val = (this.flags & forcedFlag) != 0;
-        if (ImGui.Checkbox("force##forced-checkbox-" + id, ref val))
+        if (ImGui.Checkbox(text + "##forced-checkbox-" + id, ref val))
         {
             this.flags ^= forcedFlag;
         }
@@ -412,9 +456,9 @@ internal sealed class QueueTab : Tab
             ImGui.BeginDisabled();
         }
 
-        if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedRotation is not null)
+        if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedGearset is not null && this.selectedRotation is not null)
         {
-            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, this.flags);
+            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedGearset, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, this.flags);
         }
 
         if (!valid)
@@ -605,7 +649,7 @@ internal sealed class QueueTab : Tab
                     }
                 }
 
-                if (index != rotationSteps.Count - 1 && 80.0 + ImGui.GetStyle().ItemSpacing.X <= x)
+                if (index != rotationSteps.Count - 1 && 80.0 + this.style.ItemSpacing.X <= x)
                 {
                     ImGui.SameLine();
                 }
@@ -889,24 +933,56 @@ internal sealed class QueueTab : Tab
         DrawHistoryTable();
     }
 
-    private void SetSimulation()
+    private void SetupSimulation()
     {
+        void Reset()
+        {
+            SimReset();
+            this.selectedGearset = null;
+        }
+
+        void SimReset()
+        {
+            this.simulationResult = null;
+            this.craftingSimulation = null;
+        }
+
+
         if (this.selectedRecipe is null)
         {
+            Reset();
             return;
         }
 
         var job = this.selectedRecipe.Class.GetJob();
+        this.validGearsets = this.gearsetManager.AllGearsets.Where(g => g.JobClass == job).ToArray();
+        if (this.validGearsets.Length == 0)
+        {
+            Reset();
+            return;
+        }
 
-        this.selectedGearset = this.gearsetManager.AllGearsets.FirstOrDefault(g => g.JobClass == job);
+        Gearset? foundMatch = null;
+        if (this.selectedGearset is null || (foundMatch = this.validGearsets.FirstOrDefault(g => g.Id == this.selectedGearset.Id)) == null)
+        {
+            // set gearset if null or invalid for current recipe.
+            this.selectedGearset = this.validGearsets.First();
+        }
+        else
+        {
+            this.selectedGearset = foundMatch;
+        }
+
         if (this.selectedGearset == null)
         {
+            SimReset();
             return;
         }
 
         this.craftingSimulation = new Simulation(
             this.selectedGearset.ToCrafterStats(),
             this.selectedRecipe);
+        this.selectionChanged = true;
     }
 
     private void RunSimulation()

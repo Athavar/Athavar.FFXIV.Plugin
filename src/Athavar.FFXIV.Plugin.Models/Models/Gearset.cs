@@ -22,7 +22,7 @@ public sealed class Gearset
     /// <param name="hasSoulStone">The soulstone check.</param>
     /// <param name="mainHandItemId">The main hand item id.</param>
     /// <param name="itemIds">Ids of the equipped items.</param>
-    public Gearset(string name, byte id, uint jobClass, byte level, uint[] stats, bool hasSoulStone, uint mainHandItemId, IEnumerable<uint> itemIds)
+    public Gearset(string name, int id, uint jobClass, byte level, uint[] stats, bool hasSoulStone, uint mainHandItemId, IEnumerable<uint> itemIds)
     {
         this.Name = name;
         this.Id = id;
@@ -42,7 +42,7 @@ public sealed class Gearset
     /// <summary>
     ///     Gets the id.
     /// </summary>
-    public byte Id { get; }
+    public int Id { get; }
 
     /// <summary>
     ///     Gets the jobclass.

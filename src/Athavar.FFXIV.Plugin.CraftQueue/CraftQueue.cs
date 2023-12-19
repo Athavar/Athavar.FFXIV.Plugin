@@ -7,8 +7,8 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
@@ -56,15 +56,9 @@ internal sealed partial class CraftQueue : IDisposable
 
     internal QueueState Paused { get; private set; } = QueueState.Paused;
 
-    public bool CreateJob(RecipeExtended recipe, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public bool CreateJob(RecipeExtended recipe, Gearset gearset, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
-        var gs = this.GearsetManager.AllGearsets.FirstOrDefault(g => g.GetCraftingJob() == recipe.Class);
-        if (gs is null)
-        {
-            return false;
-        }
-
-        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gs.ToCrafterStats(), count, food, potion, hqIngredients, flags));
+        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gearset, count, food, potion, hqIngredients, flags));
         return true;
     }
 

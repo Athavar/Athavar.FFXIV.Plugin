@@ -8,20 +8,19 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 
 internal sealed class StatsTab : Tab
 {
-    private readonly IGearsetManager gearsetManager;
+    private readonly CraftQueue craftQueue;
     private readonly IDataManager dataManager;
 
-    public StatsTab(IGearsetManager gearsetManager, IDataManager dataManager)
+    public StatsTab(CraftQueue craftQueue)
     {
-        this.gearsetManager = gearsetManager;
-        this.dataManager = dataManager;
+        this.craftQueue = craftQueue;
+        this.dataManager = craftQueue.DalamudServices.DataManager;
     }
 
     /// <inheritdoc/>
@@ -35,7 +34,7 @@ internal sealed class StatsTab : Tab
     {
         if (ImGui.Button("Refresh"))
         {
-            this.gearsetManager.UpdateGearsets();
+            this.craftQueue.GearsetManager.UpdateGearsets();
         }
 
         void DrawCraftingGearsetTable()
@@ -57,12 +56,12 @@ internal sealed class StatsTab : Tab
             ImGui.TableHeadersRow();
 
             var sheet = this.dataManager.GetExcelSheet<ClassJob>()!;
-            foreach (var gearset in this.gearsetManager.AllGearsets.Where(g => g.GetCraftingJob() is not null))
+            foreach (var gearset in this.craftQueue.GearsetManager.AllGearsets.Where(g => g.GetCraftingJob() is not null))
             {
                 var columns = new object[8];
                 ImGui.TableNextRow();
                 ImGui.TableSetColumnIndex(0);
-                columns[0] = gearset.Id;
+                columns[0] = gearset.Id + 1;
                 columns[1] = gearset.Name;
                 columns[2] = sheet?.GetRow((uint)gearset.JobClass)?.Abbreviation?.RawString ?? "???";
                 columns[3] = gearset.JobLevel;

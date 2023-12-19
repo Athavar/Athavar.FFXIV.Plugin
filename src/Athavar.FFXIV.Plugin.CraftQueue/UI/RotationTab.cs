@@ -23,6 +23,7 @@ using ImGuiNET;
 internal sealed class RotationTab : Tab
 {
     private readonly Regex incrementalName = new(@"(?<all> \((?<index>\d+)\))$", RegexOptions.Compiled);
+    private readonly CraftQueue craftQueue;
     private readonly IPluginLogger logger;
     private readonly IChatManager chatManager;
     private readonly IIconManager iconManager;
@@ -34,9 +35,10 @@ internal sealed class RotationTab : Tab
     private bool editChanged;
     private string activeRotationContent = string.Empty;
 
-    public RotationTab(IPluginLogger logger, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
+    public RotationTab(CraftQueue craftQueue, CraftQueueConfiguration configuration, IChatManager chatManager, IIconManager iconManager, ICraftDataManager craftDataManager, ClientLanguage clientLanguage)
     {
-        this.logger = logger;
+        this.craftQueue = craftQueue;
+        this.logger = craftQueue.DalamudServices.PluginLogger;
         this.Configuration = configuration;
         this.chatManager = chatManager;
         this.iconManager = iconManager;
@@ -439,7 +441,7 @@ internal sealed class RotationTab : Tab
                 {
                     if (this.Configuration.TryFindParent(node, out var parentNode))
                     {
-                        parentNode!.Children.Remove(node);
+                        parentNode.Children.Remove(node);
                         this.Configuration.Save();
 
                         if (node is RotationNode)
