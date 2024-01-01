@@ -26,6 +26,7 @@
         <Reference Include="Lumina" Private="False"/>
         <Reference Include="Lumina.Excel" Private="False"/>
         <Reference Include="Serilog" Private="False"/>
+        <Reference Include="Reloaded.Memory" Private="False"/>
     </ItemGroup>
 
     <ItemGroup>
