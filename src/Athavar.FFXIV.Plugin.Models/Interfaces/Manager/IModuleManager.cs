@@ -17,6 +17,10 @@ public interface IModuleManager
 
         bool HasTab { get; }
 
+        bool Loaded { get; }
+
+        Exception? LoadingError { get; }
+
         bool Enabled { get; set; }
 
         bool TabEnabled { get; set; }

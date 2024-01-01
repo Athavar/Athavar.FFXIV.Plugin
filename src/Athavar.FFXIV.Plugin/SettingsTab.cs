@@ -11,6 +11,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.Text;
+using Dalamud.Interface.Colors;
 using ImGuiNET;
 
 internal sealed partial class SettingsTab : Tab
@@ -124,11 +125,12 @@ internal sealed partial class SettingsTab : Tab
 
         if (ImGui.CollapsingHeader(this.localizeManager.Localize("Modules")))
         {
-            if (ImGui.BeginTable("##modules", 3))
+            if (ImGui.BeginTable("##modules", 4))
             {
                 ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableSetupColumn("Tab", ImGuiTableColumnFlags.WidthFixed);
+                ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableHeadersRow();
 
                 var index = 0;
@@ -157,6 +159,27 @@ internal sealed partial class SettingsTab : Tab
                         {
                             module.TabEnabled = val;
                         }
+                    }
+
+                    // status row
+                    ImGui.TableSetColumnIndex(3);
+                    if (module.Loaded)
+                    {
+                        ImGui.TextUnformatted("Active");
+                    }
+                    else if (module.Enabled)
+                    {
+                        ImGui.TextUnformatted("Loading");
+                    }
+                    else if (module.LoadingError is not null)
+                    {
+                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                        ImGui.TextUnformatted("Error");
+                        ImGui.PopStyleColor();
+                    }
+                    else
+                    {
+                        ImGui.TextUnformatted("Disabled");
                     }
 
                     index++;
