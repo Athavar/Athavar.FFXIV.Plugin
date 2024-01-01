@@ -16,8 +16,11 @@ public sealed unsafe class EventData : SharedBuffer
     private EventData()
     {
         const int size = 0x18;
+        this.Data = (void**)Buffer.Add(new byte[size]);
+        /*
         var d = stackalloc byte[size];
         this.Data = (void**)Buffer.Add(d, size);
+        */
 
         if (this.Data == null)
         {

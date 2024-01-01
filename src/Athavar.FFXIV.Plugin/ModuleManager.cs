@@ -75,11 +75,21 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             {
                 if (definition.Enabled)
                 {
+                    object? m = null;
                     this.logger.Debug("Create Module Instance for {0}", attribute.Name);
-                    var m = this.CreateModule(moduleType);
-                    this.logger.Debug("Finish creating Module Instance for {0}", attribute.Name);
+                    try
+                    {
+                        m = this.CreateModule(moduleType);
+                    }
+                    catch (Exception ex)
+                    {
+                        definition.LoadingError = ex;
+                        this.logger.Error(ex, "Error during load of {0}", attribute.Name);
+                    }
+
                     if (m is Module module)
                     {
+                        this.logger.Debug("Finish creating Module Instance for {0}", attribute.Name);
                         definition.Instance = module;
                         this.StateChange?.Invoke(module, definition.Data);
                     }
@@ -152,6 +162,8 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
         internal bool Enabled { get; set; }
 
+        internal Exception? LoadingError { get; set; }
+
         internal Module? Instance { get; set; }
 
         internal BasicModuleConfig? Config { get; set; }
@@ -204,13 +216,24 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             {
                 if (this.Def.Instance is null)
                 {
-                    // Enable
-                    var instance = this.Def.Manager.CreateModule(this.Def.Type);
+                    object? instance = null;
+                    try
+                    {
+                        // Enable
+                        instance = this.Def.Manager.CreateModule(this.Def.Type);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Def.LoadingError = ex;
+                        this.Def.Manager.logger.Error(ex, "Error during load of {0}", this.Def.Data.Name);
+                    }
+
                     if (instance is not Module module)
                     {
                         return;
                     }
 
+                    this.Def.LoadingError = null;
                     this.Def.Instance = module;
                 }
 
@@ -254,5 +277,9 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                 }
             }
         }
+
+        public bool Loaded => this.Def.Instance is not null;
+
+        public Exception? LoadingError => this.Def.LoadingError;
     }
 }

@@ -92,7 +92,7 @@ public struct CfPopData
 
     public bool IsSilenceEchoEnabled => (this.cc3 & 0x10) != 0;
 
-    public bool Unk3X40 => (this.cc3 & 0x40) != 0;
+    public bool IsLimitedLevelingRoulette => (this.cc3 & 0x40) != 0;
 
     public bool IsExplorerModeEnabled => (this.cc4 & 0x01) != 0;
 
@@ -132,6 +132,11 @@ public struct CfPopData
         if (this.IsSilenceEchoEnabled)
         {
             result |= ContentCondition.SilenceEcho;
+        }
+
+        if (this.IsLimitedLevelingRoulette)
+        {
+            result |= ContentCondition.LimitedLevelingRoulette;
         }
 
         if (this.IsExplorerModeEnabled)

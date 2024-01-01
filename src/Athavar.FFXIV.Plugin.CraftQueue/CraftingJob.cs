@@ -17,7 +17,6 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
 using Lumina.Excel.GeneratedSheets;
-using Reloaded.Memory.Extensions;
 
 internal sealed class CraftingJob
 {

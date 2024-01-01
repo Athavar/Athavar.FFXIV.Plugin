@@ -19,9 +19,11 @@ public sealed unsafe class InputData : SharedBuffer
     private InputData()
     {
         const int size = 0x40;
+        this.Data = (void**)Buffer.Add(new byte[size]);
+        /*
         var d = stackalloc byte[size];
         this.Data = (void**)Buffer.Add(d, size);
-
+        */
         if (this.Data == null)
         {
             throw new ArgumentNullException(null, "InputData could not be created, null");
