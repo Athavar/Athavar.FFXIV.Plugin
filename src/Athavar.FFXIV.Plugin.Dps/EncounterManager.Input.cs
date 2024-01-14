@@ -93,6 +93,8 @@ internal sealed partial class EncounterManager
                     source.Kills++;
                 }
 
+                this.UpdateLastEvent(encounter, @event.Timestamp, true);
+
                 this.Log.Add($"{@event.Timestamp:O}|Kill|{source?.Name}|{actor.Name}||");
                 break;
             }
@@ -144,7 +146,12 @@ internal sealed partial class EncounterManager
                     }
                 }
 
-                source.AddActionDone(@event.Timestamp, damageTakenEvent, isStatus);
+                // filter out cases without direct "killer"
+                if (effectEvent.IsSourceTarget || source != target)
+                {
+                    source.AddActionDone(@event.Timestamp, damageTakenEvent, isStatus);
+                }
+
                 target?.AddActionTaken(@event.Timestamp, damageTakenEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp, true);
 

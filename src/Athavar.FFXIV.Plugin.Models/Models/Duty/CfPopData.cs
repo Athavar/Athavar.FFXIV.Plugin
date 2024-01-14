@@ -90,9 +90,11 @@ public struct CfPopData
 
     public bool IsLevelSyncEnabled => (this.cc2 & 0x20) != 0;
 
+    public bool IsLimitedLevelingRoulette => (this.cc2 & 0x40) != 0;
+
     public bool IsSilenceEchoEnabled => (this.cc3 & 0x10) != 0;
 
-    public bool IsLimitedLevelingRoulette => (this.cc3 & 0x40) != 0;
+    public bool Unk3X40 => (this.cc3 & 0x40) != 0;
 
     public bool IsExplorerModeEnabled => (this.cc4 & 0x01) != 0;
 

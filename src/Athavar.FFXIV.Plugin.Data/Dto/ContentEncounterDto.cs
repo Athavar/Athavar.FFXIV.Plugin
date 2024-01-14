@@ -114,6 +114,7 @@ internal sealed class ContentEncounterDto : BaseDto
             EndDate = DateTimeOffset.FromUnixTimeMilliseconds(c.EndDate),
             ActiveContentCondition = (c.JoinInProgressEnabled ? ContentCondition.JoinInProgress : 0) |
                                      (c.UnrestrictedParty ? ContentCondition.UnrestrictedParty : 0) |
+                                     (c.MinimalIL ? ContentCondition.MinimalIL : 0) |
                                      (c.LevelSync ? ContentCondition.LevelSync : 0) |
                                      (c.SilenceEcho ? ContentCondition.SilenceEcho : 0) |
                                      (c.ExplorerMode ? ContentCondition.ExplorerMode : 0),
