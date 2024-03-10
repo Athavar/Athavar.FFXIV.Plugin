@@ -7,19 +7,21 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using System.Net;
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Hooking;
 using Dalamud.IoC;
+using Dalamud.Networking.Http;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 
 /// <summary>
 ///     Contains services from dalamud.
 /// </summary>
-internal sealed class DalamudServices : IDalamudServices
+internal sealed class DalamudServices : IDalamudServices, IDisposable
 {
     private readonly Assembly? dalamudAssembly;
     private readonly Type? serviceGenericType;
@@ -32,6 +34,13 @@ internal sealed class DalamudServices : IDalamudServices
     {
         pluginInterface.Inject(this);
         this.PluginLogger = new Logger(this.PluginLog);
+        using var happyEyeballsCallback = new HappyEyeballsCallback();
+        this.HttpClient = new HttpClient(
+            new SocketsHttpHandler
+            {
+                AutomaticDecompression = DecompressionMethods.All,
+                ConnectCallback = happyEyeballsCallback.ConnectCallback,
+            });
 
         try
         {
@@ -50,6 +59,9 @@ internal sealed class DalamudServices : IDalamudServices
 
     /// <inheritdoc/>
     public IPluginLogger PluginLogger { get; } = null!;
+
+    /// <inheritdoc/>
+    public HttpClient HttpClient { get; }
 
     /// <inheritdoc/>
     [PluginService]
@@ -267,4 +279,7 @@ internal sealed class DalamudServices : IDalamudServices
                 }
             });
     }
+
+    /// <inheritdoc/>
+    public void Dispose() => this.HttpClient.Dispose();
 }

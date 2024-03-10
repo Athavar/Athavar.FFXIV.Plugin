@@ -6,8 +6,11 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
+using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Ipc.Exceptions;
 
@@ -16,13 +19,11 @@ using Dalamud.Plugin.Ipc.Exceptions;
 /// </summary>
 internal sealed class IpcManager : IIpcManager, IDisposable
 {
+    private readonly IDalamudServices dalamudServices;
     private readonly IPluginLogger logger;
 
-    private ICallGateSubscriber<(int Breaking, int Features)> penumbraApiVersionsSubscriber;
-    private ICallGateSubscriber<string, string>? penumbraResolveInterfacePathSubscriber;
-
-    private ICallGateSubscriber<object> penumbraInitializedSubscriber;
-    private ICallGateSubscriber<object> penumbraDisposedSubscriber;
+    private ICallGateSubscriber<(int Breaking, int Features)> glamourerApiVersionsSubscriber;
+    private ICallGateSubscriber<Character?, byte, ulong, byte, uint, int>? glamourerSetItemOnceSubscriber;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IpcManager"/> class.
@@ -30,102 +31,80 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     public IpcManager(IDalamudServices dalamudServices)
     {
+        this.dalamudServices = dalamudServices;
         this.logger = dalamudServices.PluginLogger;
-        this.Initialize(dalamudServices);
+        this.Initialize();
+        this.UpdateActivePluginState();
     }
 
     /// <inheritdoc/>
-    public event EventHandler? PenumbraStatusChanged;
-
-    /// <inheritdoc/>
-    public (int Breaking, int Features) PenumbraApiVersion
+    public (int Breaking, int Features) GlamourerApiVersion
     {
         get
         {
             try
             {
-                return this.penumbraApiVersionsSubscriber.InvokeFunc();
+                this.GlamourerEnabled = true;
+                return this.glamourerApiVersionsSubscriber.InvokeFunc();
             }
             catch (IpcNotReadyError)
             {
-                return (0, 0);
+                this.GlamourerEnabled = false;
+                return (-1, -1);
             }
             catch
             {
+                this.GlamourerEnabled = false;
                 return (-1, -1);
             }
         }
     }
 
     /// <inheritdoc/>
-    public bool PenumbraEnabled { get; private set; }
-
-    /// <inheritdoc/>
-    public string ResolvePenumbraPath(string path)
-    {
-        if (!this.PenumbraEnabled || this.penumbraResolveInterfacePathSubscriber is null)
-        {
-            return path;
-        }
-
-        try
-        {
-            var resolvedPath = this.penumbraResolveInterfacePathSubscriber.InvokeFunc(path);
-            return resolvedPath;
-        }
-        catch (IpcNotReadyError)
-        {
-            this.logger.Information("IpcNotReadyError");
-            return path;
-        }
-        catch (Exception ex)
-        {
-            this.logger.Error(ex, "Failed while try to use Penumbra IPC. Disable integration");
-            this.PenumbraEnabled = false;
-            return path;
-        }
-    }
+    public bool GlamourerEnabled { get; private set; }
 
     public void Dispose()
     {
-        this.penumbraInitializedSubscriber.Unsubscribe(this.EnablePenumbraApi);
-        this.penumbraDisposedSubscriber.Unsubscribe(this.DisablePenumbraApi);
     }
 
-    [MemberNotNull(nameof(penumbraInitializedSubscriber))]
-    [MemberNotNull(nameof(penumbraDisposedSubscriber))]
-    [MemberNotNull(nameof(penumbraApiVersionsSubscriber))]
-    [MemberNotNull(nameof(penumbraResolveInterfacePathSubscriber))]
-    private void Initialize(IDalamudServices dalamudServices)
+    /// <inheritdoc/>
+    public int SetItem(Character? character, EquipSlot slot, ulong itemId, byte stainId, uint key)
     {
-        this.penumbraApiVersionsSubscriber = dalamudServices.PluginInterface.GetIpcSubscriber<(int, int)>("Penumbra.ApiVersions");
-        this.penumbraResolveInterfacePathSubscriber = dalamudServices.PluginInterface.GetIpcSubscriber<string, string>("Penumbra.ResolveInterfacePath");
-        this.penumbraInitializedSubscriber = dalamudServices.PluginInterface.GetIpcSubscriber<object>("Penumbra.Initialized");
-        this.penumbraDisposedSubscriber = dalamudServices.PluginInterface.GetIpcSubscriber<object>("Penumbra.Disposed");
-
-        this.penumbraInitializedSubscriber.Subscribe(this.EnablePenumbraApi);
-        this.penumbraDisposedSubscriber.Subscribe(this.DisablePenumbraApi);
-
-        this.EnablePenumbraApi();
-    }
-
-    private void EnablePenumbraApi()
-    {
-        if (this.PenumbraApiVersion.Breaking != 4)
+        if (this.GlamourerApiVersion.Breaking != 0)
         {
-            return;
+            return -1;
         }
 
-        this.PenumbraEnabled = true;
+        return this.glamourerSetItemOnceSubscriber?.InvokeFunc(character, (byte)slot, itemId, stainId, key) ?? 0;
     }
 
-    private void DisablePenumbraApi()
+    public void UpdateActivePluginState()
     {
-        if (!this.PenumbraEnabled)
+        this.GlamourerEnabled = false;
+        foreach (var installedPlugin in this.dalamudServices.PluginInterface.InstalledPlugins)
         {
-            return;
-        }
+            switch (installedPlugin.InternalName)
+            {
+                case "Glamourer":
+                    if (installedPlugin.IsLoaded)
+                    {
+                        this.GlamourerEnabled = true;
+                    }
 
-        this.PenumbraEnabled = false;
+                    break;
+            }
+        }
     }
+
+    [MemberNotNull(nameof(glamourerApiVersionsSubscriber))]
+    [MemberNotNull(nameof(glamourerSetItemOnceSubscriber))]
+    private void Initialize()
+    {
+        this.glamourerApiVersionsSubscriber = this.dalamudServices.PluginInterface.GetIpcSubscriber<(int, int)>("Glamourer.ApiVersions");
+        this.glamourerSetItemOnceSubscriber = this.dalamudServices.PluginInterface.GetIpcSubscriber<Character?, byte, ulong, byte, uint, int>("Glamourer.SetItemOnce");
+
+        this.dalamudServices.PluginInterface.ActivePluginsChanged += this.OnActivePluginsChanged;
+    }
+
+    private void OnActivePluginsChanged(PluginListInvalidationKind kind, bool affectedthisplugin) => this.UpdateActivePluginState();
 }

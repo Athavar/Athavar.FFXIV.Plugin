@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(CraftQueueConfiguration))]
 [JsonSerializable(typeof(DpsConfiguration))]
 [JsonSerializable(typeof(DutyHistoryConfiguration))]
+[JsonSerializable(typeof(ImporterConfiguration))]
 [JsonSerializable(typeof(InstancinatorConfiguration))]
 [JsonSerializable(typeof(MacroConfiguration))]
 [JsonSerializable(typeof(OpcodeWizardConfiguration))]

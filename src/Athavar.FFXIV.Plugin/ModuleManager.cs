@@ -31,6 +31,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
         "Athavar.FFXIV.Plugin.CraftQueue",
         "Athavar.FFXIV.Plugin.Dps",
         "Athavar.FFXIV.Plugin.DutyHistory",
+        "Athavar.FFXIV.Plugin.Importer",
         "Athavar.FFXIV.Plugin.Instancinator",
         "Athavar.FFXIV.Plugin.Macro",
         "Athavar.FFXIV.Plugin.OpcodeWizard",
