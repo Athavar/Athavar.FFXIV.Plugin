@@ -24,6 +24,20 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
     private readonly IServiceProvider serviceProvider;
     private readonly IPluginLogger logger;
 
+    private readonly string[] moduleAssemblies =
+    {
+        "Athavar.FFXIV.Plugin.AutoSpear",
+        "Athavar.FFXIV.Plugin.Cheat",
+        "Athavar.FFXIV.Plugin.CraftQueue",
+        "Athavar.FFXIV.Plugin.Dps",
+        "Athavar.FFXIV.Plugin.DutyHistory",
+        "Athavar.FFXIV.Plugin.Instancinator",
+        "Athavar.FFXIV.Plugin.Macro",
+        "Athavar.FFXIV.Plugin.OpcodeWizard",
+        "Athavar.FFXIV.Plugin.SliceIsRight",
+        "Athavar.FFXIV.Plugin.Yes",
+    };
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="ModuleManager"/> class.
     /// </summary>
@@ -111,11 +125,29 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
         this.logger.Information("Load modules from AssemblyLoadContext: {0}", context.ToString());
 
-        var moduleTypes = context.Assemblies
-           .Where(a => !a.IsDynamic)
-           .Where(a => a.GetName().Name?.StartsWith("Athavar.FFXIV.Plugin") ?? false)
-           .SelectMany(a => a.GetTypes())
-           .Where(t => !t.IsAbstract && t.IsSubclassOf(moduleType)).ToArray();
+        List<Type> moduleTypes = new();
+
+        foreach (var assemblyName in this.moduleAssemblies)
+        {
+            try
+            {
+                var assembly = context.LoadFromAssemblyName(new AssemblyName(assemblyName));
+                moduleTypes
+                   .AddRange(
+                        assembly
+                           .GetTypes()
+                           .Where(t => !t.IsAbstract && t.IsSubclassOf(moduleType)));
+            }
+
+            // ReSharper disable once RedundantCatchClause
+            catch (Exception ex)
+            {
+                // ignored
+#if DEBUG
+                throw;
+#endif
+            }
+        }
 
         this.logger.Information("Start loading modules");
         moduleTypes.AsParallel().WithDegreeOfParallelism(12).ForAll(LoadModule);
