@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
-using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,7 +14,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<DetectionProgram>();
         services.AddSingleton<ScannerRegistry>();
-        OpcodeWizardConfiguration.AddToDependencyInjection(services);
         return services;
     }
 }

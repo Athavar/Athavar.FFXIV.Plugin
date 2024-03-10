@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
-using Athavar.FFXIV.Plugin.Config;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -14,7 +13,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<StateTracker>();
         services.AddSingleton<DutyHistoryTable>();
-        DutyHistoryConfiguration.AddToDependencyInjection(services);
         return services;
     }
 }

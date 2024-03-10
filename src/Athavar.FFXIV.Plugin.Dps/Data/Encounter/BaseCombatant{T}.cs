@@ -72,5 +72,18 @@ internal abstract class BaseCombatant<T> : BaseCombatant
 
     public override int GetHashCode() => HashCode.Combine(this.ObjectId, this.DataId);
 
-    protected bool Equals(BaseCombatant<T> other) => this.Encounter.Equals(other.Encounter);
+    protected bool Equals(BaseCombatant<T> other)
+    {
+        if (this.DataId != other.DataId)
+        {
+            return false;
+        }
+
+        if (this.DataId == 0)
+        {
+            return this.ObjectId.Equals(other.ObjectId);
+        }
+
+        return this.DataId.Equals(other.DataId);
+    }
 }

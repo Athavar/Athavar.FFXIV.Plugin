@@ -5,20 +5,17 @@
 
 namespace Athavar.FFXIV.Plugin;
 
-using Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.Cheat;
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
-using Athavar.FFXIV.Plugin.CraftQueue;
+using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Data;
 using Athavar.FFXIV.Plugin.Dps;
 using Athavar.FFXIV.Plugin.DutyHistory;
-using Athavar.FFXIV.Plugin.Instancinator;
 using Athavar.FFXIV.Plugin.Macro;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.OpcodeWizard;
-using Athavar.FFXIV.Plugin.SliceIsRight;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
@@ -52,9 +49,7 @@ public sealed class Plugin : IDalamudPlugin
     ///     Initializes a new instance of the <see cref="Plugin"/> class.
     /// </summary>
     /// <param name="pluginInterface">Dalamud plugin interface.</param>
-    public Plugin(
-        [RequiredVersion("1.0")]
-        DalamudPluginInterface pluginInterface)
+    public Plugin([RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
 
@@ -73,30 +68,28 @@ public sealed class Plugin : IDalamudPlugin
     private ServiceProvider BuildProvider()
     {
         return new ServiceCollection()
-           .AddSingleton(o =>
-            {
-                if (this.pluginInterface.ConfigFile.Exists)
+           .AddSingleton(
+                o =>
                 {
-                    Configuration.Migrate(this.pluginInterface);
-                }
+                    if (this.pluginInterface.ConfigFile.Exists)
+                    {
+                        Configuration.Migrate(this.pluginInterface);
+                    }
 
-                return this.pluginInterface;
-            })
+                    return this.pluginInterface;
+                })
            .AddSingleton<IPluginWindow, PluginWindow>()
            .AddSingleton<IModuleManager, ModuleManager>()
            .AddSingleton(_ => new WindowSystem("Athavar's Toolbox"))
            .AddCommon()
            .AddData()
-           .AddAutoSpearModule()
+           .AddModuleConfiguration()
            .AddClick()
            .AddMacroModule()
            .AddYesModule()
-           .AddInstancinatorModule()
            .AddCheatModule()
-           .AddCraftQueueModule()
            .AddDps()
            .AddOpcodeWizard()
-           .AddSliceIsRightModule()
            .AddDutyHistory()
 #if DEBUG
 #endif

@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.Dps;
 
-using Athavar.FFXIV.Plugin.Config;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
@@ -15,7 +14,6 @@ public static class DependencyInjection
         services.AddSingleton<NetworkHandler>();
         services.AddSingleton<EncounterManager>();
         services.AddSingleton<Utils>();
-        DpsConfiguration.AddToDependencyInjection(services);
         return services;
     }
 }

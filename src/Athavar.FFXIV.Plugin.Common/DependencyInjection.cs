@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
-using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
@@ -32,20 +31,20 @@ public static class DependencyInjection
            .AddSingleton<IOpcodeManager, OpcodeManager>()
            .AddSingleton<IDutyManager, DutyManager>()
            .AddSingleton<ICommandInterface, CommandInterface>()
-           .AddSingleton(o =>
-            {
-                var ds = o.GetRequiredService<IDalamudServices>();
-                var resolver = new AddressResolver();
-                ds.PluginLogger.Debug("Start Setup AddressResolver");
-                resolver.Setup(ds.SigScanner);
-                ds.PluginLogger.Debug("Finish Setup AddressResolver");
-                return resolver;
-            })
+           .AddSingleton(
+                o =>
+                {
+                    var ds = o.GetRequiredService<IDalamudServices>();
+                    var resolver = new AddressResolver();
+                    ds.PluginLogger.Debug("Start Setup AddressResolver");
+                    resolver.Setup(ds.SigScanner);
+                    ds.PluginLogger.Debug("Finish Setup AddressResolver");
+                    return resolver;
+                })
            .AddSingleton<EventCaptureManager>()
            .AddSingleton<IPluginLogger>(o => o.GetRequiredService<IDalamudServices>().PluginLogger)
            .AddSingleton<IDataManager>(o => o.GetRequiredService<IDalamudServices>().DataManager)
            .AddSingleton<IClientState>(o => o.GetRequiredService<IDalamudServices>().ClientState);
-        CommonConfiguration.AddToDependencyInjection(services);
 
         return services;
     }
