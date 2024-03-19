@@ -5,26 +5,26 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
-using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud.Networking.Http;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {
     private readonly IPluginLogger logger;
+    private readonly IDalamudServices dalamudServices;
     private readonly OpcodeWizardConfiguration configuration;
     private readonly IDefinitionManager definitionManager;
 
     private readonly Dictionary<ushort, Opcode> opcodes = new();
 
-    public OpcodeManager(IPluginLogger logger, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
+    public OpcodeManager(IDalamudServices dalamudServices, OpcodeWizardConfiguration configuration, IDefinitionManager definitionManager)
     {
-        this.logger = logger;
+        this.logger = dalamudServices.PluginLogger;
+        this.dalamudServices = dalamudServices;
         this.configuration = configuration;
         this.definitionManager = definitionManager;
         _ = this.Populate();
@@ -78,14 +78,7 @@ internal sealed class OpcodeManager : IOpcodeManager
         {
             try
             {
-                using var happyEyeballsCallback = new HappyEyeballsCallback();
-                using var httpClient = new HttpClient(new SocketsHttpHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.All,
-                    ConnectCallback = happyEyeballsCallback.ConnectCallback,
-                });
-
-                var updateConfigString = await httpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
+                var updateConfigString = await this.dalamudServices.HttpClient.GetStringAsync("https://raw.githubusercontent.com/Athavar/Athavar.FFXIV.DalaRepo/master/opcodes.json");
                 var updateConfig = JsonSerializer.Deserialize<UpdateConfig>(updateConfigString);
                 if (updateConfig?.GameVersion == this.configuration.GameVersion)
                 {

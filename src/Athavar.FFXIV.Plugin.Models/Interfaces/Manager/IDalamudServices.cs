@@ -57,6 +57,8 @@ public interface IDalamudServices
 
     ITitleScreenMenu TitleScreenMenu { get; }
 
+    HttpClient HttpClient { get; }
+
     object? GetInternalService(Type serviceType);
 
     /// <summary>

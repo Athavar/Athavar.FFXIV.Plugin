@@ -16,6 +16,7 @@ public static class DependencyInjection
         CraftQueueConfiguration.AddToDependencyInjection(services);
         DpsConfiguration.AddToDependencyInjection(services);
         DutyHistoryConfiguration.AddToDependencyInjection(services);
+        ImporterConfiguration.AddToDependencyInjection(services);
         InstancinatorConfiguration.AddToDependencyInjection(services);
         MacroConfiguration.AddToDependencyInjection(services);
         OpcodeWizardConfiguration.AddToDependencyInjection(services);

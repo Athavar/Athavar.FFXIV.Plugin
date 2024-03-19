@@ -5,24 +5,34 @@
 
 namespace Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 
+using Athavar.FFXIV.Plugin.Models.Constants;
+using Dalamud.Game.ClientState.Objects.Types;
+
 public interface IIpcManager
 {
-    event EventHandler PenumbraStatusChanged;
+    /// <summary>
+    ///     Gets the glamourer api version.
+    /// </summary>
+    (int Breaking, int Features) GlamourerApiVersion { get; }
 
     /// <summary>
-    ///     Gets the penumbra api version.
+    ///     Gets a value indicating whether glamourer is enabled or not.
     /// </summary>
-    (int Breaking, int Features) PenumbraApiVersion { get; }
+    bool GlamourerEnabled { get; }
 
     /// <summary>
-    ///     Gets a value indicating whether penumbra is enabled or not.
+    ///     Sets an item on a character.
     /// </summary>
-    bool PenumbraEnabled { get; }
+    /// <param name="character">The <see cref="Character"/>.</param>
+    /// <param name="slot">The equipment slot.</param>
+    /// <param name="itemId">The id of the item.</param>
+    /// <param name="stainId">The id of the strain/color.</param>
+    /// <param name="key">Any Key.</param>
+    /// <returns>if is was successful.</returns>
+    int SetItem(Character? character, EquipSlot slot, ulong itemId, byte stainId, uint key);
 
     /// <summary>
-    ///     Resolves a game file path with penumbra.
+    ///     Update Active Plugin State.
     /// </summary>
-    /// <param name="path">THe path.</param>
-    /// <returns>returns the resolved path.</returns>
-    string ResolvePenumbraPath(string path);
+    void UpdateActivePluginState();
 }
