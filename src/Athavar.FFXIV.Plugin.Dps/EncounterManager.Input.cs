@@ -73,12 +73,13 @@ internal sealed partial class EncounterManager
                 if (statusEffect.Grain)
                 {
                     this.Log.Add($"{@event.Timestamp:O}|EffectGrain|{source?.Name}|{actor.Name}|{this.utils.StatusString(statusEffect.StatusId)}|");
-                    actor.StatusList.Add(statusEffect);
+                    var definition = this.definitions.GetStatusEffectById(statusEffect.StatusId);
+                    actor.StatusList.Add(new StatusEntry(statusEffect, definition));
                 }
                 else
                 {
                     this.Log.Add($"{@event.Timestamp:O}|EffectRemove|{source?.Name}|{actor.Name}|{this.utils.StatusString(statusEffect.StatusId)}|");
-                    actor.StatusList.RemoveAll(e => e.StatusId == statusEffect.StatusId && e.SourceId == statusEffect.SourceId);
+                    actor.StatusList.RemoveAll(e => e.Effect.StatusId == statusEffect.StatusId && e.Effect.SourceId == statusEffect.SourceId);
                 }
 
                 break;
@@ -118,7 +119,7 @@ internal sealed partial class EncounterManager
 
         if (effectEvent is CombatEvent.Heal heal)
         {
-            var gameObject = this.objectTable?.SearchById(heal.TargetId);
+            var gameObject = this.objectTable.SearchById(heal.TargetId);
             if (gameObject is BattleChara battleChara)
             {
                 var missingHp = battleChara.CurrentHp > battleChara.MaxHp ? 0U : battleChara.MaxHp - battleChara.CurrentHp;
@@ -137,10 +138,12 @@ internal sealed partial class EncounterManager
                 {
                     if (damageTakenEvent.IsSourceEntry)
                     {
-                        var effect = source.StatusList.LastOrDefault(x => this.damageReceivedProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
+                        var effect = source.StatusList.LastOrDefault(
+                            x => x.Definition?.ReactiveProc?.Type == ReactiveProc.ReactiveProcType.DamageOnDamageReceived
+                              && x.Effect.Timestamp.AddSeconds(x.Effect.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
-                            damageTakenEvent.ActionId = effect.StatusId;
+                            damageTakenEvent.ActionId = effect.Effect.StatusId;
                             isStatus = true;
                         }
                     }
@@ -155,7 +158,7 @@ internal sealed partial class EncounterManager
                 target?.AddActionTaken(@event.Timestamp, damageTakenEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp, true);
 
-                this.Log.Add($"{@event.Timestamp:O}|Damage{(damageTakenEvent.IsSourceTarget ? "(reflect/self)" : string.Empty)}|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{damageTakenEvent.Amount}");
+                this.Log.Add($"{@event.Timestamp:O}|Damage{(damageTakenEvent.IsSourceTarget ? "(reflect/self)" : string.Empty)}|{source.Name}|{target?.Name}|{(action is not null ? this.utils.ActionString(action.ActionId) : string.Empty)}|{damageTakenEvent.Amount}");
                 if (effectEvent.IsSourceTarget)
                 {
                     this.Log.Add($"{damageTakenEvent.EffectSourceId}!={effectEvent.SourceId} && {damageTakenEvent.EffectTargetId}!={effectEvent.TargetId}");
@@ -170,7 +173,7 @@ internal sealed partial class EncounterManager
                 if (dotEvent.StatusId == 0)
                 {
                     // event is not assigned to a specific source
-                    var targetObject = this.objectTable?.SearchById(dotEvent.TargetId);
+                    var targetObject = this.objectTable.SearchById(dotEvent.TargetId);
                     if (targetObject is BattleChara battleChara)
                     {
                         var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.DoT).ToList();
@@ -204,14 +207,14 @@ internal sealed partial class EncounterManager
                 if (!handled)
                 {
                     // fallback, that data is not dropped.
-                    if (target?.IsEnemy() != source?.IsEnemy())
+                    if (target?.IsEnemy() != source.IsEnemy())
                     {
                         // no friendly fire
-                        source?.AddActionDone(@event.Timestamp, dotEvent);
+                        source.AddActionDone(@event.Timestamp, dotEvent);
                     }
 
                     target?.AddActionTaken(@event.Timestamp, dotEvent);
-                    this.Log.Add($"{@event.Timestamp:O}|DoT|{source?.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
+                    this.Log.Add($"{@event.Timestamp:O}|DoT|{source.Name}|{target?.Name}|{this.utils.StatusString(dotEvent.StatusId)}|{dotEvent.Amount}");
                 }
 
                 this.UpdateLastEvent(encounter, @event.Timestamp);
@@ -224,7 +227,7 @@ internal sealed partial class EncounterManager
                 if (hotEvent.StatusId == 0)
                 {
                     // event is not assigned to a specific source
-                    var targetObject = this.objectTable?.SearchById(hotEvent.TargetId);
+                    var targetObject = this.objectTable.SearchById(hotEvent.TargetId);
                     if (targetObject is BattleChara battleChara)
                     {
                         var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.HoT).ToList();
@@ -278,10 +281,12 @@ internal sealed partial class EncounterManager
                     // check heal proc
                     if (healEvent.IsSourceEntry)
                     {
-                        var effect = source.StatusList.LastOrDefault(x => this.damageDealtHealProcs.Contains(x.StatusId) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
+                        var effect = source.StatusList.LastOrDefault(
+                            x => x.Definition?.ReactiveProc?.Type == ReactiveProc.ReactiveProcType.HealOnDamageDealt
+                              && x.Effect.Timestamp.AddSeconds(x.Effect.Duration + 1) > action.Timestamp);
                         if (effect is not null)
                         {
-                            healEvent.ActionId = effect.StatusId;
+                            healEvent.ActionId = effect.Effect.StatusId;
                             isStatus = true;
                         }
                     }
@@ -289,10 +294,12 @@ internal sealed partial class EncounterManager
                     {
                         if (indexOfHealEffects >= (action.Definition?.IsHeal == true ? 1 : 0))
                         {
-                            var effect = source.StatusList.LastOrDefault(x => (this.damageReceivedHealProcs.Contains(x.StatusId) || this.healCastHealProcs.Contains(x.StatusId)) && x.Timestamp.AddSeconds(x.Duration + 1) > action.Timestamp);
+                            var effect = source.StatusList.LastOrDefault(
+                                x => x.Definition?.ReactiveProc?.Type is ReactiveProc.ReactiveProcType.HealOnDamageReceived or ReactiveProc.ReactiveProcType.HealOnHealCast
+                                  && x.Effect.Timestamp.AddSeconds(x.Effect.Duration + 1) > action.Timestamp);
                             if (effect is not null)
                             {
-                                healEvent.ActionId = effect.StatusId;
+                                healEvent.ActionId = effect.Effect.StatusId;
                                 isStatus = true;
                             }
                         }
@@ -303,7 +310,7 @@ internal sealed partial class EncounterManager
                 target?.AddActionTaken(@event.Timestamp, healEvent, isStatus);
                 this.UpdateLastEvent(encounter, @event.Timestamp);
 
-                this.Log.Add($"{@event.Timestamp:O}|Heal|{source.Name}|{target?.Name}|{this.utils.ActionString(action.ActionId)}|{healEvent.Amount}");
+                this.Log.Add($"{@event.Timestamp:O}|Heal|{source.Name}|{target?.Name}|{(action is not null ? this.utils.ActionString(action.ActionId) : string.Empty)}|{healEvent.Amount}");
                 break;
             }
         }

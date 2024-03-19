@@ -123,70 +123,67 @@ internal sealed partial class SettingsTab : Tab
             }
         }
 
-        if (ImGui.CollapsingHeader(this.localizeManager.Localize("Modules")))
+        if (ImGui.BeginTable("##modules", 4))
         {
-            if (ImGui.BeginTable("##modules", 4))
+            ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Tab", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
+            ImGui.TableHeadersRow();
+
+            var index = 0;
+            foreach (var module in this.manager.GetModuleData())
             {
-                ImGui.TableSetupColumn("Enabled", ImGuiTableColumnFlags.WidthFixed);
-                ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed);
-                ImGui.TableSetupColumn("Tab", ImGuiTableColumnFlags.WidthFixed);
-                ImGui.TableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed);
-                ImGui.TableHeadersRow();
+                ImGui.TableNextRow();
+                ImGui.TableSetColumnIndex(0);
 
-                var index = 0;
-                foreach (var module in this.manager.GetModuleData())
+                // enabled row
+                var val = module.Enabled;
+                if (ImGui.Checkbox("###enabled" + index, ref val))
                 {
-                    ImGui.TableNextRow();
-                    ImGui.TableSetColumnIndex(0);
-
-                    // enabled row
-                    var val = module.Enabled;
-                    if (ImGui.Checkbox("###enabled" + index, ref val))
-                    {
-                        module.Enabled = val;
-                    }
-
-                    // name row
-                    ImGui.TableSetColumnIndex(1);
-                    ImGui.TextUnformatted(module.Name);
-
-                    // tab row
-                    ImGui.TableSetColumnIndex(2);
-                    if (module.HasTab)
-                    {
-                        val = module.TabEnabled;
-                        if (ImGui.Checkbox("###tab" + index, ref val))
-                        {
-                            module.TabEnabled = val;
-                        }
-                    }
-
-                    // status row
-                    ImGui.TableSetColumnIndex(3);
-                    if (module.Loaded)
-                    {
-                        ImGui.TextUnformatted("Active");
-                    }
-                    else if (module.Enabled)
-                    {
-                        ImGui.TextUnformatted("Loading");
-                    }
-                    else if (module.LoadingError is not null)
-                    {
-                        ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-                        ImGui.TextUnformatted("Error");
-                        ImGui.PopStyleColor();
-                    }
-                    else
-                    {
-                        ImGui.TextUnformatted("Disabled");
-                    }
-
-                    index++;
+                    module.Enabled = val;
                 }
 
-                ImGui.EndTable();
+                // name row
+                ImGui.TableSetColumnIndex(1);
+                ImGui.TextUnformatted(module.Name);
+
+                // tab row
+                ImGui.TableSetColumnIndex(2);
+                if (module.HasTab)
+                {
+                    val = module.TabEnabled;
+                    if (ImGui.Checkbox("###tab" + index, ref val))
+                    {
+                        module.TabEnabled = val;
+                    }
+                }
+
+                // status row
+                ImGui.TableSetColumnIndex(3);
+                if (module.Loaded)
+                {
+                    ImGui.TextUnformatted("Active");
+                }
+                else if (module.Enabled)
+                {
+                    ImGui.TextUnformatted("Loading");
+                }
+                else if (module.LoadingError is not null)
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
+                    ImGui.TextUnformatted("Error");
+                    ImGui.PopStyleColor();
+                }
+                else
+                {
+                    ImGui.TextUnformatted("Disabled");
+                }
+
+                index++;
             }
+
+            ImGui.EndTable();
         }
 
         if (change)

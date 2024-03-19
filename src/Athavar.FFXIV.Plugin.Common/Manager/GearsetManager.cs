@@ -44,7 +44,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
         if (clientState.IsLoggedIn)
         {
-            this.UpdateGearsets();
+            this.dalamudServices.Framework.RunOnFrameworkThread(this.UpdateGearsets);
         }
     }
 

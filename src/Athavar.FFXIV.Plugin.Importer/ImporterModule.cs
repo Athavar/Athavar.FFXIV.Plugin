@@ -10,17 +10,12 @@ using Athavar.FFXIV.Plugin.Config;
 using Microsoft.Extensions.DependencyInjection;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(ImporterConfiguration), HasTab = true)]
-public class ImporterModule : Module<ImporterTab, ImporterConfiguration>
+public class ImporterModule(ImporterConfiguration moduleConfig, IServiceProvider provider)
+    : Module<ImporterTab, ImporterConfiguration>(moduleConfig)
 {
     private const string ModuleName = "Importer";
 
-    private readonly IServiceProvider provider;
-
-    public ImporterModule(ImporterConfiguration moduleConfig, IServiceProvider provider)
-        : base(moduleConfig)
-        => this.provider = provider;
-
     public override string Name => ModuleName;
 
-    protected override ImporterTab InitTab() => ActivatorUtilities.CreateInstance<ImporterTab>(this.provider);
+    protected override ImporterTab InitTab() => ActivatorUtilities.CreateInstance<ImporterTab>(provider);
 }

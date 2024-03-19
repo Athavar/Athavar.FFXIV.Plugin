@@ -17,9 +17,9 @@ internal sealed unsafe class EquipmentScanner : IDisposable
     private InventoryContainer* equipmentContainer;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="EquipmentScanner" /> class.
+    ///     Initializes a new instance of the <see cref="EquipmentScanner"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     public EquipmentScanner(IDalamudServices dalamudServices)
     {
         this.dalamudServices = dalamudServices;
@@ -27,7 +27,7 @@ internal sealed unsafe class EquipmentScanner : IDisposable
         dalamudServices.ClientState.Login += this.ClientStateOnOnLogin;
         if (dalamudServices.ClientState.IsLoggedIn)
         {
-            this.Setup();
+            this.dalamudServices.Framework.RunOnFrameworkThread(this.Setup);
         }
     }
 
@@ -63,7 +63,7 @@ internal sealed unsafe class EquipmentScanner : IDisposable
         return items;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose() => this.dalamudServices.ClientState.Login -= this.ClientStateOnOnLogin;
 
     private void ClientStateOnOnLogin() => this.Setup();

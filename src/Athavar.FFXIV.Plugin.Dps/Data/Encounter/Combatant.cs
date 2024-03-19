@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 
 using System.Runtime.InteropServices;
@@ -9,7 +10,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 
 internal sealed class Combatant : BaseCombatant<Combatant>
 {
-    public readonly List<CombatEvent.StatusEffect> StatusList = new();
+    public readonly List<StatusEntry> StatusList = new();
 
     private readonly List<ActionSummary> actions = new();
 
