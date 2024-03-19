@@ -22,6 +22,10 @@ internal sealed partial class EncounterManager
         if (!inValid && ce.IsValid())
         {
             ce.End = ce.LastEvent;
+            foreach (var combatant in ce.Combatants)
+            {
+                combatant.StatusList.Clear();
+            }
         }
 
         this.CurrentEncounter = new Encounter();

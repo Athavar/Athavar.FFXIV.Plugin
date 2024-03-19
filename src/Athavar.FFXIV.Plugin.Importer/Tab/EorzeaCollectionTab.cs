@@ -40,9 +40,12 @@ internal sealed class EorzeaCollectionTab : Tab
     private readonly ExcelSheet<Stain> englishStainSheet;
     private readonly ExcelSheet<Stain>? stainSheet;
 
-    private string glamourUrl = string.Empty;
+    private bool loading;
 
-    private string glamorTitle = string.Empty;
+    private string glamourUrl = string.Empty;
+    private string lastLoadedGlamourId = string.Empty;
+
+    private string glamourTitle = string.Empty;
     private string glamourAuthor = string.Empty;
     private string[] glamourTags = Array.Empty<string>();
     private List<EquipmentSlotItem> currentEquipmentSlots = new();
@@ -71,7 +74,13 @@ internal sealed class EorzeaCollectionTab : Tab
     {
         if (ImGui.InputTextWithHint("##url", UrlHint, ref this.glamourUrl, 512, ImGuiInputTextFlags.EnterReturnsTrue))
         {
-            _ = Task.Run(this.ReadPage);
+            _ = Task.Run(this.LoadWebPageData);
+        }
+
+        if (this.loading)
+        {
+            ImGui.SameLine();
+            ImGuiEx.Icon(FontAwesomeIcon.Sync);
         }
 
         ImGui.Separator();
@@ -114,7 +123,7 @@ internal sealed class EorzeaCollectionTab : Tab
 
             ImGui.TextUnformatted("Name: ");
             ImGui.SameLine();
-            ImGui.TextUnformatted(this.glamorTitle);
+            ImGui.TextUnformatted(this.glamourTitle);
 
             ImGui.TextUnformatted("Author: ");
             ImGui.SameLine();
@@ -184,8 +193,14 @@ internal sealed class EorzeaCollectionTab : Tab
         }
     }
 
-    private async Task ReadPage()
+    private async Task LoadWebPageData()
     {
+        if (this.loading)
+        {
+            return;
+        }
+
+        this.loading = true;
         try
         {
             if (long.TryParse(this.glamourUrl, out var glamourId))
@@ -198,7 +213,8 @@ internal sealed class EorzeaCollectionTab : Tab
                 return;
             }
 
-            if (Uri.TryCreate(this.glamourUrl, UriKind.RelativeOrAbsolute, out var uri))
+            var m = Regex.Match(this.glamourUrl, "\\d+");
+            if (m.Success && m.Value != this.lastLoadedGlamourId && Uri.TryCreate(this.glamourUrl, UriKind.RelativeOrAbsolute, out var uri))
             {
                 var siteData = await this.dalamudServices.HttpClient.GetStringAsync(uri);
                 this.ipcManager.UpdateActivePluginState();
@@ -208,7 +224,7 @@ internal sealed class EorzeaCollectionTab : Tab
                 HtmlDocument document = new();
                 document.LoadHtml(siteData);
                 var titleNode = document.DocumentNode.SelectSingleNode("//b[contains(concat(' ', normalize-space(@class), ' '), 'b-title-text-bold')]");
-                this.glamorTitle = titleNode.InnerText;
+                this.glamourTitle = titleNode.InnerText;
                 var authorNode = document.DocumentNode.SelectSingleNode("//span[contains(concat(' ', normalize-space(@class), ' '), 'b-user-info-text-name')]");
                 this.glamourAuthor = authorNode.InnerText;
 
@@ -276,12 +292,17 @@ internal sealed class EorzeaCollectionTab : Tab
                     }
                 }
 
+                this.lastLoadedGlamourId = m.Value;
                 this.currentEquipmentSlots = equipmentSlots;
             }
         }
         catch (Exception ex)
         {
             this.dalamudServices.PluginLogger.Error(ex, "Error");
+        }
+        finally
+        {
+            this.loading = false;
         }
     }
 
@@ -296,7 +317,7 @@ internal sealed class EorzeaCollectionTab : Tab
     {
         var design = new Design
         {
-            Name = this.glamorTitle,
+            Name = this.glamourTitle,
             Tags = this.glamourTags,
         };
         foreach (var equipmentSlot in this.currentEquipmentSlots)

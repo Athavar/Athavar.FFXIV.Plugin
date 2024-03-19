@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Data;
 using Dalamud.Plugin;
 using FluentMigrator.Runner.Initialization;
 
-internal class ConnectionStringReader : IConnectionStringReader
+internal sealed class ConnectionStringReader : IConnectionStringReader
 {
     private readonly string connectionString;
 

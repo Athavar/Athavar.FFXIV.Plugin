@@ -8,11 +8,9 @@ namespace Athavar.FFXIV.Plugin.Data.Repositories;
 using System.Data;
 using Athavar.FFXIV.Plugin.Data.Dto;
 
-public abstract class BaseRepository
+public abstract class BaseRepository(IDbConnection connection)
 {
-    protected BaseRepository(IDbConnection connection) => this.Connection = connection;
-
-    protected IDbConnection Connection { get; }
+    protected IDbConnection Connection { get; } = connection;
 
     /// <summary>
     ///     Sets the creation and last-updated timestamps for the provided DTO.

@@ -32,11 +32,11 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DebugType>embedded</DebugType>
         <DocumentationFile>bin\Debug\Athavar.FFXIV.Plugin.xml</DocumentationFile>
+        <Optimize>true</Optimize>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="DalamudPackager" Version="2.1.12" GeneratePathProperty="false"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
     </ItemGroup>
 
     <ItemGroup>

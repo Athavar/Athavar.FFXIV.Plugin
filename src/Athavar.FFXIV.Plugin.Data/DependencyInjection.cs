@@ -8,7 +8,6 @@ namespace Athavar.FFXIV.Plugin.Data;
 using FluentMigrator.Runner;
 using FluentMigrator.Runner.Initialization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class DependencyInjection
 {
@@ -17,10 +16,13 @@ public static class DependencyInjection
         services
            .AddSingleton<RepositoryContext>()
            .AddFluentMigratorCore()
-           .ConfigureRunner(rb => rb
-               .AddSQLite()
-               .ScanIn(typeof(RepositoryContext).Assembly).For.Migrations());
+           .ConfigureRunner(
+                rb => rb
+                   .AddSQLite()
+                   .WithGlobalConnectionString(sp => sp.GetRequiredService<IConnectionStringReader>().GetConnectionString(string.Empty))
+                   .ScanIn(typeof(RepositoryContext).Assembly).For.Migrations());
 
-        return services.RemoveAll(typeof(IConnectionStringReader)).AddSingleton<IConnectionStringReader, ConnectionStringReader>();
+        services.AddSingleton<IConnectionStringReader, ConnectionStringReader>();
+        return services;
     }
 }
