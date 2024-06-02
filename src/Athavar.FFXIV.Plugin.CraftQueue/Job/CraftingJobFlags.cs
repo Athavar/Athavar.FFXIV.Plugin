@@ -17,4 +17,9 @@ public enum CraftingJobFlags
     ///     Force usage of potion.
     /// </summary>
     ForcePotion = 1 << 1,
+
+    /// <summary>
+    ///     Force usage of potion.
+    /// </summary>
+    TrialSynthesis = 1 << 2,
 }

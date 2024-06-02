@@ -19,6 +19,7 @@ using Dalamud.Game.ClientState.Conditions;
 internal abstract class BaseCraftingJob
 {
     protected readonly CraftQueue queue;
+    protected int currentRotationStep;
     private readonly Func<int>[] stepArray;
     private readonly int stepCraftStartIndex;
 
@@ -27,10 +28,8 @@ internal abstract class BaseCraftingJob
     private readonly IRotationResolver rotationResolver;
 
     private readonly CraftingJobFlags flags;
-    private readonly bool trial;
 
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
-    protected int currentRotationStep;
 
     private int waitMs;
 
@@ -99,13 +98,13 @@ internal abstract class BaseCraftingJob
 
     internal TimeSpan LoopDuration => this.CurrentLoop == 0 ? this.Duration : this.lastLoopDuration / this.CurrentLoop;
 
+    internal int RotationCurrentStep => this.currentRotationStep;
+
     internal uint CurrentLoop { get; private set; }
 
     internal int CurrentStep { get; private set; }
 
     internal JobStatus Status { get; private set; }
-
-    internal int RotationCurrentStep => this.currentRotationStep;
 
     private Stopwatch Stopwatch { get; } = new();
 
@@ -465,12 +464,28 @@ internal abstract class BaseCraftingJob
 
     private int StartCraft()
     {
-        if (!this.queue.CommandInterface.IsAddonVisible(Constants.Addons.RecipeNote))
+        var ci = this.queue.CommandInterface;
+        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
         {
             return -100;
         }
 
-        this.queue.Click.TrySendClick(this.trial ? "trial_synthesis" : "synthesize");
+        var ptr = this.queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
+        if (ptr == nint.Zero)
+        {
+            return -100;
+        }
+
+        var click = ClickRecipeNote.Using(ptr);
+
+        if (this.flags.HasFlag(CraftingJobFlags.TrialSynthesis))
+        {
+            click.TrialSynthesis();
+        }
+        else
+        {
+            click.Synthesize();
+        }
 
         return 0;
     }

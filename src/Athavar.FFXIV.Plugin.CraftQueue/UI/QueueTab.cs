@@ -450,8 +450,11 @@ internal sealed class QueueTab : Tab
 
         ImGui.SameLine();
 
-        var valid = this.UpdateQueueChecklist(out var drawChecklistAction);
+        var checkResult = this.UpdateQueueChecklist(out var drawChecklistAction);
+        var io = ImGui.GetIO();
+        var ctrlHeld = io.KeyCtrl;
 
+        var valid = checkResult.ValidCraftRequirements && (checkResult.HasIngredients || ctrlHeld);
         if (!valid)
         {
             ImGui.BeginDisabled();
@@ -459,12 +462,30 @@ internal sealed class QueueTab : Tab
 
         if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedGearset is not null && this.selectedRotation is not null)
         {
-            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedGearset, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, this.flags);
+            var flags = this.flags;
+            if (ctrlHeld || !valid)
+            {
+                flags |= CraftingJobFlags.TrialSynthesis;
+            }
+
+            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedGearset, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, flags);
+        }
+
+        if (checkResult.ValidCraftRequirements)
+        {
+            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
+            {
+                ImGuiEx.TextTooltip("hold control to queue it as trail synthesis");
+            }
         }
 
         if (!valid)
         {
             ImGui.EndDisabled();
+        }
+
+        if (!checkResult.ValidCraftRequirements || !checkResult.HasIngredients)
+        {
             if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
             {
                 ImGui.BeginTooltip();
@@ -948,7 +969,6 @@ internal sealed class QueueTab : Tab
             this.craftingSimulation = null;
         }
 
-
         if (this.selectedRecipe is null)
         {
             Reset();
@@ -1032,12 +1052,12 @@ internal sealed class QueueTab : Tab
         }
     }
 
-    private bool UpdateQueueChecklist([NotNullWhen(false)] out Action? action)
+    private (bool ValidCraftRequirements, bool HasIngredients) UpdateQueueChecklist([NotNullWhen(false)] out Action? action)
     {
         if (this.selectedRecipe is null || this.selectedGearset is null)
         {
             action = () => { };
-            return false;
+            return (false, false);
         }
 
         var ci = this.craftQueue.CommandInterface;
@@ -1048,7 +1068,11 @@ internal sealed class QueueTab : Tab
         var haveReqItem = this.selectedRecipe.ItemReq is null || this.selectedGearset.ItemIds.Contains(this.selectedRecipe.ItemReq.GetValueOrDefault());
         var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.ItemId, this.selectedFood.IsHq) > 0;
         var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.ItemId, this.selectedPotion.IsHq) > 0;
-        var valid = recipeSelected & rotationSelected & haveGearset & this.haveAllIngredient & haveFood & havePotion;
+
+        var validCraft = recipeSelected & rotationSelected & haveGearset;
+        var validIngredients = this.haveAllIngredient & haveFood & havePotion;
+
+        var valid = validCraft & validIngredients;
 
         if (!valid)
         {
@@ -1078,7 +1102,7 @@ internal sealed class QueueTab : Tab
             action = null;
         }
 
-        return valid;
+        return (validCraft, validIngredients);
     }
 
     private void UpdateCurrentIngredients()
