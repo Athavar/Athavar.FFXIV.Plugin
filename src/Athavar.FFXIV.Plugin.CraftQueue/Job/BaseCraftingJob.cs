@@ -1,73 +1,62 @@
-// <copyright file="CraftingJob.cs" company="Athavar">
+// <copyright file="BaseCraftingJob.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace Athavar.FFXIV.Plugin.CraftQueue;
+namespace Athavar.FFXIV.Plugin.CraftQueue.Job;
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
-using Athavar.FFXIV.Plugin.CraftSimulator;
+using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
-using Lumina.Excel.GeneratedSheets;
 
-internal sealed class CraftingJob
+internal abstract class BaseCraftingJob
 {
-    private readonly string localizedExcellent;
+    protected readonly CraftQueue queue;
     private readonly Func<int>[] stepArray;
     private readonly int stepCraftStartIndex;
 
-    private readonly CraftQueue queue;
-    private readonly Simulation simulation;
-
     private readonly Gearset gearset;
-    private readonly CraftingSkills[] rotation;
 
-    private readonly int hqPercent;
+    private readonly IRotationResolver rotationResolver;
+
     private readonly CraftingJobFlags flags;
     private readonly bool trial;
-    private TimeSpan lastLoopDuration = TimeSpan.Zero;
 
-    private SimulationResult simulationResult;
+    private TimeSpan lastLoopDuration = TimeSpan.Zero;
+    protected int currentRotationStep;
 
     private int waitMs;
 
-    public CraftingJob(CraftQueue queue, RecipeExtended recipe, RotationNode node, Gearset gearset, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public BaseCraftingJob(CraftQueue queue, RecipeExtended recipe, IRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         this.queue = queue;
         this.Recipe = recipe;
         this.Loops = count;
         this.gearset = gearset;
 
-        this.Food = food;
-        this.Potion = potion;
+        this.BuffConfig = buffConfig;
         this.flags = flags;
 
-        this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
+        this.rotationResolver = rotationResolver;
 
-        this.RotationName = node.Name;
-        this.rotation = CraftingSkill.Parse(node.Rotations).ToArray();
+        if (rotationResolver.ResolverType == ResolverType.Dynamic)
+        {
+            // resolver is dynamic. enforce buffs
+            this.flags |= CraftingJobFlags.ForceFood | CraftingJobFlags.ForcePotion;
+        }
 
         // clone hqIngredients
         this.HqIngredients = hqIngredients.Select(i => (i.ItemId, i.Amount)).ToArray();
 
-        this.simulation = new Simulation(gearset.ToCrafterStats(), this.Recipe)
-        {
-            CurrentStatModifiers = new[] { food?.Stats, potion?.Stats },
-        };
-        this.simulation.SetHqIngredients(hqIngredients);
-        this.RunSimulation();
-        this.hqPercent = this.simulationResult.HqPercent;
-
-        this.stepArray = new[]
-        {
+        this.stepArray =
+        [
             this.EnsureInventorySpace,
             this.SwitchToGearset,
             this.EnsureRepair,
@@ -78,13 +67,13 @@ internal sealed class CraftingJob
             this.StartCraft,
             this.WaitSynthesis,
             this.DoRotationAction,
-        };
+        ];
 
         this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.StartCraft);
     }
 
     [Flags]
-    private enum BuffApplyTest
+    protected enum BuffApplyTest
     {
         None = 0,
         Food = 1,
@@ -92,11 +81,9 @@ internal sealed class CraftingJob
         Both = Food | Potion,
     }
 
-    public BuffInfo? Food { get; }
+    public BuffConfig BuffConfig { get; }
 
-    public BuffInfo? Potion { get; }
-
-    public string RotationName { get; }
+    public string RotationName => this.rotationResolver.Name;
 
     internal uint Loops { get; }
 
@@ -106,7 +93,7 @@ internal sealed class CraftingJob
 
     internal (uint ItemId, byte Amount)[] HqIngredients { get; }
 
-    internal int RotationMaxSteps => this.rotation.Length;
+    internal int RotationMaxSteps => this.rotationResolver.Length;
 
     internal TimeSpan Duration => this.DurationWatch.Elapsed;
 
@@ -116,15 +103,13 @@ internal sealed class CraftingJob
 
     internal int CurrentStep { get; private set; }
 
-    internal int RotationCurrentStep { get; private set; }
-
     internal JobStatus Status { get; private set; }
+
+    internal int RotationCurrentStep => this.currentRotationStep;
 
     private Stopwatch Stopwatch { get; } = new();
 
     private Stopwatch DurationWatch { get; } = new();
-
-    private IList<ActionResult> Steps => this.simulationResult.Steps;
 
     private bool IsKneeling => this.queue.DalamudServices.Condition[ConditionFlag.PreparingToCraft];
 
@@ -189,8 +174,17 @@ internal sealed class CraftingJob
         return false;
     }
 
-    [MemberNotNull(nameof(simulationResult))]
-    private void RunSimulation() => this.simulationResult = this.simulation.Run(this.rotation, true);
+    protected virtual void OnCheckCurrentEquipment(Gearset currentEquipped)
+    {
+    }
+
+    protected virtual BuffApplyTest? CalcMissingBuffs(StatModifiers?[] currentStatModifier) => BuffApplyTest.None;
+
+    protected virtual int? MutateRotation() => null;
+
+    protected virtual void ActionUseFailed(CraftingSkill skill)
+    {
+    }
 
     private void InternalTick()
     {
@@ -224,7 +218,7 @@ internal sealed class CraftingJob
         this.queue.DalamudServices.PluginLogger.Information(" selected:{0} current:{1}", this.gearset.Id, current.Id);
         if (this.gearset.Id == current.Id)
         {
-            this.simulation.CrafterStats = current.ToCrafterStats();
+            this.OnCheckCurrentEquipment(current);
             return 0;
         }
 
@@ -366,7 +360,7 @@ internal sealed class CraftingJob
             return -1000;
         }
 
-        var buffApplyStats = this.TestStatModifier();
+        var buffApplyStats = this.GetMissingBuffs();
 
         if (buffApplyStats is null)
         {
@@ -389,29 +383,29 @@ internal sealed class CraftingJob
             }
         }
 
-        if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
+        if (this.BuffConfig.Food is { } food && (buffApplyStats & BuffApplyTest.Food) != 0)
         {
-            var itemId = this.Food.ItemId;
-            var count = ci.CountItem(itemId, this.Food.IsHq);
+            var itemId = food.ItemId;
+            var count = ci.CountItem(itemId, food.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing food in inventory.");
             }
 
-            ci.UseItem(itemId, this.Food.IsHq);
+            ci.UseItem(itemId, food.IsHq);
             return -1000;
         }
 
-        if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
+        if (this.BuffConfig.Potion is { } potion && (buffApplyStats & BuffApplyTest.Potion) != 0)
         {
-            var itemId = this.Potion.ItemId;
-            var count = ci.CountItem(itemId, this.Potion.IsHq);
+            var itemId = potion.ItemId;
+            var count = ci.CountItem(itemId, potion.IsHq);
             if (count == 0)
             {
                 throw new CraftingJobException("Missing potion in inventory.");
             }
 
-            ci.UseItem(itemId, this.Potion.IsHq);
+            ci.UseItem(itemId, potion.IsHq);
             return -1000;
         }
 
@@ -488,7 +482,7 @@ internal sealed class CraftingJob
             return -100;
         }
 
-        var buffApplyStats = this.TestStatModifier();
+        var buffApplyStats = this.GetMissingBuffs();
 
         if (buffApplyStats is null || buffApplyStats != BuffApplyTest.None)
         {
@@ -511,7 +505,7 @@ internal sealed class CraftingJob
 
         var ci = this.queue.CommandInterface;
 
-        if (this.RotationCurrentStep >= this.rotation.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
+        if (this.RotationCurrentStep >= this.rotationResolver.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
         {
             if (ci.IsAddonVisible(Constants.Addons.Synthesis))
             {
@@ -521,7 +515,7 @@ internal sealed class CraftingJob
 
             // finish craft of item
             ++this.CurrentLoop;
-            this.RotationCurrentStep = 0;
+            this.currentRotationStep = 0;
             this.CurrentStep = 0;
             this.lastLoopDuration = this.DurationWatch.Elapsed;
         }
@@ -533,15 +527,22 @@ internal sealed class CraftingJob
 
         var c = this.queue.Configuration;
 
-        var action = this.Steps[this.RotationCurrentStep];
+        var nextAction = this.rotationResolver.GetNextAction(this.RotationCurrentStep);
+        if (nextAction is null)
+        {
+            // wait
+            return -10;
+        }
+
+        var skill = CraftingSkill.FindAction(nextAction.Value);
 
         // maxQuality check
         try
         {
-            if (c.QualitySkip && action.Skill.Action.ActionType is ActionType.Quality
+            if (c.QualitySkip && skill.Action.ActionType is ActionType.Quality
                               && ci.HasMaxQuality())
             {
-                ++this.RotationCurrentStep;
+                ++this.currentRotationStep;
                 return -1;
             }
         }
@@ -551,50 +552,21 @@ internal sealed class CraftingJob
             return -100;
         }
 
-        // Byregots fail save
-        if (!this.Recipe.Expert && this.RotationCurrentStep + 1 < this.rotation.Length &&
-            this.rotation[this.RotationCurrentStep + 1] == CraftingSkills.ByregotsBlessing &&
-            ci.HasCondition(this.localizedExcellent))
+        var mutate = this.MutateRotation();
+        if (mutate is { } wait)
         {
-            var failSaveAction = CraftingSkills.TricksOfTheTrade;
-
-            var testStepStates = new StepState?[this.rotation.Length];
-            testStepStates[this.RotationCurrentStep] = StepState.EXCELLENT;
-            testStepStates[this.RotationCurrentStep + 1] = StepState.POOR;
-
-            IEnumerable<CraftingSkills> GetTestRotation()
-            {
-                for (var i = 0; i < this.rotation.Length; i++)
-                {
-                    if (i == this.RotationCurrentStep)
-                    {
-                        yield return failSaveAction;
-                    }
-
-                    yield return this.rotation[i];
-                }
-            }
-
-            var result = this.simulation.Run(GetTestRotation(), stepStates: testStepStates);
-            if (result.Success && ci.UseAction(CraftingSkill.FindAction(failSaveAction).Action.GetId(this.Recipe.Class)))
-            {
-                return -1000;
-            }
+            return wait;
         }
 
-        var simAction = action.Skill.Action;
+        var simAction = skill.Action;
 
         if (!ci.UseAction(simAction.GetId(this.Recipe.Class)))
         {
-            if (action.FailCause == SimulationFailCause.NOT_ENOUGH_CP || (action.Success != true && simAction.SkipOnFail()))
-            {
-                ++this.RotationCurrentStep;
-            }
-
+            this.ActionUseFailed(skill);
             return -10;
         }
 
-        ++this.RotationCurrentStep;
+        ++this.currentRotationStep;
 
         if (c.CraftWaitSkip)
         {
@@ -632,62 +604,23 @@ internal sealed class CraftingJob
         return null;
     }
 
-    private BuffApplyTest? TestStatModifier()
+    private BuffApplyTest? GetMissingBuffs()
     {
         var currentStatModifier = this.CurrentStatModifier();
 
         // check forced food apply
-        if (this.Food is not null && this.flags.HasFlagFast(CraftingJobFlags.ForceFood) && currentStatModifier[0] == null)
+        if (this.BuffConfig.Food is not null && this.flags.HasFlagFast(CraftingJobFlags.ForceFood) && currentStatModifier[0] == null)
         {
             return BuffApplyTest.Food;
         }
 
         // check forced potion apply
-        if (this.Potion is not null && this.flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
+        if (this.BuffConfig.Potion is not null && this.flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
         {
             return BuffApplyTest.Food;
         }
 
-        this.simulation.CurrentStatModifiers = (StatModifiers?[])currentStatModifier.Clone();
-
-        var buffApplyStats = BuffApplyTest.None;
-        for (var i = 0; i < 4; i++)
-        {
-            buffApplyStats = (BuffApplyTest)i;
-            if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
-            {
-                this.simulation.CurrentStatModifiers[0] = this.Food.Stats;
-            }
-
-            if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
-            {
-                this.simulation.CurrentStatModifiers[1] = this.Potion.Stats;
-            }
-
-            this.RunSimulation();
-
-            if (this.Food is not null && (buffApplyStats & BuffApplyTest.Food) != 0)
-            {
-                this.simulation.CurrentStatModifiers[0] = currentStatModifier[0];
-            }
-
-            if (this.Potion is not null && (buffApplyStats & BuffApplyTest.Potion) != 0)
-            {
-                this.simulation.CurrentStatModifiers[1] = currentStatModifier[1];
-            }
-
-            if (this.simulationResult.Success && this.simulationResult.HqPercent >= this.hqPercent)
-            {
-                break;
-            }
-
-            if (buffApplyStats == BuffApplyTest.Both)
-            {
-                return null;
-            }
-        }
-
-        return buffApplyStats;
+        return this.CalcMissingBuffs(currentStatModifier);
     }
 
     private StatModifiers?[] CurrentStatModifier()

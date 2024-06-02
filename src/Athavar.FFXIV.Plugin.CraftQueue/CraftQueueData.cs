@@ -6,7 +6,6 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
-using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel.GeneratedSheets;
@@ -14,7 +13,7 @@ using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
 
 internal sealed class CraftQueueData
 {
-    private readonly List<(Recipe Recipe, Job Job)> recipes = new();
+    private readonly List<(Recipe Recipe, Models.Job Job)> recipes = new();
     private readonly List<BuffInfo> foods = new();
     private readonly List<BuffInfo> potions = new();
 
@@ -113,7 +112,7 @@ internal sealed class CraftQueueData
         this.potions.Sort(SortFunction);
     }
 
-    public IReadOnlyList<(Recipe Recipe, Job Job)> Recipes => this.recipes;
+    public IReadOnlyList<(Recipe Recipe, Models.Job Job)> Recipes => this.recipes;
 
     public IReadOnlyList<BuffInfo> Foods => this.foods;
 

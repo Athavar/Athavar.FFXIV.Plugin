@@ -1,4 +1,4 @@
-namespace Athavar.FFXIV.Plugin.CraftQueue;
+namespace Athavar.FFXIV.Plugin.CraftQueue.Job;
 
 [Flags]
 public enum CraftingJobFlags

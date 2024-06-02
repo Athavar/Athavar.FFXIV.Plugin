@@ -13,6 +13,7 @@ using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftQueue.Extension;
+using Athavar.FFXIV.Plugin.CraftQueue.Job;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
@@ -813,7 +814,7 @@ internal sealed class QueueTab : Tab
             ImGui.TableHeadersRow();
         }
 
-        void DrawJobRow(CraftingJob drawnJob, string? id, string tooltip, Action? cancel)
+        void DrawJobRow(BaseCraftingJob drawnJob, string? id, string tooltip, Action? cancel)
         {
             if (drawnJob.Status == JobStatus.Failure)
             {
@@ -849,14 +850,14 @@ internal sealed class QueueTab : Tab
                 {
                     ImGui.BeginTooltip();
                     ImGui.TextUnformatted("Rotation: " + drawnJob.RotationName);
-                    if (drawnJob.Food != null)
+                    if (drawnJob.BuffConfig.Food is { } food)
                     {
-                        ImGui.TextUnformatted(this.foodLabel + ": " + drawnJob.Food!.Name + (drawnJob.Food!.IsHq ? " \ue03c" : string.Empty));
+                        ImGui.TextUnformatted(this.foodLabel + ": " + food.Name + (food.IsHq ? " \ue03c" : string.Empty));
                     }
 
-                    if (drawnJob.Potion != null)
+                    if (drawnJob.BuffConfig.Potion is { } potion)
                     {
-                        ImGui.TextUnformatted(this.potionLabel + ": " + drawnJob.Potion!.Name + (drawnJob.Potion!.IsHq ? " \ue03c" : string.Empty));
+                        ImGui.TextUnformatted(this.potionLabel + ": " + potion.Name + (potion.IsHq ? " \ue03c" : string.Empty));
                     }
 
                     ImGui.EndTooltip();

@@ -7,6 +7,8 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.CraftQueue.Job;
+using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
@@ -15,8 +17,8 @@ using Dalamud.Plugin.Services;
 
 internal sealed partial class CraftQueue : IDisposable
 {
-    private readonly List<CraftingJob> queuedJobs = new();
-    private readonly List<CraftingJob> completedJobs = new();
+    private readonly List<BaseCraftingJob> queuedJobs = new();
+    private readonly List<BaseCraftingJob> completedJobs = new();
 
     private readonly IFrameworkManager frameworkManager;
 
@@ -48,17 +50,17 @@ internal sealed partial class CraftQueue : IDisposable
 
     public CraftQueueData Data { get; }
 
-    internal IReadOnlyList<CraftingJob> Jobs => this.queuedJobs;
+    internal IReadOnlyList<BaseCraftingJob> Jobs => this.queuedJobs;
 
-    internal IReadOnlyList<CraftingJob> JobsCompleted => this.completedJobs;
+    internal IReadOnlyList<BaseCraftingJob> JobsCompleted => this.completedJobs;
 
-    internal CraftingJob? CurrentJob { get; private set; }
+    internal BaseCraftingJob? CurrentJob { get; private set; }
 
     internal QueueState Paused { get; private set; } = QueueState.Paused;
 
     public bool CreateJob(RecipeExtended recipe, Gearset gearset, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
-        this.queuedJobs.Add(new CraftingJob(this, recipe, rotationNode, gearset, count, food, potion, hqIngredients, flags));
+        this.queuedJobs.Add(new StaticCraftingJob(this, recipe, new RotationNodeResolver(rotationNode), gearset, count, new(food, potion), hqIngredients, flags));
         return true;
     }
 
@@ -100,7 +102,7 @@ internal sealed partial class CraftQueue : IDisposable
 
         return num;
 
-        uint AmountInJob(CraftingJob job)
+        uint AmountInJob(BaseCraftingJob job)
         {
             var found = job.Recipe.Ingredients.FirstOrDefault(i => i.Id == itemId);
             if (found is null)
