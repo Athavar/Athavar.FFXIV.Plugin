@@ -1,6 +1,6 @@
 // <copyright file="Simulation.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.CraftSimulator;
@@ -60,8 +60,8 @@ public sealed partial class Simulation
         {
             simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
         }
-        else if ((this.Recipe.CraftsmanshipReq is not null && currentStats.Craftsmanship < this.Recipe.CraftsmanshipReq) ||
-                 (this.Recipe.ControlReq is not null && currentStats.Control < this.Recipe.ControlReq))
+        else if (this.Recipe.CraftsmanshipReq is not null && currentStats.Craftsmanship < this.Recipe.CraftsmanshipReq ||
+                 this.Recipe.ControlReq is not null && currentStats.Control < this.Recipe.ControlReq)
         {
             simulationFailCause = SimulationFailCause.MISSING_STATS_REQUIREMENT;
         }
@@ -123,7 +123,7 @@ public sealed partial class Simulation
         simulationFailCause ??= this.Steps.FirstOrDefault(step => step.FailCause != null)?.FailCause ?? null;
 
         var res = new SimulationResult(
-            new List<ActionResult>(this.Steps),
+            [..this.Steps],
             this.GetHqPercent(),
             this)
         {
@@ -235,7 +235,7 @@ public sealed partial class Simulation
             results[i] = this.Run(rotation);
         }
 
-        var successPercent = (results.Count(res => res.Success) / results.Length) * 100;
+        var successPercent = results.Count(res => res.Success) / results.Length * 100;
         var hqPercent = results.Sum(sr => sr.HqPercent) / results.Length;
         var hqMedian = 0;
         Array.Sort(results, (a, b) => a.HqPercent - b.HqPercent);
@@ -365,7 +365,7 @@ public sealed partial class Simulation
 
         if (this.SafeMode &&
             (action.GetSuccessRate(this) < 100 ||
-             (action.IsRequiresGood && !this.HasBuff(Buffs.HEART_AND_SOUL))))
+             action.IsRequiresGood && !this.HasBuff(Buffs.HEART_AND_SOUL)))
         {
             failCause = SimulationFailCause.UNSAFE_ACTION;
             this.Safe = false;

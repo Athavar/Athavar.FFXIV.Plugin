@@ -1,6 +1,6 @@
 // <copyright file="QueueTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
@@ -46,7 +46,7 @@ internal sealed class QueueTab : Tab
     private readonly string gearsetLabel;
     private readonly string potionLabel;
     private readonly string foodLabel;
-    private readonly List<(int Index, Recipe Recipe, Job Job)> filteredRecipes = new();
+    private readonly List<(int Index, Recipe Recipe, Job Job)> filteredRecipes = [];
 
     private Gearset[]? validGearsets;
 
@@ -71,8 +71,8 @@ internal sealed class QueueTab : Tab
     private RotationNode? selectedRotation;
     private BuffInfo? selectedFood;
     private BuffInfo? selectedPotion;
-    private (uint ItemId, byte Amount)[] hqIngredients = Array.Empty<(uint ItemId, byte Amount)>();
-    private CurrentIngredient[] currentIngredients = Array.Empty<CurrentIngredient>();
+    private (uint ItemId, byte Amount)[] hqIngredients = [];
+    private CurrentIngredient[] currentIngredients = [];
     private bool haveAllIngredient;
 
     private Simulation? craftingSimulation;
@@ -1109,7 +1109,7 @@ internal sealed class QueueTab : Tab
     {
         if (this.selectedRecipe is null)
         {
-            this.currentIngredients = Array.Empty<CurrentIngredient>();
+            this.currentIngredients = [];
             return;
         }
 
@@ -1205,7 +1205,7 @@ internal sealed class QueueTab : Tab
             return;
         }
 
-        List<(RotationNode Node, SimulationResult Result)> success = new();
+        List<(RotationNode Node, SimulationResult Result)> success = [];
         foreach (var rotationNode in this.rotations)
         {
             var result = this.craftingSimulation.Run(rotationNode.Rotations, true);

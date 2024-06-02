@@ -1,10 +1,9 @@
 ﻿// <copyright file="TalkEntryNode.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 // ReSharper disable once CheckNamespace
-
 namespace Athavar.FFXIV.Plugin;
 
 using System.Diagnostics.CodeAnalysis;
@@ -73,16 +72,17 @@ public sealed class TalkEntryNode : Node
     [MemberNotNull(nameof(TargetRegex))]
     private void UpdateTargetRegex()
         => this.TargetRegex = this.TargetIsRegex
-            ? new Lazy<IRegex?>(() =>
-            {
-                try
+            ? new Lazy<IRegex?>(
+                () =>
                 {
-                    return new RegexWrapper(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                }
-                catch
-                {
-                    return null;
-                }
-            })
+                    try
+                    {
+                        return new RegexWrapper(this.TargetText.Trim('/'), RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                })
             : new Lazy<IRegex?>();
 }

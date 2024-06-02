@@ -1,6 +1,6 @@
 // <copyright file="MacroConfigTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro;
@@ -290,7 +290,7 @@ internal sealed class MacroConfigTab : Tab
         ImGui.PushItemWidth(-1);
 
         var style = ImGui.GetStyle();
-        var runningHeight = (ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3) + (style.FramePadding.Y * 2) + (style.ItemSpacing.Y * 2);
+        var runningHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 2;
         if (ImGui.BeginListBox("##running-macros", new Vector2(-1, runningHeight)))
         {
             var macroStatus = this.macroManager.MacroStatus;
@@ -309,7 +309,7 @@ internal sealed class MacroConfigTab : Tab
             ImGui.EndListBox();
         }
 
-        var contentHeight = (ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 5) + (style.FramePadding.Y * 2) + (style.ItemSpacing.Y * 4);
+        var contentHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 5 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 4;
         var macroContent = this.macroManager.CurrentMacroContent();
         if (ImGui.BeginListBox("##current-macro", new Vector2(-1, contentHeight)))
         {
@@ -423,7 +423,7 @@ internal sealed class MacroConfigTab : Tab
                 sb.AppendLine("When enabled, your macro is modified as follows:");
                 sb.AppendLine(
                     ActiveMacro.ModifyMacroForCraftLoop("[YourMacro]", true, node.CraftLoopCount)
-                       .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
+                       .Split(["\r\n", "\r", "\n"], StringSplitOptions.None)
                        .Select(line => $"- {line}")
                        .Aggregate(string.Empty, (s1, s2) => $"{s1}\n{s2}"));
             }

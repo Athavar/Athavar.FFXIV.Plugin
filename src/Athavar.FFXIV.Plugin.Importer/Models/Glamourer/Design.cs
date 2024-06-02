@@ -1,6 +1,6 @@
 // <copyright file="Design.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Importer.Models.Glamourer;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-internal class Design
+internal sealed class Design
 {
     [JsonPropertyName("FileVersion")]
     public int FileVersion { get; set; } = 1;
@@ -38,7 +38,7 @@ internal class Design
     public bool QuickDesign { get; set; } = true;
 
     [JsonPropertyName("Tags")]
-    public string[] Tags { get; set; } = Array.Empty<string>();
+    public string[] Tags { get; set; } = [];
 
     [JsonPropertyName("WriteProtected")]
     public bool WriteProtected { get; set; } = false;
@@ -56,7 +56,7 @@ internal class Design
     public UnImplemented Materials { get; set; } = new();
 
     [JsonPropertyName("Mods")]
-    public Collection<Mod> Mods { get; set; } = new();
+    public Collection<Mod> Mods { get; set; } = [];
 
     [JsonPropertyName("Links")]
     public Links Links { get; set; } = new();

@@ -1,6 +1,6 @@
 // <copyright file="Recipe.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -61,7 +61,7 @@ public class Recipe
         init => this.qualityReq = value == 0 ? null : value;
     }
 
-    public StepState[] PossibleConditions { get; init; } = { StepState.NORMAL, StepState.GOOD, StepState.EXCELLENT, StepState.POOR };
+    public StepState[] PossibleConditions { get; init; } = [StepState.NORMAL, StepState.GOOD, StepState.EXCELLENT, StepState.POOR];
 
     public required byte ProgressDivider { get; init; }
 

@@ -1,6 +1,6 @@
 ﻿// <copyright file="YesConfigTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Yes;
@@ -29,20 +29,20 @@ internal sealed class YesConfigTab : Tab
     private readonly Vector4 shadedColor = new(0.68f, 0.68f, 0.68f, 1.0f);
 
     private readonly string[] hotkeyChoices =
-    {
+    [
         "None",
         "Control",
         "Alt",
         "Shift",
-    };
+    ];
 
     private readonly VirtualKey[] hotkeyValues =
-    {
+    [
         VirtualKey.NO_KEY,
         VirtualKey.CONTROL,
         VirtualKey.MENU,
         VirtualKey.SHIFT,
-    };
+    ];
 
     private readonly YesModule module;
     private Node? draggedNode;
@@ -739,7 +739,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayTextEntryNode(TextEntryNode node)
     {
-        var validRegex = node is { IsTextRegex                       : true, TextRegex: not null } || !node.IsTextRegex;
+        var validRegex = node is { IsTextRegex: true, TextRegex: not null } || !node.IsTextRegex;
         var validZone = !node.ZoneRestricted || node is { ZoneIsRegex: true, ZoneRegex: not null } || !node.ZoneIsRegex;
 
         if (!node.Enabled && (!validRegex || !validZone))
@@ -809,7 +809,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayListEntryNode(ListEntryNode node)
     {
-        var validRegex = node is { IsTextRegex                             : true, TextRegex  : not null } || !node.IsTextRegex;
+        var validRegex = node is { IsTextRegex: true, TextRegex: not null } || !node.IsTextRegex;
         var validTarget = !node.TargetRestricted || node is { TargetIsRegex: true, TargetRegex: not null } || !node.TargetIsRegex;
 
         if (!node.Enabled && (!validRegex || !validTarget))
@@ -879,7 +879,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayTalkEntryNode(TalkEntryNode node)
     {
-        var validTarget = (node.TargetIsRegex && node.TargetRegex != null) || !node.TargetIsRegex;
+        var validTarget = node.TargetIsRegex && node.TargetRegex != null || !node.TargetIsRegex;
 
         if (!node.Enabled && !validTarget)
         {

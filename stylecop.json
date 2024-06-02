@@ -5,13 +5,13 @@
       "companyName": "Athavar",
       "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
       "variables": {
-        "licenseName": "GPL-3.0",
+        "licenseName": "AGPL-3.0",
         "licenseFile": "LICENSE"
       }
     },
     "orderingRules": {
       "systemUsingDirectivesFirst": true,
-      "blankLinesBetweenUsingGroups": "require"
+      "blankLinesBetweenUsingGroups": "allow"
     },
     "maintainabilityRules": {
       "topLevelTypes": [

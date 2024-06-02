@@ -1,6 +1,6 @@
 // <copyright file="MultiString.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Utils;
@@ -39,6 +39,12 @@ public record MultiString(string English, string German, string French, string J
 
     public static MultiString FromCraftAction(IDataManager gameData, uint id) => From<CraftAction>(gameData, id, item => item?.Name);
 
+    public override string ToString() => this.Name(ClientLanguage.English);
+
+    public string ToWholeString() => $"{this.English}|{this.German}|{this.French}|{this.Japanese}";
+
+    public override int GetHashCode() => HashCode.Combine(this.English, this.German, this.French, this.Japanese);
+
     private static MultiString From<T>(IDataManager gameData, uint id, Func<T?, SeString?> action)
         where T : ExcelRow
     {
@@ -51,10 +57,6 @@ public record MultiString(string English, string German, string French, string J
         return new MultiString(en, de, fr, jp);
     }
 
-    public override string ToString() => this.Name(ClientLanguage.English);
-
-    public string ToWholeString() => $"{this.English}|{this.German}|{this.French}|{this.Japanese}";
-
     private string Name(ClientLanguage lang)
         => lang switch
         {
@@ -64,6 +66,4 @@ public record MultiString(string English, string German, string French, string J
             ClientLanguage.French => this.French,
             _ => throw new ArgumentException(),
         };
-
-    public override int GetHashCode() => HashCode.Combine(this.English, this.German, this.French, this.Japanese);
 }

@@ -1,6 +1,6 @@
 // <copyright file="RequireQualityCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 /// <summary>
 ///     The /requirequality command.
 /// </summary>
-[MacroCommand("requirequality", null, "Require a certain amount of quality be present before continuing.", new[] { "wait", "maxwait" }, new[] { "/requirequality 3000" }, RequireLogin = true)]
+[MacroCommand("requirequality", null, "Require a certain amount of quality be present before continuing.", ["wait", "maxwait"], ["/requirequality 3000"], RequireLogin = true)]
 internal class RequireQualityCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/requirequality\s+(?<quality>\d+)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

@@ -1,29 +1,29 @@
 // <copyright file="TricksOfTheTrade.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
 internal sealed class TricksOfTheTrade : CraftingAction
 {
-    private static readonly uint[] IdsValue = { 100371, 100372, 100373, 100374, 100375, 100376, 100377, 100378 };
+    private static readonly uint[] IdsValue = [100371, 100372, 100373, 100374, 100375, 100376, 100377, 100378];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.CpRecovery;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 13;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation)
     {
         if (simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT)
@@ -37,13 +37,13 @@ internal sealed class TricksOfTheTrade : CraftingAction
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool SkipOnFail() => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -55,7 +55,7 @@ internal sealed class TricksOfTheTrade : CraftingAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
@@ -71,6 +71,6 @@ internal sealed class TricksOfTheTrade : CraftingAction
         return simulation.State is (StepState.GOOD or StepState.EXCELLENT);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 }

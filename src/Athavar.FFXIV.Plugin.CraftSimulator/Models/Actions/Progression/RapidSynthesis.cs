@@ -1,32 +1,32 @@
 // <copyright file="RapidSynthesis.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
 internal sealed class RapidSynthesis : ProgressAction
 {
-    private static readonly uint[] IdsValue = { 100363, 100364, 100365, 100366, 100367, 100368, 100369, 100370 };
+    private static readonly uint[] IdsValue = [100363, 100364, 100365, 100366, 100367, 100368, 100369, 100370];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 9;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 50;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation)
     {
         if (simulation.CurrentStats?.Level >= 63)
@@ -38,6 +38,6 @@ internal sealed class RapidSynthesis : ProgressAction
         return 250;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
 }

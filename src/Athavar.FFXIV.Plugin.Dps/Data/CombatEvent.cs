@@ -1,6 +1,6 @@
 // <copyright file="CombatEvent.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Dps.Data;
@@ -26,7 +26,7 @@ internal abstract record CombatEvent
 
         public Common.Definitions.Action? Definition { get; init; }
 
-        public ActionEffectEvent[] Effects { get; init; } = Array.Empty<ActionEffectEvent>();
+        public ActionEffectEvent[] Effects { get; init; } = [];
     }
 
     public sealed record Death : CombatEvent
@@ -53,9 +53,6 @@ internal abstract record CombatEvent
     public abstract record ActionEffectEvent
     {
         public bool IsSourceEntry => (this.Flags2 & 128U) > 0U;
-
-        protected ActionEffectType EffectType { get; init; }
-
         public uint EffectSourceId { get; set; }
 
         public virtual uint SourceId => this.EffectSourceId;
@@ -92,9 +89,11 @@ internal abstract record CombatEvent
                 this.Value = (ushort)(value & ushort.MaxValue);
                 this.Multiplier = (byte)(value >> 16);
 
-                this.Flags2 ^= (byte)((-overFlow ^ this.Flags2) & (1 << 6));
+                this.Flags2 ^= (byte)((-overFlow ^ this.Flags2) & 1 << 6);
             }
         }
+
+        protected ActionEffectType EffectType { get; init; }
 
         public ActionEventModifier GetModifier()
         {

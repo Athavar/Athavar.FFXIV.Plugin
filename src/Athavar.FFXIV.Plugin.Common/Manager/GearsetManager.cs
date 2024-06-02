@@ -1,6 +1,6 @@
 // <copyright file="GearsetManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -118,7 +118,16 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingLeft);
             this.GetItemStats(ref stats, &gearsetEntryPtr->RingRight);
             this.GetItemStats(ref stats, &gearsetEntryPtr->SoulStone);*/
-            this.Gearsets.Add(new Gearset(this.GetName(gearsetEntryPtr), gearsetEntryPtr->ID, gearsetEntryPtr->ClassJob, (byte)levelArray[levelArrayIndex], stats, gearsetEntryPtr->SoulStone.ItemID != 0, gearsetEntryPtr->MainHand.ItemID, itemIds));
+            this.Gearsets.Add(
+                new Gearset(
+                    this.GetName(gearsetEntryPtr),
+                    gearsetEntryPtr->ID,
+                    gearsetEntryPtr->ClassJob,
+                    (byte)levelArray[levelArrayIndex],
+                    stats,
+                    gearsetEntryPtr->ItemsSpan[(int)RaptureGearsetModule.GearsetItemIndex.SoulStone].ItemID != 0,
+                    gearsetEntryPtr->ItemsSpan[(int)RaptureGearsetModule.GearsetItemIndex.MainHand].ItemID,
+                    itemIds));
         }
     }
 
@@ -279,7 +288,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
     {
         var equipSlotPercent = this.GetEquipSlotPercent(param, item.EquipSlotCategory.Row);
         var num = item.BaseParamModifier <= 12 ? param.MeldParam[item.BaseParamModifier] : 0;
-        return (uint)Math.Round((ilvlBase * equipSlotPercent * num) / 100000.0, MidpointRounding.AwayFromZero);
+        return (uint)Math.Round(ilvlBase * equipSlotPercent * num / 100000.0, MidpointRounding.AwayFromZero);
     }
 
     private uint GetEquipSlotPercent(BaseParam param, uint category)

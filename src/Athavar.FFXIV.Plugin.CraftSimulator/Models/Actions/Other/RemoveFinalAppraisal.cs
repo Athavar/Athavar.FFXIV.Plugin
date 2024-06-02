@@ -1,37 +1,37 @@
 // <copyright file="RemoveFinalAppraisal.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
 internal class RemoveFinalAppraisal : CraftingAction
 {
-    private static readonly uint[] IdsValue = { 0 };
+    private static readonly uint[] IdsValue = [0];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Other;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 42;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation) => simulation.RemoveBuff(Buffs.FINAL_APPRAISAL);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => simulation.HasBuff(Buffs.FINAL_APPRAISAL) ? true : false;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 }

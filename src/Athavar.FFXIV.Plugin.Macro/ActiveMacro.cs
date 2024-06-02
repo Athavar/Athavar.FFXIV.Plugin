@@ -1,6 +1,6 @@
 ﻿// <copyright file="ActiveMacro.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro;
@@ -37,7 +37,7 @@ internal sealed partial class ActiveMacro : IDisposable
 
         if (node.IsLua)
         {
-            this.Steps = new List<MacroCommand>();
+            this.Steps = [];
             return;
         }
 
@@ -251,7 +251,7 @@ internal sealed partial class ActiveMacro : IDisposable
     private void InitLuaScript()
     {
         var script = this.Node.Contents
-           .Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)
+           .Split(["\r\n", "\r", "\n"], StringSplitOptions.None)
            .Select(line => $"  {line}")
            .Join('\n');
 

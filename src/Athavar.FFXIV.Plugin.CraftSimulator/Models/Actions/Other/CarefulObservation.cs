@@ -1,34 +1,34 @@
 // <copyright file="CarefulObservation.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
 internal sealed class CarefulObservation : CraftingAction
 {
-    private static readonly uint[] IdsValue = { 100395, 100396, 100397, 100398, 100399, 100400, 100401, 100402 };
+    private static readonly uint[] IdsValue = [100395, 100396, 100397, 100398, 100399, 100400, 100401, 100402];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Other;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 55;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation)
     {
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -40,15 +40,15 @@ internal sealed class CarefulObservation : CraftingAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool IsSkipsBuffTicks() => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.CurrentStats.Specialist ? false : true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 }

@@ -1,26 +1,26 @@
 // <copyright file="PreciseTouch.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class PreciseTouch : QualityAction
 {
-    private static readonly uint[] IdsValue = { 100128, 100129, 100130, 100131, 100132, 100133, 100134, 100135 };
+    private static readonly uint[] IdsValue = [100128, 100129, 100130, 100131, 100132, 100133, 100134, 100135];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 53;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 18;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -32,7 +32,7 @@ internal sealed class PreciseTouch : QualityAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Linear)
@@ -48,12 +48,12 @@ internal sealed class PreciseTouch : QualityAction
         return simulation.HasBuff(Buffs.HEART_AND_SOUL) || simulation.State is StepState.GOOD or StepState.EXCELLENT;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 150;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
 }

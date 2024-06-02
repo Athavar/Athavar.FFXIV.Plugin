@@ -1,6 +1,6 @@
 // <copyright file="InstancinatorModule.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Instancinator;
@@ -31,10 +31,10 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private const string FolderName = "InstancinatorInternal";
     private const string MacroCommandName = "/instancinator";
 
-    private static readonly string[] Instances = { "//", "//", "//" };
+    private static readonly string[] Instances = ["//", "//", "//"];
 
     private static readonly ushort[] Territories =
-    {
+    [
         // 956, /* Labyrinthos */
         // 957, /* Thavnair */
         958, /* Garlemald */
@@ -42,7 +42,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         // 959, /* Mare Lamentorum */
         // 960, /* Ultima Thule */
         // 961, /* Elpis */
-    };
+    ];
 
     private readonly YesConfiguration yesConfiguration;
     private readonly IServiceProvider provider;
@@ -78,11 +78,13 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.travelToInstancedArea = text.Trim();
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
 
-        this.dalamudServices.CommandManager.AddHandler(MacroCommandName, new CommandInfo(this.OnChatCommand)
-        {
-            HelpMessage = "Commands of the instancinator module.",
-            ShowInHelp = false,
-        });
+        this.dalamudServices.CommandManager.AddHandler(
+            MacroCommandName,
+            new CommandInfo(this.OnChatCommand)
+            {
+                HelpMessage = "Commands of the instancinator module.",
+                ShowInHelp = false,
+            });
         frameworkManager.Subscribe(this.Tick);
         this.dalamudServices.PluginLogger.Debug("Module 'Instancinator' init");
     }

@@ -1,6 +1,6 @@
 ﻿// <copyright file="WaitAddonCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -14,7 +14,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 /// <summary>
 ///     The /waitaddon command.
 /// </summary>
-[MacroCommand("waitaddon", null, "Wait for an addon, otherwise known as a UI component to be present. You can discover these names by using the \"Addon Inspector\" view inside the \"/xldata\" window.", new[] { "wait", "maxwait" }, new[] { "/waitaddon RecipeNote" })]
+[MacroCommand("waitaddon", null, "Wait for an addon, otherwise known as a UI component to be present. You can discover these names by using the \"Addon Inspector\" view inside the \"/xldata\" window.", ["wait", "maxwait"], ["/waitaddon RecipeNote"])]
 internal class WaitAddonCommand : MacroCommand
 {
     private const int AddonCheckMaxWait = 5000;

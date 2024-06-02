@@ -1,36 +1,36 @@
 // <copyright file="MuscleMemory.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
 internal sealed class MuscleMemory : ProgressAction
 {
-    private static readonly uint[] IdsValue = { 100379, 100380, 100381, 100382, 100383, 100384, 100385, 100386 };
+    private static readonly uint[] IdsValue = [100379, 100380, 100381, 100382, 100383, 100384, 100385, 100386];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 54;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 6;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 10;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation)
     {
         base.Execute(simulation);
         simulation.AddBuff(new EffectiveBuff(simulation.State == StepState.PRIMED ? 7 : 5, 0, Buffs.MUSCLE_MEMORY, simulation.Steps.Count));
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -42,7 +42,7 @@ internal sealed class MuscleMemory : ProgressAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.Steps.All(s => s.Skill.Action.IsSkipsBuffTicks()))
@@ -53,12 +53,12 @@ internal sealed class MuscleMemory : ProgressAction
         return false;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 300;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
 }

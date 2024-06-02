@@ -1,6 +1,6 @@
 ﻿// <copyright file="WaitCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Macro.Exceptions;
 /// <summary>
 ///     The /wait command.
 /// </summary>
-[MacroCommand("wait", null, "The same as the wait modifier, but as a command.", new string[0], new[] { "/wait 1-5" })]
+[MacroCommand("wait", null, "The same as the wait modifier, but as a command.", [], ["/wait 1-5"])]
 internal class WaitCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/wait\s+(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

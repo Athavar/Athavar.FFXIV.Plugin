@@ -1,6 +1,6 @@
 // <copyright file="GeneralConfigPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
@@ -15,32 +15,32 @@ using ImGuiNET;
 internal sealed class GeneralConfigPage : IConfigPage
 {
     [JsonIgnore]
-    public bool Preview;
-
-    [JsonIgnore]
     private static readonly string[] MeterTypeOptions = Enum.GetNames(typeof(MeterDataType));
 
     private readonly string[] hotkeyChoices =
-    {
+    [
         "None",
         "Control",
         "Alt",
         "Shift",
-    };
+    ];
 
     private readonly VirtualKey[] hotkeyValues =
-    {
+    [
         VirtualKey.NO_KEY,
         VirtualKey.CONTROL,
         VirtualKey.MENU,
         VirtualKey.SHIFT,
-    };
+    ];
 
     private readonly MeterWindow window;
 
     public GeneralConfigPage(MeterWindow window) => this.window = window;
 
     public string Name => "General";
+
+    [JsonIgnore]
+    public bool Preview { get; set; }
 
     private GeneralConfig Config => this.window.Config.GeneralConfig;
 

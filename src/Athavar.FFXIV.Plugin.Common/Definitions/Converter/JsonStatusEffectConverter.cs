@@ -1,6 +1,6 @@
 ﻿// <copyright file="JsonStatusEffectConverter.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Definitions.Converter;
@@ -102,9 +102,9 @@ internal sealed class JsonStatusEffectConverter : JsonConverter<Dictionary<uint,
                 throw new JsonParseException($"Unexpected token {reader.TokenType} when reading EndObject.");
             }
 
-            statusEffect.PotencyEffects ??= Array.Empty<Potency>();
+            statusEffect.PotencyEffects ??= [];
 
-            statusEffect.Multipliers ??= Array.Empty<Multiplier>();
+            statusEffect.Multipliers ??= [];
 
             dictionary.Add(statusEffect.Id, statusEffect);
         }

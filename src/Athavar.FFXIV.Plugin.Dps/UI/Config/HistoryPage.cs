@@ -1,6 +1,6 @@
 // <copyright file="HistoryPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 
@@ -15,7 +15,7 @@ internal sealed class HistoryPage : IConfigPage
 {
     private const ImGuiTableFlags Flags = ImGuiTableFlags.Sortable | ImGuiTableFlags.ScrollY | ImGuiTableFlags.BordersV | ImGuiTableFlags.BordersOuterH | ImGuiTableFlags.Resizable | ImGuiTableFlags.RowBg | ImGuiTableFlags.NoBordersInBody;
 
-    private static readonly string[] ColumnNames = { "Name", "Duration", "Dps" };
+    private static readonly string[] ColumnNames = ["Name", "Duration", "Dps"];
 
     private readonly EncounterManager encounterManager;
     private readonly Utils utils;

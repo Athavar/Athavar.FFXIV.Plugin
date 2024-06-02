@@ -1,6 +1,6 @@
 ﻿// <copyright file="MacroParser.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar;
@@ -18,14 +18,14 @@ internal static class MacroParser
 
     static MacroParser()
     {
-        List<(string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)> data = new();
+        List<(string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)> data = [];
 
         var attribute = typeof(MacroCommandAttribute);
         var commands = typeof(MacroCommand).Assembly.GetTypes().Where(t => !t.IsAbstract && t.IsDefined(attribute, false)).Select(t => (Command: t, Description: (MacroCommandAttribute)t.GetCustomAttribute(attribute)!));
 
         foreach (var (command, description) in commands)
         {
-            MacroCommand? ParseAction(string t) => (MacroCommand?)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, new object?[] { t });
+            MacroCommand? ParseAction(string t) => (MacroCommand?)command.GetMethod("Parse", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, [t]);
             Commands.Add(description.Name, ParseAction);
             MacroRequireLoggedIn.Add(command, description.RequireLogin);
             if (description.Alias is not null)
@@ -73,7 +73,7 @@ internal static class MacroParser
     }
 
     /// <summary>
-    ///     Checks if a <see cref="MacroCommand" /> requires a logged in user.
+    ///     Checks if a <see cref="MacroCommand"/> requires a logged in user.
     /// </summary>
     /// <param name="command">The macro command.</param>
     /// <returns>An value indicating if the macro can only executed in the user is logged in.</returns>

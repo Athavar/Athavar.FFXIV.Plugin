@@ -1,13 +1,13 @@
 // <copyright file="MacroCommandAttribute.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Macro;
 
 internal sealed class MacroCommandAttribute : Attribute
 {
     public MacroCommandAttribute(string name, string? alias = null)
-        : this(name, alias, string.Empty, Array.Empty<string>(), Array.Empty<string>())
+        : this(name, alias, string.Empty, [], [])
         => this.Hidden = true;
 
     public MacroCommandAttribute(string name, string? alias, string description, string[] modifiers, string[] examples)

@@ -1,6 +1,6 @@
 ﻿// <copyright file="TargetCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -13,7 +13,7 @@ using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 /// <summary>
 ///     The /target command.
 /// </summary>
-[MacroCommand("target", null, "Target anyone and anything that can be selected.", new[] { "wait" }, new[] { "/target Eirikur", "/target Moyce" }, RequireLogin = true)]
+[MacroCommand("target", null, "Target anyone and anything that can be selected.", ["wait"], ["/target Eirikur", "/target Moyce"], RequireLogin = true)]
 internal class TargetCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/target\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

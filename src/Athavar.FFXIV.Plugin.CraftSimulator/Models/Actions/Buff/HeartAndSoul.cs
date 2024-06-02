@@ -1,6 +1,6 @@
 // <copyright file="HeartAndSoul.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class HeartAndSoul : BuffAction
 {
-    private static readonly uint[] IdsValue = { 100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426 };
+    private static readonly uint[] IdsValue = [100419, 100420, 100421, 100422, 100423, 100424, 100425, 100426];
 
     /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Other;

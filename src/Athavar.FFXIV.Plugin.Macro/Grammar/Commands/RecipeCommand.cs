@@ -1,6 +1,6 @@
 // <copyright file="RecipeCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -15,7 +15,7 @@ using Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /recipe command.
 /// </summary>
-[MacroCommand("recipe", null, "Open the recipe book to a specific recipe.", new[] { "wait" }, new[] { "/recipe \"Tsai tou Vounou\"" }, RequireLogin = true)]
+[MacroCommand("recipe", null, "Open the recipe book to a specific recipe.", ["wait"], ["/recipe \"Tsai tou Vounou\""], RequireLogin = true)]
 internal class RecipeCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/recipe\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

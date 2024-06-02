@@ -1,6 +1,6 @@
 ﻿// <copyright file="MacroHelpWindow.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro;
@@ -25,34 +25,31 @@ internal sealed class MacroHelpWindow : Window
     private readonly (string Name, string? Alias, string Description, string[] Modifiers, string[] Examples)[] commandData = MacroParser.CommandData;
 
     private readonly (string Name, string Description, string[] Examples)[] modifierData =
-    {
+    [
         (
             "wait",
             "Wait a certain amount of time, or a random time within a range.",
-            new[]
-            {
+            [
                 "/ac Groundwork <wait.3>       # Wait 3 seconds",
                 "/ac Groundwork <wait.3.5>     # Wait 3.5 seconds",
                 "/ac Groundwork <wait.1-5>     # Wait between 1 and 5 seconds",
                 "/ac Groundwork <wait.1.5-5.5> # Wait between 1.5 and 5.5 seconds",
-            }),
+            ]),
         (
             "maxwait",
             "For certain commands, the maximum time to wait for a certain state to be achieved. By default, this is 5 seconds.",
-            new[]
-            {
+            [
                 "/waitaddon RecipeNote <maxwait.10>",
-            }),
+            ]),
         (
             "condition",
             "Require a crafting condition to perform the action specified. This is taken from the Synthesis window and may be localized to your client language.",
-            new[]
-            {
+            [
                 "/ac Observe <condition.poor>",
                 "/ac \"Precise Touch\" <condition.good>",
                 "/ac \"Byregot's Blessing\" <condition.not.poor>",
                 "/ac \"Byregot's Blessing\" <condition.!poor>",
-            }),
+            ]),
         /*(
             "unsafe",
             "Prevent the /action command from waiting for a positive server response and attempting to execute the command anyways.",
@@ -63,14 +60,13 @@ internal sealed class MacroHelpWindow : Window
         (
             "echo",
             "Echo the amount of loops remaining after executing a /loop command.",
-            new[]
-            {
+            [
                 "/loop 5 <echo>",
-            }),
-    };
+            ]),
+    ];
 
     private readonly (string Name, string Description, string? Example)[] cliData =
-    {
+    [
         ("help", "Show this window.", null),
         ("run", "Run a macro, the name must be unique.", "/pmacro run MyMacro"),
         ("run loop #", "Run a macro and then loop N times, the name must be unique. Only the last /loop in the macro is replaced", "/pmacro run loop 5 MyMacro"),
@@ -79,7 +75,7 @@ internal sealed class MacroHelpWindow : Window
         ("resume", "Resume the currently paused macro.", null),
         ("stop", "Clear the currently executing macro list.", null),
         ("stop loop", "Clear the currently executing macro list at the next /loop.", null),
-    };
+    ];
 
     private readonly IList<string> clickNames;
 
@@ -330,13 +326,14 @@ internal sealed class MacroHelpWindow : Window
 
             if (ImGui.Button("Beep test"))
             {
-                Task.Run(() =>
-                {
-                    for (var i = 0; i < beepCount; i++)
+                Task.Run(
+                    () =>
                     {
-                        Console.Beep(beepFrequency, beepDuration);
-                    }
-                });
+                        for (var i = 0; i < beepCount; i++)
+                        {
+                            Console.Beep(beepFrequency, beepDuration);
+                        }
+                    });
             }
         }
 

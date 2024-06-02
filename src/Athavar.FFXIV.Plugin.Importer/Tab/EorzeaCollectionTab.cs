@@ -1,6 +1,6 @@
-// <copyright file="EorzeacollectionTab.cs" company="Athavar">
+// <copyright file="EorzeaCollectionTab.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Importer.Tab;
@@ -47,8 +47,8 @@ internal sealed class EorzeaCollectionTab : Tab
 
     private string glamourTitle = string.Empty;
     private string glamourAuthor = string.Empty;
-    private string[] glamourTags = Array.Empty<string>();
-    private List<EquipmentSlotItem> currentEquipmentSlots = new();
+    private string[] glamourTags = [];
+    private List<EquipmentSlotItem> currentEquipmentSlots = [];
 
     public EorzeaCollectionTab(IDalamudServices dalamudServices, IIconManager iconManager, IIpcManager ipcManager)
     {
@@ -182,7 +182,7 @@ internal sealed class EorzeaCollectionTab : Tab
     }
 
     /// <summary> Square stores its colors as BGR values so R and B need to be shuffled and Alpha set to max. </summary>
-    private static uint SeColorToRgba(uint color) => ((color & 0xFF) << 16) | ((color >> 16) & 0xFF) | (color & 0xFF00) | 0xFF000000;
+    private static uint SeColorToRgba(uint color) => (color & 0xFF) << 16 | color >> 16 & 0xFF | color & 0xFF00 | 0xFF000000;
 
     private void ApplyTo(Character character)
     {

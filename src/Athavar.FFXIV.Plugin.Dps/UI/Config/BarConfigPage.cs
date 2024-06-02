@@ -1,6 +1,6 @@
 // <copyright file="BarConfigPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
@@ -74,7 +74,7 @@ internal sealed class BarConfigPage : IConfigPage
         float top,
         float current)
     {
-        var barHeight = (size.Y - ((barCount - 1) * this.Config.BarGaps)) / barCount;
+        var barHeight = (size.Y - (barCount - 1) * this.Config.BarGaps) / barCount;
         var barSize = size with { Y = barHeight };
         var barFillSize = new Vector2(size.X * (current / top), barHeight);
         drawList.AddRectFilled(localPos, localPos + barFillSize, this.Config.UseJobColor ? jobColor.Base : barColor.Base);

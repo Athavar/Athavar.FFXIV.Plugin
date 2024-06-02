@@ -1,6 +1,6 @@
 // <copyright file="ItemCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -16,7 +16,7 @@ using Sheets = Lumina.Excel.GeneratedSheets;
 /// <summary>
 ///     The /item command.
 /// </summary>
-[MacroCommand("item", null, "Use an item, stopping the macro if the item is not present.", new[] { "hq", "wait" }, new[] { "/item Calamari Ripieni", "/item Calamari Ripieni <hq> <wait.3>" }, RequireLogin = true)]
+[MacroCommand("item", null, "Use an item, stopping the macro if the item is not present.", ["hq", "wait"], ["/item Calamari Ripieni", "/item Calamari Ripieni <hq> <wait.3>"], RequireLogin = true)]
 internal class ItemCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/item\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

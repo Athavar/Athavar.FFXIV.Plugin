@@ -1,10 +1,9 @@
 // <copyright file="BasicModuleConfig{T}.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 // ReSharper disable once CheckNamespace
-
 namespace Athavar.FFXIV.Plugin;
 
 using System.Diagnostics.CodeAnalysis;
@@ -33,13 +32,14 @@ public class BasicModuleConfig<T> : BasicModuleConfig
 
     public static IServiceCollection AddToDependencyInjection(IServiceCollection provider)
     {
-        provider.AddSingleton<T>(o =>
-        {
-            var pi = o.GetRequiredService<DalamudPluginInterface>();
-            var log = o.GetRequiredService<IPluginLogger>();
+        provider.AddSingleton<T>(
+            o =>
+            {
+                var pi = o.GetRequiredService<DalamudPluginInterface>();
+                var log = o.GetRequiredService<IPluginLogger>();
 
-            return Load(pi.ConfigDirectory, log);
-        });
+                return Load(pi.ConfigDirectory, log);
+            });
         return provider;
     }
 

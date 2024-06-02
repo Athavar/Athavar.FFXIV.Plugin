@@ -1,6 +1,6 @@
 // <copyright file="DefinitionManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -53,7 +53,7 @@ public sealed class DefinitionManager : IDefinitionManager
             var dalamudService = services.GetInternalService(dalamudServiceType);
 
             var startInfoProperty = dalamudServiceType.GetProperty("StartInfo", BindingFlags.NonPublic | BindingFlags.Instance) ?? throw new Exception("Dalamud has changed. StartInfo not found.");
-            var startInfo = startInfoProperty.GetMethod!.Invoke(dalamudService, BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<object>(), null);
+            var startInfo = startInfoProperty.GetMethod!.Invoke(dalamudService, BindingFlags.NonPublic | BindingFlags.Instance, null, [], null);
 
             if (startInfo is DalamudStartInfo dInfo)
             {
@@ -110,7 +110,7 @@ public sealed class DefinitionManager : IDefinitionManager
 
     private void PopulateLimitToActionIds()
     {
-        foreach (var potency in this.statusEffectDefinitions.Values.SelectMany(x => x.PotencyEffects ?? Array.Empty<Potency>()))
+        foreach (var potency in this.statusEffectDefinitions.Values.SelectMany(x => x.PotencyEffects ?? []))
         {
             if (!string.IsNullOrWhiteSpace(potency.LimitTo))
             {
@@ -127,11 +127,11 @@ public sealed class DefinitionManager : IDefinitionManager
             }
             else
             {
-                potency.LimitToActionIds = Array.Empty<uint>();
+                potency.LimitToActionIds = [];
             }
         }
 
-        foreach (var multiplier in this.statusEffectDefinitions.Values.SelectMany(x => x.Multipliers ?? Array.Empty<Multiplier>()))
+        foreach (var multiplier in this.statusEffectDefinitions.Values.SelectMany(x => x.Multipliers ?? []))
         {
             if (!string.IsNullOrWhiteSpace(multiplier.LimitTo))
             {
@@ -148,7 +148,7 @@ public sealed class DefinitionManager : IDefinitionManager
             }
             else
             {
-                multiplier.LimitToActionIds = Array.Empty<uint>();
+                multiplier.LimitToActionIds = [];
             }
         }
     }
@@ -158,10 +158,12 @@ public sealed class DefinitionManager : IDefinitionManager
         var content = new ResourceFile(fileName).Content;
         try
         {
-            return JsonSerializer.Deserialize<JobDefinition>(content, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-            }) ?? throw new JsonParseException($"Error while parsing definition file {fileName}");
+            return JsonSerializer.Deserialize<JobDefinition>(
+                content,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                }) ?? throw new JsonParseException($"Error while parsing definition file {fileName}");
         }
         catch (Exception ex)
         {

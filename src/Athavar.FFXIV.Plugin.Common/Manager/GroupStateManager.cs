@@ -1,6 +1,6 @@
 // <copyright file="GroupStateManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -15,15 +15,16 @@ using Lumina.Excel.GeneratedSheets;
 
 public class GroupStateManager : IDisposable
 {
-    private static readonly uint[] allianceTextSheetRows = { 1115, 1116, 1118, 1160, 1161, 1162 };
+    private static readonly uint[] AllianceTextSheetRows = [1115, 1116, 1118, 1160, 1161, 1162];
 
     private static string[] allianceTexts;
     private readonly IFrameworkManager frameworkManager;
 
     public GroupStateManager(IFrameworkManager frameworkManager, IDalamudServices dalamudServices)
     {
+        this.frameworkManager = frameworkManager;
         var addonSheet = dalamudServices.DataManager.GetExcelSheet<Addon>()!;
-        allianceTexts = allianceTextSheetRows.Select(rowId => addonSheet.GetRow(rowId)!.Text.RawString).ToArray();
+        allianceTexts = AllianceTextSheetRows.Select(rowId => addonSheet.GetRow(rowId)!.Text.RawString).ToArray();
 
         frameworkManager.Subscribe(this.OnFrameworkUpdate);
     }

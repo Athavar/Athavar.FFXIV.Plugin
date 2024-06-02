@@ -1,6 +1,6 @@
 // <copyright file="ConfigColor.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Config;
 
@@ -11,7 +11,7 @@ public sealed class ConfigColor
 {
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    private float[] colorMapRatios = { -.8f, -.3f, .1f };
+    private float[] colorMapRatios = [-.8f, -.3f, .1f];
 
     [JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
@@ -38,6 +38,18 @@ public sealed class ConfigColor
     {
     }
 
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public uint Background { get; }
+
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public uint TopGradient { get; }
+
+    [JsonIgnore]
+    [Newtonsoft.Json.JsonIgnore]
+    public uint BottomGradient { get; }
+
     [JsonInclude]
     [JsonPropertyName("Vector")]
     public Vector4 Vector
@@ -60,21 +72,9 @@ public sealed class ConfigColor
     [Newtonsoft.Json.JsonIgnore]
     public uint Base { get; private set; }
 
-    [JsonIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    public uint Background { get; }
-
-    [JsonIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    public uint TopGradient { get; }
-
-    [JsonIgnore]
-    [Newtonsoft.Json.JsonIgnore]
-    public uint BottomGradient { get; }
-
     private static uint ColorConvertFloat4ToU32(Vector4 data)
     {
-        uint ToByte(float f) => (uint)(((f < 0.0f ? 0.0f : f > 1.0f ? 1.0f : f) * 255.0f) + 0.5f);
+        uint ToByte(float f) => (uint)((f < 0.0f ? 0.0f : f > 1.0f ? 1.0f : f) * 255.0f + 0.5f);
 
         var result = ToByte(data.X) << 0;
         result |= ToByte(data.Y) << 8;

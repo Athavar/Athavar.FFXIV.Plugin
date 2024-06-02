@@ -1,6 +1,6 @@
 // <copyright file="Combatant.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Dps.Data.Encounter;
@@ -148,18 +148,21 @@ internal sealed class Combatant : BaseCombatant<Combatant>
                 summary.OnHealingDone(new ActionEvent(timestamp, hoT.TargetId, effectEvent.GetModifier(), hoT.Amount, hoT.Overheal));
                 break;
             }
+
             case CombatEvent.Healed healed:
             {
                 var summary = this.GetActionSummary(healed.ActionId, isStatusOverwrite);
                 summary.OnHealingDone(new ActionEvent(timestamp, healed.TargetId, effectEvent.GetModifier(), healed.Amount, healed.Overheal));
                 break;
             }
+
             case CombatEvent.DoT doT:
             {
                 var summary = this.GetActionSummary(doT.StatusId, true);
                 summary.OnDamageDone(new ActionEvent(timestamp, doT.TargetId, effectEvent.GetModifier(), doT.Amount));
                 break;
             }
+
             case CombatEvent.DamageTaken damage:
             {
                 var summary = this.GetActionSummary(damage.ActionId, isStatusOverwrite);

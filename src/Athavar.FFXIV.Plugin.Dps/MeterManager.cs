@@ -1,6 +1,6 @@
 // <copyright file="MeterManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Dps;
@@ -32,7 +32,7 @@ internal sealed class MeterManager : IDisposable
 
     private readonly Vector2 origin = ImGui.GetMainViewport().Size / 2f;
 
-    private readonly Opcode[] requiredOpcodes = { Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl };
+    private readonly Opcode[] requiredOpcodes = [Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl];
     private Lazy<DpsTab>? tab;
 
     private DateTime nextCacheReset = DateTime.MinValue;
@@ -53,7 +53,7 @@ internal sealed class MeterManager : IDisposable
 
     public Opcode[] MissingOpCodes { get; private set; }
 
-    public List<MeterWindow> Meters { get; private set; } = new();
+    public List<MeterWindow> Meters { get; private set; } = [];
 
     public void DeleteMeter(MeterWindow meter)
     {
@@ -138,7 +138,7 @@ internal sealed class MeterManager : IDisposable
             return true;
         }
 
-        List<Opcode> missing = new();
+        List<Opcode> missing = [];
         foreach (var requiredOpcode in this.requiredOpcodes)
         {
             var code = this.opcodeManager.GetOpcode(requiredOpcode);

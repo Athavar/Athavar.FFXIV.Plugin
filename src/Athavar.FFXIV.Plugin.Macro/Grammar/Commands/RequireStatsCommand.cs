@@ -1,6 +1,6 @@
 ﻿// <copyright file="RequireStatsCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 /// <summary>
 ///     The /requirestats command.
 /// </summary>
-[MacroCommand("requirestats", null, "Require a certain amount of stats effect to be present before continuing. Syntax is Craftsmanship, Control, then CP.", new[] { "wait", "maxwait" }, new[] { "/requirestats 2700 2600 500" }, RequireLogin = true)]
+[MacroCommand("requirestats", null, "Require a certain amount of stats effect to be present before continuing. Syntax is Craftsmanship, Control, then CP.", ["wait", "maxwait"], ["/requirestats 2700 2600 500"], RequireLogin = true)]
 internal class RequireStatsCommand : MacroCommand
 {
     private const int StatusCheckMaxWait = 1000;

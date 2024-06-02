@@ -1,6 +1,6 @@
 // <copyright file="Click.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Click;
@@ -20,7 +20,7 @@ public sealed class Click : IClick
     private bool initialized;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="Click" /> class.
+    ///     Initializes a new instance of the <see cref="Click"/> class.
     /// </summary>
     public Click() => this.Initialize();
 
@@ -50,7 +50,7 @@ public sealed class Click : IClick
         {
             var method = click.method;
             var clickType = method.DeclaringType!;
-            var ctor = clickType.GetConstructor(new[] { typeof(nint) })!;
+            var ctor = clickType.GetConstructor([typeof(nint)])!;
 
             var param = Expression.Parameter(typeof(nint), "addon");
             var instantiate = Expression.New(ctor, param);

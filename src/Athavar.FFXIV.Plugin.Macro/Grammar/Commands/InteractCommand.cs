@@ -1,6 +1,6 @@
 // <copyright file="InteractCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 
-[MacroCommand("interact", null, "Interact with new nearest selectable target with the given name.", new[] { "wait" }, new[] { "/interact Summoning Bell" }, RequireLogin = true)]
+[MacroCommand("interact", null, "Interact with new nearest selectable target with the given name.", ["wait"], ["/interact Summoning Bell"], RequireLogin = true)]
 internal class InteractCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/interact\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

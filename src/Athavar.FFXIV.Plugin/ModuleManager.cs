@@ -1,6 +1,6 @@
 ﻿// <copyright file="ModuleManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin;
@@ -213,42 +213,6 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
     private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData, IComparable<ModuleData>, IComparable
     {
-        public int CompareTo(object? obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return 1;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return 0;
-            }
-
-            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
-        }
-
-        public int CompareTo(ModuleData? other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return 0;
-            }
-
-            if (ReferenceEquals(null, other))
-            {
-                return 1;
-            }
-
-            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
-            if (nameComparison != 0)
-            {
-                return nameComparison;
-            }
-
-            return this.HasTab.CompareTo(other.HasTab);
-        }
-
         public bool Enabled
         {
             get => this.Def.Enabled;
@@ -298,6 +262,42 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                     this.Def.Instance = null;
                 }
             }
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return 0;
+            }
+
+            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
+        }
+
+        public int CompareTo(ModuleData? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
+            if (nameComparison != 0)
+            {
+                return nameComparison;
+            }
+
+            return this.HasTab.CompareTo(other.HasTab);
         }
 
         public bool TabEnabled

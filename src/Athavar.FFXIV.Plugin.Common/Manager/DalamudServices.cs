@@ -1,6 +1,6 @@
 ﻿// <copyright file="DalamudServices.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
@@ -208,6 +208,11 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     /// <inheritdoc/>
     [PluginService]
     [RequiredVersion("1.0")]
+    public INotificationManager NotificationManager { get; init; } = null!;
+
+    /// <inheritdoc/>
+    [PluginService]
+    [RequiredVersion("1.0")]
     public IObjectTable ObjectTable { get; init; } = null!;
 
     /*[PluginService]
@@ -243,7 +248,7 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     internal IPluginLog PluginLog { get; init; } = null!;
 
     /// <inheritdoc/>
-    public object? GetInternalService(Type serviceType) => this.serviceGenericType?.MakeGenericType(serviceType).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, Array.Empty<object>(), null);
+    public object? GetInternalService(Type serviceType) => this.serviceGenericType?.MakeGenericType(serviceType).GetMethod("Get")?.Invoke(null, BindingFlags.Default, null, [], null);
 
     /// <summary>
     ///     Creates and enable a hook. Hooking address is inferred by calling to GetProcAddress() function.

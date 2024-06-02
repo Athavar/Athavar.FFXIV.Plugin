@@ -1,6 +1,6 @@
 // <copyright file="ClickMaterialize.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Click.Clicks;
@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Click.Attributes;
 using Athavar.FFXIV.Plugin.Click.Bases;
 
-public class ClickMaterialize : ClickBase<ClickMaterialize>
+public sealed class ClickMaterialize : ClickBase<ClickMaterialize>
 {
     /// <summary>
     ///     Initializes a new instance of the <see cref="ClickMaterialize"/> class.

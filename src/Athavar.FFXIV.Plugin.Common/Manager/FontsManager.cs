@@ -1,6 +1,6 @@
 // <copyright file="FontsManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -16,7 +16,7 @@ using ImGuiNET;
 
 public class FontsManager : IDisposable, IFontsManager
 {
-    public static readonly List<string> DefaultFontKeys = new() { "Expressway_24", "Expressway_20", "Expressway_16" };
+    public static readonly List<string> DefaultFontKeys = ["Expressway_24", "Expressway_20", "Expressway_16"];
 
     private static FontsManager? instance;
 
@@ -30,7 +30,7 @@ public class FontsManager : IDisposable, IFontsManager
     {
         this.logger = services.PluginLogger;
         instance = this;
-        this.fontList = new[] { Constants.FontsManager.DalamudFontKey };
+        this.fontList = [Constants.FontsManager.DalamudFontKey];
 
         this.uiBuilder = services.PluginInterface.UiBuilder;
         /* uiBuilder.RebuildFonts(); */
@@ -57,10 +57,10 @@ public class FontsManager : IDisposable, IFontsManager
         if (string.IsNullOrEmpty(fontKey) ||
             !manager!.imGuiFonts.TryGetValue(fontKey, out var fontHandler))
         {
-            return new(null);
+            return new FontScope(null);
         }
 
-        return new(fontHandler);
+        return new FontScope(fontHandler);
     }
 
     public static string[] GetFontList() => instance?.fontList ?? [];
@@ -233,7 +233,7 @@ public class FontsManager : IDisposable, IFontsManager
                     e => e.OnPreBuild(
                         tk => tk.AddFontFromFile(
                             fontPath,
-                            new()
+                            new SafeFontConfig
                             {
                                 SizePx = font.Size,
                                 GlyphRanges = this.GetCharacterRanges(font, io),

@@ -1,37 +1,37 @@
 // <copyright file="GreatStrides.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
 internal sealed class GreatStrides : BuffAction
 {
-    private static readonly uint[] IdsValue = { 260, 261, 262, 263, 265, 264, 266, 267 };
+    private static readonly uint[] IdsValue = [260, 261, 262, 263, 265, 264, 266, 267];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 21;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDuration(Simulation simulation) => 3;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Buffs GetBuff() => Buffs.GREAT_STRIDES;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetInitialStacks() => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override OnTick? GetOnTick() => null;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 }

@@ -1,6 +1,6 @@
 // <copyright file="RequireRepairCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -13,7 +13,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 /// <summary>
 ///     The /requirerepair command.
 /// </summary>
-[MacroCommand("requirerepair", null, "Pause if an item is at zero durability.", new[] { "wait" }, new[] { "/requirerepair" }, RequireLogin = true)]
+[MacroCommand("requirerepair", null, "Pause if an item is at zero durability.", ["wait"], ["/requirerepair"], RequireLogin = true)]
 internal class RequireRepairCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/requirerepair\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);

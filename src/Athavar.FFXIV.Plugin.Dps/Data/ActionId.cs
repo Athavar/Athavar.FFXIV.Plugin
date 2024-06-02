@@ -1,6 +1,6 @@
 // <copyright file="ActionId.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.Data;
 
@@ -8,9 +8,9 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 
 internal struct ActionId
 {
+    public static ActionId Clemency = new(ActionType.Action, 3541);
     internal const uint ItemDelta = 0x2000000;
     internal const uint MountDelta = 0xD000000;
-    public static ActionId Clemency = new(ActionType.Action, 3541);
 
     public readonly uint Raw; // high byte is type, low 3 bytes is ID
 

@@ -1,37 +1,37 @@
 // <copyright file="Innovation.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
 
 internal sealed class Innovation : BuffAction
 {
-    private static readonly uint[] IdsValue = { 19004, 19005, 19006, 19007, 19008, 19009, 19010, 19011 };
+    private static readonly uint[] IdsValue = [19004, 19005, 19006, 19007, 19008, 19009, 19010, 19011];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 26;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 18;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDuration(Simulation simulation) => 4;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override Buffs GetBuff() => Buffs.INNOVATION;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetInitialStacks() => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override OnTick? GetOnTick() => null;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 }

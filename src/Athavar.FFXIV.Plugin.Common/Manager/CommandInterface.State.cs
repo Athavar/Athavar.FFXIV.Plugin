@@ -1,6 +1,6 @@
 // <copyright file="CommandInterface.State.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
@@ -9,44 +9,44 @@ using Lumina.Excel.GeneratedSheets;
 
 internal sealed partial class CommandInterface
 {
-    private static readonly uint[] GoldenSaucerIds = { 144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098, 1165, 1197 };
+    private static readonly uint[] GoldenSaucerIds = [144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098, 1165, 1197];
 
     private readonly uint logOutId;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public ushort GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public byte GetCurrentJob() => (byte?)this.dalamudServices.ClientState.LocalPlayer?.ClassJob.Id ?? 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public string? GetCurrentTarget() => this.dalamudServices.TargetManager.Target?.Name.ToString();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public string? GetCurrentFocusTarget() => this.dalamudServices.TargetManager.FocusTarget?.Name.ToString();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsInCombat() => this.dalamudServices.Condition[ConditionFlag.InCombat];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsInDuty() => this.dalamudServices.Condition[ConditionFlag.BoundByDuty];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsPerforming() => this.dalamudServices.Condition[ConditionFlag.Performing];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsInGoldenSaucer() => GoldenSaucerIds.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsPvP() => this.dalamudServices.ClientState.IsPvP;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsPlayerCharacterReady() => this.dalamudServices.Condition[ConditionFlag.NormalConditions] && !this.dalamudServices.Condition[ConditionFlag.BetweenAreas] && !this.dalamudServices.Condition[ConditionFlag.BetweenAreas51];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool LogOut() => this.ExecuteMainCommand(this.logOutId);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool HasStatus(string statusName)
     {
         statusName = statusName.ToLowerInvariant();
@@ -59,7 +59,7 @@ internal sealed partial class CommandInterface
         return this.HasStatusId(statusIDs);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool HasStatusId(params uint[] statusIDs)
     {
         var statusId = this.dalamudServices.ClientState.LocalPlayer!.StatusList

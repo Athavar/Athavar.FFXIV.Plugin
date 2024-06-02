@@ -1,26 +1,26 @@
 // <copyright file="TrainedFinesse.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class TrainedFinesse : QualityAction
 {
-    private static readonly uint[] IdsValue = { 100435, 100436, 100437, 100438, 100439, 100440, 100441, 100442 };
+    private static readonly uint[] IdsValue = [100435, 100436, 100437, 100438, 100439, 100440, 100441, 100442];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 90;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -32,7 +32,7 @@ internal sealed class TrainedFinesse : QualityAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
         if (simulation.GetBuff(Buffs.INNER_QUIET)?.Stacks == 10)
@@ -43,12 +43,12 @@ internal sealed class TrainedFinesse : QualityAction
         return false;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 0;
 }

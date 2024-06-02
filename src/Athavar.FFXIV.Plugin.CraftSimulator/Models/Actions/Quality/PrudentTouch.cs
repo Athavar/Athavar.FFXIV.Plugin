@@ -1,26 +1,26 @@
 // <copyright file="PrudentTouch.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class PrudentTouch : QualityAction
 {
-    private static readonly uint[] IdsValue = { 100227, 100228, 100229, 100230, 100231, 100232, 100233, 100234 };
+    private static readonly uint[] IdsValue = [100227, 100228, 100229, 100230, 100231, 100232, 100233, 100234];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 66;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 25;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -32,15 +32,15 @@ internal sealed class PrudentTouch : QualityAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.HasBuff(Buffs.WASTE_NOT) && !simulation.HasBuff(Buffs.WASTE_NOT_II);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 5;
 }

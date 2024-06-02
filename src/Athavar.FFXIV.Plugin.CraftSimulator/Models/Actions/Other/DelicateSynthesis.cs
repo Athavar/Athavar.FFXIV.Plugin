@@ -1,26 +1,26 @@
 // <copyright file="DelicateSynthesis.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
 internal sealed class DelicateSynthesis : GeneralAction
 {
-    private static readonly uint[] IdsValue = { 100323, 100324, 100325, 100326, 100327, 100328, 100329, 100330 };
+    private static readonly uint[] IdsValue = [100323, 100324, 100325, 100326, 100327, 100328, 100329, 100330];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Other;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 76;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation)
     {
         var progressionIncrease = this.GetBaseProgression(simulation);
@@ -47,7 +47,7 @@ internal sealed class DelicateSynthesis : GeneralAction
         }
 
         var progressEfficiency = potency * buffMod;
-        simulation.Progression += (int)Math.Floor((progressionIncrease * conditionMod * progressEfficiency) / 100.0);
+        simulation.Progression += (int)Math.Floor(progressionIncrease * conditionMod * progressEfficiency / 100.0);
 
         if (simulation.HasBuff(Buffs.FINAL_APPRAISAL) &&
             simulation.Progression >= simulation.Recipe.Progress)
@@ -60,19 +60,19 @@ internal sealed class DelicateSynthesis : GeneralAction
         this.ExecuteQuality(simulation);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 32;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetPotency(Simulation simulation) => 100;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
 
     private void ExecuteQuality(Simulation simulation)
@@ -112,7 +112,7 @@ internal sealed class DelicateSynthesis : GeneralAction
 
         var efficiency = Math.Round(potency * buffMod);
 
-        simulation.Quality += (long)Math.Floor((qualityIncrease * conditionMod * efficiency) / 100);
+        simulation.Quality += (long)Math.Floor(qualityIncrease * conditionMod * efficiency / 100);
         simulation.AddInnerQuietStacks(1);
     }
 }

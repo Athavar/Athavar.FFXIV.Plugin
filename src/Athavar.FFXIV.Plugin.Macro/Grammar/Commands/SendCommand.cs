@@ -1,6 +1,6 @@
 ﻿// <copyright file="SendCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -15,7 +15,7 @@ using static Common.Native;
 /// <summary>
 ///     The /send command.
 /// </summary>
-[MacroCommand("send", null, "Send an arbitrary keystroke with optional modifiers. Keys are pressed in the same order as the command.", new[] { "wait" }, new[] { "/send MULTIPLY", "/send NUMPAD0", "/send CONTROL+MENU+SHIFT+NUMPAD0" })]
+[MacroCommand("send", null, "Send an arbitrary keystroke with optional modifiers. Keys are pressed in the same order as the command.", ["wait"], ["/send MULTIPLY", "/send NUMPAD0", "/send CONTROL+MENU+SHIFT+NUMPAD0"])]
 internal class SendCommand : MacroCommand
 {
     private static readonly Regex Regex = new(@"^/send\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -49,15 +49,16 @@ internal class SendCommand : MacroCommand
 
         var nameValues = match.ExtractAndUnquote("name").Split(' ', '+');
 
-        var vkCodes = nameValues.Select(name =>
-        {
-            if (!Enum.TryParse<KeyCode>(name, true, out var vkCode))
+        var vkCodes = nameValues.Select(
+            name =>
             {
-                throw new MacroCommandError($"Invalid key code '{name}'");
-            }
+                if (!Enum.TryParse<KeyCode>(name, true, out var vkCode))
+                {
+                    throw new MacroCommandError($"Invalid key code '{name}'");
+                }
 
-            return vkCode;
-        }).ToArray();
+                return vkCode;
+            }).ToArray();
 
         return new SendCommand(text, vkCodes, waitModifier);
     }

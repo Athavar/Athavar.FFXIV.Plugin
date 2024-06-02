@@ -1,6 +1,6 @@
 ﻿// <copyright file="JsonActionConverter.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Definitions.Converter;
@@ -76,8 +76,8 @@ internal sealed class JsonActionConverter : JsonConverter<Dictionary<uint, Actio
                 throw new JsonParseException($"Unexpected token {reader.TokenType} when reading EndObject.");
             }
 
-            action.Damage = damageEntry ?? Array.Empty<DamageEntry>();
-            action.Heal = healEntry ?? Array.Empty<HealEntry>();
+            action.Damage = damageEntry ?? [];
+            action.Heal = healEntry ?? [];
 
             dictionary.Add(action.Id, action);
         }

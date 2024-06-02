@@ -1,6 +1,6 @@
 // <copyright file="ProfileListConfigPage.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 
@@ -11,6 +11,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,7 +66,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
     private void DrawCreateMenu(Vector2 size, float padX)
     {
         const int buttonSize = 40;
-        var textInputWidth = size.X - (buttonSize * 2) - (padX * 4);
+        var textInputWidth = size.X - buttonSize * 2 - padX * 4;
 
         if (ImGui.BeginChild("##Buttons", new Vector2(size.X, MenuBarHeight), true))
         {
@@ -104,7 +105,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
         if (ImGui.BeginTable("##Profile_Table", 3, flags, size with { Y = size.Y - MenuBarHeight }))
         {
             const int buttonSize = 30;
-            var actionsWidth = (buttonSize * 3) + (padX * 2);
+            var actionsWidth = buttonSize * 3 + padX * 2;
 
             ImGui.TableSetupColumn("   #", ImGuiTableColumnFlags.WidthFixed, 18, 0);
             ImGui.TableSetupColumn("Profile Name", ImGuiTableColumnFlags.WidthStretch, 0, 1);
@@ -132,7 +133,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
                     var columnWidth = ImGui.GetColumnWidth();
                     var cursorPos = ImGui.GetCursorPos();
                     var textSize = ImGui.CalcTextSize(num);
-                    ImGui.SetCursorPos(new Vector2((cursorPos.X + columnWidth) - textSize.X, cursorPos.Y + 3f));
+                    ImGui.SetCursorPos(new Vector2(cursorPos.X + columnWidth - textSize.X, cursorPos.Y + 3f));
                     ImGui.Text(num);
                 }
 
@@ -218,6 +219,9 @@ internal sealed class ProfileListConfigPage : IConfigPage
     }
 
     private void DrawNotification(string message, NotificationType type = NotificationType.Success)
-        => this.provider.GetRequiredService<IDalamudServices>().PluginInterface.UiBuilder
-           .AddNotification(message, DpsModule.ModuleName, type);
+        => this.provider.GetRequiredService<IDalamudServices>()
+           .NotificationManager
+           .AddNotification(
+                new Notification
+                    { Content = message, Type = type });
 }

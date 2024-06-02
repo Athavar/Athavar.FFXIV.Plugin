@@ -1,38 +1,38 @@
 // <copyright file="TrainedEye.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class TrainedEye : CraftingAction
 {
-    private static readonly uint[] IdsValue = { 100283, 100284, 100285, 100286, 100287, 100288, 100289, 100290 };
+    private static readonly uint[] IdsValue = [100283, 100284, 100285, 100286, 100287, 100288, 100289, 100290];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override ActionType ActionType => ActionType.Quality;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int Level => 80;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetDurabilityCost(Simulation simulation) => 0;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Execute(Simulation simulation) => simulation.Quality = simulation.Recipe.MaxQuality;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 250;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override bool SkipOnFail() => true;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override SimulationFailCause? GetFailCause(Simulation simulation)
     {
         var superCause = base.GetFailCause(simulation);
@@ -44,9 +44,9 @@ internal sealed class TrainedEye : CraftingAction
         return superCause;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation) => !simulation.Recipe.Expert && simulation.CurrentStats.Level - simulation.Recipe.Level >= 10 && !simulation.Steps.Any();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 }

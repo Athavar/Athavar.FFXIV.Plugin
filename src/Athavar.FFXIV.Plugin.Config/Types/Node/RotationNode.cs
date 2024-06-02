@@ -1,6 +1,6 @@
 // <copyright file="RotationNode.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 // ReSharper disable once CheckNamespace
 
@@ -14,14 +14,14 @@ public sealed class RotationNode : Node
 {
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public List<RotationNode> Duplicates { get; } = new();
+    public List<RotationNode> Duplicates { get; } = [];
 
     /// <inheritdoc/>
     public override string Name { get; set; } = string.Empty;
 
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public ImmutableArray<int> Rotations { get; set; } = Array.Empty<int>().ToImmutableArray();
+    public ImmutableArray<int> Rotations { get; set; } = [..Array.Empty<int>()];
 
     [JsonInclude]
     [JsonPropertyName("Rotations")]
@@ -29,7 +29,7 @@ public sealed class RotationNode : Node
     public int[] RotationArray
     {
         get => this.Rotations.ToArray();
-        set => this.Rotations = value.ToImmutableArray();
+        set => this.Rotations = [..value];
     }
 
     /// <inheritdoc/>

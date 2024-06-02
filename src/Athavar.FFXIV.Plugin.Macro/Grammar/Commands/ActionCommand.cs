@@ -1,6 +1,6 @@
 ﻿// <copyright file="ActionCommand.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Macro.Grammar.Commands;
@@ -17,16 +17,16 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 ///     The /action command.
 /// </summary>
-[MacroCommand("action", "ac", "Execute an action and wait for the server to respond.", new[] { "wait", "unsafe", "condition" }, new[] { "/ac Groundwork", "/ac \"Tricks of the Trade\"" }, RequireLogin = true)]
+[MacroCommand("action", "ac", "Execute an action and wait for the server to respond.", ["wait", "unsafe", "condition"], ["/ac Groundwork", "/ac \"Tricks of the Trade\""], RequireLogin = true)]
 internal class ActionCommand : MacroCommand
 {
     private const int SafeCraftMaxWait = 5000;
 
     private static readonly Regex Regex = new(@"^/(?:ac|action)\s+(?<name>.*?)\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-    private static readonly HashSet<string> CraftingActionNames = new();
+    private static readonly HashSet<string> CraftingActionNames = [];
 
     // For when quality is at 100%, skip it if the action is one of these.
-    private static readonly HashSet<string> CraftingQualityActionNames = new();
+    private static readonly HashSet<string> CraftingQualityActionNames = [];
 
     private readonly string actionName;
     private readonly UnsafeModifier unsafeMod;

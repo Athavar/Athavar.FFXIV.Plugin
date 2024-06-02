@@ -1,6 +1,6 @@
 // <copyright file="FrameworkManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 
-internal class FrameworkManager : IDisposable, IFrameworkManager
+internal sealed class FrameworkManager : IDisposable, IFrameworkManager
 {
     private readonly IDalamudServices dalamudServices;
     private readonly List<RegisteredDelegation> onUpdateDelegates;
@@ -23,8 +23,8 @@ internal class FrameworkManager : IDisposable, IFrameworkManager
     {
         this.dalamudServices = dalamudServices;
 
-        this.onUpdateDelegates = new List<RegisteredDelegation>();
-        this.onUpdateDelegatesArray = Array.Empty<RegisteredDelegation>();
+        this.onUpdateDelegates = [];
+        this.onUpdateDelegatesArray = [];
         this.dalamudServices.Framework.Update += this.FrameworkOnUpdate;
     }
 

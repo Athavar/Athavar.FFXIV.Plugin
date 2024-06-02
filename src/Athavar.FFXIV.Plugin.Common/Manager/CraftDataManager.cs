@@ -1,6 +1,6 @@
 // <copyright file="CraftDataManager.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
@@ -22,7 +22,7 @@ internal sealed class CraftDataManager : ICraftDataManager
     private static readonly Regex WaitRegex = new(@"(?<modifier><wait\.(?<wait>\d+(?:\.\d+)?)(?:-(?<until>\d+(?:\.\d+)?))?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private static readonly CraftingClass?[] AllCraftingClass =
-    {
+    [
         CraftingClass.CRP,
         CraftingClass.BSM,
         CraftingClass.ARM,
@@ -31,7 +31,7 @@ internal sealed class CraftDataManager : ICraftDataManager
         CraftingClass.WVR,
         CraftingClass.ALC,
         CraftingClass.CUL,
-    };
+    ];
 
     private readonly Dictionary<CraftingSkills, ICraftDataManager.CraftSkillData> craftSkillDatas = new();
 
@@ -62,7 +62,7 @@ internal sealed class CraftDataManager : ICraftDataManager
         string? line;
         using var reader = new StringReader(text);
 
-        List<CraftingSkills> skillsList = new();
+        List<CraftingSkills> skillsList = [];
         while ((line = reader.ReadLine()) != null)
         {
             var match = WaitRegex.Match(line);

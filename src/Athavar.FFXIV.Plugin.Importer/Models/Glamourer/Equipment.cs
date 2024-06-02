@@ -1,6 +1,6 @@
 // <copyright file="Equipment.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 
 namespace Athavar.FFXIV.Plugin.Importer.Models.Glamourer;
@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Importer.Models.Glamourer;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Models.Constants;
 
-internal class Equipment
+internal sealed class Equipment
 {
     [JsonPropertyName("MainHand")]
     public Item MainHand { get; set; } = new();

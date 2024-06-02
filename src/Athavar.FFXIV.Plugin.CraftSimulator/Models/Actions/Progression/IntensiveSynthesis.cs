@@ -1,12 +1,12 @@
 // <copyright file="IntensiveSynthesis.cs" company="Athavar">
 // Copyright (c) Athavar. All rights reserved.
-// Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
+// Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 
 internal sealed class IntensiveSynthesis : ProgressAction
 {
-    private static readonly uint[] IdsValue = { 100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322 };
+    private static readonly uint[] IdsValue = [100315, 100316, 100317, 100318, 100319, 100320, 100321, 100322];
 
     /// <inheritdoc/>
     public override int Level => 78;
