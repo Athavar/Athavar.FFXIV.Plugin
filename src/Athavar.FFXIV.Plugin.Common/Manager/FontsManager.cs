@@ -10,6 +10,8 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Interface;
+using Dalamud.Interface.ManagedFontAtlas;
+using Dalamud.Interface.Utility;
 using ImGuiNET;
 
 public class FontsManager : IDisposable, IFontsManager
@@ -17,26 +19,23 @@ public class FontsManager : IDisposable, IFontsManager
     public static readonly List<string> DefaultFontKeys = new() { "Expressway_24", "Expressway_20", "Expressway_16" };
 
     private static FontsManager? instance;
-    private static UiBuilder? uiBuilder;
-    private static string userFontPath = string.Empty;
 
     private readonly IPluginLogger logger;
-    private readonly Dictionary<string, ImFontPtr> imGuiFonts;
-    private IEnumerable<IFontsManager.FontData> fontData;
+    private readonly Dictionary<string, IFontHandle> imGuiFonts = [];
+    private readonly string userFontPath = string.Empty;
+    private readonly UiBuilder uiBuilder;
     private string[] fontList;
 
     public FontsManager(IDalamudServices services, IEnumerable<IFontsManager.FontData> fonts)
     {
         this.logger = services.PluginLogger;
         instance = this;
-        this.fontData = fonts;
         this.fontList = new[] { Constants.FontsManager.DalamudFontKey };
-        this.imGuiFonts = new Dictionary<string, ImFontPtr>();
 
-        uiBuilder = services.PluginInterface.UiBuilder;
-        uiBuilder.BuildFonts += this.BuildFonts;
+        this.uiBuilder = services.PluginInterface.UiBuilder;
         /* uiBuilder.RebuildFonts(); */
-        userFontPath = $"{services.PluginInterface.GetPluginConfigDirectory()}\\Fonts\\";
+        this.BuildFonts(fonts);
+        this.userFontPath = $"{services.PluginInterface.GetPluginConfigDirectory()}\\Fonts\\";
     }
 
     public static string DefaultBigFontKey => DefaultFontKeys[0];
@@ -56,17 +55,15 @@ public class FontsManager : IDisposable, IFontsManager
         }
 
         if (string.IsNullOrEmpty(fontKey) ||
-            fontKey.Equals(Constants.FontsManager.DalamudFontKey) ||
-            !manager!.imGuiFonts.Keys.Contains(fontKey))
+            !manager!.imGuiFonts.TryGetValue(fontKey, out var fontHandler))
         {
-            return new FontScope(false);
+            return new(null);
         }
 
-        ImGui.PushFont(manager.imGuiFonts[fontKey]);
-        return new FontScope(true);
+        return new(fontHandler);
     }
 
-    public static string[] GetFontList() => instance?.fontList ?? Array.Empty<string>();
+    public static string[] GetFontList() => instance?.fontList ?? [];
 
     public static string GetFontKey(IFontsManager.FontData font)
     {
@@ -88,13 +85,11 @@ public class FontsManager : IDisposable, IFontsManager
         return string.Empty;
     }
 
-    public static string GetUserFontPath() => userFontPath;
-
     public static string[] GetFontNamesFromPath(string? path)
     {
         if (string.IsNullOrEmpty(path))
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         string[] fonts;
@@ -104,20 +99,23 @@ public class FontsManager : IDisposable, IFontsManager
         }
         catch
         {
-            fonts = Array.Empty<string>();
+            fonts = [];
         }
 
         return fonts
-           .Select(f => f
-               .Replace(path, string.Empty)
-               .Replace(".ttf", string.Empty, StringComparison.OrdinalIgnoreCase))
+           .Select(
+                f => f
+                   .Replace(path, string.Empty)
+                   .Replace(".ttf", string.Empty, StringComparison.OrdinalIgnoreCase))
            .ToArray();
     }
+
+    public string GetUserFontPath() => this.userFontPath;
 
     public void CopyPluginFontsToUserPath()
     {
         var pluginFontPath = GetPluginFontPath();
-        var userFontPath = GetUserFontPath();
+        var userFontPath = this.GetUserFontPath();
 
         if (string.IsNullOrEmpty(pluginFontPath) || string.IsNullOrEmpty(userFontPath))
         {
@@ -148,7 +146,7 @@ public class FontsManager : IDisposable, IFontsManager
         }
         catch
         {
-            pluginFonts = Array.Empty<string>();
+            pluginFonts = [];
         }
 
         foreach (var font in pluginFonts)
@@ -172,54 +170,6 @@ public class FontsManager : IDisposable, IFontsManager
         }
     }
 
-    public void BuildFonts()
-    {
-        var fontDir = GetUserFontPath();
-
-        if (string.IsNullOrEmpty(fontDir))
-        {
-            return;
-        }
-
-        this.imGuiFonts.Clear();
-        var io = ImGui.GetIO();
-
-        foreach (var font in this.fontData)
-        {
-            var fontPath = $"{fontDir}{font.Name}.ttf";
-            if (!File.Exists(fontPath))
-            {
-                continue;
-            }
-
-            try
-            {
-                var ranges = this.GetCharacterRanges(font, io);
-
-                var imFont = !ranges.HasValue
-                    ? io.Fonts.AddFontFromFileTTF(fontPath, font.Size)
-                    : io.Fonts.AddFontFromFileTTF(fontPath, font.Size, null, ranges.Value.Data);
-
-                this.imGuiFonts.Add(GetFontKey(font), imFont);
-            }
-            catch (Exception ex)
-            {
-                this.logger.Error($"Failed to load font from path [{fontPath}]!");
-                this.logger.Error(ex.ToString());
-            }
-        }
-
-        var fontList = new List<string> { Constants.FontsManager.DalamudFontKey };
-        fontList.AddRange(this.imGuiFonts.Keys);
-        this.fontList = fontList.ToArray();
-    }
-
-    public void UpdateFonts(IEnumerable<IFontsManager.FontData> fonts)
-    {
-        this.fontData = fonts;
-        uiBuilder?.RebuildFonts();
-    }
-
     public int GetFontIndex(string fontKey)
     {
         for (var i = 0; i < this.fontList.Length; i++)
@@ -236,8 +186,6 @@ public class FontsManager : IDisposable, IFontsManager
     public void Dispose()
     {
         this.Dispose(true);
-        instance = null;
-        uiBuilder = null;
         GC.SuppressFinalize(this);
     }
 
@@ -245,18 +193,69 @@ public class FontsManager : IDisposable, IFontsManager
     {
         if (disposing)
         {
-            if (uiBuilder != null)
-            {
-                uiBuilder.BuildFonts -= this.BuildFonts;
-            }
-
-            this.imGuiFonts.Clear();
+            this.DisposeFontHandles();
         }
     }
 
-    private unsafe ImVector? GetCharacterRanges(IFontsManager.FontData font, ImGuiIOPtr io)
+    private void DisposeFontHandles()
     {
-        if (!font.Chinese && !font.Korean)
+        foreach (var (_, value) in this.imGuiFonts)
+        {
+            value.Dispose();
+        }
+
+        this.imGuiFonts.Clear();
+    }
+
+    private void BuildFonts(IEnumerable<IFontsManager.FontData> fontData)
+    {
+        var fontDir = this.GetUserFontPath();
+
+        if (string.IsNullOrEmpty(fontDir))
+        {
+            return;
+        }
+
+        this.DisposeFontHandles();
+        var io = ImGui.GetIO();
+
+        foreach (var font in fontData)
+        {
+            var fontPath = $"{fontDir}{font.Name}.ttf";
+            if (!File.Exists(fontPath))
+            {
+                continue;
+            }
+
+            try
+            {
+                var imFont = this.uiBuilder.FontAtlas.NewDelegateFontHandle(
+                    e => e.OnPreBuild(
+                        tk => tk.AddFontFromFile(
+                            fontPath,
+                            new()
+                            {
+                                SizePx = font.Size,
+                                GlyphRanges = this.GetCharacterRanges(font, io),
+                            })));
+
+                this.imGuiFonts.Add(GetFontKey(font), imFont);
+            }
+            catch (Exception ex)
+            {
+                this.logger.Error($"Failed to load font from path [{fontPath}]!");
+                this.logger.Error(ex.ToString());
+            }
+        }
+
+        var fontList = new List<string> { Constants.FontsManager.DalamudFontKey };
+        fontList.AddRange(this.imGuiFonts.Keys);
+        this.fontList = fontList.ToArray();
+    }
+
+    private unsafe ushort[]? GetCharacterRanges(IFontsManager.FontData font, ImGuiIOPtr io)
+    {
+        if (font is { Chinese: false, Korean: false })
         {
             return null;
         }
@@ -275,23 +274,19 @@ public class FontsManager : IDisposable, IFontsManager
             builder.AddRanges(io.Fonts.GetGlyphRangesKorean());
         }
 
-        builder.BuildRanges(out var ranges);
-
-        return ranges;
+        return builder.BuildRangesToArray();
     }
 
     public sealed class FontScope : IDisposable
     {
-        private readonly bool fontPushed;
+        private readonly IFontHandle? handle;
 
-        public FontScope(bool fontPushed) => this.fontPushed = fontPushed;
-
-        public void Dispose()
+        internal FontScope(IFontHandle? handle)
         {
-            if (this.fontPushed)
-            {
-                ImGui.PopFont();
-            }
+            this.handle = handle;
+            this.handle?.Push();
         }
+
+        public void Dispose() => this.handle?.Pop();
     }
 }

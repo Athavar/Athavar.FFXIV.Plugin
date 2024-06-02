@@ -72,7 +72,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonRadioButton(AtkComponentRadioButton* target, uint which, EventType type = EventType.CHANGE) => this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
+    protected void ClickAddonRadioButton(AtkComponentButton* target, uint which, EventType type = EventType.CHANGE) => this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.

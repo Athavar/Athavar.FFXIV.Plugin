@@ -7,10 +7,6 @@ namespace Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 
 public interface IFontsManager
 {
-    void BuildFonts();
-
-    void UpdateFonts(IEnumerable<FontData> fonts);
-
     int GetFontIndex(string fontKey);
 
     public struct FontData

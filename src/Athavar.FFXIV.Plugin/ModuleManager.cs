@@ -54,6 +54,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
     public void LoadModules()
     {
+        var lockObject = new object();
         void LoadModule(Type moduleType)
         {
             var attribute = moduleType.GetCustomAttribute<ModuleAttribute>();
@@ -86,7 +87,13 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
                 }
             }
 
-            if (this.modules.TryAdd(attribute.Name, definition))
+            bool result;
+            lock (lockObject)
+            {
+                result = this.modules.TryAdd(attribute.Name, definition);
+            }
+
+            if (result)
             {
                 if (definition.Enabled)
                 {

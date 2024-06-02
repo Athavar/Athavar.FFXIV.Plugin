@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(SolutionDir)\src\dalamud.targets"/>
     <PropertyGroup>
-        <LangVersion>11</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 

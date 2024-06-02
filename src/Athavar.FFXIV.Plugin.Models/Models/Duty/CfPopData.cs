@@ -14,7 +14,6 @@ public struct CfPopData
     private byte notifyType;
 
     // 1 byte
-
     [FieldOffset(0x08)]
     private byte cc0;
 
