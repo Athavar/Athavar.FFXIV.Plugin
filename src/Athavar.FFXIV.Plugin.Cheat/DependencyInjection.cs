@@ -8,10 +8,5 @@ using Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCheatModule(this IServiceCollection services)
-    {
-        services.AddSingleton<PluginManagerWrapper>();
-
-        return services;
-    }
+    public static IServiceCollection AddCheatModule(this IServiceCollection services) => services;
 }

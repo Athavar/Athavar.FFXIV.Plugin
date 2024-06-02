@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common;
 
+using Athavar.FFXIV.Plugin.Common.DalamudWrapper;
 using Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
@@ -18,6 +19,7 @@ public static class DependencyInjection
     public static IServiceCollection AddCommon(this IServiceCollection services)
     {
         services.AddSingleton<IDalamudServices, DalamudServices>()
+           .AddSingleton<IPluginManagerWrapper, PluginManagerWrapper>()
            .AddSingleton<ILocalizeManager, LocalizeManager>()
            .AddSingleton<IIconManager, IconManager>()
            .AddSingleton<ICraftDataManager, CraftDataManager>()

@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftQueue.Extension;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
+using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
@@ -57,7 +58,6 @@ internal sealed class QueueTab : Tab
     private int recipeIdx = -1;
     private string recipeSearch = string.Empty;
 
-    private int rotationIdx = -1;
     private bool rotationHq;
 
     private int foodIdx = -1;
@@ -68,7 +68,7 @@ internal sealed class QueueTab : Tab
 
     private RecipeExtended? selectedRecipe;
     private Gearset? selectedGearset;
-    private RotationNode? selectedRotation;
+    private IRotationResolver? selectedRotationResolver;
     private BuffInfo? selectedFood;
     private BuffInfo? selectedPotion;
     private (uint ItemId, byte Amount)[] hqIngredients = [];
@@ -112,6 +112,8 @@ internal sealed class QueueTab : Tab
     /// <inheritdoc/>
     public override string Identifier => "Tab-CQQueue";
 
+    public List<IRotationResolver> ExternalResolver { get; } = new();
+
     private CraftQueueConfiguration Configuration { get; }
 
     private ClientLanguage ClientLanguage { get; }
@@ -138,7 +140,6 @@ internal sealed class QueueTab : Tab
         {
             // refresh data that could have changed.
             this.rotations = this.Configuration.GetAllNodes().Where(node => node is RotationNode).Cast<RotationNode>().ToArray();
-            this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
             this.SetupSimulation();
         }
 
@@ -147,6 +148,19 @@ internal sealed class QueueTab : Tab
         {
             this.UpdateCurrentIngredients();
             this.updateTick = 0;
+
+            if (this.selectedRotationResolver is { } rotationResolver)
+            {
+                var name = rotationResolver.Name;
+
+                // check selected rotation exists
+                if (this.ExternalResolver.All(r => r.Name != name) && this.rotations.All(r => r.Name != name))
+                {
+                    // reset selection.
+                    this.selectionChanged = true;
+                    this.selectedRotationResolver = null;
+                }
+            }
         }
 
         ImGui.Columns(2);
@@ -168,7 +182,6 @@ internal sealed class QueueTab : Tab
             this.rotations = null;
             this.craftingSimulation = null;
             this.validGearsets = null;
-            this.rotationIdx = -1;
         }
     }
 
@@ -204,8 +217,13 @@ internal sealed class QueueTab : Tab
             this.DisplayIngredient();
             ImGui.Separator();
             this.RunSimulation();
-            this.DisplaySimulationResult();
-            this.DisplayCraftingSteps();
+            if (this.selectedRotationResolver is IStaticRotationResolver)
+            {
+                // only static resolver can be simulated.
+                this.DisplaySimulationResult();
+                this.DisplayCraftingSteps();
+            }
+
             ImGui.EndChild();
         }
     }
@@ -405,18 +423,27 @@ internal sealed class QueueTab : Tab
 
     private void DisplayRotationSelect()
     {
-        var previewValue = this.selectedRotation?.Name ?? "Select a rotation";
+        var previewValue = this.selectedRotationResolver?.Name ?? "Select a rotation";
         if (ImGui.BeginCombo("##cq-rotation-picker", previewValue))
         {
             ImGuiEx.TextTooltip("Try to find rotation with the best HQ percentage");
 
+            for (var index = 0; index < this.ExternalResolver.Count; index++)
+            {
+                var resolver = this.ExternalResolver[index];
+                if (ImGui.Selectable($"{resolver.Name}##cq-ex-rotation-{index}", resolver.Name == this.selectedRotationResolver?.Name))
+                {
+                    this.selectedRotationResolver = resolver;
+                    this.selectionChanged = true;
+                }
+            }
+
             for (var index = 0; index < this.rotations?.Length; ++index)
             {
                 var rotation = this.rotations[index];
-                if (ImGui.Selectable($"{rotation.Name}##cq-rotation-{index}", index == this.rotationIdx))
+                if (ImGui.Selectable($"{rotation.Name}##cq-rotation-{index}", rotation.Name == this.selectedRotationResolver?.Name))
                 {
-                    this.selectedRotation = rotation;
-                    this.rotationIdx = index;
+                    this.selectedRotationResolver = new RotationNodeResolver(rotation);
                     this.selectionChanged = true;
                 }
             }
@@ -460,7 +487,7 @@ internal sealed class QueueTab : Tab
             ImGui.BeginDisabled();
         }
 
-        if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedGearset is not null && this.selectedRotation is not null)
+        if (ImGui.Button("Queue##queue-btn") && this.selectedRecipe is not null && this.selectedGearset is not null && this.selectedRotationResolver is not null)
         {
             var flags = this.flags;
             if (ctrlHeld || !valid)
@@ -468,20 +495,17 @@ internal sealed class QueueTab : Tab
                 flags |= CraftingJobFlags.TrialSynthesis;
             }
 
-            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedGearset, this.selectedRotation, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, flags);
-        }
-
-        if (checkResult.ValidCraftRequirements)
-        {
-            if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-            {
-                ImGuiEx.TextTooltip("hold control to queue it as trail synthesis");
-            }
+            this.craftQueue.CreateJob(this.selectedRecipe, this.selectedGearset, this.selectedRotationResolver, (uint)this.craftCount, this.selectedFood, this.selectedPotion, this.hqIngredients, flags);
         }
 
         if (!valid)
         {
             ImGui.EndDisabled();
+        }
+
+        if (checkResult.ValidCraftRequirements)
+        {
+            ImGuiEx.TextTooltip(ctrlHeld ? "trial synthesis" : "hold control to queue as trial synthesis", ImGuiHoveredFlags.AllowWhenDisabled);
         }
 
         if (!checkResult.ValidCraftRequirements || !checkResult.HasIngredients)
@@ -603,7 +627,7 @@ internal sealed class QueueTab : Tab
 
         ImGui.Separator();
 
-        if (this.simulationResult is null || this.selectedRotation is null)
+        if (this.simulationResult is null || this.selectedRotationResolver is null)
         {
             return;
         }
@@ -1006,19 +1030,20 @@ internal sealed class QueueTab : Tab
         this.selectionChanged = true;
     }
 
-    private void RunSimulation()
+    private void RunSimulation(bool force = false)
     {
-        if (this.selectionChanged && this.craftingSimulation is not null)
+        if ((force || this.selectionChanged) && this.craftingSimulation is not null)
         {
             this.craftingSimulation.CurrentStatModifiers = this.GetCurrentStatBuffs().ToArray();
-            if (this.selectedRotation is not null)
+            if (this.selectedRotationResolver is IStaticRotationResolver staticRotationResolver)
             {
-                this.simulationResult = this.craftingSimulation.Run(this.selectedRotation.Rotations, true);
+                this.simulationResult = this.craftingSimulation.Run(staticRotationResolver.Rotation, true);
                 this.requiredCrafterDelineations = this.simulationResult.Steps.Count(s => s is { Success: true, Skill.Skill: CraftingSkills.HearthAndSoul or CraftingSkills.CarefulObservation });
             }
             else
             {
                 this.craftingSimulation.Reset();
+                this.simulationResult = null;
                 this.requiredCrafterDelineations = 0;
             }
 
@@ -1063,8 +1088,8 @@ internal sealed class QueueTab : Tab
         var ci = this.craftQueue.CommandInterface;
 
         var recipeSelected = this.recipeIdx > -1;
-        var rotationSelected = this.selectedRotation is not null;
-        var haveGearset = this.simulationResult?.Success == true;
+        var rotationSelected = this.selectedRotationResolver is not null;
+        var haveGearset = this.selectedRotationResolver?.ResolverType == ResolverType.Dynamic || this.simulationResult?.Success == true;
         var haveReqItem = this.selectedRecipe.ItemReq is null || this.selectedGearset.ItemIds.Contains(this.selectedRecipe.ItemReq.GetValueOrDefault());
         var haveFood = this.selectedFood is null || ci.CountItem(this.selectedFood.ItemId, this.selectedFood.IsHq) > 0;
         var havePotion = this.selectedPotion is null || ci.CountItem(this.selectedPotion.ItemId, this.selectedPotion.IsHq) > 0;
@@ -1217,6 +1242,8 @@ internal sealed class QueueTab : Tab
 
         if (success.Count == 0)
         {
+            // reset state to last simulation.
+            this.RunSimulation(true);
             return;
         }
 
@@ -1224,8 +1251,7 @@ internal sealed class QueueTab : Tab
         var winner = (this.rotationHq ? success.OrderByDescending(s => s.Result.HqPercent).ThenBy(StepOrder) : success.OrderBy(StepOrder))
            .FirstOrDefault();
 
-        this.selectedRotation = winner.Node;
-        this.rotationIdx = Array.IndexOf(this.rotations, this.selectedRotation);
+        this.selectedRotationResolver = new RotationNodeResolver(winner.Node);
         this.selectionChanged = true;
     }
 

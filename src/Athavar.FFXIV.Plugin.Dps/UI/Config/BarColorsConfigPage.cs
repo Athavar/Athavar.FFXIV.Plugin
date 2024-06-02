@@ -10,15 +10,11 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models;
 using ImGuiNET;
 
-internal sealed class BarColorsConfigPage : IConfigPage
+internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
 {
-    private readonly MeterWindow window;
-
-    public BarColorsConfigPage(MeterWindow window) => this.window = window;
-
     public string Name => "Colors";
 
-    private BarColorsConfig Config => this.window.Config.BarColorsConfig;
+    private BarColorsConfig Config => window.Config.BarColorsConfig;
 
     public IConfig GetDefault() => new BarColorsConfig();
 
@@ -233,7 +229,7 @@ internal sealed class BarColorsConfigPage : IConfigPage
             // Save if changed
             if (change)
             {
-                this.window.Save();
+                window.Save();
             }
 
             ImGui.EndChild();

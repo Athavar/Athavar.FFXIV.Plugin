@@ -58,9 +58,18 @@ internal sealed partial class CraftQueue : IDisposable
 
     internal QueueState Paused { get; private set; } = QueueState.Paused;
 
-    public bool CreateJob(RecipeExtended recipe, Gearset gearset, RotationNode rotationNode, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public bool CreateJob(RecipeExtended recipe, Gearset gearset, IRotationResolver rotationResolver, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
-        this.queuedJobs.Add(new StaticCraftingJob(this, recipe, new RotationNodeResolver(rotationNode), gearset, count, new(food, potion), hqIngredients, flags));
+        BuffConfig buffConfig = new(food, potion);
+        if (rotationResolver is IStaticRotationResolver staticRotationResolver)
+        {
+            this.queuedJobs.Add(new StaticCraftingJob(this, recipe, staticRotationResolver, gearset, count, buffConfig, hqIngredients, flags));
+        }
+        else
+        {
+            this.queuedJobs.Add(new CraftingJob(this, recipe, rotationResolver, gearset, count, buffConfig, hqIngredients, flags));
+        }
+
         return true;
     }
 

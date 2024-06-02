@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Models.Duty;
 
 public sealed class DutyStartedEventArgs : EventArgs
 {
-    public DateTimeOffset StartTime { get; init; }
+    public required DateTimeOffset StartTime { get; init; }
 
-    public DutyInfo DutyInfo { get; init; }
+    public required DutyInfo DutyInfo { get; init; }
 }

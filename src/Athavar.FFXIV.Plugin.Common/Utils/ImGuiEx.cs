@@ -126,17 +126,18 @@ public static class ImGuiEx
     {
         var style = ImGui.GetStyle();
 
-        return GetIconWidth(icon) + (style.FramePadding.X * 2);
+        return GetIconWidth(icon) + style.FramePadding.X * 2;
     }
 
     /// <summary>
     ///     Creates a simple text tooltip.
     /// </summary>
     /// <param name="text">Text to display.</param>
+    /// <param name="flags">Hovered Flags.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void TextTooltip(string text)
+    public static void TextTooltip(string text, ImGuiHoveredFlags flags = ImGuiHoveredFlags.None)
     {
-        if (ImGui.IsItemHovered())
+        if (ImGui.IsItemHovered(flags))
         {
             ImGui.BeginTooltip();
             ImGui.TextUnformatted(text);

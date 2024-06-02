@@ -22,13 +22,3 @@ public enum AllianceFlag : byte
     /// </summary>
     LightAlliance = 0x02,
 }
-
-[Flags]
-public enum PartyMemberFlag
-{
-    None = 0x00,
-    Fill = 0x01,     // Contains player
-    Debuff = 0x02,   // alliance only
-    Reserved = 0x04, // slot is reserved aand to be filled
-    Synced = 0x08,
-}

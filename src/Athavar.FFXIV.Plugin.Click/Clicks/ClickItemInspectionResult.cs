@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public sealed class ClickItemInspectionResult : ClickBase<ClickItemInspectionResult, AddonItemInspectionResult>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickItemInspectionResult" /> class.
+    ///     Initializes a new instance of the <see cref="ClickItemInspectionResult"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickItemInspectionResult(nint addon = default)
@@ -42,5 +42,5 @@ public sealed class ClickItemInspectionResult : ClickBase<ClickItemInspectionRes
     ///     Click the close button.
     /// </summary>
     [ClickName("item_inspection_result_close")]
-    public void Close() => this.ClickAddonButtonIndex(3, 0xFFFF_FFFF);
+    public void CloseResult() => this.ClickAddonButtonIndex(3, 0xFFFF_FFFF);
 }

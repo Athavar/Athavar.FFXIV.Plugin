@@ -8,44 +8,56 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
+using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud;
+using Dalamud.Plugin;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class CraftQueueTab : Tab
 {
+    private readonly IServiceProvider serviceProvider;
+    private readonly IDalamudServices dalamudServices;
     private readonly TabBarHandler tabBarHandler;
+    private readonly List<IRotationResolver> rotationResolvers;
 
-    private string debugInput = string.Empty;
+    private bool featureEnabledCraftimizer;
 
     public CraftQueueTab(IServiceProvider serviceProvider, CraftQueue craftQueue, CraftQueueConfiguration configuration)
     {
         this.Configuration = configuration;
 
-        var dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
-        var dataManager = dalamudServices.DataManager;
+        this.serviceProvider = serviceProvider;
+        this.dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
+        var dataManager = this.dalamudServices.DataManager;
 
         var commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
         var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
         var chatManager = serviceProvider.GetRequiredService<IChatManager>();
         var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
         var craftSkillManager = serviceProvider.GetRequiredService<ICraftDataManager>();
-        this.ClientLanguage = dalamudServices.ClientState.ClientLanguage;
+        this.ClientLanguage = this.dalamudServices.ClientState.ClientLanguage;
 
-        this.tabBarHandler = new TabBarHandler(dalamudServices.PluginLogger, "CraftQueueTabBar");
+        var queueTab = new QueueTab(craftQueue, iconCacheManager, craftSkillManager, this.Configuration, this.ClientLanguage);
+        this.rotationResolvers = queueTab.ExternalResolver;
+
+        this.tabBarHandler = new TabBarHandler(this.dalamudServices.PluginLogger, "CraftQueueTabBar");
         this.tabBarHandler
            .Add(new StatsTab(craftQueue))
            .Add(new RotationTab(craftQueue, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
-           .Add(new QueueTab(craftQueue, iconCacheManager, craftSkillManager, this.Configuration, this.ClientLanguage))
+           .Add(queueTab)
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG
            .Add(new DebugTab(gearsetManager, commandInterface, craftQueue))
 #endif
             ;
+
+        this.dalamudServices.PluginInterface.ActivePluginsChanged += this.PluginInterfaceOnActivePluginsChanged;
+        this.PluginInterfaceOnActivePluginsChanged(PluginListInvalidationKind.Update, false);
     }
 
     /// <inheritdoc/>
@@ -65,6 +77,31 @@ internal sealed class CraftQueueTab : Tab
     ///     Draw this tab.
     /// </summary>
     public override void Draw() => this.tabBarHandler.Draw();
+
+    public override void Dispose()
+    {
+        this.dalamudServices.PluginInterface.ActivePluginsChanged -= this.PluginInterfaceOnActivePluginsChanged;
+        base.Dispose();
+    }
+
+    private void PluginInterfaceOnActivePluginsChanged(PluginListInvalidationKind kind, bool affectedthisplugin)
+    {
+        // TODO: install check not working correct. ActivePluginsChanged not triggering
+        var foundCraftimizer = this.dalamudServices.PluginInterface.InstalledPlugins.Any(p => p is { InternalName: "Craftimizer", IsLoaded: true });
+        if (this.featureEnabledCraftimizer != foundCraftimizer)
+        {
+            if (foundCraftimizer)
+            {
+                this.rotationResolvers.Add(ActivatorUtilities.CreateInstance<CraftimizerResolver>(this.serviceProvider));
+            }
+            else
+            {
+                this.rotationResolvers.RemoveAll(o => o.GetType() == typeof(CraftimizerResolver));
+            }
+
+            this.featureEnabledCraftimizer = foundCraftimizer;
+        }
+    }
 
     private class DebugTab : Tab
     {

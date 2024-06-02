@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Config;
 using Dalamud.Game.ClientState.Keys;
 using ImGuiNET;
 
-internal sealed class GeneralConfigPage : IConfigPage
+internal sealed class GeneralConfigPage(MeterWindow window) : IConfigPage
 {
     [JsonIgnore]
     private static readonly string[] MeterTypeOptions = Enum.GetNames(typeof(MeterDataType));
@@ -33,16 +33,12 @@ internal sealed class GeneralConfigPage : IConfigPage
         VirtualKey.SHIFT,
     ];
 
-    private readonly MeterWindow window;
-
-    public GeneralConfigPage(MeterWindow window) => this.window = window;
-
     public string Name => "General";
 
     [JsonIgnore]
     public bool Preview { get; set; }
 
-    private GeneralConfig Config => this.window.Config.GeneralConfig;
+    private GeneralConfig Config => window.Config.GeneralConfig;
 
     public IConfig GetDefault() => new GeneralConfig();
 
@@ -157,7 +153,7 @@ internal sealed class GeneralConfigPage : IConfigPage
             // Save if changed
             if (change)
             {
-                this.window.Save();
+                window.Save();
             }
 
             ImGui.EndChild();

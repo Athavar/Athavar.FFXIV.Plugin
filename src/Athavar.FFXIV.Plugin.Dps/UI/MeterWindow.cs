@@ -253,7 +253,7 @@ internal sealed class MeterWindow : IConfigurable
         this.unlocked = !locked;
         this.hovered = ImGui.IsMouseHoveringRect(pos, pos + size);
         this.dragging = this.lastFrameWasDragging && ImGui.IsMouseDown(ImGuiMouseButton.Left);
-        this.locked = ((this.unlocked && !this.lastFrameWasUnlocked) || !this.hovered) && !this.dragging;
+        this.locked = (this.unlocked && !this.lastFrameWasUnlocked || !this.hovered) && !this.dragging;
         this.lastFrameWasDragging = this.hovered || this.dragging;
     }
 

@@ -214,7 +214,7 @@ internal abstract class BaseCraftingJob
         var current = this.queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
         var ci = this.queue.CommandInterface;
 
-        this.queue.DalamudServices.PluginLogger.Information(" selected:{0} current:{1}", this.gearset.Id, current.Id);
+        // this.queue.DalamudServices.PluginLogger.Information(" selected:{0} current:{1}", this.gearset.Id, current.Id);
         if (this.gearset.Id == current.Id)
         {
             this.OnCheckCurrentEquipment(current);
@@ -417,7 +417,7 @@ internal abstract class BaseCraftingJob
         var recipeId = this.Recipe.RecipeId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
-        if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
+        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis) || ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId))
         {
             ci.OpenRecipeByRecipeId(recipeId);
             return -500;
@@ -520,7 +520,7 @@ internal abstract class BaseCraftingJob
 
         var ci = this.queue.CommandInterface;
 
-        if (this.RotationCurrentStep >= this.rotationResolver.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
+        if (this.rotationResolver.Length != -1 && this.RotationCurrentStep >= this.rotationResolver.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
         {
             if (ci.IsAddonVisible(Constants.Addons.Synthesis))
             {
@@ -632,7 +632,7 @@ internal abstract class BaseCraftingJob
         // check forced potion apply
         if (this.BuffConfig.Potion is not null && this.flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
         {
-            return BuffApplyTest.Food;
+            return BuffApplyTest.Potion;
         }
 
         return this.CalcMissingBuffs(currentStatModifier);

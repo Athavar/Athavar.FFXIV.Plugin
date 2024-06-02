@@ -15,7 +15,7 @@ using Dalamud.Plugin;
 internal class EnablePeepingTomPvP : Cheat
 {
     private readonly IDalamudServices dalamudServices;
-    private readonly PluginManagerWrapper pluginManagerWrapper;
+    private readonly IPluginManagerWrapper pluginManagerWrapper;
 
     private PropertyInfo? pvpField;
     private IDalamudPlugin? plugin;
@@ -25,7 +25,7 @@ internal class EnablePeepingTomPvP : Cheat
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="pluginManagerWrapper"><see cref="pluginManagerWrapper"/> added by DI.</param>
-    public EnablePeepingTomPvP(IDalamudServices dalamudServices, PluginManagerWrapper pluginManagerWrapper)
+    public EnablePeepingTomPvP(IDalamudServices dalamudServices, IPluginManagerWrapper pluginManagerWrapper)
     {
         this.dalamudServices = dalamudServices;
         this.pluginManagerWrapper = pluginManagerWrapper;
@@ -63,16 +63,17 @@ internal class EnablePeepingTomPvP : Cheat
     }
 
     public override void OnTerritoryChange(ushort e)
-        => Task.Run(() =>
-        {
-            try
+        => Task.Run(
+            () =>
             {
-                Task.Delay(50);
-                this.pvpField?.SetValue(this.plugin, false);
-            }
-            catch (KeyNotFoundException)
-            {
-                this.dalamudServices.PluginLogger.Warning("Could not get territory for current zone");
-            }
-        });
+                try
+                {
+                    Task.Delay(50);
+                    this.pvpField?.SetValue(this.plugin, false);
+                }
+                catch (KeyNotFoundException)
+                {
+                    this.dalamudServices.PluginLogger.Warning("Could not get territory for current zone");
+                }
+            });
 }
