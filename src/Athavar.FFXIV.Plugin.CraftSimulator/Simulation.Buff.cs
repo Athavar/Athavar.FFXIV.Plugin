@@ -2,6 +2,7 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the GPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
+
 namespace Athavar.FFXIV.Plugin.CraftSimulator;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
@@ -51,10 +52,15 @@ public sealed partial class Simulation
     /// <param name="stacks">The count of stacks to add.</param>
     public void AddInnerQuietStacks(int stacks)
     {
+        if (this.CrafterStats.Level < 11)
+        {
+            // iq stacks are only added if level is above 11.
+            return;
+        }
+
         if (!this.HasBuff(Buffs.INNER_QUIET))
         {
-            this.effectiveBuffs.Add(
-                new EffectiveBuff(int.MaxValue, Math.Min(stacks, 10), Buffs.INNER_QUIET, this.Steps.Count));
+            this.effectiveBuffs.Add(new(int.MaxValue, Math.Min(stacks, 10), Buffs.INNER_QUIET, this.Steps.Count));
         }
         else
         {
