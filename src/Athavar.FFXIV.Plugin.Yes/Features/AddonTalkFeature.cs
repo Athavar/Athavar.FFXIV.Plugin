@@ -43,36 +43,54 @@ internal class AddonTalkFeature : OnSetupFeature
         }
 
         var target = this.module.DalamudServices.TargetManager.Target;
-        var targetName = this.module.LastSeenTalkTarget = target != null
+        var targetName = target != null
             ? this.module.GetSeStringText(target.Name)
             : string.Empty;
 
-        var nodes = this.Configuration.GetAllNodes().OfType<TalkEntryNode>();
-        foreach (var node in nodes)
+        if (this.module.LastSeenTalkTarget != targetName)
         {
-            if (!node.Enabled || string.IsNullOrEmpty(node.TargetText))
+            this.module.LastSeenTalkTarget = targetName;
+            this.module.LastSeenTargetSkip = false;
+            if (!string.IsNullOrEmpty(targetName))
             {
-                continue;
-            }
+                var nodes = this.Configuration.GetAllNodes().OfType<TalkEntryNode>();
+                foreach (var node in nodes)
+                {
+                    if (!node.Enabled || string.IsNullOrEmpty(node.TargetText))
+                    {
+                        continue;
+                    }
 
-            var matched = this.EntryMatchesTargetName(node, targetName);
-            if (!matched)
-            {
-                continue;
-            }
+                    var matched = this.EntryMatchesTargetName(node, targetName);
+                    if (!matched)
+                    {
+                        continue;
+                    }
 
-            if (this.clickTalk == null || this.lastTalkAddon != addon)
-            {
-                this.clickTalk = ClickTalk.Using(this.lastTalkAddon = addon);
+                    this.module.LastSeenTargetSkip = true;
+                    break;
+                }
             }
+        }
 
-            this.module.Logger.Debug("AddonTalk: Advancing");
-            this.clickTalk.Click();
-            return;
+        if (this.module.LastSeenTargetSkip)
+        {
+            this.Click(addon);
         }
     }
 
+    private void Click(IntPtr addon)
+    {
+        if (this.clickTalk == null || this.lastTalkAddon != addon)
+        {
+            this.clickTalk = ClickTalk.Using(this.lastTalkAddon = addon);
+        }
+
+        this.module.Logger.Debug("AddonTalk: Advancing");
+        this.clickTalk.Click();
+    }
+
     private bool EntryMatchesTargetName(TalkEntryNode node, string targetName)
-        => (node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false)) ||
-           (!node.TargetIsRegex && targetName.Contains(node.TargetText));
+        => node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false) ||
+           !node.TargetIsRegex && targetName.Contains(node.TargetText);
 }

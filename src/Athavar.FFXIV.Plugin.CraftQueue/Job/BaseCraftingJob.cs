@@ -554,8 +554,11 @@ internal abstract class BaseCraftingJob
         // maxQuality check
         try
         {
-            if (c.QualitySkip && skill.Action.ActionType is ActionType.Quality
-                              && ci.HasMaxQuality())
+            // only check for quality skip after first crafting action. The Synthesis addon is not reset in time for the first action.
+            if (this.currentRotationStep > 0 &&
+                c.QualitySkip &&
+                skill.Action.ActionType is ActionType.Quality &&
+                ci.HasMaxQuality())
             {
                 ++this.currentRotationStep;
                 return -1;

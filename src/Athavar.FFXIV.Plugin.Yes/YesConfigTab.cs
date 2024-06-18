@@ -664,6 +664,7 @@ internal sealed class YesConfigTab : Tab
                 ? this.module.GetSeStringText(target.Name)
                 : string.Empty;
 
+            this.module.LastSeenTargetSkip = true;
             var newNode = new TalkEntryNode { Enabled = true, TargetText = targetName };
             this.TalkRootFolder.Children.Add(newNode);
             this.Configuration.Save();

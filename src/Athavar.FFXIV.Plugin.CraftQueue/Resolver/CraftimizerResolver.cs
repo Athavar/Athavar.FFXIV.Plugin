@@ -15,7 +15,7 @@ internal class CraftimizerResolver(IPluginManagerWrapper pluginManagerWrapper, I
 
     public ResolverType ResolverType => ResolverType.Dynamic;
 
-    public string Name => "[Dynamic] Craftimizer";
+    public string Name => "[Dynamic][Test] Craftimizer";
 
     public int Length => -1;
 

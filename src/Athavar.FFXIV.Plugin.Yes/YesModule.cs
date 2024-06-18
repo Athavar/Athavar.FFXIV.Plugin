@@ -140,6 +140,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     internal string LastSeenTalkTarget { get; set; } = string.Empty;
 
     /// <summary>
+    ///     Gets or sets the last seen talk target to be skip.
+    /// </summary>
+    internal bool LastSeenTargetSkip { get; set; }
+
+    /// <summary>
     ///     Gets the datetime when the escape button was last pressed.
     /// </summary>
     internal DateTime EscapeLastPressed { get; private set; } = DateTime.MinValue;
@@ -421,6 +426,7 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         }
 
         var newNode = new TalkEntryNode { Enabled = true, TargetText = target };
+        this.LastSeenTargetSkip = true;
 
         var parent = this.ModuleConfig.TalkRootFolder;
         parent.Children.Add(newNode);
