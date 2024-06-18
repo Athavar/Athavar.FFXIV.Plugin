@@ -118,7 +118,7 @@ public sealed class Plugin : IDalamudPlugin
 
         public HostLogger(IPluginLogger pluginLogger) => this.pluginLogger = pluginLogger;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             var level = this.Convert(logLevel);
             this.pluginLogger.Write(level, exception, formatter(state, exception));
@@ -126,7 +126,9 @@ public sealed class Plugin : IDalamudPlugin
 
         public bool IsEnabled(LogLevel logLevel) => this.pluginLogger.MinimumLogLevel <= this.Convert(logLevel);
 
-        public IDisposable BeginScope<TState>(TState state) => NoopDisposable.Instance;
+        public IDisposable BeginScope<TState>(TState state)
+            where TState : notnull
+            => NoopDisposable.Instance;
 
         private LogEventLevel Convert(LogLevel logLevel)
             => logLevel switch

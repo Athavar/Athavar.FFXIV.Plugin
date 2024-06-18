@@ -18,8 +18,6 @@ using Dalamud.Game.ClientState.Conditions;
 
 internal abstract class BaseCraftingJob
 {
-    protected readonly CraftQueue queue;
-    protected int currentRotationStep;
     private readonly Func<int>[] stepArray;
     private readonly int stepCraftStartIndex;
 
@@ -35,7 +33,7 @@ internal abstract class BaseCraftingJob
 
     public BaseCraftingJob(CraftQueue queue, RecipeExtended recipe, IRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
-        this.queue = queue;
+        this.Queue = queue;
         this.Recipe = recipe;
         this.Loops = count;
         this.gearset = gearset;
@@ -79,7 +77,7 @@ internal abstract class BaseCraftingJob
         Potion = 2,
         Both = Food | Potion,
     }
-
+    
     public BuffConfig BuffConfig { get; }
 
     public string RotationName => this.rotationResolver.Name;
@@ -98,7 +96,7 @@ internal abstract class BaseCraftingJob
 
     internal TimeSpan LoopDuration => this.CurrentLoop == 0 ? this.Duration : this.lastLoopDuration / this.CurrentLoop;
 
-    internal int RotationCurrentStep => this.currentRotationStep;
+    internal int RotationCurrentStep => this.CurrentRotationStep;
 
     internal uint CurrentLoop { get; private set; }
 
@@ -106,11 +104,15 @@ internal abstract class BaseCraftingJob
 
     internal JobStatus Status { get; private set; }
 
+    protected CraftQueue Queue { get; }
+
+    protected int CurrentRotationStep { get; set; }
+
     private Stopwatch Stopwatch { get; } = new();
 
     private Stopwatch DurationWatch { get; } = new();
 
-    private bool IsKneeling => this.queue.DalamudServices.Condition[ConditionFlag.PreparingToCraft];
+    private bool IsKneeling => this.Queue.DalamudServices.Condition[ConditionFlag.PreparingToCraft];
 
     internal void Pause()
     {
@@ -200,9 +202,9 @@ internal abstract class BaseCraftingJob
 
     private int EnsureInventorySpace()
     {
-        if (this.queue.CommandInterface.FreeInventorySlots() <= 0)
+        if (this.Queue.CommandInterface.FreeInventorySlots() <= 0)
         {
-            this.queue.Pause();
+            this.Queue.Pause();
             return -1000;
         }
 
@@ -211,8 +213,8 @@ internal abstract class BaseCraftingJob
 
     private int SwitchToGearset()
     {
-        var current = this.queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
-        var ci = this.queue.CommandInterface;
+        var current = this.Queue.GearsetManager.GetCurrentEquipment() ?? throw new CraftingJobException("Fail to get the current gear-stats.");
+        var ci = this.Queue.CommandInterface;
 
         // this.queue.DalamudServices.PluginLogger.Information(" selected:{0} current:{1}", this.gearset.Id, current.Id);
         if (this.gearset.Id == current.Id)
@@ -232,7 +234,7 @@ internal abstract class BaseCraftingJob
             return -1000;
         }
 
-        var gearsetManager = this.queue.GearsetManager;
+        var gearsetManager = this.Queue.GearsetManager;
 
         gearsetManager.EquipGearset(this.gearset.Id);
         return -500;
@@ -240,7 +242,7 @@ internal abstract class BaseCraftingJob
 
     private int EnsureRepair()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
         // check for repair
         if (!ci.NeedsRepair())
@@ -254,7 +256,7 @@ internal abstract class BaseCraftingJob
             return 0;
         }
 
-        if (!this.queue.Configuration.AutoRepair)
+        if (!this.Queue.Configuration.AutoRepair)
         {
             throw new CraftingJobException("Gear is not repaired.");
         }
@@ -266,7 +268,7 @@ internal abstract class BaseCraftingJob
         }
 
         // is currently repairing
-        if (this.queue.DalamudServices.Condition[ConditionFlag.Occupied39])
+        if (this.Queue.DalamudServices.Condition[ConditionFlag.Occupied39])
         {
             return -100;
         }
@@ -274,14 +276,14 @@ internal abstract class BaseCraftingJob
         // say yes to repair
         if (ci.IsAddonVisible("SelectYesno"))
         {
-            this.queue.Click.TrySendClick("select_yes");
+            this.Queue.Click.TrySendClick("select_yes");
             return -100;
         }
 
         // repair all
         if (ci.IsAddonVisible(Constants.Addons.Repair))
         {
-            this.queue.Click.TrySendClick("repair_all");
+            this.Queue.Click.TrySendClick("repair_all");
             return -1000;
         }
 
@@ -296,9 +298,9 @@ internal abstract class BaseCraftingJob
 
     private int EnsureMateriaExtracted()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
-        if (!this.queue.Configuration.AutoMateriaExtract)
+        if (!this.Queue.Configuration.AutoMateriaExtract)
         {
             // skip step
             return 0;
@@ -323,7 +325,7 @@ internal abstract class BaseCraftingJob
         }
 
         // is currently extracting
-        if (this.queue.DalamudServices.Condition[ConditionFlag.Occupied39])
+        if (this.Queue.DalamudServices.Condition[ConditionFlag.Occupied39])
         {
             return -100;
         }
@@ -331,14 +333,14 @@ internal abstract class BaseCraftingJob
         // say yes to extract
         if (ci.IsAddonVisible("MaterializeDialog"))
         {
-            this.queue.Click.TrySendClick("materialize");
+            this.Queue.Click.TrySendClick("materialize");
             return -100;
         }
 
         // materia extract item0
         if (ci.IsAddonVisible(Constants.Addons.Materialize))
         {
-            this.queue.Click.TrySendClick("materia_extract0");
+            this.Queue.Click.TrySendClick("materia_extract0");
             return -1000;
         }
 
@@ -353,7 +355,7 @@ internal abstract class BaseCraftingJob
 
     private int EnsureStats()
     {
-        var localPlayer = this.queue.DalamudServices.ClientState.LocalPlayer;
+        var localPlayer = this.Queue.DalamudServices.ClientState.LocalPlayer;
         if (localPlayer == null)
         {
             return -1000;
@@ -371,7 +373,7 @@ internal abstract class BaseCraftingJob
             return 0;
         }
 
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
         if (this.IsKneeling)
         {
@@ -413,7 +415,7 @@ internal abstract class BaseCraftingJob
 
     private int OpenRecipe()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
         var recipeId = this.Recipe.RecipeId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
@@ -428,13 +430,13 @@ internal abstract class BaseCraftingJob
 
     private int SelectIngredients()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
         if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
         {
             return -100;
         }
 
-        var ptr = this.queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
+        var ptr = this.Queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
         if (ptr == nint.Zero)
         {
             return -100;
@@ -464,13 +466,13 @@ internal abstract class BaseCraftingJob
 
     private int StartCraft()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
         if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
         {
             return -100;
         }
 
-        var ptr = this.queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
+        var ptr = this.Queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
         if (ptr == nint.Zero)
         {
             return -100;
@@ -492,7 +494,7 @@ internal abstract class BaseCraftingJob
 
     private int WaitSynthesis()
     {
-        if (!this.queue.CommandInterface.IsAddonVisible(Constants.Addons.Synthesis))
+        if (!this.Queue.CommandInterface.IsAddonVisible(Constants.Addons.Synthesis))
         {
             return -100;
         }
@@ -501,7 +503,7 @@ internal abstract class BaseCraftingJob
 
         if (buffApplyStats is null || buffApplyStats != BuffApplyTest.None)
         {
-            var ci = this.queue.CommandInterface;
+            var ci = this.Queue.CommandInterface;
 
             ci.CloseAddon(Constants.Addons.Synthesis);
             this.CurrentStep = 0;
@@ -513,12 +515,12 @@ internal abstract class BaseCraftingJob
 
     private int DoRotationAction()
     {
-        if (this.queue.DalamudServices.Condition[ConditionFlag.Crafting40])
+        if (this.Queue.DalamudServices.Condition[ConditionFlag.Crafting40])
         {
             return -25;
         }
 
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
         if (this.rotationResolver.Length != -1 && this.RotationCurrentStep >= this.rotationResolver.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
         {
@@ -530,7 +532,7 @@ internal abstract class BaseCraftingJob
 
             // finish craft of item
             ++this.CurrentLoop;
-            this.currentRotationStep = 0;
+            this.CurrentRotationStep = 0;
             this.CurrentStep = 0;
             this.lastLoopDuration = this.DurationWatch.Elapsed;
         }
@@ -540,7 +542,7 @@ internal abstract class BaseCraftingJob
             return 0;
         }
 
-        var c = this.queue.Configuration;
+        var c = this.Queue.Configuration;
 
         var nextAction = this.rotationResolver.GetNextAction(this.RotationCurrentStep);
         if (nextAction is null)
@@ -555,18 +557,18 @@ internal abstract class BaseCraftingJob
         try
         {
             // only check for quality skip after first crafting action. The Synthesis addon is not reset in time for the first action.
-            if (this.currentRotationStep > 0 &&
+            if (this.CurrentRotationStep > 0 &&
                 c.QualitySkip &&
                 skill.Action.ActionType is ActionType.Quality &&
                 ci.HasMaxQuality())
             {
-                ++this.currentRotationStep;
+                ++this.CurrentRotationStep;
                 return -1;
             }
         }
         catch (AthavarPluginException ex)
         {
-            this.queue.DalamudServices.PluginLogger.Error(ex, "Error while try to check HasMaxQuality");
+            this.Queue.DalamudServices.PluginLogger.Error(ex, "Error while try to check HasMaxQuality");
             return -100;
         }
 
@@ -584,7 +586,7 @@ internal abstract class BaseCraftingJob
             return -10;
         }
 
-        ++this.currentRotationStep;
+        ++this.CurrentRotationStep;
 
         if (c.CraftWaitSkip)
         {
@@ -596,7 +598,7 @@ internal abstract class BaseCraftingJob
 
     private int? ExitCraftingMode()
     {
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
         // is in crafting mode
         if (this.IsKneeling)
@@ -643,7 +645,7 @@ internal abstract class BaseCraftingJob
 
     private StatModifiers?[] CurrentStatModifier()
     {
-        var player = this.queue.DalamudServices.ClientState.LocalPlayer;
+        var player = this.Queue.DalamudServices.ClientState.LocalPlayer;
         if (player is null)
         {
             return new StatModifiers?[2];
@@ -665,7 +667,7 @@ internal abstract class BaseCraftingJob
 
                     if (status.StatusId == 48U)
                     {
-                        var currentFood = this.queue.Data.Foods.FirstOrDefault(f => f.ItemFoodId == row && f.IsHq == isHq);
+                        var currentFood = this.Queue.Data.Foods.FirstOrDefault(f => f.ItemFoodId == row && f.IsHq == isHq);
                         if (currentFood is not null)
                         {
                             modifier[0] = currentFood.Stats;
@@ -674,7 +676,7 @@ internal abstract class BaseCraftingJob
 
                     if (status.StatusId == 49U)
                     {
-                        var currentPotion = this.queue.Data.Potions.FirstOrDefault(f => f.ItemFoodId == row && f.IsHq == isHq);
+                        var currentPotion = this.Queue.Data.Potions.FirstOrDefault(f => f.ItemFoodId == row && f.IsHq == isHq);
                         if (currentPotion is not null)
                         {
                             modifier[1] = currentPotion.Stats;

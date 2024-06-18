@@ -74,7 +74,9 @@ internal struct Angle
     public override string ToString() => this.Deg.ToString("f0");
 }
 
+#pragma warning disable SA1402
 internal static class AngleExtensions
+#pragma warning restore SA1402
 {
     public static Angle Radians(this float radians) => new(radians);
 

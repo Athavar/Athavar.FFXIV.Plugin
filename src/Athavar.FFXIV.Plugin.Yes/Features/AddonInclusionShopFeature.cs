@@ -43,7 +43,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             return false;
         }
 
-        this.module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", this.module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
+        this.Module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", this.Module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
         return true;
     }
 
@@ -66,11 +66,11 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
     {
         var unitbase = (AtkUnitBase*)addon;
 
-        this.module.Logger.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
+        this.Module.Logger.Debug($"Firing 12,{this.Configuration.InclusionShopRememberCategory}");
         using var categoryValues = new AtkValueArray(12, this.Configuration.InclusionShopRememberCategory);
         unitbase->FireCallback(2, categoryValues);
 
-        this.module.Logger.Debug($"Firing 13,{this.Configuration.InclusionShopRememberSubcategory}");
+        this.Module.Logger.Debug($"Firing 13,{this.Configuration.InclusionShopRememberSubcategory}");
         using var subcategoryValues = new AtkValueArray(13, this.Configuration.InclusionShopRememberSubcategory);
         unitbase->FireCallback(2, subcategoryValues);
     }
@@ -96,7 +96,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberCategory)
             {
-                this.module.Logger.Debug($"Remembring InclusionShop category: {val1}");
+                this.Module.Logger.Debug($"Remembring InclusionShop category: {val1}");
                 this.Configuration.InclusionShopRememberCategory = val1;
                 this.Configuration.InclusionShopRememberSubcategory = 0;
                 this.Configuration.Save();
@@ -107,7 +107,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberSubcategory)
             {
-                this.module.Logger.Debug($"Remembring InclusionShop subcategory: {val1}");
+                this.Module.Logger.Debug($"Remembring InclusionShop subcategory: {val1}");
                 this.Configuration.InclusionShopRememberSubcategory = val1;
                 this.Configuration.Save();
             }

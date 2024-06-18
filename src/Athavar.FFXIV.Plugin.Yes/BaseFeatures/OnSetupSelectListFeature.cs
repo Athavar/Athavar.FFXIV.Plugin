@@ -52,11 +52,11 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
     /// <param name="popupMenu">PopupMenu to match text on.</param>
     protected unsafe void CompareNodesToEntryTexts(nint addon, PopupMenu* popupMenu)
     {
-        var millisSinceLastEscape = (DateTime.Now - this.module.EscapeLastPressed).TotalMilliseconds;
+        var millisSinceLastEscape = (DateTime.Now - this.Module.EscapeLastPressed).TotalMilliseconds;
 
         var target = this.dalamudServices.TargetManager.Target;
         var targetName = target != null
-            ? this.module.GetSeStringText(target.Name)
+            ? this.Module.GetSeStringText(target.Name)
             : string.Empty;
 
         var texts = this.GetEntryTexts(popupMenu);
@@ -68,7 +68,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
                 continue;
             }
 
-            if (millisSinceLastEscape < 1000 && node == this.module.LastSelectedListNode && targetName == this.module.EscapeTargetName)
+            if (millisSinceLastEscape < 1000 && node == this.Module.LastSelectedListNode && targetName == this.Module.EscapeTargetName)
             {
                 continue;
             }
@@ -83,16 +83,16 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             {
                 if (!string.IsNullOrEmpty(targetName) && this.EntryMatchesTargetName(node, targetName))
                 {
-                    this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
-                    this.module.LastSelectedListNode = node;
+                    this.Module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text} ({node.TargetText})");
+                    this.Module.LastSelectedListNode = node;
                     this.SelectItemExecute(addon, index);
                     return;
                 }
             }
             else
             {
-                this.module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
-                this.module.LastSelectedListNode = node;
+                this.Module.Logger.Debug($"OnSetupSelectListFeature: Matched on {node.Text}");
+                this.Module.LastSelectedListNode = node;
                 this.SelectItemExecute(addon, index);
                 return;
             }
@@ -118,7 +118,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         }
 
         var onItemSelectedAddress = (nint)popupMenu->AtkEventListener.vfunc[3];
-        this.onItemSelectedHook = this.module.DalamudServices.GameInteropProvider.HookFromAddress(onItemSelectedAddress, (OnItemSelectedDelegate)this.OnItemSelectedDetour);
+        this.onItemSelectedHook = this.Module.DalamudServices.GameInteropProvider.HookFromAddress(onItemSelectedAddress, (OnItemSelectedDelegate)this.OnItemSelectedDetour);
         this.onItemSelectedHook.Enable();
     }
 
@@ -137,21 +137,21 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             if (index < popupMenuPtr->EntryCount)
             {
                 var entryPtr = popupMenuPtr->EntryNames[index];
-                var entryText = this.module.LastSeenListSelection = entryPtr != null
-                    ? this.module.GetSeStringText(entryPtr)
+                var entryText = this.Module.LastSeenListSelection = entryPtr != null
+                    ? this.Module.GetSeStringText(entryPtr)
                     : string.Empty;
 
                 var target = this.dalamudServices.TargetManager.Target;
-                var targetName = this.module.LastSeenListTarget = target != null
-                    ? this.module.GetSeStringText(target.Name)
+                var targetName = this.Module.LastSeenListTarget = target != null
+                    ? this.Module.GetSeStringText(target.Name)
                     : string.Empty;
 
-                this.module.Logger.Debug($"ItemSelected: target={targetName} text={entryText}");
+                this.Module.Logger.Debug($"ItemSelected: target={targetName} text={entryText}");
             }
         }
         catch (Exception ex)
         {
-            this.module.Logger.Error(ex, "Don't crash the game");
+            this.Module.Logger.Error(ex, "Don't crash the game");
         }
 
         return result;
@@ -162,12 +162,12 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         var count = popupMenu->EntryCount;
         var entryTexts = new string?[count];
 
-        this.module.Logger.Debug($"SelectString: Reading {count} strings");
+        this.Module.Logger.Debug($"SelectString: Reading {count} strings");
         for (var i = 0; i < count; i++)
         {
             var textPtr = popupMenu->EntryNames[i];
             entryTexts[i] = textPtr != null
-                ? this.module.GetSeStringText(textPtr)
+                ? this.Module.GetSeStringText(textPtr)
                 : null;
         }
 

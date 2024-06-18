@@ -33,6 +33,8 @@ internal sealed class BarConfigPage : IConfigPage
 
     private readonly Dictionary<string, Cache> cache = new();
 
+    private float? rankTestSizeOffset;
+
     public BarConfigPage(MeterWindow window, IDalamudServices services, Utils utils, IFontsManager fontsManager, IIconManager iconManager)
     {
         this.window = window;

@@ -42,15 +42,15 @@ internal class AddonTalkFeature : OnSetupFeature
             return;
         }
 
-        var target = this.module.DalamudServices.TargetManager.Target;
+        var target = this.Module.DalamudServices.TargetManager.Target;
         var targetName = target != null
-            ? this.module.GetSeStringText(target.Name)
+            ? this.Module.GetSeStringText(target.Name)
             : string.Empty;
 
-        if (this.module.LastSeenTalkTarget != targetName)
+        if (this.Module.LastSeenTalkTarget != targetName)
         {
-            this.module.LastSeenTalkTarget = targetName;
-            this.module.LastSeenTargetSkip = false;
+            this.Module.LastSeenTalkTarget = targetName;
+            this.Module.LastSeenTargetSkip = false;
             if (!string.IsNullOrEmpty(targetName))
             {
                 var nodes = this.Configuration.GetAllNodes().OfType<TalkEntryNode>();
@@ -67,13 +67,13 @@ internal class AddonTalkFeature : OnSetupFeature
                         continue;
                     }
 
-                    this.module.LastSeenTargetSkip = true;
+                    this.Module.LastSeenTargetSkip = true;
                     break;
                 }
             }
         }
 
-        if (this.module.LastSeenTargetSkip)
+        if (this.Module.LastSeenTargetSkip)
         {
             this.Click(addon);
         }
@@ -86,7 +86,7 @@ internal class AddonTalkFeature : OnSetupFeature
             this.clickTalk = ClickTalk.Using(this.lastTalkAddon = addon);
         }
 
-        this.module.Logger.Debug("AddonTalk: Advancing");
+        this.Module.Logger.Debug("AddonTalk: Advancing");
         this.clickTalk.Click();
     }
 

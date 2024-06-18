@@ -53,6 +53,7 @@ internal abstract record CombatEvent
     public abstract record ActionEffectEvent
     {
         public bool IsSourceEntry => (this.Flags2 & 128U) > 0U;
+
         public uint EffectSourceId { get; set; }
 
         public virtual uint SourceId => this.EffectSourceId;

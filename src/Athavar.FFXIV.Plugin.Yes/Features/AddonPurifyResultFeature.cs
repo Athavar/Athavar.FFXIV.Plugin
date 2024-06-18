@@ -20,7 +20,7 @@ internal class AddonPurifyResultFeature : OnSetupFeature
 
     public AddonPurifyResultFeature(YesModule module)
         : base(module)
-        => this.aetherialReductionSuccessfulText = this.module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(2171)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 2171 not found");
+        => this.aetherialReductionSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(2171)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 2171 not found");
 
     /// <inheritdoc/>
     protected override string AddonName => "PurifyResult";
@@ -36,7 +36,7 @@ internal class AddonPurifyResultFeature : OnSetupFeature
         // close only if successful.
         if (unitBase->UldManager.NodeList[17]->GetAsAtkTextNode()->NodeText.ToString() == this.aetherialReductionSuccessfulText)
         {
-            this.module.Logger.Debug("Closing Purify Results menu");
+            this.Module.Logger.Debug("Closing Purify Results menu");
             unitBase->Close(true);
         }
     }

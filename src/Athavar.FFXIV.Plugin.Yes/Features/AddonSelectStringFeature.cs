@@ -42,7 +42,7 @@ internal class AddonSelectStringFeature : OnSetupSelectListFeature
     /// <inheritdoc/>
     protected override void SelectItemExecute(nint addon, int index)
     {
-        this.module.Logger.Debug($"AddonSelectString: Selecting {index}");
+        this.Module.Logger.Debug($"AddonSelectString: Selecting {index}");
         ClickSelectString.Using(addon).SelectItem((ushort)index);
     }
 }

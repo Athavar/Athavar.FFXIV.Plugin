@@ -24,7 +24,7 @@ internal class AddonSalvageAutoDialogFeature : OnSetupFeature
     {
         var unitBase = (AtkUnitBase*)addon;
 
-        this.module.Logger.Debug("Closing Salvage Auto Results menu");
+        this.Module.Logger.Debug("Closing Salvage Auto Results menu");
         unitBase->Close(true);
     }
 }

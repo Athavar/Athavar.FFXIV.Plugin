@@ -15,7 +15,9 @@ using Machina.Infrastructure;
 
 internal sealed class DetectionProgram : IDisposable
 {
-    public bool Debug;
+#pragma warning disable SA1401
+    internal bool Debug;
+#pragma warning restore SA1401
     private readonly IPluginLogger logger;
     private readonly ScannerRegistry scannerRegistry;
     private readonly IOpcodeManager opcodeManager;

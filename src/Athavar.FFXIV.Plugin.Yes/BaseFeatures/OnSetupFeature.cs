@@ -13,7 +13,9 @@ using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 /// </summary>
 internal abstract class OnSetupFeature : IBaseFeature
 {
-    protected readonly YesModule module;
+#pragma warning disable SA1401
+    protected readonly YesModule Module;
+#pragma warning restore SA1401
     private readonly AddonEvent trigger;
 
     private bool enabled;
@@ -25,14 +27,14 @@ internal abstract class OnSetupFeature : IBaseFeature
     /// <param name="trigger">The event that triggers the feature.</param>
     protected OnSetupFeature(YesModule module, AddonEvent trigger = AddonEvent.PostRequestedUpdate)
     {
-        this.module = module;
+        this.Module = module;
         this.trigger = trigger;
     }
 
     /// <summary>
     ///     Gets the <see cref="YesConfiguration"/>.
     /// </summary>
-    protected YesConfiguration Configuration => this.module.MC;
+    protected YesConfiguration Configuration => this.Module.MC;
 
     /// <summary>
     ///     Gets the name of the addon being hooked.
@@ -69,7 +71,7 @@ internal abstract class OnSetupFeature : IBaseFeature
 
         this.enabled = true;
 
-        this.module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
+        this.Module.DalamudServices.AddonLifecycle.RegisterListener(this.trigger, this.AddonName, this.TriggerHandler);
         return true;
     }
 
@@ -83,7 +85,7 @@ internal abstract class OnSetupFeature : IBaseFeature
 
         this.enabled = false;
 
-        this.module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
+        this.Module.DalamudServices.AddonLifecycle.UnregisterListener(this.trigger, this.AddonName, this.TriggerHandler);
         return true;
     }
 
@@ -98,10 +100,10 @@ internal abstract class OnSetupFeature : IBaseFeature
     {
         // if (this.trigger is not (AddonEvent.PostUpdate or AddonEvent.PostDraw))
         {
-            this.module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
+            this.Module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
         }
 
-        if (!this.module.MC.ModuleEnabled || this.module.DisableKeyPressed)
+        if (!this.Module.MC.ModuleEnabled || this.Module.DisableKeyPressed)
         {
             return;
         }
@@ -117,7 +119,7 @@ internal abstract class OnSetupFeature : IBaseFeature
         }
         catch (Exception ex)
         {
-            this.module.Logger.Error(ex, "Don't crash the game");
+            this.Module.Logger.Error(ex, "Don't crash the game");
         }
     }
 }

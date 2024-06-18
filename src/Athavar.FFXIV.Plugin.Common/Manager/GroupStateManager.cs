@@ -13,6 +13,9 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using Lumina.Excel.GeneratedSheets;
 
+/// <summary>
+///     Currently unused.
+/// </summary>
 public class GroupStateManager : IDisposable
 {
     private static readonly uint[] AllianceTextSheetRows = [1115, 1116, 1118, 1160, 1161, 1162];

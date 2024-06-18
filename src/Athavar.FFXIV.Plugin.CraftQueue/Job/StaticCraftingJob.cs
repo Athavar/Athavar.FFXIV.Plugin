@@ -34,7 +34,7 @@ internal sealed class StaticCraftingJob : BaseCraftingJob
             CurrentStatModifiers = [buffConfig.Food?.Stats, buffConfig.Potion?.Stats],
         };
 
-        this.localizedExcellent = this.queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
+        this.localizedExcellent = this.Queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
         this.simulation.SetHqIngredients(hqIngredients);
         this.RunSimulation();
@@ -49,7 +49,7 @@ internal sealed class StaticCraftingJob : BaseCraftingJob
     protected override int? MutateRotation()
     {
         var rotation = this.rotationResolver.Rotation;
-        var ci = this.queue.CommandInterface;
+        var ci = this.Queue.CommandInterface;
 
         // Byregots fail save
         if (!this.Recipe.Expert && this.RotationCurrentStep + 1 < rotation.Length &&
@@ -95,7 +95,7 @@ internal sealed class StaticCraftingJob : BaseCraftingJob
         var step = this.Steps[this.RotationCurrentStep];
         if (step.FailCause == SimulationFailCause.NOT_ENOUGH_CP || (step.Success != true && skill.Action.SkipOnFail()))
         {
-            ++this.currentRotationStep;
+            ++this.CurrentRotationStep;
         }
     }
 

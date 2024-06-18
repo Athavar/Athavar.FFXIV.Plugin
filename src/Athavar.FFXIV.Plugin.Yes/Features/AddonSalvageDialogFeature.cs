@@ -41,7 +41,7 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
 
         if (this.Configuration.DesynthDialogEnabled)
         {
-            this.module.Logger.Debug("Advanced Salvage Dialog menu");
+            this.Module.Logger.Debug("Advanced Salvage Dialog menu");
             salvageDialog.CheckBox();
             salvageDialog.Desynthesize();
         }

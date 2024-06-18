@@ -4,7 +4,6 @@
 // </copyright>
 
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Net;

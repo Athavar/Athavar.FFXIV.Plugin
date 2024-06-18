@@ -50,15 +50,15 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
             return;
         }
 
-        var nameText = this.module.GetSeString(nameNode->NodeText.StringPtr);
-        var descText = this.module.GetSeStringText(descNode->NodeText.StringPtr);
+        var nameText = this.Module.GetSeString(nameNode->NodeText.StringPtr);
+        var descText = this.Module.GetSeStringText(descNode->NodeText.StringPtr);
 
         // This is hackish, but works well enough (for now).
         // Languages that dont contain the magic character will need special handling.
         if (descText.Contains("※") || descText.Contains("liées à Garde-la-Reine"))
         {
             nameText.Payloads.Insert(0, new TextPayload("Received: "));
-            this.module.ChatManager.PrintChat(nameText);
+            this.Module.ChatManager.PrintChat(nameText);
         }
 
         this.itemInspectionCount++;
@@ -66,7 +66,7 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
         if (rateLimiter != 0 && this.itemInspectionCount % rateLimiter == 0)
         {
             this.itemInspectionCount = 0;
-            this.module.ChatManager.PrintChat("Rate limited, pausing item inspection loop.");
+            this.Module.ChatManager.PrintChat("Rate limited, pausing item inspection loop.");
             return;
         }
 

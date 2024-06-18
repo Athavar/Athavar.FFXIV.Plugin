@@ -24,7 +24,7 @@ internal class AddonSalvageResultFeature : OnSetupFeature
     {
         var unitBase = (AtkUnitBase*)addon;
 
-        this.module.Logger.Debug("Closing Salvage Results menu");
+        this.Module.Logger.Debug("Closing Salvage Results menu");
         unitBase->Close(true);
     }
 }

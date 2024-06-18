@@ -17,7 +17,7 @@ internal class AddonRetainerItemTransferProgressFeature : OnSetupFeature
 
     public AddonRetainerItemTransferProgressFeature(YesModule module)
         : base(module, AddonEvent.PostUpdate)
-        => this.retainerEntrustItemsSuccessfulText = this.module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(13528)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 13528 not found");
+        => this.retainerEntrustItemsSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(13528)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 13528 not found");
 
     /// <inheritdoc/>
     protected override string AddonName => "RetainerItemTransferProgress";
@@ -31,9 +31,9 @@ internal class AddonRetainerItemTransferProgressFeature : OnSetupFeature
         var addonPtr = (AtkUnitBase*)addon;
 
         // check if entrust items was successful.
-        if (this.module.GetSeStringText(addonPtr->AtkValues[0].String) == this.retainerEntrustItemsSuccessfulText)
+        if (this.Module.GetSeStringText(addonPtr->AtkValues[0].String) == this.retainerEntrustItemsSuccessfulText)
         {
-            this.module.Logger.Debug("Closing Entrust Duplicates menu");
+            this.Module.Logger.Debug("Closing Entrust Duplicates menu");
             addonPtr->Close(true);
         }
     }

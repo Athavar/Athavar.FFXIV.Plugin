@@ -13,6 +13,7 @@ using Athavar.FFXIV.Plugin.Dps.UI.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,7 +63,7 @@ internal sealed class DpsTab : Tab
 
         var configItem = this.configStack.Peek();
         var spacing = ImGui.GetStyle().ItemSpacing;
-        var size = ImGui.GetContentRegionAvail() - (spacing * 2);
+        var size = ImGui.GetContentRegionAvail() - spacing * 2;
         var drawNavBar = this.configStack.Count > 1;
 
         if (drawNavBar)
@@ -132,7 +133,7 @@ internal sealed class DpsTab : Tab
             }
 
             // calculate empty horizontal space based on size of buttons and text box
-            var offset = size.X - (buttonSize * 5) - textInputWidth - (padX * 7);
+            var offset = size.X - buttonSize * 5 - textInputWidth - padX * 7;
 
             ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
 
@@ -223,8 +224,13 @@ internal sealed class DpsTab : Tab
     }
 
     private void DrawNotification(string message, NotificationType type = NotificationType.Success)
-        => this.dalamudServices.PluginInterface.UiBuilder
-           .AddNotification(message, DpsModule.ModuleName, type);
+        => this.dalamudServices.NotificationManager
+           .AddNotification(
+                new Notification
+                {
+                    Content = message,
+                    Type = type,
+                });
 
     private void Import()
     {

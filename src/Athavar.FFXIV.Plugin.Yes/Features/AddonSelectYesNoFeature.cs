@@ -41,12 +41,12 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
             return;
         }
 
-        var text = this.module.LastSeenDialogText = this.module.GetSeStringText(addonPtr->PromptText->NodeText.StringPtr);
-        this.module.Logger.Debug($"AddonSelectYesNo: text={text}");
+        var text = this.Module.LastSeenDialogText = this.Module.GetSeStringText(addonPtr->PromptText->NodeText.StringPtr);
+        this.Module.Logger.Debug($"AddonSelectYesNo: text={text}");
 
-        if (this.module.ForcedYesKeyPressed)
+        if (this.Module.ForcedYesKeyPressed)
         {
-            this.module.Logger.Debug("AddonSelectYesNo: Forced yes hotkey pressed");
+            this.Module.Logger.Debug("AddonSelectYesNo: Forced yes hotkey pressed");
             this.AddonSelectYesNoExecute(addon, true);
             return;
         }
@@ -67,12 +67,12 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
 
             if (node.ZoneRestricted && !string.IsNullOrEmpty(node.ZoneText))
             {
-                if (!this.module.TerritoryNames.TryGetValue(this.module.DalamudServices.ClientState.TerritoryType, out var zoneName))
+                if (!this.Module.TerritoryNames.TryGetValue(this.Module.DalamudServices.ClientState.TerritoryType, out var zoneName))
                 {
                     if (zoneWarnOnce && !(zoneWarnOnce = false))
                     {
-                        this.module.Logger.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
-                        this.module.ChatManager.PrintChat("Unable to verify Zone Restricted entry, change zones to update value");
+                        this.Module.Logger.Debug("Unable to verify Zone Restricted entry, ZoneID was not set yet");
+                        this.Module.ChatManager.PrintChat("Unable to verify Zone Restricted entry, change zones to update value");
                     }
 
                     zoneName = string.Empty;
@@ -80,14 +80,14 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
 
                 if (!string.IsNullOrEmpty(zoneName) && this.EntryMatchesZoneName(node, zoneName))
                 {
-                    this.module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
+                    this.Module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text} ({node.ZoneText})");
                     this.AddonSelectYesNoExecute(addon, node.IsYes);
                     return;
                 }
             }
             else
             {
-                this.module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text}");
+                this.Module.Logger.Debug($"AddonSelectYesNo: Matched on {node.Text}");
                 this.AddonSelectYesNoExecute(addon, node.IsYes);
                 return;
             }
@@ -102,16 +102,16 @@ internal class AddonSelectYesNoFeature : OnSetupFeature
             var yesButton = addonPtr->YesButton;
             if (yesButton != null && !yesButton->IsEnabled)
             {
-                this.module.Logger.Debug("AddonSelectYesNo: Enabling yes button");
+                this.Module.Logger.Debug("AddonSelectYesNo: Enabling yes button");
                 yesButton->AtkComponentBase.OwnerNode->AtkResNode.NodeFlags |= NodeFlags.Enabled;
             }
 
-            this.module.Logger.Debug("AddonSelectYesNo: Selecting yes");
+            this.Module.Logger.Debug("AddonSelectYesNo: Selecting yes");
             ClickSelectYesNo.Using(addon).Yes();
         }
         else
         {
-            this.module.Logger.Debug("AddonSelectYesNo: Selecting no");
+            this.Module.Logger.Debug("AddonSelectYesNo: Selecting no");
             ClickSelectYesNo.Using(addon).No();
         }
     }
