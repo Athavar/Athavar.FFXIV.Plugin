@@ -468,6 +468,7 @@ internal sealed class YesConfigTab : Tab
 
             // InclusionShop
             {
+                ImGui.BeginDisabled();
                 var inclusionShopRemember = this.Configuration.InclusionShopRememberEnabled;
                 if (ImGui.Checkbox("InclusionShopRemember", ref inclusionShopRemember))
                 {
@@ -476,6 +477,7 @@ internal sealed class YesConfigTab : Tab
                 }
 
                 IndentedTextColored(this.shadedColor, "Remember the last panel visited on the scrip exchange window.");
+                ImGui.EndDisabled();
             }
 
             ImGui.EndChild();

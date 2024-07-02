@@ -76,7 +76,7 @@ public sealed class BarColorsConfig : BaseConfig
     // TODO: set custom color for viper
     [JsonInclude]
     [JsonPropertyName("VPRColor")]
-    public ConfigColor VPRColor { get; set; } = new(150f / 255f, 90f / 255f, 144f / 255f, 1f);
+    public ConfigColor VPRColor { get; set; } = new(90f / 255f, 90f / 255f, 144f / 255f, 1f);
 
     [JsonInclude]
     [JsonPropertyName("PGLColor")]
@@ -121,7 +121,7 @@ public sealed class BarColorsConfig : BaseConfig
     // TODO: set custom color for pictomancer
     [JsonInclude]
     [JsonPropertyName("PCTColor")]
-    public ConfigColor PCTColor { get; set; } = new(150f / 255f, 90f / 255f, 144f / 255f, 1f);
+    public ConfigColor PCTColor { get; set; } = new(207f / 255f, 90f / 255f, 100f / 255f, 1f);
 
     [JsonInclude]
     [JsonPropertyName("BLUColor")]

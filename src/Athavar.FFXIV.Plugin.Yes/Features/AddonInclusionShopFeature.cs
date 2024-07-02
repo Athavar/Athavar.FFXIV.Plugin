@@ -13,8 +13,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     AddonInclusionShop feature.
+///     Disabled.
 /// </summary>
-internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
+internal abstract class AddonInclusionShopFeature : OnSetupFeature, IDisposable
 {
     private Hook<AgentReceiveEventDelegate>? agentReceiveEventHook;
 
@@ -101,7 +102,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberCategory)
             {
-                this.Module.Logger.Debug($"Remembring InclusionShop category: {val1}");
+                this.Module.Logger.Debug($"Remembering InclusionShop category: {val1}");
                 this.Configuration.InclusionShopRememberCategory = val1;
                 this.Configuration.InclusionShopRememberSubcategory = 0;
                 this.Configuration.Save();
@@ -112,7 +113,7 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             var val1 = values[1].UInt;
             if (val1 != this.Configuration.InclusionShopRememberSubcategory)
             {
-                this.Module.Logger.Debug($"Remembring InclusionShop subcategory: {val1}");
+                this.Module.Logger.Debug($"Remembering InclusionShop subcategory: {val1}");
                 this.Configuration.InclusionShopRememberSubcategory = val1;
                 this.Configuration.Save();
             }
