@@ -146,7 +146,7 @@
       "4094": "dia",
       "damage": [
         {
-          "potency": 65
+          "potency": 70
         }
       ]
     },
@@ -170,11 +170,11 @@
       "4097": "afflatus misery",
       "damage": [
         {
-          "potency": 1240,
+          "potency": 1320,
           "targetindex": 0
         },
         {
-          "potency": 620
+          "potency": 660
         }
       ]
     },
@@ -182,7 +182,7 @@
       "6503": "glare iii",
       "damage": [
         {
-          "potency": 310
+          "potency": 330
         }
       ]
     },
@@ -207,6 +207,26 @@
       "heal": [
         {
           "potency": 0
+        }
+      ]
+    },
+    {
+      "9091": "glare iv",
+      "damage": [
+        {
+          "potency": 640,
+          "targetindex": 0
+        },
+        {
+          "potency": 384
+        }
+      ]
+    },
+    {
+      "9092": "medica iii",
+      "heal": [
+        {
+          "potency": 250
         }
       ]
     }
@@ -275,7 +295,7 @@
       "74F": "dia",
       "timeproc": {
         "type": "dot",
-        "potency": 65,
+        "potency": 70,
         "damagetype": "magic",
         "maxticks": 10
       }
@@ -321,6 +341,26 @@
       "damageshield": {
         "type": "Potency",
         "amount": 500
+      }
+    },
+    {
+      "f28": "medica iii",
+      "timeproc": {
+        "type": "hot",
+        "potency": 175,
+        "maxticks": 5
+      }
+    },
+    {
+      "f3f": "divine caress",
+      "damageshield": {
+        "type": "potency",
+        "amount": 400
+      },
+      "timeproc": {
+        "type": "hot",
+        "potency": 200,
+        "maxticks": 5
       }
     }
   ]

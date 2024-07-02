@@ -24,7 +24,7 @@ public abstract class SharedBuffer
     /// <summary>
     ///     Gets the shared buffer.
     /// </summary>
-    protected static CircularBuffer Buffer { get; }
+    internal static CircularBuffer Buffer { get; }
 
     // private static MemoryAllocation Allocation { get; }
 

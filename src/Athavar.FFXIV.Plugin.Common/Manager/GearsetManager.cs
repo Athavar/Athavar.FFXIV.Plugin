@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
-using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
@@ -81,7 +80,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         }
 
         var instance = this.GetGearsetModule();
-        var levelArray = PlayerState.Instance()->ClassJobLevelArray;
+        var levelArray = PlayerState.Instance()->ClassJobLevels;
         for (var i = 0; i < 100; ++i)
         {
             var gearsetEntryPtr = instance->GetGearset(i);
@@ -98,9 +97,9 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
             var stats = new uint[StatLength];
             List<uint> itemIds = new();
-            foreach (var item in gearsetEntryPtr->ItemsSpan)
+            foreach (var item in gearsetEntryPtr->Items)
             {
-                itemIds.Add(item.ItemID);
+                itemIds.Add(item.ItemId);
                 this.GetItemStats(ref stats, &item);
             }
 
@@ -121,12 +120,12 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
             this.Gearsets.Add(
                 new Gearset(
                     this.GetName(gearsetEntryPtr),
-                    gearsetEntryPtr->ID,
+                    gearsetEntryPtr->Id,
                     gearsetEntryPtr->ClassJob,
                     (byte)levelArray[levelArrayIndex],
                     stats,
-                    gearsetEntryPtr->ItemsSpan[(int)RaptureGearsetModule.GearsetItemIndex.SoulStone].ItemID != 0,
-                    gearsetEntryPtr->ItemsSpan[(int)RaptureGearsetModule.GearsetItemIndex.MainHand].ItemID,
+                    gearsetEntryPtr->Items[(int)RaptureGearsetModule.GearsetItemIndex.SoulStone].ItemId != 0,
+                    gearsetEntryPtr->Items[(int)RaptureGearsetModule.GearsetItemIndex.MainHand].ItemId,
                     itemIds));
         }
     }
@@ -144,9 +143,9 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         foreach (var inventoryItem in equipmentItems)
         {
             this.GetItemStats(ref stats, inventoryItem);
-            if (inventoryItem.ItemID > 0)
+            if (inventoryItem.ItemId > 0)
             {
-                itemIds.Add(inventoryItem.ItemID);
+                itemIds.Add(inventoryItem.ItemId);
             }
         }
 
@@ -156,7 +155,15 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         var player = this.dalamudServices.ClientState.LocalPlayer;
         instance->GetGearset(gearsetId);
 
-        return new Gearset(name, gearsetId, player?.ClassJob.Id ?? 0, player?.Level ?? 0, stats, equipmentItems.Length >= 12 && equipmentItems[11].ItemID != 0, equipmentItems.Length > 0 ? equipmentItems[0].ItemID : 0, itemIds);
+        return new Gearset(
+            name,
+            gearsetId,
+            player?.ClassJob.Id ?? 0,
+            player?.Level ?? 0,
+            stats,
+            equipmentItems.Length >= 12 && equipmentItems[11].ItemId != 0,
+            equipmentItems.Length > 0 ? equipmentItems[0].ItemId : 0,
+            itemIds);
     }
 
     private unsafe InventoryItem[]? CurrentEquipment()
@@ -186,22 +193,22 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         var materia = new (ushort Id, byte Grade)[5];
         for (var i = 0; i < 5; i++)
         {
-            materia[i] = (item->Materia[i], item->MateriaGrade[i]);
+            materia[i] = (item->Materia[i], item->MateriaGrades[i]);
         }
 
-        this.GetItemStats(ref stats, item->ItemID, materia);
+        this.GetItemStats(ref stats, item->ItemId, materia);
     }
 
-    private unsafe void GetItemStats(ref uint[] stats, InventoryItem item)
+    private void GetItemStats(ref uint[] stats, InventoryItem item)
     {
         var materia = new (ushort Id, byte Grade)[5];
         for (var i = 0; i < 5; i++)
         {
-            materia[i] = (item.Materia[i], item.MateriaGrade[i]);
+            materia[i] = (item.Materia[i], item.MateriaGrades[i]);
         }
 
-        var itemId = item.ItemID;
-        if ((item.Flags & InventoryItem.ItemFlags.HQ) != 0)
+        var itemId = item.ItemId;
+        if ((item.Flags & InventoryItem.ItemFlags.HighQuality) != 0)
         {
             itemId += 1000000U;
         }
@@ -350,5 +357,5 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
     private unsafe RaptureGearsetModule* GetGearsetModule() => RaptureGearsetModule.Instance();
 
-    private unsafe string GetName(RaptureGearsetModule.GearsetEntry* gearsetEntryPtr) => (gearsetEntryPtr is not null ? Marshal.PtrToStringUTF8((nint)gearsetEntryPtr->Name) : null) ?? "<???>";
+    private unsafe string GetName(RaptureGearsetModule.GearsetEntry* gearsetEntryPtr) => gearsetEntryPtr is not null ? gearsetEntryPtr->NameString : "<???>";
 }

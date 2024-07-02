@@ -13,7 +13,7 @@ using Athavar.FFXIV.Plugin.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud;
+using Dalamud.Game;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;

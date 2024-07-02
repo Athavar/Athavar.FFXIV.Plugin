@@ -207,8 +207,6 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
         internal Module? Instance { get; set; }
 
         internal BasicModuleConfig? Config { get; set; }
-
-        public int CompareTo(object? obj) => throw new NotImplementedException();
     }
 
     private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData, IComparable<ModuleData>, IComparable
@@ -264,6 +262,28 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             }
         }
 
+        public bool TabEnabled
+        {
+            get => this.Def.Config?.TabEnabled ?? false;
+            set
+            {
+                if (this.Def.Config is not null)
+                {
+                    this.Def.Config.TabEnabled = value;
+                    this.Def.Config?.Save();
+
+                    if (this.Def.Instance is not null)
+                    {
+                        this.Def.Manager.StateChange?.Invoke(this.Def.Instance, this);
+                    }
+                }
+            }
+        }
+
+        public bool Loaded => this.Def.Instance is not null;
+
+        public Exception? LoadingError => this.Def.LoadingError;
+
         public int CompareTo(object? obj)
         {
             if (ReferenceEquals(null, obj))
@@ -299,27 +319,5 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
             return this.HasTab.CompareTo(other.HasTab);
         }
-
-        public bool TabEnabled
-        {
-            get => this.Def.Config?.TabEnabled ?? false;
-            set
-            {
-                if (this.Def.Config is not null)
-                {
-                    this.Def.Config.TabEnabled = value;
-                    this.Def.Config?.Save();
-
-                    if (this.Def.Instance is not null)
-                    {
-                        this.Def.Manager.StateChange?.Invoke(this.Def.Instance, this);
-                    }
-                }
-            }
-        }
-
-        public bool Loaded => this.Def.Instance is not null;
-
-        public Exception? LoadingError => this.Def.LoadingError;
     }
 }

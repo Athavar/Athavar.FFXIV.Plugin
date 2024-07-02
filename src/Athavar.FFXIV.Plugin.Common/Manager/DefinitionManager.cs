@@ -49,7 +49,7 @@ public sealed class DefinitionManager : IDefinitionManager
         dalamudStartInfo = null;
         try
         {
-            var dalamudServiceType = typeof(DalamudPluginInterface).Assembly.GetType("Dalamud.Dalamud") ?? throw new Exception("Fail to get type of Dalamud.Dalamud");
+            var dalamudServiceType = typeof(IDalamudPluginInterface).Assembly.GetType("Dalamud.Dalamud") ?? throw new Exception("Fail to get type of Dalamud.Dalamud");
             var dalamudService = services.GetInternalService(dalamudServiceType);
 
             var startInfoProperty = dalamudServiceType.GetProperty("StartInfo", BindingFlags.NonPublic | BindingFlags.Instance) ?? throw new Exception("Dalamud has changed. StartInfo not found.");

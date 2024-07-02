@@ -12,9 +12,15 @@ using Newtonsoft.Json;
 
 public sealed class RotationNode : Node
 {
+    public enum RotationErrorType
+    {
+        Duplicate,
+        DeprecatedAction,
+    }
+
     [System.Text.Json.Serialization.JsonIgnore]
     [Newtonsoft.Json.JsonIgnore]
-    public List<RotationNode> Duplicates { get; } = [];
+    public List<RotationError> Errors { get; } = [];
 
     /// <inheritdoc/>
     public override string Name { get; set; } = string.Empty;
@@ -36,5 +42,7 @@ public sealed class RotationNode : Node
     public override string ToString() => this.Name;
 
     // ReSharper disable once NonReadonlyMemberInGetHashCode
-    internal string GetRotationString() => string.Join('-', this.Rotations);
+    public string GetRotationString() => string.Join('-', this.Rotations);
+
+    public sealed record RotationError(RotationErrorType Type, List<string> Data);
 }

@@ -13,7 +13,7 @@
       "1D75": "second wind",
       "heal": [
         {
-          "potency": 500
+          "potency": 800
         }
       ]
     },
@@ -113,7 +113,7 @@
       }
     },
     {
-      "1000008": "feint",
+      "4ab": "feint",
       "potency": [
         {
           "type": "damagedonemultiplier",
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "1000009": "addle",
+      "4b3": "addle",
       "potency": [
         {
           "type": "damagedonemultiplier",

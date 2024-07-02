@@ -122,7 +122,7 @@
       "6509": "broil iv",
       "damage": [
         {
-          "potency": 295
+          "potency": 310
         }
       ]
     },
@@ -171,6 +171,30 @@
       "heal": [
         {
           "potency": 250
+        }
+      ]
+    },
+    {
+      "9095": "concitation",
+      "heal": [
+        {
+          "potency": 200
+        }
+      ]
+    },
+    {
+      "9097": "manifestation",
+      "heal": [
+        {
+          "potency": 360
+        }
+      ]
+    },
+    {
+      "9098": "accession",
+      "heal": [
+        {
+          "potency": 240
         }
       ]
     }
@@ -223,7 +247,7 @@
       "767": "biolysis",
       "timeproc": {
         "type": "dot",
-        "potency": 70,
+        "potency": 75,
         "damagetype": "magic",
         "maxticks": 10
       }
@@ -343,6 +367,23 @@
       "damageshield": {
         "type": "HealPercent",
         "amount": 100
+      }
+    },
+    {
+      "f2b": "baneful impaction",
+      "timeproc": {
+        "type": "dot",
+        "potency": 140,
+        "damagetype": "magic",
+        "maxticks": 5
+      }
+    },
+    {
+      "f2c": "seraphism",
+      "timeproc": {
+        "type": "hot",
+        "potency": 100,
+        "maxticks": 7
       }
     }
   ]

@@ -14,7 +14,6 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.ImGuiNotification;
-using Dalamud.Interface.Internal.Notifications;
 using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 

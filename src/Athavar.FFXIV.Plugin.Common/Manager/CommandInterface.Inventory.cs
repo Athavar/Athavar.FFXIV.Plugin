@@ -76,7 +76,7 @@ internal sealed partial class CommandInterface
             for (var slotIndex = 0; slotIndex < playerInventory->Size; slotIndex++)
             {
                 var slot = playerInventory->GetInventorySlot(slotIndex);
-                if (slot->ItemID == 0)
+                if (slot->ItemId == 0)
                 {
                     num++;
                 }

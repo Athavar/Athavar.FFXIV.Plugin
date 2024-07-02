@@ -6,6 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Buff;
+using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Deprecated;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
@@ -13,10 +14,7 @@ using Microsoft.VisualBasic.CompilerServices;
 
 public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action)
 {
-    private static readonly Dictionary<CraftingSkills, CraftingSkill>? Actions;
-
-    static CraftingSkill()
-        => Actions = new CraftingSkillCollectionBuilder()
+    private static readonly Dictionary<CraftingSkills, CraftingSkill> Actions = new CraftingSkillCollectionBuilder()
             /* Class Actions  */
            .Add(CraftingSkills.BasicSynthesis, new BasicSynthesis())
            .Add(CraftingSkills.BasicTouch, new BasicTouch())
@@ -38,8 +36,6 @@ public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action)
            .Add(CraftingSkills.CarefulSynthesis, new CarefulSynthesis())
            .Add(CraftingSkills.Manipulation, new Manipulation())
            .Add(CraftingSkills.PrudentTouch, new PrudentTouch())
-           .Add(CraftingSkills.FocusedSynthesis, new FocusedSynthesis())
-           .Add(CraftingSkills.FocusedTouch, new FocusedTouch())
            .Add(CraftingSkills.Reflect, new Reflect())
            .Add(CraftingSkills.PreparatoryTouch, new PreparatoryTouch())
            .Add(CraftingSkills.Groundwork, new Groundwork())
@@ -49,10 +45,20 @@ public sealed record CraftingSkill(CraftingSkills Skill, CraftingAction Action)
            .Add(CraftingSkills.AdvancedTouch, new AdvancedTouch())
            .Add(CraftingSkills.PrudentSynthesis, new PrudentSynthesis())
            .Add(CraftingSkills.TrainedFinesse, new TrainedFinesse())
+           .Add(CraftingSkills.RefinedTouch, new RefinedTouch())
+           .Add(CraftingSkills.DaringTouch, new DaringTouch())
+           .Add(CraftingSkills.TrainedPerfection, new TrainedPerfection())
+           .Add(CraftingSkills.ImmaculateMend, new ImmaculateMend())
             /* Specialist Actions  */
            .Add(CraftingSkills.CarefulObservation, new CarefulObservation())
            .Add(CraftingSkills.HearthAndSoul, new HeartAndSoul())
+           .Add(CraftingSkills.QuickInnovation, new QuickInnovation())
+            /* Deprecated Actions */
+           .Add(CraftingSkills.FocusedSynthesis, new FocusedSynthesis())
+           .Add(CraftingSkills.FocusedTouch, new FocusedTouch())
            .Build();
+
+    public static int[] DeprecatedActionIndex { get; } = Actions.Where(a => a.Value.Action.IsDeprecated).Select(a => (int)a.Key).ToArray();
 
     public static CraftingSkill FindAction(CraftingSkills skill) => Actions?[skill] ?? throw new IncompleteInitialization();
 

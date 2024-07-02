@@ -98,7 +98,7 @@ internal abstract class OnSetupFeature : IBaseFeature
 
     private void TriggerHandler(AddonEvent type, AddonArgs args)
     {
-        // if (this.trigger is not (AddonEvent.PostUpdate or AddonEvent.PostDraw))
+        if (this.trigger is not (AddonEvent.PostUpdate or AddonEvent.PostDraw))
         {
             this.Module.Logger.Debug($"Addon{this.AddonName}.OnSetup");
         }

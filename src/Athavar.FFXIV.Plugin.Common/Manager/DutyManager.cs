@@ -298,9 +298,9 @@ internal sealed partial class DutyManager
 /// </summary>
 internal sealed partial class DutyManager
 {
-    private void OnActorDeath(GameObject actor, GameObject? causeActor)
+    private void OnActorDeath(IGameObject actor, IGameObject? causeActor)
     {
-        if (!this.dutyStarted || actor is not PlayerCharacter playerCharacter)
+        if (!this.dutyStarted || actor is not IPlayerCharacter playerCharacter)
         {
             return;
         }

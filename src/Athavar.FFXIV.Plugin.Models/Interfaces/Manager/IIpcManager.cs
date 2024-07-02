@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 
 using Athavar.FFXIV.Plugin.Models.Constants;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 
 public interface IIpcManager
@@ -29,7 +30,7 @@ public interface IIpcManager
     /// <param name="stainId">The id of the strain/color.</param>
     /// <param name="key">Any Key.</param>
     /// <returns>if is was successful.</returns>
-    int SetItem(Character? character, EquipSlot slot, ulong itemId, byte stainId, uint key);
+    int SetItem(IPlayerCharacter? character, EquipSlot slot, ulong itemId, byte stainId, uint key);
 
     /// <summary>
     ///     Update Active Plugin State.

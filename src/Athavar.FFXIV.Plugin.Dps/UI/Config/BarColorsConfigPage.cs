@@ -44,6 +44,7 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
                Job.Ninja => this.Config.NINColor,
                Job.Samurai => this.Config.SAMColor,
                Job.Reaper => this.Config.RPRColor,
+               Job.Viper => this.Config.VPRColor,
 
                Job.Archer => this.Config.ARCColor,
                Job.Bard => this.Config.BRDColor,
@@ -56,6 +57,7 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
                Job.Summoner => this.Config.SMNColor,
                Job.RedMage => this.Config.RDMColor,
                Job.BlueMage => this.Config.BLUColor,
+               Job.Pictomancer => this.Config.PCTColor,
 
                _ => this.Config.UKNColor,
            };
@@ -134,6 +136,11 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
                 change = true;
             }
 
+            if (this.ColorPick("VPR", this.Config.VPRColor.Vector, x => this.Config.VPRColor.Vector = x))
+            {
+                change = true;
+            }
+
             ImGui.NewLine();
 
             if (this.ColorPick("BRD", this.Config.BRDColor.Vector, x => this.Config.BRDColor.Vector = x))
@@ -164,6 +171,11 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
             }
 
             if (this.ColorPick("RDM", this.Config.RDMColor.Vector, x => this.Config.RDMColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("PCT", this.Config.PCTColor.Vector, x => this.Config.PCTColor.Vector = x))
             {
                 change = true;
             }

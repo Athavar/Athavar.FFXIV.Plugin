@@ -14,7 +14,7 @@ using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin.Services;
 using Action = Lumina.Excel.GeneratedSheets.Action;
 
@@ -143,7 +143,8 @@ internal sealed partial class EncounterManager : IDisposable
             ce.Filter = this.configuration.PartyFilter;
             ce.CalcStats();
 
-            if (!this.ci.IsInCombat() && ce.Start.AddSeconds(2) < now && ce.LastDamageEvent.AddSeconds(2.5) < now && !ce.AllyCombatants.Select(c => this.objectTable.SearchById(c.ObjectId)).OfType<Character>().Any(go => go.IsValid() && (go.StatusFlags & StatusFlags.InCombat) != 0))
+            // TODO: check IPlayerCharacter is working for OfType
+            if (!this.ci.IsInCombat() && ce.Start.AddSeconds(2) < now && ce.LastDamageEvent.AddSeconds(2.5) < now && !ce.AllyCombatants.Select(c => this.objectTable.SearchById(c.GameObjectId)).OfType<IPlayerCharacter>().Any(go => go.IsValid() && (go.StatusFlags & StatusFlags.InCombat) != 0))
             {
                 /*
                  * - player is not in combat

@@ -64,7 +64,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     protected TImpl FireCallback(params object[] values)
     {
         var atkValues = new AtkValueArray(values);
-        this.UnitBase->FireCallback(atkValues.Length, atkValues);
+        this.UnitBase->FireCallback((uint)atkValues.Length, atkValues);
         atkValues.Dispose();
 
         return this;
@@ -77,7 +77,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
     /// <returns>Itself.</returns>
     protected TImpl FireNullCallback(ulong a4)
     {
-        this.UnitBase->FireCallback(0, null, (void*)a4);
+        this.UnitBase->FireCallback(0, null, a4 != 0);
 
         return this;
     }
@@ -95,7 +95,7 @@ public abstract unsafe class ClickBase<TImpl> : IClickable
 
     private nint GetAddonByName(string name, int index = 1)
     {
-        var atkStage = AtkStage.GetSingleton();
+        var atkStage = AtkStage.Instance();
         if (atkStage == null)
         {
             throw new InvalidClickException("AtkStage is not available");

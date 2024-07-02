@@ -5,7 +5,7 @@
       "8C0": "spinning edge",
       "damage": [
         {
-          "potency": 220
+          "potency": 300
         }
       ]
     },
@@ -13,8 +13,8 @@
       "8C2": "gust slash",
       "damage": [
         {
-          "potency": 160,
-          "combo": 320
+          "potency": 220,
+          "combo": 380
         }
       ]
     },
@@ -38,8 +38,7 @@
       "8D2": "trick attack",
       "damage": [
         {
-          "potency": 300,
-          "combo": 400
+          "potency": 0
         }
       ]
     },
@@ -93,14 +92,6 @@
       ]
     },
     {
-      "6514": "huraijin",
-      "damage": [
-        {
-          "potency": 200
-        }
-      ]
-    },
-    {
       "1CE9": "hellfrog medium",
       "damage": [
         {
@@ -129,22 +120,6 @@
       ]
     },
     {
-      "64B1": "forked raiju",
-      "damage": [
-        {
-          "potency": 560
-        }
-      ]
-    },
-    {
-      "64B2": "fleeting raiju",
-      "damage": [
-        {
-          "potency": 560
-        }
-      ]
-    },
-    {
       "64B0": "hollow nozuchi",
       "damage": [
         {
@@ -153,10 +128,26 @@
       ]
     },
     {
+      "64B1": "forked raiju",
+      "damage": [
+        {
+          "potency": 640
+        }
+      ]
+    },
+    {
+      "64B2": "fleeting raiju",
+      "damage": [
+        {
+          "potency": 640
+        }
+      ]
+    },
+    {
       "8D9": "fuma shuriken",
       "damage": [
         {
-          "potency": 450
+          "potency": 500
         }
       ]
     },
@@ -172,7 +163,7 @@
       "8DB": "raiton",
       "damage": [
         {
-          "potency": 650
+          "potency": 740
         }
       ]
     },
@@ -185,10 +176,18 @@
       ]
     },
     {
+      "8dd": "huton",
+      "damage": [
+        {
+          "potency": 240
+        }
+      ]
+    },
+    {
       "8DF": "suiton",
       "damage": [
         {
-          "potency": 500
+          "potency": 580
         }
       ]
     },
@@ -205,6 +204,54 @@
       "damage": [
         {
           "potency": 1300
+        }
+      ]
+    },
+    {
+      "905d": "dokumori",
+      "damage": [
+        {
+          "potency": 300
+        }
+      ]
+    },
+    {
+      "905e": "kunai's bane",
+      "damage": [
+        {
+          "potency": 600,
+          "targetindex": 0
+        },
+        {
+          "potency": 300
+        }
+      ]
+    },
+    {
+      "905f": "deathfrog medium",
+      "damage": [
+        {
+          "potency": 300
+        }
+      ]
+    },
+    {
+      "9060": "zesho meppo",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "9061": "tenri jindo",
+      "damage": [
+        {
+          "potency": 1000,
+          "targetindex": 0
+        },
+        {
+          "potency": 500
         }
       ]
     }
@@ -253,6 +300,24 @@
         "type": "TargetHpPercent",
         "amount": 20
       }
+    },
+    {
+      "102000": "mug",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": 5
+        }
+      ]
+    },
+    {
+      "f09": "dokumori",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": 5
+        }
+      ]
     }
   ]
 }

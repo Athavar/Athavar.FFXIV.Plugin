@@ -6,14 +6,13 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Models;
-using Dalamud.Interface.Internal;
-using Dalamud.Plugin.Services;
+using Dalamud.Interface.Textures;
 
 internal sealed partial class IconManager
 {
     private static readonly uint[] JobIconStyleOffset = [62000, 62100, 62800, 62300, 91000, 91500, 92000, 92500, 93000, 93500, 94000, 94500];
 
-    public IDalamudTextureWrap? GetJobIcon(Job job, JobIconStyle style = JobIconStyle.Normal, bool hr = false)
+    public ISharedImmediateTexture? GetJobIcon(Job job, JobIconStyle style = JobIconStyle.Normal, bool hr = false)
     {
         uint ResolveJobIconId(Job j, JobIconStyle s)
         {
@@ -24,9 +23,10 @@ internal sealed partial class IconManager
                 default:
                 {
                     var id = ResolveJobOrder(j, s);
-                    if (id == 0)
+                    if (id == 0 && s != JobIconStyle.Normal)
                     {
                         id = ResolveJobOrder(j, JobIconStyle.Normal);
+                        s = JobIconStyle.Normal;
                     }
 
                     return JobIconStyleOffset[(int)s] + id;
@@ -52,8 +52,8 @@ internal sealed partial class IconManager
         uint NormalJobOrder(Job j)
             => j switch
             {
-                Job.Chocobo => 41,
-                Job.Pets => 42,
+                Job.Chocobo => 43,
+                Job.Pets => 44,
                 _ => (uint)j,
             };
 
@@ -101,6 +101,9 @@ internal sealed partial class IconManager
                 Job.Dancer => 118,
                 Job.Reaper => 119,
                 Job.Sage => 120,
+                Job.Viper => 121,
+                Job.Pictomancer => 122,
+
                 Job.Pets => 0,
                 Job.Chocobo => 0,
                 Job.LimitBreak => 0,
@@ -151,17 +154,21 @@ internal sealed partial class IconManager
                 Job.Dancer => 131,
                 Job.Reaper => 132,
                 Job.Sage => 133,
+                Job.Viper => 134,
+                Job.Pictomancer => 135,
+
+                // TODO: chocobo may be wrong (92341)
                 Job.Chocobo => 42,
                 Job.Pets => 98,
                 Job.LimitBreak => 0,
                 _ => throw new ArgumentOutOfRangeException(nameof(job), job, null),
             };
 
-        return this.GetIcon(ResolveJobIconId(job, style), ITextureProvider.IconFlags.HiRes) ?? this.GetIcon(ResolveJobIconId(job, JobIconStyle.Normal), ITextureProvider.IconFlags.HiRes);
+        return this.GetIcon(new GameIconLookup(ResolveJobIconId(job, style), hiRes: true)) ?? this.GetIcon(new GameIconLookup(ResolveJobIconId(job, JobIconStyle.Normal), hiRes: true));
     }
 
     /// <inheritdoc/>
-    public bool TryGetJobIcon(Job job, JobIconStyle style, bool hr, [NotNullWhen(true)] out IDalamudTextureWrap? textureWrap)
+    public bool TryGetJobIcon(Job job, JobIconStyle style, bool hr, [NotNullWhen(true)] out ISharedImmediateTexture? textureWrap)
     {
         textureWrap = this.GetJobIcon(job, style, hr);
         return textureWrap is not null;

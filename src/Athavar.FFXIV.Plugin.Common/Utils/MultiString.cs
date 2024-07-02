@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
-using Dalamud;
+using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;

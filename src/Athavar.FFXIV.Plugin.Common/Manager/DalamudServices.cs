@@ -29,7 +29,7 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     ///     Initializes a new instance of the <see cref="DalamudServices"/> class.
     /// </summary>
     /// <param name="pluginInterface"><see cref="DalamudPluginInterface"/> used to inject the other values.</param>
-    public DalamudServices(DalamudPluginInterface pluginInterface)
+    public DalamudServices(IDalamudPluginInterface pluginInterface)
     {
         pluginInterface.Inject(this);
         this.PluginLogger = new Logger(this.PluginLog);
@@ -43,7 +43,7 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
 
         try
         {
-            this.dalamudAssembly = typeof(DalamudPluginInterface).Assembly;
+            this.dalamudAssembly = typeof(IDalamudPluginInterface).Assembly;
             this.serviceGenericType = this.dalamudAssembly.GetType("Dalamud.Service`1") ?? throw new Exception("Fail to get type of Dalamud.Service<>");
         }
         catch (Exception e)
@@ -53,197 +53,162 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     }
 
     /*[PluginService]
-    [RequiredVersion("1.0")]
     public IToastGui ToastGui { get; private set; } = null!;*/
 
     /// <inheritdoc/>
-    public IPluginLogger PluginLogger { get; } = null!;
+    public IPluginLogger PluginLogger { get; }
 
     /// <inheritdoc/>
     public HttpClient HttpClient { get; }
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
-    public DalamudPluginInterface PluginInterface { get; init; } = null!;
+    public IDalamudPluginInterface PluginInterface { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IAddonEventManager AddonEventManager { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IAddonLifecycle AddonLifecycle { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IAetheryteList AetheryteList { get; init; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IBuddyList Buddies { get; private set; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IChatGui ChatGui { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IChatManager ChatHandlers { get; init; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IClientState ClientState { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ICondition Condition { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ICommandManager CommandManager { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IDataManager DataManager { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IDutyState DutyState { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IDtrBar DtrBar { get; init; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IFateTable FateTable { get; private set; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IFlyTextGui FlyTexts { get; private set; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IFramework Framework { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGameConfig GameConfig { get; init; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGameGui GameGui { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGameInteropProvider GameInteropProvider { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGameLifecycle GameLifecycle { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGameNetwork GameNetwork { get; init; } = null!;
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IGamepadState GamepadState { get; init; } = null!;
     */
 
     /*
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IJobGauges Gauges { get; private set; } = null!;
     */
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IKeyState KeyState { get; init; } = null!;
 
     /*[PluginService]
-    [RequiredVersion("1.0")]
     public ILibcFunction LibC { get; private set; } = null!;*/
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public INotificationManager NotificationManager { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public IObjectTable ObjectTable { get; init; } = null!;
 
     /*[PluginService]
-    [RequiredVersion("1.0")]
     public IPartyFinderGui PartyFinder { get; private set; } = null!;*/
 
     [PluginService]
-    [RequiredVersion("1.0")]
     public IPartyList PartyList { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ISigScanner SigScanner { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ITargetManager TargetManager { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ITextureProvider TextureProvider { get; init; } = null!;
 
     /// <inheritdoc/>
     [PluginService]
-    [RequiredVersion("1.0")]
     public ITitleScreenMenu TitleScreenMenu { get; init; } = null!;
 
     [PluginService]
-    [RequiredVersion("1.0")]
     internal IPluginLog PluginLog { get; init; } = null!;
 
     /// <inheritdoc/>

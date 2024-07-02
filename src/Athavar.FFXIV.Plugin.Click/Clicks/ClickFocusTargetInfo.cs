@@ -12,7 +12,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public class ClickFocusTargetInfo : ClickBase<ClickFocusTargetInfo, AddonTalk>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickFocusTargetInfo" /> class.
+    ///     Initializes a new instance of the <see cref="ClickFocusTargetInfo"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickFocusTargetInfo(nint addon = default)

@@ -36,7 +36,7 @@ public class GroupStateManager : IDisposable
 
     public bool InAlliance => this.CurrentAllianceType != AllianceType.None;
 
-    public unsafe AllianceType CurrentAllianceType => (AllianceType)this.GetGroupManager->AllianceFlags;
+    public unsafe AllianceType CurrentAllianceType => (AllianceType)this.GetGroupManager->MainGroup.AllianceFlags;
 
     public Alliance CurrentAlliance { get; }
 

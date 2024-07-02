@@ -20,11 +20,11 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud;
+using Dalamud.Game;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Textures;
 using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel;
@@ -276,10 +276,10 @@ internal sealed class QueueTab : Tab
                             ImGui.CloseCurrentPopup();
                         }
 
-                        if (obj is not null && this.iconManager.TryGetIcon(obj.Icon, out var textureWrap))
+                        if (obj is not null && this.iconManager.TryGetIcon(obj.Icon, out var texture) && texture.TryGetWrap(out var textureWrap, out _))
                         {
                             ImGui.SetCursorPos(cursorPos);
-                            ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
+                            ImGuiEx.ScaledImageY(textureWrap, ImGui.GetTextLineHeight());
                         }
                         else
                         {
@@ -381,10 +381,10 @@ internal sealed class QueueTab : Tab
                         }
 
                         ImGui.SetCursorPos(cursorPos1);
-                        var icon = this.iconManager.GetIcon(buffInfo.IconId, ITextureProvider.IconFlags.HiRes | (buffInfo.IsHq ? ITextureProvider.IconFlags.ItemHighQuality : 0));
-                        if (icon != null)
+                        var icon = this.iconManager.GetIcon(new GameIconLookup(buffInfo.IconId, buffInfo.IsHq));
+                        if (icon != null && icon.TryGetWrap(out var iconWarp, out _))
                         {
-                            ImGuiEx.ScaledImageY(icon.ImGuiHandle, icon.Width, icon.Height, ImGui.GetTextLineHeight());
+                            ImGuiEx.ScaledImageY(iconWarp, ImGui.GetTextLineHeight());
                         }
 
                         ImGui.TableSetColumnIndex(1);
@@ -540,9 +540,9 @@ internal sealed class QueueTab : Tab
                 if (ingredient.ItemId != 0)
                 {
                     ImGui.TableNextRow();
-                    if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryGetIcon(ingredient.Icon, out var textureWrap))
+                    if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryGetIcon(ingredient.Icon, out var texture) && texture.TryGetWrap(out var textureWarp, out _))
                     {
-                        ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
+                        ImGuiEx.ScaledImageY(textureWarp.ImGuiHandle, textureWarp.Width, textureWarp.Height, ImGui.GetTextLineHeight());
                         ImGuiEx.TextTooltip(this.itemsSheet.GetRow(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
                     }
 
@@ -668,15 +668,14 @@ internal sealed class QueueTab : Tab
                 var actionResult = rotationSteps[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(actionResult.Skill);
                 var tex = this.iconManager.GetIcon(craftSkillData.IconIds[classIndex]);
-                if (tex is null)
+                if (tex is null || !tex.TryGetWrap(out var texWarp, out _))
                 {
                     continue;
                 }
 
-                var iconSize = new Vector2(tex.Height, tex.Width);
-
                 var cursorBeforeImage = ImGui.GetCursorPos();
-                ImGui.Image(tex.ImGuiHandle, iconSize);
+                var iconSize = new Vector2(texWarp.Height, texWarp.Width);
+                ImGui.Image(texWarp.ImGuiHandle, iconSize);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
@@ -686,12 +685,12 @@ internal sealed class QueueTab : Tab
 
                 if (actionResult.FailCause is not null)
                 {
-                    tex = this.iconManager.GetIcon(61502, ITextureProvider.IconFlags.HiRes);
-                    if (tex != null)
+                    tex = this.iconManager.GetIcon(61502);
+                    if (tex != null && tex.TryGetWrap(out texWarp, out _))
                     {
                         ImGui.SameLine();
                         ImGui.SetCursorPos(cursorBeforeImage);
-                        ImGui.Image(tex.ImGuiHandle, iconSize);
+                        ImGui.Image(texWarp.ImGuiHandle, iconSize);
                     }
                 }
 
@@ -744,9 +743,9 @@ internal sealed class QueueTab : Tab
                     ImGui.TableSetColumnIndex(0);
                     ImGui.TextUnformatted($"{index}");
                     ImGui.TableSetColumnIndex(1);
-                    if (this.iconManager.TryGetIcon(craftSkillData.IconIds[classIndex], out var textureWrap))
+                    if (this.iconManager.TryGetIcon(craftSkillData.IconIds[classIndex], out var sharedImmediateTexture) && sharedImmediateTexture.TryGetWrap(out var textureWrap, out _))
                     {
-                        ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, ImGui.GetTextLineHeight());
+                        ImGuiEx.ScaledImageY(textureWrap, ImGui.GetTextLineHeight());
                     }
                     else
                     {

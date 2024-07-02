@@ -35,7 +35,7 @@ public class BasicModuleConfig<T> : BasicModuleConfig
         provider.AddSingleton<T>(
             o =>
             {
-                var pi = o.GetRequiredService<DalamudPluginInterface>();
+                var pi = o.GetRequiredService<IDalamudPluginInterface>();
                 var log = o.GetRequiredService<IPluginLogger>();
 
                 return Load(pi.ConfigDirectory, log);

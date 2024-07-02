@@ -33,7 +33,7 @@ internal class ClickGrandCompanySupplyList : ClickBase<ClickGrandCompanySupplyLi
     ///     Click a Supply.
     /// </summary>
     /// <param name="index">Supply index.</param>
-    public unsafe void Supply(ushort index) => this.ClickAddonComponentList((AtkComponentNode*)this.UnitBase->UldManager.NodeList[5], index, 1U + index);
+    public unsafe void Supply(ushort index) => this.ClickAddonComponentList((AtkComponentNode*)this.UnitBase->UldManager.NodeList[5], index, 1 + index);
 
     [ClickName("select_gcsupply1")]
     public void Supply1() => this.Supply(0);

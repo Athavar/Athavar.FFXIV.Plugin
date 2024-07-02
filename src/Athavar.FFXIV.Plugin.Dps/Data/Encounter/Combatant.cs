@@ -16,8 +16,8 @@ internal sealed class Combatant : BaseCombatant<Combatant>
 
     private bool change;
 
-    internal Combatant(Encounter encounter, uint objectId, uint dataId)
-        : base(encounter, objectId, dataId)
+    internal Combatant(Encounter encounter, ulong gameGameObjectId, uint dataId)
+        : base(encounter, gameGameObjectId, dataId)
     {
         this.Name = string.Empty;
         this.Name_First = string.Empty;

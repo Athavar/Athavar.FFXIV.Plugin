@@ -4,12 +4,14 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
+using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
+
 internal sealed class AdvancedTouch : QualityAction
 {
     private static readonly uint[] IdsValue = [100411, 100412, 100413, 100414, 100415, 100416, 100417, 100418];
 
     /// <inheritdoc/>
-    public override int Level => 84;
+    public override int Level => 68;
 
     /// <inheritdoc/>
     public override CraftingClass Class => CraftingClass.ANY;
@@ -25,7 +27,7 @@ internal sealed class AdvancedTouch : QualityAction
         for (var index = simulation.Steps.Count - 1; index >= 0; index--)
         {
             var step = simulation.Steps[index];
-            if (step.Success == true && step.Skill.Action is StandardTouch && step.Combo)
+            if (step is { Success: true, Skill.Action: StandardTouch, Combo: true } || step.Skill.Action is Observe)
             {
                 return true;
             }

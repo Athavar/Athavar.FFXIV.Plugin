@@ -24,7 +24,7 @@ internal sealed class DelicateSynthesis : GeneralAction
     public override void Execute(Simulation simulation)
     {
         var progressionIncrease = this.GetBaseProgression(simulation);
-        var potency = this.GetPotency(simulation);
+        var potency = this.GetPotency(simulation, ActionType.Progression);
         var buffMod = this.GetBaseBonus(simulation);
         var conditionMod = this.GetBaseCondition(simulation);
 
@@ -70,7 +70,7 @@ internal sealed class DelicateSynthesis : GeneralAction
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
     /// <inheritdoc/>
-    protected override int GetPotency(Simulation simulation) => 100;
+    protected override int GetPotency(Simulation simulation) => this.GetPotency(simulation, ActionType.Progression);
 
     /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;
@@ -79,7 +79,7 @@ internal sealed class DelicateSynthesis : GeneralAction
     {
         var buffMod = this.GetBaseBonus(simulation);
         var conditionMod = this.GetBaseCondition(simulation);
-        var potency = this.GetPotency(simulation);
+        var potency = this.GetPotency(simulation, ActionType.Quality);
         var qualityIncrease = this.GetBaseQuality(simulation);
 
         switch (simulation.State)
@@ -114,5 +114,15 @@ internal sealed class DelicateSynthesis : GeneralAction
 
         simulation.Quality += (long)Math.Floor(qualityIncrease * conditionMod * efficiency / 100);
         simulation.AddInnerQuietStacks(1);
+    }
+
+    private int GetPotency(Simulation simulation, ActionType? target)
+    {
+        if (target == ActionType.Progression)
+        {
+            return simulation.CrafterStats.Level >= 94 ? 150 : 100;
+        }
+
+        return 100;
     }
 }

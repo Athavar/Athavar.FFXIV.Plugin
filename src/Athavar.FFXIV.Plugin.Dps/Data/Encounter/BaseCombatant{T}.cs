@@ -9,10 +9,10 @@ internal abstract class BaseCombatant<T> : BaseCombatant
 {
     protected readonly BaseEncounter<T> Encounter;
 
-    protected BaseCombatant(BaseEncounter<T> encounter, uint objectId, uint dataId)
+    protected BaseCombatant(BaseEncounter<T> encounter, ulong gameObjectId, uint dataId)
     {
         this.Encounter = encounter;
-        this.ObjectId = objectId;
+        this.GameObjectId = gameObjectId;
         this.DataId = dataId;
     }
 
@@ -62,15 +62,15 @@ internal abstract class BaseCombatant<T> : BaseCombatant
             return this.DataId == other.DataId;
         }
 
-        if (this.ObjectId != 0)
+        if (this.GameObjectId != 0)
         {
-            return this.ObjectId == other.ObjectId;
+            return this.GameObjectId == other.GameObjectId;
         }
 
         return false;
     }
 
-    public override int GetHashCode() => HashCode.Combine(this.ObjectId, this.DataId);
+    public override int GetHashCode() => HashCode.Combine(this.GameObjectId, this.DataId);
 
     protected bool Equals(BaseCombatant<T> other)
     {
@@ -81,7 +81,7 @@ internal abstract class BaseCombatant<T> : BaseCombatant
 
         if (this.DataId == 0)
         {
-            return this.ObjectId.Equals(other.ObjectId);
+            return this.GameObjectId.Equals(other.GameObjectId);
         }
 
         return this.DataId.Equals(other.DataId);

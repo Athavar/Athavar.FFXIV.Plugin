@@ -5,37 +5,21 @@
 
 namespace Athavar.FFXIV.Plugin.Click.Structures;
 
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+
 /// <summary>
 ///     Event data.
 /// </summary>
 public sealed unsafe class EventData : SharedBuffer
 {
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="EventData"/> class.
-    /// </summary>
-    private EventData()
-    {
-        const int size = 0x18;
-        this.Data = (void**)Buffer.Add(new byte[size]);
-        /*
-        var d = stackalloc byte[size];
-        this.Data = (void**)Buffer.Add(d, size);
-        */
+    public static AtkEvent ForNormalTarget(AtkComponentNode* target, PopupMenu* listener) => ForNormalTarget((AtkEventTarget*)target, (AtkEventListener*)listener);
 
-        if (this.Data == null)
-        {
-            throw new ArgumentNullException(null, "EventData could not be created, null");
-        }
+    public static AtkEvent ForNormalTarget(AtkStage* target, AtkUnitBase* unitBase) => ForNormalTarget((AtkEventTarget*)target, (AtkEventListener*)unitBase);
 
-        this.Data[0] = null;
-        this.Data[1] = null;
-        this.Data[2] = null;
-    }
+    public static AtkEvent ForNormalTarget(AtkComponentNode* target, AtkUnitBase* unitBase) => ForNormalTarget((AtkEventTarget*)target, (AtkEventListener*)unitBase);
 
-    /// <summary>
-    ///     Gets the data pointer.
-    /// </summary>
-    public void** Data { get; }
+    public static AtkEvent ForNormalTarget(AtkComponentNode* target, AtkComponentNode* unitBase) => ForNormalTarget((AtkEventTarget*)target, (AtkEventListener*)unitBase);
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EventData"/> class.
@@ -43,11 +27,11 @@ public sealed unsafe class EventData : SharedBuffer
     /// <param name="target">Target.</param>
     /// <param name="listener">Event listener.</param>
     /// <returns>Event data.</returns>
-    public static EventData ForNormalTarget(void* target, void* listener)
+    public static AtkEvent ForNormalTarget(AtkEventTarget* target, AtkEventListener* listener)
     {
-        var data = new EventData();
-        data.Data[1] = target;
-        data.Data[2] = listener;
+        var data = default(AtkEvent);
+        data.Target = target;
+        data.Listener = listener;
         return data;
     }
 
@@ -57,11 +41,12 @@ public sealed unsafe class EventData : SharedBuffer
     /// <param name="target">Target.</param>
     /// <param name="listener">Event listener.</param>
     /// <returns>Event data.</returns>
-    public static EventData ForNormalRightTarget(void* target, void* listener)
+    public static AtkEvent ForNormalRightTarget(AtkEventTarget* target, AtkEventListener* listener)
     {
         var data = ForNormalTarget(target, listener);
+        /*
         data.Data[5] = (byte*)0x184003;
-        data.Data[7] = target;
+        data.Data[7] = target;*/
         return data;
     }
 }

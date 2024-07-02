@@ -14,8 +14,8 @@ using Athavar.FFXIV.Plugin.Importer.Models.Glamourer;
 using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud;
-using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
@@ -110,7 +110,7 @@ internal sealed class EorzeaCollectionTab : Tab
                 if (ImGui.Button("Apply to Target", Vector2.Zero))
                 {
                     var target = this.dalamudServices.ClientState.IsGPosing ? this.dalamudServices.TargetManager.GPoseTarget : this.dalamudServices.TargetManager.Target;
-                    if (target is Character character)
+                    if (target is IPlayerCharacter character)
                     {
                         this.ApplyTo(character);
                     }
@@ -141,10 +141,12 @@ internal sealed class EorzeaCollectionTab : Tab
                         continue;
                     }
 
+                    var textureWrap = tex.GetWrapOrEmpty();
+
                     ImGui.Separator();
                     using (_ = ImRaii.PushStyle(ImGuiStyleVar.FrameBorderSize, 2 * ImGuiHelpers.GlobalScale))
                     {
-                        ImGui.Image(tex.ImGuiHandle, iconSize);
+                        ImGuiEx.Image(textureWrap);
                     }
 
                     ImGui.SameLine();
@@ -175,7 +177,7 @@ internal sealed class EorzeaCollectionTab : Tab
 
                 if (ImGui.IsItemClicked())
                 {
-                    AgentTryon.TryOn(0, equipmentSlot.ItemId, (byte)(equipmentSlot.StrainId ?? 0), 0, 0);
+                    AgentTryon.TryOn(0, equipmentSlot.ItemId, (byte)(equipmentSlot.StrainId ?? 0));
                 }
             }
         }
@@ -184,7 +186,7 @@ internal sealed class EorzeaCollectionTab : Tab
     /// <summary> Square stores its colors as BGR values so R and B need to be shuffled and Alpha set to max. </summary>
     private static uint SeColorToRgba(uint color) => (color & 0xFF) << 16 | color >> 16 & 0xFF | color & 0xFF00 | 0xFF000000;
 
-    private void ApplyTo(Character character)
+    private void ApplyTo(IPlayerCharacter character)
     {
         foreach (var equipmentSlot in this.currentEquipmentSlots)
         {

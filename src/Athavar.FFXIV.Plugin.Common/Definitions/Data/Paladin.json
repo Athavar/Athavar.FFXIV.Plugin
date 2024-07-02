@@ -5,7 +5,7 @@
       "09": "fast blade",
       "damage": [
         {
-          "potency": 200
+          "potency": 220
         }
       ]
     },
@@ -13,8 +13,8 @@
       "0F": "riot blade",
       "damage": [
         {
-          "potency": 140,
-          "combo": 300
+          "potency": 170,
+          "combo": 330
         }
       ]
     },
@@ -104,8 +104,8 @@
       "DD3": "royal authority",
       "damage": [
         {
-          "potency": 140,
-          "combo": 400
+          "potency": 180,
+          "combo": 440
         }
       ]
     },
@@ -155,7 +155,7 @@
       "404C": "atonement",
       "damage": [
         {
-          "potency": 400
+          "potency": 440
         }
       ]
     },
@@ -220,6 +220,46 @@
       "heal": [
         {
           "potency": 400
+        }
+      ]
+    },
+    {
+      "9036": "supplication",
+      "damage": [
+        {
+          "potency": 460
+        }
+      ]
+    },
+    {
+      "9037": "sepulchre",
+      "damage": [
+        {
+          "potency": 480
+        }
+      ]
+    },
+    {
+      "9039": "imperator",
+      "damage": [
+        {
+          "potency": 580,
+          "targetindex": 0
+        },
+        {
+          "potency": 290
+        }
+      ]
+    },
+    {
+      "903a": "blade of honor",
+      "damage": [
+        {
+          "potency": 1000,
+          "targetindex": 0
+        },
+        {
+          "potency": 500
         }
       ]
     }
@@ -311,6 +351,15 @@
         {
           "type": "DamageReceivedMultiplier",
           "amount": -15
+        }
+      ]
+    },
+    {
+      "ef5": "guardian",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -40
         }
       ]
     }

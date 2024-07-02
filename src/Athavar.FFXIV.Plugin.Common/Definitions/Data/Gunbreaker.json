@@ -5,7 +5,7 @@
       "3F09": "keen edge",
       "damage": [
         {
-          "potency": 200
+          "potency": 300
         }
       ]
     },
@@ -13,8 +13,8 @@
       "3F0B": "brutal shell",
       "damage": [
         {
-          "potency": 160,
-          "combo": 300
+          "potency": 240,
+          "combo": 380
         }
       ],
       "heal": [
@@ -51,8 +51,8 @@
       "3F11": "solid barrel",
       "damage": [
         {
-          "potency": 140,
-          "combo": 360
+          "potency": 240,
+          "combo": 460
         }
       ]
     },
@@ -60,7 +60,7 @@
       "3F22": "burst strike",
       "damage": [
         {
-          "potency": 380
+          "potency": 460
         }
       ]
     },
@@ -82,18 +82,10 @@
       ]
     },
     {
-      "3F1A": "rough divide",
-      "damage": [
-        {
-          "potency": 150
-        }
-      ]
-    },
-    {
       "3F12": "gnashing fang",
       "damage": [
         {
-          "potency": 380
+          "potency": 500
         }
       ]
     },
@@ -101,7 +93,7 @@
       "3F13": "savage claw",
       "damage": [
         {
-          "potency": 460
+          "potency": 560
         }
       ]
     },
@@ -109,7 +101,7 @@
       "3F16": "wicked talon",
       "damage": [
         {
-          "potency": 540
+          "potency": 620
         }
       ]
     },
@@ -125,7 +117,7 @@
       "3F1C": "jugular rip",
       "damage": [
         {
-          "potency": 200
+          "potency": 240
         }
       ]
     },
@@ -133,7 +125,7 @@
       "3F1D": "abdomen tear",
       "damage": [
         {
-          "potency": 240
+          "potency": 280
         }
       ]
     },
@@ -141,7 +133,7 @@
       "3F1E": "eye gouge",
       "damage": [
         {
-          "potency": 280
+          "potency": 320
         }
       ]
     },
@@ -157,7 +149,7 @@
       "3F25": "blasting zone",
       "damage": [
         {
-          "potency": 720
+          "potency": 800
         }
       ]
     },
@@ -165,12 +157,12 @@
       "649F": "hypervelocity",
       "damage": [
         {
-          "potency": 180
+          "potency": 220
         }
       ]
     },
     {
-      "64a0": "double down zone",
+      "64a0": "double down",
       "damage": [
         {
           "potency": 1200,
@@ -180,9 +172,95 @@
           "potency": 1020
         }
       ]
+    },
+    {
+      "9047": "great nebula",
+      "heal": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "9048": "fated brand",
+      "damage": [
+        {
+          "potency": 120
+        }
+      ]
+    },
+    {
+      "9049": "reign of beasts",
+      "damage": [
+        {
+          "potency": 800,
+          "targetindex": 0
+        },
+        {
+          "potency": 320
+        }
+      ]
+    },
+    {
+      "904a": "noble blood",
+      "damage": [
+        {
+          "potency": 1000,
+          "targetindex": 0
+        },
+        {
+          "potency": 400
+        }
+      ]
+    },
+    {
+      "904b": "lion heart",
+      "damage": [
+        {
+          "potency": 1200,
+          "targetindex": 0
+        },
+        {
+          "potency": 480
+        }
+      ]
     }
   ],
   "statuseffects": [
+    {
+      "727": "no mercy",
+      "potency": [
+        {
+          "type": "damagedonemultiplier",
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "76a": "brutal shell",
+      "damageshield": {
+        "type": "HealPercent",
+        "amount": 100
+      }
+    },
+    {
+      "728": "camouflage",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -10
+        }
+      ]
+    },
+    {
+      "72A": "nebula",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -30
+        }
+      ]
+    },
     {
       "72B": "aurora",
       "timeproc": {
@@ -206,33 +284,6 @@
         "potency": "60",
         "maxticks": 5
       }
-    },
-    {
-      "727": "no mercy",
-      "potency": [
-        {
-          "type": "damagedonemultiplier",
-          "amount": 20
-        }
-      ]
-    },
-    {
-      "728": "camouflage",
-      "potency": [
-        {
-          "type": "DamageReceivedMultiplier",
-          "amount": -10
-        }
-      ]
-    },
-    {
-      "72A": "nebula",
-      "potency": [
-        {
-          "type": "DamageReceivedMultiplier",
-          "amount": -30
-        }
-      ]
     },
     {
       "72F": "heart of light",
@@ -280,11 +331,13 @@
       }
     },
     {
-      "76a": "brutal shell",
-      "damageshield": {
-        "type": "HealPercent",
-        "amount": 100
-      }
+      "efe": "great nebula",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -40
+        }
+      ]
     }
   ]
 }

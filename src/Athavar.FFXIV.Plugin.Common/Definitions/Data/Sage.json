@@ -183,7 +183,7 @@
       "5ef8": "dosis iii",
       "damage": [
         {
-          "potency": 330
+          "potency": 360
         }
       ],
       "heal": [
@@ -234,11 +234,11 @@
       "5efc": "toxikon ii",
       "damage": [
         {
-          "potency": 330,
+          "potency": 360,
           "targetindex": 0
         },
         {
-          "potency": 165
+          "potency": 180
         }
       ],
       "heal": [
@@ -251,11 +251,11 @@
       "5efe": "pneuma attack",
       "damage": [
         {
-          "potency": 330,
+          "potency": 360,
           "targetindex": 0
         },
         {
-          "potency": 198
+          "potency": 216
         }
       ],
       "heal": [
@@ -269,6 +269,34 @@
       "heal": [
         {
           "potency": 600
+        }
+      ]
+    },
+    {
+      "90a8": "eukrasian dyskrasia",
+      "heal": [
+        {
+          "potency": 170
+        }
+      ]
+    },
+    {
+      "90a9": "psyche",
+      "damage": [
+        {
+          "potency": 600,
+          "targetindex": 0
+        },
+        {
+          "potency": 300
+        }
+      ]
+    },
+    {
+      "90aa": "eukrasian prognosis ii",
+      "heal": [
+        {
+          "potency": 100
         }
       ]
     }
@@ -354,7 +382,13 @@
         "type": "hot",
         "potency": 130,
         "maxticks": 5
-      }
+      },
+      "potency": [
+        {
+          "type": "HealReceiveMultiplier",
+          "amount": 10
+        }
+      ]
     },
     {
       "a3d": "autophysis",
@@ -456,6 +490,34 @@
       "damageshield": {
         "type": "potency",
         "amount": 200
+      }
+    },
+    {
+      "f39": "eukrasian dyskrasia",
+      "timeproc": {
+        "type": "dot",
+        "potency": 40,
+        "maxticks": 10
+      }
+    },
+    {
+      "118004": "eukrasian prognosis ii",
+      "damageshield": {
+        "type": "healpercent",
+        "amount": 360
+      }
+    },
+    {
+      "f3a": "philosophia",
+      "potency": [
+        {
+          "type": "HealDoneMultiplier",
+          "amount": 20,
+          "LimitToActionCategory": "Spell"
+        }
+      ],
+      "reactiveproc": {
+        "type": "HealOnHealCast"
       }
     }
   ]

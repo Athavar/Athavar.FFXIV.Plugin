@@ -1132,6 +1132,20 @@
       ]
     },
     {
+      "9C2": "basic instinct",
+      "potency": [
+        {
+          "type": "HealDoneMultiplier",
+          "amount": 100,
+          "limitto": "pom cure,exuviation,stotram,angel's snack,rehydration"
+        },
+        {
+          "type": "damagedonemultiplier",
+          "amount": 100
+        }
+      ]
+    },
+    {
       "9C4": "Dragon Force",
       "potency": [
         {
@@ -1161,7 +1175,7 @@
       "E35": "spick-and-span",
       "timeproc": {
         "type": "hot",
-        "potency": "0",
+        "potency": "50",
         "maxticks": "5"
       }
     },

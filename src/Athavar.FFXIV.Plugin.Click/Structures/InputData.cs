@@ -16,39 +16,12 @@ public sealed unsafe class InputData : SharedBuffer
     /// <summary>
     ///     Initializes a new instance of the <see cref="InputData"/> class.
     /// </summary>
-    private InputData()
-    {
-        const int size = 0x40;
-        this.Data = (void**)Buffer.Add(new byte[size]);
-        /*
-        var d = stackalloc byte[size];
-        this.Data = (void**)Buffer.Add(d, size);
-        */
-        if (this.Data == null)
-        {
-            throw new ArgumentNullException(null, "InputData could not be created, null");
-        }
-
-        this.Data[0] = null;
-        this.Data[1] = null;
-        this.Data[2] = null;
-        this.Data[3] = null;
-        this.Data[4] = null;
-        this.Data[5] = null;
-        this.Data[6] = null;
-        this.Data[7] = null;
-    }
-
-    /// <summary>
-    ///     Gets the data pointer.
-    /// </summary>
-    public void** Data { get; }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="InputData"/> class.
-    /// </summary>
     /// <returns>Input data.</returns>
-    public static InputData Empty() => new();
+    public static AtkEventData Empty()
+    {
+        var data = default(AtkEventData);
+        return data;
+    }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="InputData"/> class.
@@ -56,11 +29,12 @@ public sealed unsafe class InputData : SharedBuffer
     /// <param name="popupMenu">List popup menu.</param>
     /// <param name="index">Selected index.</param>
     /// <returns>Input data.</returns>
-    public static InputData ForPopupMenu(PopupMenu* popupMenu, ushort index)
+    public static AtkEventData ForPopupMenu(PopupMenu* popupMenu, ushort index)
     {
-        var data = new InputData();
-        data.Data[0] = popupMenu->List->ItemRendererList[index].AtkComponentListItemRenderer;
-        data.Data[2] = (void*)(index | ((ulong)index << 48));
+        var data = default(AtkEventData);
+        data.ListItemData.ListItemRenderer = popupMenu->List->ItemRendererList[index].AtkComponentListItemRenderer;
+        data.ListItemData.SelectedIndex = index;
+        /* data.Data[2] = (void*)(index | (ulong)index << 48); */
         return data;
     }
 
@@ -70,11 +44,12 @@ public sealed unsafe class InputData : SharedBuffer
     /// <param name="node">List popup menu.</param>
     /// <param name="index">Selected index.</param>
     /// <returns>Input data.</returns>
-    public static InputData ForAtkComponentNode(AtkComponentNode* node, ushort index)
+    public static AtkEventData ForAtkComponentNode(AtkComponentNode* node, ushort index)
     {
-        var data = new InputData();
-        data.Data[0] = ((AtkComponentList*)node->Component)->ItemRendererList[index].AtkComponentListItemRenderer;
-        data.Data[2] = (void*)(index | ((ulong)index << 48));
+        var data = default(AtkEventData);
+        data.ListItemData.ListItemRenderer = ((AtkComponentList*)node->Component)->ItemRendererList[index].AtkComponentListItemRenderer;
+        data.ListItemData.SelectedIndex = index;
+        /* data.Data[2] = (void*)(index | (ulong)index << 48); */
         return data;
     }
 }

@@ -46,37 +46,6 @@ public sealed class CraftQueueConfiguration : BasicModuleConfig<CraftQueueConfig
     [JsonPropertyName("AutoMateriaExtract")]
     public bool AutoMateriaExtract { get; set; }
 
-    public void CalculateDuplicateRotations()
-    {
-        foreach (var rotationNodes in this.GetAllNodes().OfType<RotationNode>().GroupBy(x => x.GetRotationString()))
-        {
-            if (rotationNodes.Count() > 1)
-            {
-                // duplicates
-                var nodes = rotationNodes.ToArray();
-                for (var i = 0; i < nodes.Length; i++)
-                {
-                    var node = nodes[i];
-                    node.Duplicates.Clear();
-                    for (var j = 0; j < nodes.Length; j++)
-                    {
-                        if (i == j)
-                        {
-                            continue;
-                        }
-
-                        node.Duplicates.Add(nodes[j]);
-                    }
-                }
-            }
-            else
-            {
-                // unique
-                rotationNodes.First().Duplicates.Clear();
-            }
-        }
-    }
-
     /// <summary>
     ///     Get all nodes in the tree.
     /// </summary>

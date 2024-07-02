@@ -8,8 +8,8 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud;
-using Dalamud.Interface.Internal;
+using Dalamud.Game;
+using Dalamud.Interface.Textures;
 using Dalamud.Plugin.Services;
 
 /// <summary>
@@ -35,18 +35,18 @@ internal sealed partial class IconManager : IIconManager, IDisposable
     }
 
     /// <inheritdoc/>
-    public IDalamudTextureWrap? GetIcon(uint iconId) => this.GetIcon(iconId, ITextureProvider.IconFlags.None);
+    public ISharedImmediateTexture? GetIcon(uint iconId) => this.GetIcon(new GameIconLookup(iconId));
 
     /// <inheritdoc/>
-    public bool TryGetIcon(uint iconId, [NotNullWhen(true)] out IDalamudTextureWrap? textureWrap) => this.TryGetIcon(iconId, ITextureProvider.IconFlags.None, out textureWrap);
+    public bool TryGetIcon(uint iconId, [NotNullWhen(true)] out ISharedImmediateTexture? textureWrap) => this.TryGetIcon(new GameIconLookup(iconId), out textureWrap);
 
     /// <inheritdoc/>
-    public IDalamudTextureWrap? GetIcon(uint iconId, ITextureProvider.IconFlags flags) => this.textureProvider.GetIcon(iconId, flags);
+    public ISharedImmediateTexture? GetIcon(GameIconLookup gameIconLookup) => this.textureProvider.GetFromGameIcon(gameIconLookup);
 
     /// <inheritdoc/>
-    public bool TryGetIcon(uint iconId, ITextureProvider.IconFlags flags, [NotNullWhen(true)] out IDalamudTextureWrap? textureWrap)
+    public bool TryGetIcon(GameIconLookup gameIconLookup, [NotNullWhen(true)] out ISharedImmediateTexture? textureWrap)
     {
-        textureWrap = this.GetIcon(iconId, flags);
+        textureWrap = this.GetIcon(gameIconLookup);
         return textureWrap is not null;
     }
 

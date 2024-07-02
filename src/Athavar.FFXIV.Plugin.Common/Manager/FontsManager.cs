@@ -23,7 +23,7 @@ public class FontsManager : IDisposable, IFontsManager
     private readonly IPluginLogger logger;
     private readonly Dictionary<string, IFontHandle> imGuiFonts = [];
     private readonly string userFontPath = string.Empty;
-    private readonly UiBuilder uiBuilder;
+    private readonly IUiBuilder uiBuilder;
     private string[] fontList;
 
     public FontsManager(IDalamudServices services, IEnumerable<IFontsManager.FontData> fonts)

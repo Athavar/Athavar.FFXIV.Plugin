@@ -19,7 +19,6 @@ using Athavar.FFXIV.Plugin.OpcodeWizard;
 using Athavar.FFXIV.Plugin.UI;
 using Athavar.FFXIV.Plugin.Yes;
 using Dalamud.Interface.Windowing;
-using Dalamud.IoC;
 using Dalamud.Plugin;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,7 +39,7 @@ public sealed class Plugin : IDalamudPlugin
     /// </summary>
     internal const string PluginName = "Athavar's Toolbox";
 
-    private readonly DalamudPluginInterface pluginInterface;
+    private readonly IDalamudPluginInterface pluginInterface;
 
     private readonly ServiceProvider provider;
     private readonly PluginService servive;
@@ -49,7 +48,7 @@ public sealed class Plugin : IDalamudPlugin
     ///     Initializes a new instance of the <see cref="Plugin"/> class.
     /// </summary>
     /// <param name="pluginInterface">Dalamud plugin interface.</param>
-    public Plugin([RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
+    public Plugin(IDalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
 

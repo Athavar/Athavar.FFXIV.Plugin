@@ -436,12 +436,12 @@ internal sealed class BarConfigPage : IConfigPage
 
     private void DrawJobIcon(Job job, JobIconStyle style, Vector2 position, Vector2 size, ImDrawListPtr drawList)
     {
-        if (!this.iconManager.TryGetJobIcon(job, style, true, out var tex))
+        if (!this.iconManager.TryGetJobIcon(job, style, true, out var tex) || !tex.TryGetWrap(out var textureWrap, out _))
         {
             return;
         }
 
-        drawList.AddImage(tex.ImGuiHandle, position, position + size, Vector2.Zero, Vector2.One);
+        drawList.AddImage(textureWrap.ImGuiHandle, position, position + size, Vector2.Zero, Vector2.One);
     }
 
     private class Cache

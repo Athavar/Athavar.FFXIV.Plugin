@@ -40,7 +40,7 @@
       "damage": [
         {
           "potency": 100,
-          "combo": 400
+          "combo": 380
         }
       ]
     },
@@ -61,14 +61,6 @@
       ]
     },
     {
-      "5F": "spineshatter dive",
-      "damage": [
-        {
-          "potency": 250
-        }
-      ]
-    },
-    {
       "58": "chaos thrust",
       "damage": [
         {
@@ -80,7 +72,11 @@
       "60": "dragonfire dive",
       "damage": [
         {
-          "potency": 300
+          "potency": 250
+        },
+        {
+          "potency": 500,
+          "targetindex": 0
         }
       ]
     },
@@ -104,10 +100,10 @@
       "DE3": "geirskogul",
       "damage": [
         {
-          "potency": 182
+          "potency": 140
         },
         {
-          "potency": 260,
+          "potency": 280,
           "targetindex": 0
         }
       ]
@@ -133,7 +129,7 @@
       "1CE8": "nastrond",
       "damage": [
         {
-          "potency": 252
+          "potency": 180
         },
         {
           "potency": 360,
@@ -162,7 +158,7 @@
       "405F": "raiden thrust",
       "damage": [
         {
-          "potency": 280
+          "potency": 320
         }
       ]
     },
@@ -174,7 +170,7 @@
           "targetindex": 0
         },
         {
-          "potency": 434
+          "potency": 310
         }
       ]
     },
@@ -190,8 +186,8 @@
       "64ab": "heavens' thrust",
       "damage": [
         {
-          "potency": 100,
-          "combo": 480
+          "potency": 140,
+          "combo": 440
         }
       ]
     },
@@ -207,11 +203,61 @@
       "64ad": "wyrmwind thrust",
       "damage": [
         {
-          "potency": 420,
+          "potency": 440,
           "targetindex": 0
         },
         {
-          "potency": 210
+          "potency": 220
+        }
+      ]
+    },
+    {
+      "9058": "drakesbane",
+      "damage": [
+        {
+          "potency": 440
+        }
+      ]
+    },
+    {
+      "9059": "rise of the dragon",
+      "damage": [
+        {
+          "potency": 550,
+          "targetindex": 0
+        },
+        {
+          "potency": 275
+        }
+      ]
+    },
+    {
+      "905a": "lance barrage",
+      "damage": [
+        {
+          "potency": 130,
+          "combo": 340
+        }
+      ]
+    },
+    {
+      "905b": "spiral blow",
+      "damage": [
+        {
+          "potency": 140,
+          "combo": 300
+        }
+      ]
+    },
+    {
+      "905c": "starcross",
+      "damage": [
+        {
+          "potency": 700,
+          "targetindex": 0
+        },
+        {
+          "potency": 350
         }
       ]
     }
@@ -245,7 +291,7 @@
       ]
     },
     {
-      "77A": "disembowel",
+      "77A": "power surge",
       "potency": [
         {
           "type": "damagedonemultiplier",
@@ -303,6 +349,15 @@
         "damagetype": "physical",
         "maxticks": 8
       }
+    },
+    {
+      "c69": "life of the dragon",
+      "potency": [
+        {
+          "type": "damagedonemultiplier",
+          "amount": 15
+        }
+      ]
     }
   ]
 }

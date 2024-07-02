@@ -383,8 +383,13 @@ public sealed partial class Simulation
             }
         }
 
+        var lastStep = this.Steps.LastOrDefault();
+
         // Even if the action failed, we have to remove the durability cost
-        this.Durability -= action.GetDurabilityCost(this);
+        if (lastStep is null || !(lastStep.Skill.Action is TrainedPerfection && lastStep.Success == true))
+        {
+            this.Durability -= action.GetDurabilityCost(this);
+        }
 
         // Even if the action failed, CP has to be consumed too
         this.AvailableCP -= action.GetCPCost(this);

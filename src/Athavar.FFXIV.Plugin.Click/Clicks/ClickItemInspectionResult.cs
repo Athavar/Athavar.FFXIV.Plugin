@@ -42,5 +42,5 @@ public sealed class ClickItemInspectionResult : ClickBase<ClickItemInspectionRes
     ///     Click the close button.
     /// </summary>
     [ClickName("item_inspection_result_close")]
-    public void CloseResult() => this.ClickAddonButtonIndex(3, 0xFFFF_FFFF);
+    public void CloseResult() => this.ClickAddonButtonIndex(3, int.MinValue);
 }

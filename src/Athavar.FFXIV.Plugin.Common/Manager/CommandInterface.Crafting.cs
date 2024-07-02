@@ -21,21 +21,21 @@ internal sealed partial class CommandInterface
             74, 76, 78, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 94, 96, 98, 100,
         ];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsCrafting() => this.dalamudServices.Condition[ConditionFlag.Crafting] && !this.dalamudServices.Condition[ConditionFlag.PreparingToCraft];
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool IsNotCrafting() => !this.IsCrafting();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe bool IsCollectable()
     {
         var addon = this.GetSynthesisAddon();
 
-        return addon->AtkUnitBase.UldManager.NodeList[34]->IsVisible;
+        return addon->AtkUnitBase.UldManager.NodeList[34]->IsVisible();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe string GetCondition(bool lower = true)
     {
         var addon = this.GetSynthesisAddon();
@@ -50,28 +50,28 @@ internal sealed partial class CommandInterface
         return text;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool HasCondition(string condition, bool lower = true)
     {
         var actual = this.GetCondition(lower);
         return condition == actual;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetProgress()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->CurrentProgress, "Could not parse current progress number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetMaxProgress()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->MaxProgress, "Could not parse max progress number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool HasMaxProgress()
     {
         var current = this.GetProgress();
@@ -79,21 +79,21 @@ internal sealed partial class CommandInterface
         return current == max;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetQuality()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->CurrentQuality, "Could not parse current quality number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetMaxQuality()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->MaxQuality, "Could not parse max quality number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public bool HasMaxQuality()
     {
         var step = this.GetStep();
@@ -114,35 +114,35 @@ internal sealed partial class CommandInterface
         return percentHq == 100;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetDurability()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->CurrentDurability, "Could not parse current durability number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetMaxDurability()
     {
         var addon = this.GetSynthesisAddon();
         return this.GetNodeTextAsInt(addon->StartingDurability, "Could not parse max durability number in the Synthesis addon");
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int GetCp()
     {
         var cp = this.dalamudServices.ClientState.LocalPlayer?.CurrentCp ?? 0;
         return (int)cp;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public int GetMaxCp()
     {
         var cp = this.dalamudServices.ClientState.LocalPlayer?.MaxCp ?? 0;
         return (int)cp;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetStep()
     {
         var addon = this.GetSynthesisAddon();
@@ -150,11 +150,11 @@ internal sealed partial class CommandInterface
         return step;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetPercentHQ()
     {
         var addon = this.GetSynthesisAddon();
-        if (!addon->AtkUnitBase.UldManager.NodeList[33]->IsVisible)
+        if (!addon->AtkUnitBase.UldManager.NodeList[33]->IsVisible())
         {
             var current = this.GetNodeTextAsInt(addon->CurrentQuality, "Could not parse current quality number in the Synthesis addon");
             var max = this.GetNodeTextAsInt(addon->MaxQuality, "Could not parse max quality number in the Synthesis addon");
@@ -165,10 +165,10 @@ internal sealed partial class CommandInterface
         return percentHq;
     }
 
-    /// <inheritdoc />
-    public unsafe void OpenRecipeByRecipeId(uint recipeId) => ((AgentRecipeNote*)Framework.Instance()->GetUiModule()->GetAgentModule()->GetAgentByInternalId(AgentId.RecipeNote))->OpenRecipeByRecipeId(recipeId);
+    /// <inheritdoc/>
+    public unsafe void OpenRecipeByRecipeId(uint recipeId) => ((AgentRecipeNote*)Framework.Instance()->UIModule->GetAgentModule()->GetAgentByInternalId(AgentId.RecipeNote))->OpenRecipeByRecipeId(recipeId);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public unsafe int GetRecipeNoteSelectedRecipeId()
     {
         var list = RecipeNote.Instance()->RecipeList;

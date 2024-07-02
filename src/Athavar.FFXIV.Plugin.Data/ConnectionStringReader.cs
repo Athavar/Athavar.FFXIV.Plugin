@@ -12,7 +12,7 @@ internal sealed class ConnectionStringReader : IConnectionStringReader
 {
     private readonly string connectionString;
 
-    public ConnectionStringReader(DalamudPluginInterface pluginInterface) => this.connectionString = this.BuildSQLiteConnectionString(pluginInterface.ConfigDirectory.FullName, "data");
+    public ConnectionStringReader(IDalamudPluginInterface pluginInterface) => this.connectionString = this.BuildSQLiteConnectionString(pluginInterface.ConfigDirectory.FullName, "data");
 
     public int Priority => 999;
 

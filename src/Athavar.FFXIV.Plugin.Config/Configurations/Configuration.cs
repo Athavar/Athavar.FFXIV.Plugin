@@ -21,7 +21,7 @@ public sealed class Configuration : IPluginConfiguration
     public int Version { get; set; } = 2;
 
     [JsonIgnore]
-    internal DalamudPluginInterface? Pi { get; private set; }
+    internal IDalamudPluginInterface? Pi { get; private set; }
 
     [JsonProperty]
     private bool ShowToolTips { get; set; } = true;
@@ -68,7 +68,7 @@ public sealed class Configuration : IPluginConfiguration
     [JsonProperty]
     private SliceIsRightConfiguration? SliceIsRight { get; set; }
 
-    public static void Migrate(DalamudPluginInterface pi)
+    public static void Migrate(IDalamudPluginInterface pi)
     {
         if (pi.ConfigFile.Exists)
         {
@@ -100,7 +100,7 @@ public sealed class Configuration : IPluginConfiguration
     ///     Setup <see cref="DalamudPluginInterface"/>.
     /// </summary>
     /// <param name="interface">The <see cref="DalamudPluginInterface"/>.</param>
-    private void Setup(DalamudPluginInterface @interface)
+    private void Setup(IDalamudPluginInterface @interface)
     {
         // migration only
         this.Pi = @interface;

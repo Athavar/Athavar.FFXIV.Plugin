@@ -46,7 +46,7 @@ internal abstract class BaseCombatant
     [JsonIgnore]
     private static readonly Dictionary<string, PropertyInfo> Fields = typeof(BaseCombatant).GetProperties().ToDictionary(x => x.Name.ToLower());
 
-    public uint ObjectId { get; init; }
+    public ulong GameObjectId { get; init; }
 
     public uint DataId { get; init; }
 
@@ -116,9 +116,9 @@ internal abstract class BaseCombatant
 
     public string GetFormattedString(string format, string numberFormat) => TextTagFormatter.TextTagRegex.Replace(format, new TextTagFormatter(this, numberFormat, Fields).Evaluate);
 
-    public override string ToString() => this.ToString(this.ObjectId == 0 ? this.DataId : this.ObjectId);
+    public override string ToString() => this.ToString(this.GameObjectId == 0 ? this.DataId : this.GameObjectId);
 
-    public string ToString(uint objectId) => $"'{this.Name}' <{objectId:X}> {this.Kind.AsText()}";
+    public string ToString(ulong objectId) => $"'{this.Name}' <{objectId:X}> {this.Kind.AsText()}";
 
     public float GetMeterData(MeterDataType type)
         => type switch

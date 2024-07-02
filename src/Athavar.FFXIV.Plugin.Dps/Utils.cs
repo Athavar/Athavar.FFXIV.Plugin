@@ -67,8 +67,8 @@ internal sealed class Utils
         {
             JobType.All => true,
             JobType.Tanks => job is Job.Gladiator or Job.Marauder or Job.Paladin or Job.Warrior or Job.DarkKnight or Job.Gunbreaker,
-            JobType.Casters => job is Job.Thaumaturge or Job.Arcanist or Job.BlackMage or Job.Summoner or Job.RedMage or Job.BlueMage,
-            JobType.Melee => job is Job.Pugilist or Job.Lancer or Job.Rogue or Job.Monk or Job.Dragoon or Job.Ninja or Job.Samurai or Job.Reaper,
+            JobType.Casters => job is Job.Thaumaturge or Job.Arcanist or Job.BlackMage or Job.Summoner or Job.RedMage or Job.BlueMage or Job.Pictomancer,
+            JobType.Melee => job is Job.Pugilist or Job.Lancer or Job.Rogue or Job.Monk or Job.Dragoon or Job.Ninja or Job.Samurai or Job.Reaper or Job.Viper,
             JobType.Ranged => job is Job.Archer or Job.Bard or Job.Machinist or Job.Dancer,
             JobType.Healers => job is Job.Conjurer or Job.WhiteMage or Job.Scholar or Job.Astrologian or Job.Sage,
             JobType.DoH => job is Job.Carpenter or Job.Blacksmith or Job.Armorer or Job.Goldsmith or Job.Leatherworker or Job.Weaver or Job.Alchemist or Job.Culinarian,
@@ -81,7 +81,7 @@ internal sealed class Utils
             _ => false,
         };
 
-    public string ObjectString(GameObject obj) => $"{obj.DataId:X} '{obj.Name}' <{obj.ObjectId:X}>";
+    public string ObjectString(IGameObject obj) => $"{obj.DataId:X} '{obj.Name}' <{obj.EntityId:X}>";
 
     public string ObjectString(ulong id)
     {

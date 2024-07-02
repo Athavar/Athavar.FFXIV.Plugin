@@ -28,5 +28,7 @@ public enum Buffs
     FINAL_APPRAISAL,
 
     HEART_AND_SOUL,
+
+    EXPEDIENCE,
 }
 #pragma warning restore SA1602

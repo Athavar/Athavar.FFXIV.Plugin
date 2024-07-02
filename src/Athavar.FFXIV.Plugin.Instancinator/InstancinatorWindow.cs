@@ -14,6 +14,7 @@ using ImGuiNET;
 
 internal sealed class InstancinatorWindow : Window, IDisposable
 {
+    private readonly FontAwesomeIcon[] dice = [FontAwesomeIcon.DiceOne, FontAwesomeIcon.DiceTwo, FontAwesomeIcon.DiceThree, FontAwesomeIcon.DiceFour, FontAwesomeIcon.DiceFive, FontAwesomeIcon.DiceSix];
     private readonly InstancinatorModule module;
     private readonly WindowSystem windowSystem;
 
@@ -31,7 +32,7 @@ internal sealed class InstancinatorWindow : Window, IDisposable
         windowSystem.AddWindow(this);
     }
 
-    private unsafe int InstanceNumber => UIState.Instance()->AreaInstance.Instance;
+    private unsafe uint InstanceNumber => UIState.Instance()->PublicInstance.InstanceId;
 
     /// <inheritdoc/>
     public override void Draw()
@@ -42,11 +43,6 @@ internal sealed class InstancinatorWindow : Window, IDisposable
 
         void DrawInstanceButton(FontAwesomeIcon icon, int index)
         {
-            if (index > numInst)
-            {
-                return;
-            }
-
             var current = currentInst == index;
             if (current)
             {
@@ -68,9 +64,11 @@ internal sealed class InstancinatorWindow : Window, IDisposable
         ImGui.Text($"Sel: {selectedInst}");
         ImGui.SetWindowFontScale(2f);
 
-        DrawInstanceButton(FontAwesomeIcon.DiceOne, 1);
-        DrawInstanceButton(FontAwesomeIcon.DiceTwo, 2);
-        DrawInstanceButton(FontAwesomeIcon.DiceThree, 3);
+        var max = Math.Min(numInst, this.dice.Length);
+        for (var i = 0; i < max; i++)
+        {
+            DrawInstanceButton(this.dice[i], i + 1);
+        }
 
         if (this.ImGuiIconButton(FontAwesomeIcon.TimesCircle))
         {

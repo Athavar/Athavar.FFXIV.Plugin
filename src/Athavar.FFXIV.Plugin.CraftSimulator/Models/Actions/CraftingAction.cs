@@ -8,6 +8,8 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Constants;
 
 public abstract class CraftingAction
 {
+    public virtual bool IsDeprecated => false;
+
     public bool IsRequiresGood => false;
 
     /// <summary>

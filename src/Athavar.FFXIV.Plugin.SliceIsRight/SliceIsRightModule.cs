@@ -23,7 +23,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
     private const float MaxDistance = 30f;
     private const float HALF_PI = 1.5707964f;
 
-    private readonly IDictionary<uint, DateTime> objectsAndSpawnTime = new Dictionary<uint, DateTime>();
+    private readonly Dictionary<ulong, DateTime> objectsAndSpawnTime = new();
 
     private readonly IDalamudServices dalamudServices;
     private readonly uint COLOUR_BLUE = ImGui.GetColorU32(ImGui.ColorConvertFloat4ToU32(new Vector4(0.0f, 0.0f, 1f, 0.15f)));
@@ -115,17 +115,17 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
                 }
                 else
                 {
-                    var objectId1 = this.dalamudServices.ClientState.LocalPlayer?.ObjectId;
-                    var objectId2 = gameObject.ObjectId;
+                    var objectId1 = this.dalamudServices.ClientState.LocalPlayer?.GameObjectId;
+                    var objectId2 = gameObject.GameObjectId;
                     var num = ((int)objectId1.GetValueOrDefault() == (int)objectId2) & objectId1.HasValue ? 1 : 0;
                 }
             }
         }
     }
 
-    private void RenderObject(int index, GameObject obj, int model, float? radius = null)
+    private void RenderObject(int index, IGameObject obj, int model, float? radius = null)
     {
-        if (this.objectsAndSpawnTime.TryGetValue(obj.ObjectId, out var dateTime))
+        if (this.objectsAndSpawnTime.TryGetValue(obj.GameObjectId, out var dateTime))
         {
             if (dateTime.AddSeconds(5.0) > DateTime.Now)
             {
@@ -148,7 +148,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         }
         else
         {
-            this.objectsAndSpawnTime.Add(obj.ObjectId, DateTime.Now);
+            this.objectsAndSpawnTime.Add(obj.GameObjectId, DateTime.Now);
         }
     }
 
@@ -168,7 +168,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         ImGui.PopID();
     }
 
-    private void DrawFilledCircleWorld(GameObject obj, float radius, uint colour)
+    private void DrawFilledCircleWorld(IGameObject obj, float radius, uint colour)
     {
         this.BeginRender(obj.Address.ToString());
         var position = obj.Position;
@@ -193,7 +193,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
     }
 
     private void DrawRectWorld(
-        GameObject obj,
+        IGameObject obj,
         float rotation,
         float length,
         float width,

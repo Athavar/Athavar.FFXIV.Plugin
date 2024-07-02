@@ -13,11 +13,10 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud;
+using Dalamud.Game;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 using ImGuiNET;
 
 internal sealed class RotationTab : Tab
@@ -45,7 +44,7 @@ internal sealed class RotationTab : Tab
         this.craftDataManager = craftDataManager;
         this.ClientLanguage = clientLanguage;
 
-        this.Configuration.CalculateDuplicateRotations();
+        this.CalculateRotationErrorState();
     }
 
     /// <inheritdoc/>
@@ -79,6 +78,45 @@ internal sealed class RotationTab : Tab
         ImGui.Columns(1);
     }
 
+    public void CalculateRotationErrorState()
+    {
+        var rotations = this.Configuration.GetAllNodes().OfType<RotationNode>().ToList();
+        foreach (var rotation in rotations)
+        {
+            rotation.Errors.Clear();
+            var deprecatedActionIds = rotation.RotationArray.Intersect(CraftingSkill.DeprecatedActionIndex).ToList();
+            if (deprecatedActionIds.Any())
+            {
+                rotation.Errors.Add(new RotationNode.RotationError(RotationNode.RotationErrorType.DeprecatedAction, deprecatedActionIds.Select(i => ((CraftingSkills)i).ToString()).ToList()));
+            }
+        }
+
+        foreach (var rotationNodes in rotations.GroupBy(x => x.GetRotationString()))
+        {
+            if (rotationNodes.Count() > 1)
+            {
+                // duplicates
+                var nodes = rotationNodes.ToArray();
+                for (var i = 0; i < nodes.Length; i++)
+                {
+                    var node = nodes[i];
+                    List<string> nodeNames = [];
+                    for (var j = 0; j < nodes.Length; j++)
+                    {
+                        if (i == j)
+                        {
+                            continue;
+                        }
+
+                        nodeNames.Add(nodes[j].Name);
+                    }
+
+                    node.Errors.Add(new RotationNode.RotationError(RotationNode.RotationErrorType.Duplicate, nodeNames));
+                }
+            }
+        }
+    }
+
     private void DisplayRotationTree() => this.DisplayNode(this.RootFolder);
 
     private void DisplayRotationInfo()
@@ -94,18 +132,26 @@ internal sealed class RotationTab : Tab
         ImGui.PushItemWidth(-1);
 
         var style = ImGui.GetStyle();
-        var runningHeight = (ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3) + (style.FramePadding.Y * 2) + (style.ItemSpacing.Y * 2);
+        var runningHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 2;
         if (ImGui.BeginChild("Rotation##display-rotation", new Vector2(-1, runningHeight)))
         {
             var rotations = this.activeRotationMacro.Rotation;
+            var hight = ImGui.GetTextLineHeight() * 3;
             for (var index = 0; index < rotations.Length; index++)
             {
                 var x = ImGui.GetContentRegionAvail().X;
 
                 var action = rotations[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(action);
-                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0], ITextureProvider.IconFlags.None);
-                ImGui.Image(tex!.ImGuiHandle, new Vector2(tex.Height, tex.Width));
+                var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0]);
+                if (tex is null)
+                {
+                    continue;
+                }
+
+                var textureWrap = tex.GetWrapOrEmpty();
+
+                ImGuiEx.ScaledImageY(textureWrap, hight);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
@@ -148,7 +194,7 @@ internal sealed class RotationTab : Tab
                 node.Save(this.activeRotationMacro);
                 this.editChanged = false;
                 this.Configuration.Save();
-                this.Configuration.CalculateDuplicateRotations();
+                this.CalculateRotationErrorState();
             }
         }
 
@@ -267,23 +313,32 @@ internal sealed class RotationTab : Tab
             flags |= ImGuiTreeNodeFlags.Selected;
         }
 
-        if (node.Duplicates.Any())
+        if (node.Errors.Any())
         {
             ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
         }
 
         ImGui.TreeNodeEx($"{node.Name}##tree", flags);
 
-        if (node.Duplicates.Any())
+        if (node.Errors.Any())
         {
             ImGui.PopStyleColor();
             if (ImGui.IsItemHovered())
             {
                 ImGui.BeginTooltip();
-                ImGui.TextUnformatted("Duplicate rotations:");
-                foreach (var duplicate in node.Duplicates)
+                foreach (var error in node.Errors)
                 {
-                    ImGui.BulletText(duplicate.Name);
+                    ImGui.TextUnformatted(
+                        error.Type switch
+                        {
+                            RotationNode.RotationErrorType.Duplicate => "Duplicate rotations:",
+                            RotationNode.RotationErrorType.DeprecatedAction => "Deprecated Action:",
+                            _ => throw new ArgumentOutOfRangeException(),
+                        });
+                    foreach (var line in error.Data)
+                    {
+                        ImGui.BulletText(line);
+                    }
                 }
 
                 ImGui.EndTooltip();
@@ -415,7 +470,7 @@ internal sealed class RotationTab : Tab
                     folderNode.Children.Add(newNode);
                     this.Configuration.Save();
 
-                    this.Configuration.CalculateDuplicateRotations();
+                    this.CalculateRotationErrorState();
                 }
 
                 ImGui.SameLine();
@@ -446,7 +501,7 @@ internal sealed class RotationTab : Tab
 
                         if (node is RotationNode)
                         {
-                            this.Configuration.CalculateDuplicateRotations();
+                            this.CalculateRotationErrorState();
                         }
                     }
                 }

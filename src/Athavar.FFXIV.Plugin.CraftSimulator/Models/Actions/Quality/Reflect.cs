@@ -37,7 +37,7 @@ internal sealed class Reflect : QualityAction
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
     /// <inheritdoc/>
-    protected override int GetPotency(Simulation simulation) => 100;
+    protected override int GetPotency(Simulation simulation) => 300;
 
     /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;

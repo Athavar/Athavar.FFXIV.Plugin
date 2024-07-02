@@ -75,7 +75,7 @@
       "4071": "auto crossbow",
       "damage": [
         {
-          "potency": 140
+          "potency": 160
         }
       ]
     },
@@ -83,7 +83,7 @@
       "1CF3": "heated split shot",
       "damage": [
         {
-          "potency": 200
+          "potency": 220
         }
       ]
     },
@@ -99,8 +99,8 @@
       "1CF4": "heated slug shot",
       "damage": [
         {
-          "potency": 120,
-          "combo": 300
+          "potency": 140,
+          "combo": 320
         }
       ]
     },
@@ -108,8 +108,8 @@
       "1CF5": "heated clean shot",
       "damage": [
         {
-          "potency": 120,
-          "combo": 380
+          "potency": 140,
+          "combo": 400
         }
       ]
     },
@@ -165,7 +165,7 @@
       "64ba": "scattergun",
       "damage": [
         {
-          "potency": 150
+          "potency": 160
         }
       ]
     },
@@ -220,6 +220,62 @@
           "potency": 0
         }
       ]
+    },
+    {
+      "9072": "blazing shot",
+      "damage": [
+        {
+          "potency": 220
+        }
+      ]
+    },
+    {
+      "9073": "double check",
+      "damage": [
+        {
+          "potency": 160,
+          "targetindex": 0
+        },
+        {
+          "potency": 80
+        }
+      ]
+    },
+    {
+      "9074": "checkmate",
+      "damage": [
+        {
+          "potency": 160,
+          "targetindex": 0
+        },
+        {
+          "potency": 80
+        }
+      ]
+    },
+    {
+      "9075": "excavator",
+      "damage": [
+        {
+          "potency": 600,
+          "targetindex": 0
+        },
+        {
+          "potency": 210
+        }
+      ]
+    },
+    {
+      "9076": "full metal field",
+      "damage": [
+        {
+          "potency": 700,
+          "targetindex": 0
+        },
+        {
+          "potency": 350
+        }
+      ]
     }
   ],
   "statuseffects": [
@@ -240,7 +296,7 @@
       "35D": "wildfire",
       "timeproc": {
         "type": "grounddamage",
-        "potency": "0",
+        "potency": 0,
         "damagetype": "physical",
         "maxticks": 2
       }
@@ -249,9 +305,9 @@
       "4B5": "flamethrower",
       "timeproc": {
         "type": "grounddamage",
-        "potency": "80",
+        "potency": 80,
         "damagetype": "physical",
-        "maxticks": 11
+        "maxticks": 4
       }
     },
     {
@@ -269,7 +325,7 @@
         {
           "type": "DamageAddPotency",
           "amount": 20,
-          "limitto": "split shot,slug shot,hot shot,clean shot,heat blast,heated split shot,drill,heated slug shot,heated clean shot,air anchor,arm punch,roller dash,chain saw"
+          "limitto": "split shot,slug shot,hot shot,gauss round,clean shot,heat blast,heated split shot,drill,heated slug shot,heated clean shot,blazing shot,air anchor,arm punch,roller dash,pile bunker"
         }
       ]
     },
@@ -278,7 +334,7 @@
       "potency": [
         {
           "type": "DamageReceivedMultiplier",
-          "amount": -10
+          "amount": -15
         }
       ]
     },

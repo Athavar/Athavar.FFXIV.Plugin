@@ -13,7 +13,7 @@
       "36": "true strike",
       "damage": [
         {
-          "potency": 300
+          "potency": 0
         }
       ]
     },
@@ -21,8 +21,7 @@
       "38": "snap punch",
       "damage": [
         {
-          "potency": 250,
-          "combo": 310
+          "potency": 0
         }
       ]
     },
@@ -38,7 +37,7 @@
       "3D": "twin snakes",
       "damage": [
         {
-          "potency": 280
+          "potency": 380
         }
       ]
     },
@@ -94,7 +93,7 @@
       "DDB": "the forbidden chakra",
       "damage": [
         {
-          "potency": 340
+          "potency": 400
         }
       ]
     },
@@ -103,38 +102,6 @@
       "damage": [
         {
           "potency": 0
-        }
-      ]
-    },
-    {
-      "DD9": "elixir field",
-      "damage": [
-        {
-          "potency": 600,
-          "targetindex": 0
-        },
-        {
-          "potency": 180
-        }
-      ]
-    },
-    {
-      "651a": "flint strike",
-      "damage": [
-        {
-          "potency": 600,
-          "targetindex": 0
-        },
-        {
-          "potency": 180
-        }
-      ]
-    },
-    {
-      "64a5": "celestial revolution",
-      "damage": [
-        {
-          "potency": 450
         }
       ]
     },
@@ -151,6 +118,38 @@
       ]
     },
     {
+      "DD9": "elixir field",
+      "damage": [
+        {
+          "potency": 800,
+          "targetindex": 0
+        },
+        {
+          "potency": 240
+        }
+      ]
+    },
+    {
+      "64a5": "celestial revolution",
+      "damage": [
+        {
+          "potency": 450
+        }
+      ]
+    },
+    {
+      "651a": "flint strike",
+      "damage": [
+        {
+          "potency": 600,
+          "targetindex": 0
+        },
+        {
+          "potency": 180
+        }
+      ]
+    },
+    {
       "405A": "enlightenment",
       "damage": [
         {
@@ -162,7 +161,7 @@
       "405C": "six-sided star",
       "damage": [
         {
-          "potency": 550
+          "potency": 0
         }
       ]
     },
@@ -178,11 +177,11 @@
       "64a8": "rising phoenix",
       "damage": [
         {
-          "potency": 700,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 210
+          "potency": 270
         }
       ]
     },
@@ -190,11 +189,79 @@
       "64a9": "phantom rush",
       "damage": [
         {
-          "potency": 1150,
+          "potency": 1400,
           "targetindex": 0
         },
         {
-          "potency": 575
+          "potency": 700
+        }
+      ]
+    },
+    {
+      "9050": "earth's reply'",
+      "heal": [
+        {
+          "potency": 300
+        }
+      ]
+    },
+    {
+      "9051": "leaping opo",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "9052": "rising raptor",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "9053": "pouncing coeurl",
+      "damage": [
+        {
+          "potency": 0
+        }
+      ]
+    },
+    {
+      "9054": "elixir burst",
+      "damage": [
+        {
+          "potency": 900,
+          "targetindex": 0
+        },
+        {
+          "potency": 270
+        }
+      ]
+    },
+    {
+      "9055": "wind's reply",
+      "damage": [
+        {
+          "potency": 800,
+          "targetindex": 0
+        },
+        {
+          "potency": 400
+        }
+      ]
+    },
+    {
+      "9056": "fire's reply",
+      "damage": [
+        {
+          "potency": 1100,
+          "targetindex": 0
+        },
+        {
+          "potency": 550
         }
       ]
     }
@@ -208,15 +275,6 @@
           "amount": 15
         }
       ]
-    },
-    {
-      "F6": "demolish",
-      "timeproc": {
-        "type": "dot",
-        "potency": 70,
-        "damagetype": "physical",
-        "maxticks": 6
-      }
     },
     {
       "66": "mantra",
@@ -247,14 +305,6 @@
       ]
     },
     {
-      "49C": "earth's reply",
-      "timeproc": {
-        "type": "hot",
-        "potency": 100,
-        "maxticks": 5
-      }
-    },
-    {
       "49D": "riddle of fire",
       "potency": [
         {
@@ -272,6 +322,14 @@
           "amount": 5
         }
       ]
+    },
+    {
+      "49c": "earth's resolve",
+      "timeproc": {
+        "type": "hot",
+        "potency": 100,
+        "maxticks": 5
+      }
     }
   ]
 }

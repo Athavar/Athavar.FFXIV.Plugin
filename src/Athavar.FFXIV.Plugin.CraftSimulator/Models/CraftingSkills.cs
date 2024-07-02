@@ -40,6 +40,11 @@ public enum CraftingSkills
     PrudentSynthesis = 29,
     TrainedFinesse = 30,
     FocusedTouch = 31,
+    RefinedTouch = 32,
+    DaringTouch = 33,
+    TrainedPerfection = 34,
+    ImmaculateMend = 35,
     CarefulObservation = 100,
     HearthAndSoul = 101,
+    QuickInnovation = 102,
 }

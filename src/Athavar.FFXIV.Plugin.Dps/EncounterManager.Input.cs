@@ -106,7 +106,7 @@ internal sealed partial class EncounterManager
     {
         var target = encounter.GetCombatant(effectEvent.TargetId);
 
-        if (effectEvent.IsSourceTarget && effectEvent.SourceId != source?.ObjectId)
+        if (effectEvent.IsSourceTarget && effectEvent.SourceId != source?.GameObjectId)
         {
             // reflect effect
             source = encounter.GetCombatant(effectEvent.SourceId);
@@ -120,7 +120,7 @@ internal sealed partial class EncounterManager
         if (effectEvent is CombatEvent.Heal heal)
         {
             var gameObject = this.objectTable.SearchById(heal.TargetId);
-            if (gameObject is BattleChara battleChara)
+            if (gameObject is IBattleChara battleChara)
             {
                 var missingHp = battleChara.CurrentHp > battleChara.MaxHp ? 0U : battleChara.MaxHp - battleChara.CurrentHp;
                 heal.Overheal += heal.Amount < missingHp ? 0U : heal.Amount - missingHp;
@@ -174,7 +174,7 @@ internal sealed partial class EncounterManager
                 {
                     // event is not assigned to a specific source
                     var targetObject = this.objectTable.SearchById(dotEvent.TargetId);
-                    if (targetObject is BattleChara battleChara)
+                    if (targetObject is IBattleChara battleChara)
                     {
                         var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.DoT).ToList();
                         if (affectedStatusList.Any())
@@ -228,7 +228,7 @@ internal sealed partial class EncounterManager
                 {
                     // event is not assigned to a specific source
                     var targetObject = this.objectTable.SearchById(hotEvent.TargetId);
-                    if (targetObject is BattleChara battleChara)
+                    if (targetObject is IBattleChara battleChara)
                     {
                         var affectedStatusList = battleChara.StatusList.Select(s => (Status: this.definitions.GetStatusEffectById(s.StatusId), Source: encounter.GetCombatant(s.SourceId))).Where(s => s.Status?.TimeProc?.Type is TimeProc.TickType.HoT).ToList();
                         if (affectedStatusList.Any())

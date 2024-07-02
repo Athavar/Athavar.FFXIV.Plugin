@@ -69,13 +69,13 @@ public sealed partial class Simulation
         this.Safe = false;
     }
 
-    public bool HasComboAvaiable<T>()
+    public bool HasComboAvaiable<T>(bool comboChain = false)
         where T : CraftingAction
     {
         for (var index = this.Steps.Count - 1; index >= 0; index--)
         {
             var step = this.Steps[index];
-            if (step.Success == true && step.Skill.Action is T)
+            if (step is { Success: true, Skill.Action: T } && (!comboChain || step.Combo))
             {
                 return true;
             }

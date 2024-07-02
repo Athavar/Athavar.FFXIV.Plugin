@@ -7,14 +7,14 @@ namespace Athavar.FFXIV.Plugin;
 
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface;
-using Dalamud.Interface.Internal;
+using Dalamud.Interface.Textures;
 
 internal sealed class PluginLaunchButton : IDisposable
 {
     private readonly IDalamudServices services;
     private readonly Action onTrigger;
-    private IDalamudTextureWrap? icon;
-    private TitleScreenMenuEntry? entry;
+    private ISharedImmediateTexture? icon;
+    private IReadOnlyTitleScreenMenuEntry? entry;
 
     public PluginLaunchButton(IDalamudServices services, Action onTrigger)
     {
@@ -31,10 +31,12 @@ internal sealed class PluginLaunchButton : IDisposable
 
         void CreateEntry()
         {
-            this.icon = this.services.PluginInterface.UiBuilder.LoadImage(Path.Combine(this.services.PluginInterface.AssemblyLocation.DirectoryName!, "icon.png"));
+            this.icon = this.services.TextureProvider.GetFromFile(Path.Combine(this.services.PluginInterface.AssemblyLocation.DirectoryName!, "icon.png"));
             if (this.icon != null)
             {
-                this.entry = this.services.TitleScreenMenu.AddEntry($"Manage {Plugin.PluginName}", this.icon, this.onTrigger);
+                var wrap = this.icon.GetWrapOrEmpty();
+                this.services.PluginLogger.Information("PluginLaunchButton: {X}x{Y}", wrap.Width, wrap.Height);
+                this.entry = this.services.TitleScreenMenu.AddEntry($"Manage {Plugin.PluginName}", wrap, this.onTrigger);
             }
 
             this.services.PluginInterface.UiBuilder.Draw -= CreateEntry;
@@ -56,6 +58,5 @@ internal sealed class PluginLaunchButton : IDisposable
     public void Dispose()
     {
         this.RemoveEntry();
-        this.icon?.Dispose();
     }
 }

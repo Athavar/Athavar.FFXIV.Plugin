@@ -63,7 +63,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
 
         var gameObject = ObjectTable?.SearchById(objectId);
 
-        if (gameObject is PlayerCharacter playerCharacter)
+        if (gameObject is IPlayerCharacter playerCharacter)
         {
             var name = playerCharacter.Name.ToString();
             var nameSplits = name.Split(" ", 2);
@@ -83,7 +83,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
                 Kind = BattleNpcSubKind.None,
             };
         }
-        else if (gameObject is BattleNpc battleNpc)
+        else if (gameObject is IBattleNpc battleNpc)
         {
             combatant = this.Combatants.FirstOrDefault(c => c.DataId == battleNpc.DataId);
             if (combatant is not null)
@@ -91,21 +91,21 @@ internal sealed class Encounter : BaseEncounter<Combatant>
                 goto end;
             }
 
-            if (battleNpc.BattleNpcKind == BattleNpcSubKind.Pet && battleNpc.OwnerId != battleNpc.ObjectId)
+            if (battleNpc.BattleNpcKind == BattleNpcSubKind.Pet && battleNpc.OwnerId != battleNpc.GameObjectId)
             {
                 // don't have health -> map to owner for effects.
                 combatant = this.GetCombatant(battleNpc.OwnerId);
                 goto end;
             }
 
-            uint oid = 0;
+            ulong oid = 0;
             uint ownerId = 0;
             var name = battleNpc.Name.ToString();
             var ownerObject = ObjectTable?.SearchById(battleNpc.OwnerId);
             if (ownerObject is not null)
             {
                 name = $"{name} ({ownerObject.Name})";
-                oid = battleNpc.ObjectId;
+                oid = battleNpc.GameObjectId;
                 ownerId = battleNpc.OwnerId;
             }
 
@@ -145,27 +145,28 @@ internal sealed class Encounter : BaseEncounter<Combatant>
     public unsafe void UpdateParty(IDalamudServices services)
     {
         var groupManager = GroupManager.Instance();
-        var player = services.ClientState.LocalPlayer?.ObjectId;
-        var isInAlliance = groupManager->AllianceFlags > 0;
+        var player = services.ClientState.LocalPlayer?.GameObjectId;
+        var group = groupManager->MainGroup;
+        var isInAlliance = group.AllianceFlags > 0;
 
         // PluginLog.LogInformation($"UpdateParty: {string.Join(',', this.Combatants.Select(c => $"{c.ObjectId}:{c.Name} -> {c.Kind.AsText()}"))}");
         var combatants = this.Combatants;
         this.Title = $"{combatants.Where(c => c.Kind == BattleNpcSubKind.Enemy).MaxBy(c => c.DamageTotal)?.Name}";
-        foreach (var combatant in combatants.Where(c => c.ObjectId != 0))
+        foreach (var combatant in combatants.Where(c => c.GameObjectId != 0))
         {
-            if (combatant.ObjectId == player)
+            if (combatant.GameObjectId == player)
             {
                 combatant.PartyType = PartyType.Self;
                 continue;
             }
 
-            combatant.PartyType = groupManager->IsObjectIDInParty(combatant.ObjectId) ? PartyType.Party : isInAlliance && groupManager->IsObjectIDInAlliance(combatant.ObjectId) ? PartyType.Alliance : PartyType.None;
+            combatant.PartyType = group.IsEntityIdInParty((uint)combatant.GameObjectId) ? PartyType.Party : isInAlliance && group.IsEntityIdInAlliance((uint)combatant.GameObjectId) ? PartyType.Alliance : PartyType.None;
         }
 
         // match chocobo ownership with owner.
         foreach (var chocobo in combatants.Where(c => c.Kind == BattleNpcSubKind.Chocobo))
         {
-            chocobo.PartyType = combatants.Find(c => c.ObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;
+            chocobo.PartyType = combatants.Find(c => c.GameObjectId == chocobo.OwnerId)?.PartyType ?? PartyType.None;
         }
 
         this.AllyCombatants = combatants.Where(c => !c.IsEnemy() && c.IsActive() && c.IsAlly(this.Filter)).ToList();

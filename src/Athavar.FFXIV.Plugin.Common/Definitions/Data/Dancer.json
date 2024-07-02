@@ -13,7 +13,7 @@
       "3E76": "fountain",
       "damage": [
         {
-          "potency": 100,
+          "potency": 120,
           "combo": 280
         }
       ]
@@ -131,11 +131,11 @@
       "3f40": "double standard finish",
       "damage": [
         {
-          "potency": 720,
+          "potency": 850,
           "targetindex": 0
         },
         {
-          "potency": 180
+          "potency": 213
         }
       ]
     },
@@ -191,11 +191,11 @@
       "3f44": "quadruple technical finish",
       "damage": [
         {
-          "potency": 1200,
+          "potency": 1300,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 325
         }
       ]
     },
@@ -203,10 +203,10 @@
       "3E85": "saber dance",
       "damage": [
         {
-          "potency": 240
+          "potency": 260
         },
         {
-          "potency": 480,
+          "potency": 520,
           "targetindex": 0
         }
       ]
@@ -215,10 +215,10 @@
       "64be": "tillana",
       "damage": [
         {
-          "potency": 180
+          "potency": 300
         },
         {
-          "potency": 360,
+          "potency": 600,
           "targetindex": 0
         }
       ]
@@ -246,6 +246,42 @@
           "targetindex": 0
         }
       ]
+    },
+    {
+      "9077": "last dance",
+      "damage": [
+        {
+          "potency": 260
+        },
+        {
+          "potency": 520,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "9078": "finishing move",
+      "damage": [
+        {
+          "potency": 213
+        },
+        {
+          "potency": 850,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
+      "9079": "dance of the dawn",
+      "damage": [
+        {
+          "potency": 500
+        },
+        {
+          "potency": 1000,
+          "targetindex": 0
+        }
+      ]
     }
   ],
   "statuseffects": [
@@ -267,7 +303,7 @@
       "potency": [
         {
           "type": "DamageReceivedMultiplier",
-          "amount": -10
+          "amount": -15
         }
       ]
     },

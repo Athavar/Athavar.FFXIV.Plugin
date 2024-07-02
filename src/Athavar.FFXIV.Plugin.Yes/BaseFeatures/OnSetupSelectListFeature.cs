@@ -117,7 +117,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             return;
         }
 
-        var onItemSelectedAddress = (nint)popupMenu->AtkEventListener.vfunc[3];
+        var onItemSelectedAddress = ((nint*)popupMenu->AtkEventListener.VirtualTable)[3];
         this.onItemSelectedHook = this.Module.DalamudServices.GameInteropProvider.HookFromAddress(onItemSelectedAddress, (OnItemSelectedDelegate)this.OnItemSelectedDetour);
         this.onItemSelectedHook.Enable();
     }

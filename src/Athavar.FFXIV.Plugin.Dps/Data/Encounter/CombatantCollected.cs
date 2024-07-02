@@ -11,7 +11,7 @@ internal sealed class CombatantCollected : BaseCombatant<CombatantCollected>
     private readonly List<Combatant> combatants = new();
 
     public CombatantCollected(TerritoryEncounter encounter, Combatant combatant)
-        : base(encounter, combatant.ObjectId, combatant.DataId)
+        : base(encounter, combatant.GameObjectId, combatant.DataId)
     {
         this.combatants.Add(combatant);
 

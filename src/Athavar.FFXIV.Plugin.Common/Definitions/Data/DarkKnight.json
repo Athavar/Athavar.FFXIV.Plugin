@@ -5,7 +5,7 @@
       "E21": "hard slash",
       "damage": [
         {
-          "potency": 170
+          "potency": 260
         }
       ]
     },
@@ -13,8 +13,8 @@
       "E27": "syphon strike",
       "damage": [
         {
-          "potency": 120,
-          "combo": 260
+          "potency": 220,
+          "combo": 360
         }
       ]
     },
@@ -38,8 +38,8 @@
       "E30": "souleater",
       "damage": [
         {
-          "potency": 120,
-          "combo": 340
+          "potency": 240,
+          "combo": 460
         }
       ],
       "heal": [
@@ -57,18 +57,19 @@
       ]
     },
     {
-      "4053": "edge of darkness",
+      "4054": "stalwart soul",
       "damage": [
         {
-          "potency": 300
+          "potency": 120,
+          "combo": 160
         }
       ]
     },
     {
-      "E38": "plunge",
+      "4053": "edge of darkness",
       "damage": [
         {
-          "potency": 150
+          "potency": 300
         }
       ]
     },
@@ -97,7 +98,7 @@
       "1CE0": "bloodspiller",
       "damage": [
         {
-          "potency": 500
+          "potency": 580
         }
       ]
     },
@@ -105,16 +106,7 @@
       "1CDF": "quietus",
       "damage": [
         {
-          "potency": 200
-        }
-      ]
-    },
-    {
-      "4054": "stalwart soul",
-      "damage": [
-        {
-          "potency": 100,
-          "combo": 140
+          "potency": 240
         }
       ]
     },
@@ -135,6 +127,18 @@
       ]
     },
     {
+      "649C": "salt and darkness",
+      "damage": [
+        {
+          "potency": 250
+        },
+        {
+          "potency": 500,
+          "targetindex": 0
+        }
+      ]
+    },
+    {
       "649d": "shadowbringer",
       "damage": [
         {
@@ -147,13 +151,45 @@
       ]
     },
     {
-      "649C": "salt and darkness",
+      "9040": "scarlet delirium",
       "damage": [
         {
-          "potency": 250
+          "potency": 600
+        }
+      ]
+    },
+    {
+      "9041": "comeuppance",
+      "damage": [
+        {
+          "potency": 700
+        }
+      ]
+    },
+    {
+      "9042": "torcleaver",
+      "damage": [
+        {
+          "potency": 800
+        }
+      ]
+    },
+    {
+      "9043": "impalement",
+      "damage": [
+        {
+          "potency": 320
+        }
+      ]
+    },
+    {
+      "9044": "disesteem",
+      "damage": [
+        {
+          "potency": 400
         },
         {
-          "potency": 500,
+          "potency": 800,
           "targetindex": 0
         }
       ]
@@ -228,6 +264,15 @@
       "reactiveproc": {
         "type": "HealOnDamageDealt"
       }
+    },
+    {
+      "efb": "shadowed vigil",
+      "potency": [
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -40
+        }
+      ]
     }
   ]
 }

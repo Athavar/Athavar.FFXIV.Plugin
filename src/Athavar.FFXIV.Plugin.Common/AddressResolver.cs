@@ -33,7 +33,8 @@ public sealed class AddressResolver : BaseAddressResolver
     {
         this.CfPopPacketHandler = scanner.ScanText("40 53 57 48 83 EC 78 48 8B D9 48 8D 0D");
         this.ProcessChatBox = scanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9");
-        this.AgentReceiveEvent = scanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2");
+
+        // this.AgentReceiveEvent = scanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2");
 
         // from: https://github.com/Kouzukii/ffxiv-deathrecap/blob/1d596906358d7f170c3d40ed015696d7772dd9e1/Events/CombatEventCapture.cs#L81
         this.ActorControlHandler = scanner.ScanText("E8 ?? ?? ?? ?? 0F B7 0B 83 E9 64");

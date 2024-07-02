@@ -14,7 +14,7 @@ internal static class Util
             NumberDisplayFormat.Decimal => string.Empty,
             NumberDisplayFormat.HexadecimalUppercase => "X4",
             NumberDisplayFormat.HexadecimalLowercase => "x4",
-            _ => throw new NotImplementedException(),
+            _ => throw new ArgumentOutOfRangeException(),
         };
 
         return !string.IsNullOrEmpty(formatString) ? $"0x{input.ToString(formatString)}" : input.ToString();

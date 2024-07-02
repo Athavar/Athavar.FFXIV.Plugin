@@ -257,7 +257,7 @@
       "64DC": "astral impulse",
       "damage": [
         {
-          "potency": 440
+          "potency": 500
         }
       ]
     },
@@ -285,11 +285,7 @@
       "1D02": "ruin iv",
       "damage": [
         {
-          "potency": 430,
-          "targetindex": 0
-        },
-        {
-          "potency": 172
+          "potency": 0
         }
       ]
     },
@@ -317,7 +313,7 @@
       "64df": "ruby rite",
       "damage": [
         {
-          "potency": 510
+          "potency": 540
         }
       ]
     },
@@ -325,7 +321,7 @@
       "64e0": "topaz rite",
       "damage": [
         {
-          "potency": 330
+          "potency": 340
         }
       ]
     },
@@ -333,7 +329,7 @@
       "64e1": "emerald rite",
       "damage": [
         {
-          "potency": 230
+          "potency": 240
         }
       ]
     },
@@ -373,7 +369,7 @@
       "4082": "fountain of fire",
       "damage": [
         {
-          "potency": 540
+          "potency": 580
         }
       ]
     },
@@ -441,11 +437,11 @@
       "64EB": "crimson cyclone",
       "damage": [
         {
-          "potency": 430,
+          "potency": 490,
           "targetindex": 0
         },
         {
-          "potency": 151
+          "potency": 172
         }
       ]
     },
@@ -453,11 +449,11 @@
       "651D": "crimson strike",
       "damage": [
         {
-          "potency": 430,
+          "potency": 490,
           "targetindex": 0
         },
         {
-          "potency": 151
+          "potency": 172
         }
       ]
     },
@@ -465,11 +461,11 @@
       "64EC": "mountain buster",
       "damage": [
         {
-          "potency": 150,
+          "potency": 160,
           "targetindex": 0
         },
         {
-          "potency": 45
+          "potency": 64
         }
       ]
     },
@@ -477,11 +473,11 @@
       "64ED": "slipstream",
       "damage": [
         {
-          "potency": 430,
+          "potency": 490,
           "targetindex": 0
         },
         {
-          "potency": 151
+          "potency": 172
         }
       ]
     },
@@ -489,11 +485,11 @@
       "64FC": "inferno ii",
       "damage": [
         {
-          "potency": 750,
+          "potency": 800,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 320
         }
       ]
     },
@@ -501,11 +497,11 @@
       "64FD": "earthen fury ii",
       "damage": [
         {
-          "potency": 750,
+          "potency": 800,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 320
         }
       ]
     },
@@ -513,11 +509,95 @@
       "64FE": "aerial blast ii",
       "damage": [
         {
-          "potency": 750,
+          "potency": 800,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 320
+        }
+      ]
+    },
+    {
+      "907e": "necrotize",
+      "damage": [
+        {
+          "potency": 420
+        }
+      ]
+    },
+    {
+      "907f": "searing flash",
+      "damage": [
+        {
+          "potency": 600
+        }
+      ]
+    },
+    {
+      "9085": "lux solaris",
+      "heal": [
+        {
+          "potency": 500
+        }
+      ]
+    },
+    {
+      "9082": "umbral impulse",
+      "damage": [
+        {
+          "potency": 600
+        }
+      ]
+    },
+    {
+      "9083": "umbral flare",
+      "damage": [
+        {
+          "potency": 280
+        }
+      ]
+    },
+    {
+      "9084": "sunflare",
+      "damage": [
+        {
+          "potency": 600,
+          "targetindex": 0
+        },
+        {
+          "potency": 240
+        }
+      ]
+    },
+    {
+      "9086": "enkindle solar bahamut",
+      "damage": [
+        {
+          "potency": 1400,
+          "targetindex": 0
+        },
+        {
+          "potency": 560
+        }
+      ]
+    },
+    {
+      "9081": "luxware",
+      "damage": [
+        {
+          "potency": 160
+        }
+      ]
+    },
+    {
+      "9087": "exodus",
+      "damage": [
+        {
+          "potency": 1400,
+          "targetindex": 0
+        },
+        {
+          "potency": 560
         }
       ]
     }
@@ -552,7 +632,7 @@
       "potency": [
         {
           "type": "damagedonemultiplier",
-          "amount": 3
+          "amount": 5
         }
       ]
     },

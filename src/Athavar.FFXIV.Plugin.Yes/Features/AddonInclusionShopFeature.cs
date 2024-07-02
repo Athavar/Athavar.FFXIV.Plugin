@@ -43,6 +43,11 @@ internal class AddonInclusionShopFeature : OnSetupFeature, IDisposable
             return false;
         }
 
+        if (this.Module.AddressResolver.AgentReceiveEvent == nint.Zero)
+        {
+            return false;
+        }
+
         this.Module.DalamudServices.SafeEnableHookFromAddress<AgentReceiveEventDelegate>("AddonInclusionShopFeature:agentReceiveEventHook", this.Module.AddressResolver.AgentReceiveEvent, this.AgentReceiveEventDetour, h => this.agentReceiveEventHook = h);
         return true;
     }

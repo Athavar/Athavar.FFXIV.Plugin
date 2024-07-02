@@ -45,7 +45,7 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
 
         var nameNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[64];
         var descNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[55];
-        if (!nameNode->AtkResNode.IsVisible || !descNode->AtkResNode.IsVisible)
+        if (!nameNode->AtkResNode.IsVisible() || !descNode->AtkResNode.IsVisible())
         {
             return;
         }

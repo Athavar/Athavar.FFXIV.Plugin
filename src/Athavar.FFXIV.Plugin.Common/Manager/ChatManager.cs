@@ -48,6 +48,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 #if DEBUG
+
         // this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
 #endif
     }
@@ -60,6 +61,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
     public void Dispose()
     {
 #if DEBUG
+
         // this.dalamud.ChatGui.ChatMessage -= this.OnChatMessageDebug;
 #endif
         this.frameworkManager.Unsubscribe(this.FrameworkUpdate);
@@ -105,11 +107,12 @@ internal sealed class ChatManager : IDisposable, IChatManager
 
         if (type is not null)
         {
-            this.dalamud.ChatGui.Print(new XivChatEntry
-            {
-                Message = message,
-                Type = type.Value,
-            });
+            this.dalamud.ChatGui.Print(
+                new XivChatEntry
+                {
+                    Message = message,
+                    Type = type.Value,
+                });
         }
         else
         {
@@ -172,7 +175,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
             throw new InvalidOperationException("Could not find signature for chat sending");
         }
 
-        var uiModule = Framework.Instance()->GetUiModule();
+        var uiModule = Framework.Instance()->UIModule;
         using var payload = new ChatPayload(message);
         var chatPayloadPtr = Marshal.AllocHGlobal(400);
         Marshal.StructureToPtr(payload, chatPayloadPtr, false);

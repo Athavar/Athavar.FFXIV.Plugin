@@ -31,18 +31,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     private const string FolderName = "InstancinatorInternal";
     private const string MacroCommandName = "/instancinator";
 
-    private static readonly string[] Instances = ["//", "//", "//"];
-
-    private static readonly ushort[] Territories =
-    [
-        // 956, /* Labyrinthos */
-        // 957, /* Thavnair */
-        958, /* Garlemald */
-
-        // 959, /* Mare Lamentorum */
-        // 960, /* Ultima Thule */
-        // 961, /* Elpis */
-    ];
+    private static readonly string[] Instances = ["/\ue0b1/", "/\ue0b2/", "/\ue0b3/", "/\ue0b4/", "/\ue0b5/", "/\ue0b6/"];
 
     private readonly YesConfiguration yesConfiguration;
     private readonly IServiceProvider provider;
@@ -138,8 +127,9 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     {
         switch (this.dalamudServices.ClientState.TerritoryType)
         {
-            case 963: // Radz-at-Han
-                return 2;
+            case 1187: // Urqopacha
+            case 1188: // Kozama'uka
+                return 6;
             default:
                 return 3;
         }
@@ -171,11 +161,13 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             this.yesConfiguration.ListRootFolder.Children.Add(folder);
         }
 
+        this.SelectedInstance = 0;
         var children = folder.Children;
         AddOrDisable(children, this.travelToInstancedArea);
-        AddOrDisable(children, Instances[0]);
-        AddOrDisable(children, Instances[1]);
-        AddOrDisable(children, Instances[2]);
+        foreach (var numberText in Instances)
+        {
+            AddOrDisable(children, numberText);
+        }
     }
 
     /// <inheritdoc/>
@@ -195,21 +187,13 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         {
             this.DisableAllAndCreateIfNotExists();
         }
-        else if (arguments == "1")
+        else if (int.TryParse(arguments, out var number) && number > 0 && number < Instances.Length)
         {
-            this.EnableInstance(1);
-        }
-        else if (arguments == "2")
-        {
-            this.EnableInstance(2);
-        }
-        else if (arguments == "3")
-        {
-            this.EnableInstance(3);
+            this.EnableInstance(number);
         }
     }
 
-    private unsafe bool IsInstanced() => UIState.Instance()->AreaInstance.IsInstancedArea();
+    private unsafe bool IsInstanced() => UIState.Instance()->PublicInstance.IsInstancedArea();
 
     private void Tick(IFramework framework)
     {

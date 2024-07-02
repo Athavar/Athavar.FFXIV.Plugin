@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Ipc.Exceptions;
@@ -23,7 +23,7 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     private readonly IPluginLogger logger;
 
     private ICallGateSubscriber<(int Breaking, int Features)> glamourerApiVersionsSubscriber;
-    private ICallGateSubscriber<Character?, byte, ulong, byte, uint, int>? glamourerSetItemOnceSubscriber;
+    private ICallGateSubscriber<IPlayerCharacter?, byte, ulong, byte, uint, int>? glamourerSetItemOnceSubscriber;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="IpcManager"/> class.
@@ -68,7 +68,7 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     }
 
     /// <inheritdoc/>
-    public int SetItem(Character? character, EquipSlot slot, ulong itemId, byte stainId, uint key)
+    public int SetItem(IPlayerCharacter? character, EquipSlot slot, ulong itemId, byte stainId, uint key)
     {
         if (this.GlamourerApiVersion.Breaking != 0)
         {
@@ -101,7 +101,7 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     private void Initialize()
     {
         this.glamourerApiVersionsSubscriber = this.dalamudServices.PluginInterface.GetIpcSubscriber<(int, int)>("Glamourer.ApiVersions");
-        this.glamourerSetItemOnceSubscriber = this.dalamudServices.PluginInterface.GetIpcSubscriber<Character?, byte, ulong, byte, uint, int>("Glamourer.SetItemOnce");
+        this.glamourerSetItemOnceSubscriber = this.dalamudServices.PluginInterface.GetIpcSubscriber<IPlayerCharacter?, byte, ulong, byte, uint, int>("Glamourer.SetItemOnce");
 
         this.dalamudServices.PluginInterface.ActivePluginsChanged += this.OnActivePluginsChanged;
     }

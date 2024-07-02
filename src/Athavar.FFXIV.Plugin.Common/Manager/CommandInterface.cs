@@ -9,14 +9,15 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Dalamud;
-using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Lumina.Excel.GeneratedSheets;
+using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 /// <summary>
 ///     Miscellaneous functions that commands/scripts can use.
@@ -112,12 +113,12 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        if (this.dalamudServices.TargetManager.Target != target)
+        if (!Equals(this.dalamudServices.TargetManager.Target, target))
         {
             this.dalamudServices.TargetManager.Target = target;
         }
 
-        var targetAddress = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)target.Address;
+        var targetAddress = (GameObject*)target.Address;
         var ts = TargetSystem.Instance();
 
         if (!this.IsObjectInReach(target))
@@ -130,7 +131,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return true;
     }
 
-    private bool IsObjectInReach(GameObject gameObject, Vector3? playerPosition = null, float distance = 10f)
+    private bool IsObjectInReach(IGameObject gameObject, Vector3? playerPosition = null, float distance = 10f)
     {
         playerPosition ??= this.dalamudServices.ClientState.LocalPlayer?.Position;
         if (playerPosition is null)
@@ -141,7 +142,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         return Vector3.Distance(playerPosition.Value, gameObject.Position) < distance;
     }
 
-    private GameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)
+    private IGameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)
     {
         if (!this.IsLoggedIn() || this.dalamudServices.ClientState.LocalPlayer is not { } player)
         {
@@ -150,7 +151,7 @@ internal sealed partial class CommandInterface : ICommandInterface
 
         var playerPosition = player.Position;
 
-        IEnumerable<GameObject> objects = this.dalamudServices.ObjectTable;
+        IEnumerable<IGameObject> objects = this.dalamudServices.ObjectTable;
         if (objectKind is not null)
         {
             objects = objects.Where(obj => obj.ObjectKind == objectKind);

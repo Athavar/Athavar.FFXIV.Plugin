@@ -2,13 +2,16 @@
 // Copyright (c) Athavar. All rights reserved.
 // Licensed under the AGPL-3.0 license. See LICENSE file in the project root for full license information.
 // </copyright>
-namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Progression;
+namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Deprecated;
 
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
 internal sealed class FocusedSynthesis : ProgressAction
 {
     private static readonly uint[] IdsValue = [100235, 100236, 100237, 100238, 100239, 100240, 100241, 100242];
+
+    /// <inheritdoc/>
+    public override bool IsDeprecated => true;
 
     /// <inheritdoc/>
     public override int Level => 67;
@@ -23,7 +26,7 @@ internal sealed class FocusedSynthesis : ProgressAction
     public override int GetBaseCPCost(Simulation simulation) => 5;
 
     /// <inheritdoc/>
-    protected override bool BaseCanBeUsed(Simulation simulation) => true;
+    protected override bool BaseCanBeUsed(Simulation simulation) => false;
 
     /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => simulation.HasComboAvaiable<Observe>() ? 100 : 50;

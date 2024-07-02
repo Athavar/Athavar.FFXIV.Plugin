@@ -13,7 +13,7 @@ using Dalamud.Plugin.Services;
 
 public interface IDalamudServices
 {
-    DalamudPluginInterface PluginInterface { get; }
+    IDalamudPluginInterface PluginInterface { get; }
 
     IAddonEventManager AddonEventManager { get; }
 

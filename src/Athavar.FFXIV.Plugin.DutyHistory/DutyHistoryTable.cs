@@ -101,7 +101,11 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     {
         public override float Width => contentFinderNameColumnWidth * ImGuiHelpers.GlobalScale;
 
-        public override string ToName(ContentEncounter item) => item.ContentFinderCondition?.Name.ToString() ?? "---";
+        public override string ToName(ContentEncounter item)
+        {
+            var name = item.ContentFinderCondition?.Name.ToString();
+            return !string.IsNullOrWhiteSpace(name) ? name : $"Deleted [{item.TerritoryTypeId}]";
+        }
     }
 
     private sealed class TerritoryTypeColumn : ColumnString<ContentEncounter>
@@ -201,8 +205,9 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
             var index = 0;
             foreach (var flag in this.Values)
             {
-                if ((item.ActiveContentCondition & flag) != 0 && this.icons is not null && this.icons.TryGetIcon(GetIconId(flag), ITextureProvider.IconFlags.HiRes, out var textureWrap))
+                if ((item.ActiveContentCondition & flag) != 0 && this.icons is not null && this.icons.TryGetIcon(GetIconId(flag), out var sharedImmediateTexture))
                 {
+                    var textureWrap = sharedImmediateTexture.GetWrapOrEmpty();
                     if (first)
                     {
                         ImGui.SameLine();
@@ -212,7 +217,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
                         first = true;
                     }
 
-                    ImGuiEx.ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Size, ImGui.GetTextLineHeight());
+                    ImGuiEx.ScaledImageY(textureWrap, ImGui.GetTextLineHeight());
                     ImGuiEx.TextTooltip(this.Names[index]);
                 }
 
@@ -292,9 +297,10 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
 
         public override void DrawColumn(ContentEncounter encounter, int i)
         {
-            if (this.icons is not null && this.icons.TryGetJobIcon((Job)encounter.ClassJobId, JobIconStyle.Framed, true, out var textureWrap))
+            if (this.icons is not null && this.icons.TryGetJobIcon((Job)encounter.ClassJobId, JobIconStyle.Framed, true, out var sharedImmediateTexture))
             {
-                ImGuiEx.ScaledCenterImageY(textureWrap.ImGuiHandle, textureWrap.Size, ImGui.GetTextLineHeight());
+                var textureWrap = sharedImmediateTexture.GetWrapOrEmpty();
+                ImGuiEx.ScaledCenterImageY(textureWrap, ImGui.GetTextLineHeight());
                 ImGuiEx.TextTooltip(this.Names[encounter.ClassJobId]);
             }
         }

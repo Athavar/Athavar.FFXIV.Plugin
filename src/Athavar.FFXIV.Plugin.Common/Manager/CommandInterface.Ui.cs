@@ -50,7 +50,7 @@ internal sealed partial class CommandInterface
         var addon = (AtkUnitBase*)ptr;
         if (addon->IsVisible)
         {
-            addon->FireCallbackInt(-1);
+            addon->Close(true);
         }
     }
 

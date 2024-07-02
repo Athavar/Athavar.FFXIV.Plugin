@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Dalamud.Interface;
+using Dalamud.Interface.Textures.TextureWraps;
 using ImGuiNET;
 
 /// <summary>
@@ -169,27 +170,16 @@ public static class ImGuiEx
     /// <summary>
     ///     Scales a Image after height.
     /// </summary>
-    /// <param name="handle">Pointer to the image texture.</param>
-    /// <param name="size">Image size.</param>
+    /// <param name="dalamudTextureWrap">Image texture.</param>
     /// <param name="scaledHeight">Scaled height.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ScaledCenterImageY(nint handle, Vector2 size, float scaledHeight) => ScaledCenterImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
-
-    /// <summary>
-    ///     Scales a Image after height.
-    /// </summary>
-    /// <param name="handle">Pointer to the image texture.</param>
-    /// <param name="iconWidth">Image width.</param>
-    /// <param name="iconHeight">Image height.</param>
-    /// <param name="scaledHeight">Scaled height.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ScaledCenterImageY(nint handle, int iconWidth, int iconHeight, float scaledHeight)
+    public static void ScaledCenterImageY(IDalamudTextureWrap dalamudTextureWrap, float scaledHeight)
     {
-        var num = scaledHeight / iconHeight;
-        var x = iconWidth * num;
+        var num = scaledHeight / dalamudTextureWrap.Height;
+        var x = dalamudTextureWrap.Width * num;
         var offset = (ImGui.GetContentRegionAvail().X - x) / 2;
         ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
-        ImGui.Image(handle, new Vector2(x, scaledHeight));
+        ImGui.Image(dalamudTextureWrap.ImGuiHandle, new Vector2(x, scaledHeight));
     }
 
     /// <summary>
@@ -204,6 +194,20 @@ public static class ImGuiEx
     /// <summary>
     ///     Scales a Image after height.
     /// </summary>
+    /// <param name="textureWrap">The wrap image texture.</param>
+    /// <param name="scaledHeight">Scaled height.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void ScaledImageY(IDalamudTextureWrap? textureWrap, float scaledHeight)
+    {
+        if (textureWrap is not null)
+        {
+            ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, scaledHeight);
+        }
+    }
+
+    /// <summary>
+    ///     Scales a Image after height.
+    /// </summary>
     /// <param name="handle">Pointer to the image texture.</param>
     /// <param name="iconWidth">Image width.</param>
     /// <param name="iconHeight">Image height.</param>
@@ -214,6 +218,19 @@ public static class ImGuiEx
         var num = scaledHeight / iconHeight;
         var x = iconWidth * num;
         ImGui.Image(handle, new Vector2(x, scaledHeight));
+    }
+
+    /// <summary>
+    ///     Image.
+    /// </summary>
+    /// <param name="textureWrap">The wrap image texture.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void Image(IDalamudTextureWrap? textureWrap)
+    {
+        if (textureWrap is not null)
+        {
+            ImGui.Image(textureWrap.ImGuiHandle, new Vector2(textureWrap.Width, textureWrap.Height));
+        }
     }
 
     /// <summary>

@@ -24,7 +24,7 @@ public sealed class EventCaptureManager : IDisposable
         dalamudServices.SafeEnableHookFromAddress<ActorControlSelfDelegate>("EventCaptureManager:actorControlSelfHook", addressResolver.ActorControlHandler, this.OnActorControl, h => this.actorControlSelfHook = h);
     }
 
-    public delegate void ActorDeathEventDelegation(GameObject actor, GameObject? causeActor);
+    public delegate void ActorDeathEventDelegation(IGameObject actor, IGameObject? causeActor);
 
     private delegate void ActorControlSelfDelegate(uint entityId, uint type, uint a3, uint a4, uint a5, uint a6, uint a7, uint a8, ulong a9, byte flag);
 
