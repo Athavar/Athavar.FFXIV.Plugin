@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Other;
 
-internal sealed class TrainedPerfection : CraftingAction
+internal sealed class TrainedPerfection : BuffAction
 {
     private static readonly uint[] IdsValue = [100475, 100476, 100477, 100478, 100479, 100480, 100481, 100482];
 
@@ -22,23 +22,22 @@ internal sealed class TrainedPerfection : CraftingAction
     protected override uint[] Ids => IdsValue;
 
     /// <inheritdoc/>
-    public override int GetDurabilityCost(Simulation simulation) => 0;
-
-    /// <inheritdoc/>
-    public override void Execute(Simulation simulation)
-    {
-    }
-
-    /// <inheritdoc/>
     public override int GetBaseCPCost(Simulation simulation) => 0;
 
     /// <inheritdoc/>
     public override bool SkipOnFail() => true;
 
+    public override Buffs GetBuff() => Buffs.TRAINED_PERFECTION;
+
+    public override int GetInitialStacks() => 0;
+
+    /// <inheritdoc/>
+    public override int GetDuration(Simulation simulation) => int.MaxValue;
+
     /// <inheritdoc/>
     protected override bool BaseCanBeUsed(Simulation simulation)
     {
-        if (!simulation.CurrentStats.Specialist || simulation.Steps.Any(s => s.Skill.Action is TrainedPerfection))
+        if (simulation.Steps.Any(s => s.Skill.Action is TrainedPerfection))
         {
             return false;
         }
@@ -46,5 +45,5 @@ internal sealed class TrainedPerfection : CraftingAction
         return true;
     }
 
-    protected override int GetBaseSuccessRate(Simulation simulation) => 100;
+    protected override OnTick? GetOnTick() => null;
 }

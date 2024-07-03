@@ -383,10 +383,13 @@ public sealed partial class Simulation
             }
         }
 
-        var lastStep = this.Steps.LastOrDefault();
-
         // Even if the action failed, we have to remove the durability cost
-        if (lastStep is null || !(lastStep.Skill.Action is TrainedPerfection && lastStep.Success == true))
+        var durabilityCost = action.GetDurabilityCost(this);
+        if (this.HasBuff(Buffs.TRAINED_PERFECTION) && durabilityCost > 0)
+        {
+            this.RemoveBuff(Buffs.TRAINED_PERFECTION);
+        }
+        else
         {
             this.Durability -= action.GetDurabilityCost(this);
         }

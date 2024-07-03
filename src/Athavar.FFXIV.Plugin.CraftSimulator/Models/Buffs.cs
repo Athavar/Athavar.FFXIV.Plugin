@@ -30,5 +30,7 @@ public enum Buffs
     HEART_AND_SOUL,
 
     EXPEDIENCE,
+
+    TRAINED_PERFECTION,
 }
 #pragma warning restore SA1602
