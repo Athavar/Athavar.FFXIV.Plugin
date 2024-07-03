@@ -8,7 +8,7 @@ public static class Constants
 {
     public const string PluginName = "Athavar's Toolbox";
 
-    public const int MaxLevel = 90;
+    public const int MaxLevel = 100;
 
     public const uint PlayerId = 0xE0000000;
 

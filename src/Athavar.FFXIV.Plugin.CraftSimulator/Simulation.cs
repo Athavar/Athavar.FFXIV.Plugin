@@ -56,9 +56,25 @@ public sealed partial class Simulation
         SimulationFailCause? simulationFailCause = null;
         this.Reset();
         var currentStats = this.CurrentStats;
+
+        // check if crafter can craft recipe after level.
         if (currentStats.Level < this.Recipe.Level)
         {
-            simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
+            if (this.Recipe.Level % 10 == 0)
+            {
+                simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
+            }
+
+            var craftRecipeLevelLimit = 5 + currentStats.Level / 5 * 5;
+            if (craftRecipeLevelLimit < this.Recipe.Level)
+            {
+                simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
+            }
+        }
+
+        if (simulationFailCause is not null)
+        {
+            // nop.
         }
         else if (this.Recipe.CraftsmanshipReq is not null && currentStats.Craftsmanship < this.Recipe.CraftsmanshipReq ||
                  this.Recipe.ControlReq is not null && currentStats.Control < this.Recipe.ControlReq)
@@ -383,10 +399,13 @@ public sealed partial class Simulation
             }
         }
 
-        var lastStep = this.Steps.LastOrDefault();
-
         // Even if the action failed, we have to remove the durability cost
-        if (lastStep is null || !(lastStep.Skill.Action is TrainedPerfection && lastStep.Success == true))
+        var durabilityCost = action.GetDurabilityCost(this);
+        if (this.HasBuff(Buffs.TRAINED_PERFECTION) && durabilityCost > 0)
+        {
+            this.RemoveBuff(Buffs.TRAINED_PERFECTION);
+        }
+        else
         {
             this.Durability -= action.GetDurabilityCost(this);
         }
