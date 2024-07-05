@@ -60,12 +60,12 @@ public sealed partial class Simulation
         // check if crafter can craft recipe after level.
         if (currentStats.Level < this.Recipe.Level)
         {
-            if (this.Recipe.Level % 10 == 0)
-            {
-                simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
-            }
-
-            var craftRecipeLevelLimit = 5 + currentStats.Level / 5 * 5;
+            /* calculate unlock recipe level
+                83-87 -> up to 90
+                88-92 -> up to 95
+                93-97 -> up to 100
+            */
+            var craftRecipeLevelLimit = (currentStats.Level % 5 < 3 ? 5 : 10) + ((currentStats.Level / 5) * 5);
             if (craftRecipeLevelLimit < this.Recipe.Level)
             {
                 simulationFailCause = SimulationFailCause.MISSING_LEVEL_REQUIREMENT;
@@ -76,8 +76,8 @@ public sealed partial class Simulation
         {
             // nop.
         }
-        else if (this.Recipe.CraftsmanshipReq is not null && currentStats.Craftsmanship < this.Recipe.CraftsmanshipReq ||
-                 this.Recipe.ControlReq is not null && currentStats.Control < this.Recipe.ControlReq)
+        else if ((this.Recipe.CraftsmanshipReq is not null && currentStats.Craftsmanship < this.Recipe.CraftsmanshipReq) ||
+                 (this.Recipe.ControlReq is not null && currentStats.Control < this.Recipe.ControlReq))
         {
             simulationFailCause = SimulationFailCause.MISSING_STATS_REQUIREMENT;
         }
@@ -381,7 +381,7 @@ public sealed partial class Simulation
 
         if (this.SafeMode &&
             (action.GetSuccessRate(this) < 100 ||
-             action.IsRequiresGood && !this.HasBuff(Buffs.HEART_AND_SOUL)))
+             (action.IsRequiresGood && !this.HasBuff(Buffs.HEART_AND_SOUL))))
         {
             failCause = SimulationFailCause.UNSAFE_ACTION;
             this.Safe = false;

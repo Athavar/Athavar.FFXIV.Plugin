@@ -66,7 +66,7 @@ internal abstract class BaseCraftingJob
             this.DoRotationAction,
         ];
 
-        this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.StartCraft);
+        this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.WaitSynthesis);
     }
 
     [Flags]
@@ -129,6 +129,7 @@ internal abstract class BaseCraftingJob
 
         if (this.CurrentStep <= this.stepCraftStartIndex)
         {
+            // reset current step if not stopped during rotation.
             this.CurrentStep = 0;
         }
     }
