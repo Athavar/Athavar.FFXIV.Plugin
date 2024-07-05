@@ -36,7 +36,7 @@ internal sealed class RefinedTouch : QualityAction
     public override bool HasCombo(Simulation simulation) => simulation.HasComboAvaiable<BasicTouch>();
 
     /// <inheritdoc/>
-    protected override bool BaseCanBeUsed(Simulation simulation) => throw new NotImplementedException();
+    protected override bool BaseCanBeUsed(Simulation simulation) => true;
 
     /// <inheritdoc/>
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
