@@ -16,7 +16,7 @@ internal sealed class ImmaculateMend : CraftingAction
     public override int Level => 98;
 
     /// <inheritdoc/>
-    public override CraftingClass Class => CraftingClass.ALC;
+    public override CraftingClass Class => CraftingClass.ANY;
 
     /// <inheritdoc/>
     protected override uint[] Ids => IdsValue;
