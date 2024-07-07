@@ -18,6 +18,7 @@ internal sealed partial class AutoSpear
         this.Data6_1(fishes);
         this.Data6_3(fishes);
         this.Data6_5(fishes);
+        this.Data7_0(fishes);
     }
 
     private void Data4_0(IDictionary<uint, SpearFish> data)
@@ -554,5 +555,105 @@ internal sealed partial class AutoSpear
            .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
         data.Apply(41062, Patch.GrowingLight) // Opal Tetra
            .Spear(SpearfishSize.Small, SpearfishSpeed.Average);
+    }
+
+    private void Data7_0(IDictionary<uint, SpearFish> data)
+    {
+       data.Apply(43803, Patch.Dawntrail) // Turali Loach
+         .Spear(SpearfishSize.Small, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43804, Patch.Dawntrail) // Yok Huy Toad
+         .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+       data.Apply(43805, Patch.Dawntrail) // Stone Pleco
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Slow);
+       data.Apply(43806, Patch.Dawntrail) // Shark Catfish
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Fast);
+       data.Apply(43807, Patch.Dawntrail) // Zeh Lar Dor
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Average);
+       data.Apply(43808, Patch.Dawntrail) // Karvarichthys
+         .Spear(SpearfishSize.Large, SpearfishSpeed.VeryFast);
+       data.Apply(43809, Patch.Dawntrail) // Severum
+         .Spear(SpearfishSize.Small, SpearfishSpeed.Average);
+       data.Apply(43810, Patch.Dawntrail) // Ligaka Blossom
+         .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
+       data.Apply(43811, Patch.Dawntrail) // Potglaze Stingray
+         .Spear(SpearfishSize.Average, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43812, Patch.Dawntrail) // Emberwisp
+         .Spear(SpearfishSize.Average, SpearfishSpeed.VerySlow);
+       data.Apply(43813, Patch.Dawntrail) // Ihuyka Colossoma
+         .Spear(SpearfishSize.Large, SpearfishSpeed.VeryFast);
+       data.Apply(43814, Patch.Dawntrail) // Torchtail
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Fast);
+       data.Apply(43815, Patch.Dawntrail) // Variegated Sisterscale
+         .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
+       data.Apply(43816, Patch.Dawntrail) // Kozama'uka Characin
+         .Spear(SpearfishSize.Small, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43817, Patch.Dawntrail) // Charcoal Eel
+         .Spear(SpearfishSize.Average, SpearfishSpeed.VerySlow);
+       data.Apply(43818, Patch.Dawntrail) // Rainbow Pipira
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Average);
+       data.Apply(43819, Patch.Dawntrail) // Lau Lau
+         .Spear(SpearfishSize.Large, SpearfishSpeed.ExtremelyFast);
+       data.Apply(43820, Patch.Dawntrail) // Ligaka Pirarucu
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Fast);
+       data.Apply(43821, Patch.Dawntrail) // Piraputanga
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Fast)
+         .Predators(data, 300, (43810, 16));
+       data.Apply(43822, Patch.Dawntrail) // Purussaurus
+         .Spear(SpearfishSize.Large, SpearfishSpeed.ExtremelyFast)
+         .Predators(data, 300, (43810, 16));
+       data.Apply(43823, Patch.Dawntrail) // Turali Land Crab
+         .Spear(SpearfishSize.Small, SpearfishSpeed.SuperSlow);
+       data.Apply(43824, Patch.Dawntrail) // Crested Goby
+         .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+       data.Apply(43825, Patch.Dawntrail) // Tsoly Turtle
+         .Spear(SpearfishSize.Average, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43826, Patch.Dawntrail) // Viperfish
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Slow);
+       data.Apply(43827, Patch.Dawntrail) // Horizon Crocodile
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Fast);
+       data.Apply(43828, Patch.Dawntrail) // Tsoly Gar
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Average);
+       data.Apply(43829, Patch.Dawntrail) // Sunlit Prism
+         .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
+       data.Apply(43830, Patch.Dawntrail) // Fategazer
+         .Spear(SpearfishSize.Small, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43831, Patch.Dawntrail) // Frillfin Goby
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Average);
+       data.Apply(43832, Patch.Dawntrail) // Black Ibruq
+         .Spear(SpearfishSize.Average, SpearfishSpeed.VerySlow);
+       data.Apply(43833, Patch.Dawntrail) // Speckled Peacock Bass
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Fast);
+       data.Apply(43834, Patch.Dawntrail) // Golden Characin
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Average);
+       data.Apply(43835, Patch.Dawntrail) // Deadleaf Minnow
+         .Spear(SpearfishSize.Small, SpearfishSpeed.Slow);
+       data.Apply(43836, Patch.Dawntrail) // Glistening Discus
+         .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+       data.Apply(43837, Patch.Dawntrail) // Lightning Eel
+         .Spear(SpearfishSize.Average, SpearfishSpeed.VerySlow);
+       data.Apply(43838, Patch.Dawntrail) // Longwhisker Lungfish
+         .Spear(SpearfishSize.Average, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43839, Patch.Dawntrail) // Minted Arowana
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Fast);
+       data.Apply(43840, Patch.Dawntrail) // Br'aaxfish
+         .Spear(SpearfishSize.Large, SpearfishSpeed.VeryFast);
+       data.Apply(43841, Patch.Dawntrail) // Iq Rrax Crab
+         .Spear(SpearfishSize.Small, SpearfishSpeed.VeryFast)
+         .Predators(data, 300, (43836, 14), (43842, 2), (43833, 3));
+       data.Apply(43842, Patch.Dawntrail) // Wivre Cod
+         .Spear(SpearfishSize.Large, SpearfishSpeed.SuperFast)
+         .Predators(data, 300, (43836, 14));
+       data.Apply(43843, Patch.Dawntrail) // Warmouth
+         .Spear(SpearfishSize.Small, SpearfishSpeed.VerySlow);
+       data.Apply(43844, Patch.Dawntrail) // Shaaloani Goby
+         .Spear(SpearfishSize.Small, SpearfishSpeed.SuperSlow);
+       data.Apply(43845, Patch.Dawntrail) // Sauger
+         .Spear(SpearfishSize.Average, SpearfishSpeed.Slow);
+       data.Apply(43846, Patch.Dawntrail) // Niikwerepi Bass
+         .Spear(SpearfishSize.Average, SpearfishSpeed.ExtremelySlow);
+       data.Apply(43847, Patch.Dawntrail) // Longnose Gar
+         .Spear(SpearfishSize.Large, SpearfishSpeed.VeryFast);
+       data.Apply(43848, Patch.Dawntrail) // Midnight Carp
+         .Spear(SpearfishSize.Large, SpearfishSpeed.Average);
     }
 }

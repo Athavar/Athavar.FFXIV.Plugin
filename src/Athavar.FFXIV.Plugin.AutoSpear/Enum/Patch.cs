@@ -38,4 +38,5 @@ internal enum Patch : ushort
     GodsRevelLandsTremble = 630,
     TheDarkThrone = 640,
     GrowingLight = 650,
+    Dawntrail = 700,
 }
