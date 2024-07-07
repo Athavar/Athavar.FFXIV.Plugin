@@ -132,15 +132,16 @@ internal sealed class RotationTab : Tab
         ImGui.PushItemWidth(-1);
 
         var style = ImGui.GetStyle();
-        var runningHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 2;
+        var runningHeight = ((ImGui.GetTextLineHeight() * ImGuiHelpers.GlobalScale * 3) + style.FramePadding.Y + style.ItemSpacing.Y) * 1.5f;
         if (ImGui.BeginChild("Rotation##display-rotation", new Vector2(-1, runningHeight)))
         {
             var rotations = this.activeRotationMacro.Rotation;
-            var hight = ImGui.GetTextLineHeight() * 3;
+            var areaWidth = ImGui.GetContentRegionAvail().X;
+            var x = areaWidth;
+            var size = ImGui.GetTextLineHeight() * 3;
+            var itemWith = size + style.ItemSpacing.X;
             for (var index = 0; index < rotations.Length; index++)
             {
-                var x = ImGui.GetContentRegionAvail().X;
-
                 var action = rotations[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(action);
                 var tex = this.iconManager.GetIcon(craftSkillData.IconIds[0]);
@@ -150,8 +151,7 @@ internal sealed class RotationTab : Tab
                 }
 
                 var textureWrap = tex.GetWrapOrEmpty();
-
-                ImGuiEx.ScaledImageY(textureWrap, hight);
+                ImGuiEx.ScaledImageY(textureWrap, size);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
@@ -159,9 +159,14 @@ internal sealed class RotationTab : Tab
                     ImGui.EndTooltip();
                 }
 
-                if (index != rotations.Length - 1 && 80.0 + ImGui.GetStyle().ItemSpacing.X <= x)
+                x -= itemWith;
+                if (index != rotations.Length - 1 && itemWith <= x)
                 {
                     ImGui.SameLine();
+                }
+                else
+                {
+                    x = areaWidth;
                 }
             }
 

@@ -452,7 +452,7 @@ internal sealed class QueueTab : Tab
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Optimize##cq-rotation-picker-find"))
+        if (ImGui.Button("Recommend##cq-rotation-picker-find"))
         {
             this.RotationSolver();
         }
@@ -660,11 +660,13 @@ internal sealed class QueueTab : Tab
 
         var rotationSteps = this.simulationResult.Steps;
         {
+            var areaWidth = ImGui.GetContentRegionAvail().X;
+            var x = areaWidth;
+            var size = ImGui.GetTextLineHeight() * 3;
+            var itemWith = size + this.style.ItemSpacing.X;
             var classIndex = (int)this.selectedRecipe.Class;
             for (var index = 0; index < rotationSteps.Count; index++)
             {
-                var x = ImGui.GetContentRegionAvail().X;
-
                 var actionResult = rotationSteps[index];
                 var craftSkillData = this.craftDataManager.GetCraftSkillData(actionResult.Skill);
                 var tex = this.iconManager.GetIcon(craftSkillData.IconIds[classIndex]);
@@ -674,7 +676,7 @@ internal sealed class QueueTab : Tab
                 }
 
                 var cursorBeforeImage = ImGui.GetCursorPos();
-                var iconSize = new Vector2(texWarp.Height, texWarp.Width);
+                var iconSize = new Vector2(size, size);
                 ImGui.Image(texWarp.ImGuiHandle, iconSize);
                 if (ImGui.IsItemHovered())
                 {
@@ -694,9 +696,14 @@ internal sealed class QueueTab : Tab
                     }
                 }
 
-                if (index != rotationSteps.Count - 1 && 80.0 + this.style.ItemSpacing.X <= x)
+                x -= itemWith;
+                if (index != rotationSteps.Count - 1 && itemWith <= x)
                 {
                     ImGui.SameLine();
+                }
+                else
+                {
+                    x = areaWidth;
                 }
             }
         }
@@ -1037,7 +1044,7 @@ internal sealed class QueueTab : Tab
             if (this.selectedRotationResolver is IStaticRotationResolver staticRotationResolver)
             {
                 this.simulationResult = this.craftingSimulation.Run(staticRotationResolver.Rotation, true);
-                this.requiredCrafterDelineations = this.simulationResult.Steps.Count(s => s is { Success: true, Skill.Skill: CraftingSkills.HearthAndSoul or CraftingSkills.CarefulObservation });
+                this.requiredCrafterDelineations = this.simulationResult.Steps.Count(s => s is { Success: true, Skill.Skill: CraftingSkills.HearthAndSoul or CraftingSkills.CarefulObservation or CraftingSkills.QuickInnovation });
             }
             else
             {
