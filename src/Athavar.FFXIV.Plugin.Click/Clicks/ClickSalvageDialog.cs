@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public sealed unsafe class ClickSalvageDialog : ClickBase<ClickSalvageDialog, AddonSalvageDialog>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickSalvageDialog" /> class.
+    ///     Initializes a new instance of the <see cref="ClickSalvageDialog"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickSalvageDialog(nint addon = default)
@@ -41,6 +41,10 @@ public sealed unsafe class ClickSalvageDialog : ClickBase<ClickSalvageDialog, Ad
     /// <summary>
     ///     Click the desynthesize checkbox button.
     /// </summary>
+    /// <param name="select">The set state of the checkbox.</param>
     [ClickName("desynthesize_checkbox")]
-    public void CheckBox() => this.ClickAddonCheckBox(this.Addon->CheckBox, 3);
+    public void CheckBox(bool select = true)
+    {
+        this.FireCallback(13, select);
+    }
 }

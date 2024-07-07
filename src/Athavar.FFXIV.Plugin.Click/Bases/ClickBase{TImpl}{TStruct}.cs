@@ -51,7 +51,10 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonButton(AtkComponentButton* target, int which, AtkEventType type = AtkEventType.ButtonClick) => this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
+    protected void ClickAddonButton(AtkComponentButton* target, int which, AtkEventType type = AtkEventType.ButtonClick)
+    {
+        this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
+    }
 
     /// <summary>
     ///     Send a click.
@@ -129,10 +132,10 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonComponent(AtkComponentNode* target, int which, AtkEventType type)
+    protected void ClickAddonComponent(AtkComponentNode* target, int which, AtkEventType type, AtkEvent? @event = null, AtkEventData? data = null)
     {
-        var eventData = EventData.ForNormalTarget(target, this.UnitBase);
-        var inputData = InputData.Empty();
+        var eventData = @event ?? EventData.ForNormalTarget(target, this.UnitBase);
+        var inputData = data ?? InputData.Empty();
 
         this.InvokeReceiveEvent(&this.UnitBase->AtkEventListener, type, which, ref eventData, ref inputData);
     }

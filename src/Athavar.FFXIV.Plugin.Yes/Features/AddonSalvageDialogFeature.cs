@@ -19,7 +19,7 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
     /// </summary>
     /// <param name="module"><see cref="YesModule"/>.</param>
     public AddonSalvageDialogFeature(YesModule module)
-        : base(module)
+        : base(module, AddonEvent.PostSetup)
     {
     }
 
@@ -30,19 +30,18 @@ internal class AddonSalvageDialogFeature : OnSetupFeature
     protected override bool ConfigurationEnableState => this.Configuration.DesynthDialogEnabled || this.Configuration.DesynthBulkDialogEnabled;
 
     /// <inheritdoc/>
-    protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
+    protected override void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         ClickSalvageDialog salvageDialog = addon;
 
         if (this.Configuration.DesynthBulkDialogEnabled)
         {
-            salvageDialog.Addon->BulkDesynthEnabled = true;
+            salvageDialog.CheckBox();
         }
 
         if (this.Configuration.DesynthDialogEnabled)
         {
             this.Module.Logger.Debug("Advanced Salvage Dialog menu");
-            salvageDialog.CheckBox();
             salvageDialog.Desynthesize();
         }
     }
