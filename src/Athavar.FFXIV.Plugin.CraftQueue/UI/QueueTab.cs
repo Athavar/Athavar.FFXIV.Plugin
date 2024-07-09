@@ -1033,6 +1033,7 @@ internal sealed class QueueTab : Tab
         this.craftingSimulation = new Simulation(
             this.selectedGearset.ToCrafterStats(),
             this.selectedRecipe);
+        this.craftingSimulation.SetHqIngredients(this.hqIngredients);
         this.selectionChanged = true;
     }
 
