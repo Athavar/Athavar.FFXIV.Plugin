@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions.Quality;
 
 internal sealed class DaringTouch : QualityAction
 {
-    private static readonly uint[] IdsValue = [100475, 100476, 100477, 100478, 100479, 100480, 100481, 100482];
+    private static readonly uint[] IdsValue = [100451, 100452, 100453, 100454, 100455, 100456, 100457, 100458];
 
     /// <inheritdoc/>
     public override int Level => 96;

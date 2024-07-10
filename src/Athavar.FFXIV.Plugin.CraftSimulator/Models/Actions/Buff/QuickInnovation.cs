@@ -34,6 +34,9 @@ internal sealed class QuickInnovation : BuffAction
     public override bool IsSkipsBuffTicks() => true;
 
     /// <inheritdoc/>
+    public override int GetWaitDuration() => 3;
+
+    /// <inheritdoc/>
     protected override bool CanBeClipped() => true;
 
     /// <inheritdoc/>
