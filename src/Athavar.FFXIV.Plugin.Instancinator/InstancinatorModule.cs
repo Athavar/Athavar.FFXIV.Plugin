@@ -127,9 +127,11 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     {
         switch (this.dalamudServices.ClientState.TerritoryType)
         {
-            case 1187: // Urqopacha
+            case 1185: // Tuliyollal
+                return 2;
+            /*case 1187: // Urqopacha
             case 1188: // Kozama'uka
-                return 6;
+                return 6;*/
             default:
                 return 3;
         }
