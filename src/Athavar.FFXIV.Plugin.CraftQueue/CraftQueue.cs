@@ -99,13 +99,18 @@ internal sealed partial class CraftQueue : IDisposable
         var nq = itemId % 1000000U;
         var hq = nq + 1000000U;
 
-        if (this.CurrentJob != null)
+        if (this.CurrentJob != null && !this.CurrentJob.Flags.HasFlag(CraftingJobFlags.TrialSynthesis))
         {
             num += AmountInJob(this.CurrentJob);
         }
 
         foreach (var job in this.Jobs)
         {
+            if (job.Flags.HasFlag(CraftingJobFlags.TrialSynthesis))
+            {
+                continue;
+            }
+
             num += AmountInJob(job);
         }
 

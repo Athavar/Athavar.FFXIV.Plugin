@@ -25,8 +25,6 @@ internal abstract class BaseCraftingJob
 
     private readonly IRotationResolver rotationResolver;
 
-    private readonly CraftingJobFlags flags;
-
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
 
     private int waitMs;
@@ -39,14 +37,14 @@ internal abstract class BaseCraftingJob
         this.gearset = gearset;
 
         this.BuffConfig = buffConfig;
-        this.flags = flags;
+        this.Flags = flags;
 
         this.rotationResolver = rotationResolver;
 
         if (rotationResolver.ResolverType == ResolverType.Dynamic)
         {
             // resolver is dynamic. enforce buffs
-            this.flags |= CraftingJobFlags.ForceFood | CraftingJobFlags.ForcePotion;
+            this.Flags |= CraftingJobFlags.ForceFood | CraftingJobFlags.ForcePotion;
         }
 
         // clone hqIngredients
@@ -79,6 +77,8 @@ internal abstract class BaseCraftingJob
     }
     
     public BuffConfig BuffConfig { get; }
+
+    public CraftingJobFlags Flags { get; }
 
     public string RotationName => this.rotationResolver.Name;
 
@@ -481,7 +481,7 @@ internal abstract class BaseCraftingJob
 
         var click = ClickRecipeNote.Using(ptr);
 
-        if (this.flags.HasFlag(CraftingJobFlags.TrialSynthesis))
+        if (this.Flags.HasFlag(CraftingJobFlags.TrialSynthesis))
         {
             click.TrialSynthesis();
         }
@@ -630,13 +630,13 @@ internal abstract class BaseCraftingJob
         var currentStatModifier = this.CurrentStatModifier();
 
         // check forced food apply
-        if (this.BuffConfig.Food is not null && this.flags.HasFlagFast(CraftingJobFlags.ForceFood) && currentStatModifier[0] == null)
+        if (this.BuffConfig.Food is not null && this.Flags.HasFlagFast(CraftingJobFlags.ForceFood) && currentStatModifier[0] == null)
         {
             return BuffApplyTest.Food;
         }
 
         // check forced potion apply
-        if (this.BuffConfig.Potion is not null && this.flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
+        if (this.BuffConfig.Potion is not null && this.Flags.HasFlagFast(CraftingJobFlags.ForcePotion) && currentStatModifier[1] == null)
         {
             return BuffApplyTest.Potion;
         }
