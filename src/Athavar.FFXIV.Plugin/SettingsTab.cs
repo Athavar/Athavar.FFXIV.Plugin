@@ -118,7 +118,7 @@ internal sealed partial class SettingsTab : Tab
             ImGui.SetNextItemWidth(200f);
             if (ImGui.Combo(this.localizeManager.Localize("Error chat channel"), ref currentError, names, names.Length))
             {
-                config.ChatType = chatTypes[currentError];
+                config.ErrorChatType = chatTypes[currentError];
                 change = true;
             }
         }
