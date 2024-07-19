@@ -20,20 +20,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class CraftQueueTab : Tab
 {
+    private const string CraftimizerAssemblyName = "Craftimizer";
+
     private readonly IServiceProvider serviceProvider;
+    private readonly IPluginMonitorService monitorService;
     private readonly IDalamudServices dalamudServices;
     private readonly TabBarHandler tabBarHandler;
     private readonly List<IRotationResolver> rotationResolvers;
 
     private bool featureEnabledCraftimizer;
 
-    public CraftQueueTab(IServiceProvider serviceProvider, CraftQueue craftQueue, CraftQueueConfiguration configuration)
+    public CraftQueueTab(IServiceProvider serviceProvider, IPluginMonitorService monitorService, CraftQueue craftQueue, CraftQueueConfiguration configuration)
     {
         this.Configuration = configuration;
 
         this.serviceProvider = serviceProvider;
+        this.monitorService = monitorService;
         this.dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
-        var dataManager = this.dalamudServices.DataManager;
 
         var commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
         var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
@@ -56,8 +59,8 @@ internal sealed class CraftQueueTab : Tab
 #endif
             ;
 
-        this.dalamudServices.PluginInterface.ActivePluginsChanged += this.PluginInterfaceOnActivePluginsChanged;
-        this.PluginInterfaceOnActivePluginsChanged(PluginListInvalidationKind.Update, false);
+        this.UpdateCraftimizerIntegration(monitorService.IsLoaded(CraftimizerAssemblyName));
+        this.monitorService.LoadingStateHasChanged += this.OnPluginLoadingStateHasChanged;
     }
 
     /// <inheritdoc/>
@@ -80,27 +83,30 @@ internal sealed class CraftQueueTab : Tab
 
     public override void Dispose()
     {
-        this.dalamudServices.PluginInterface.ActivePluginsChanged -= this.PluginInterfaceOnActivePluginsChanged;
+        this.monitorService.LoadingStateHasChanged -= this.OnPluginLoadingStateHasChanged;
         base.Dispose();
     }
 
-    private void PluginInterfaceOnActivePluginsChanged(PluginListInvalidationKind kind, bool affectedthisplugin)
+    private void OnPluginLoadingStateHasChanged(string name, bool state, IExposedPlugin? plugin)
     {
-        // TODO: install check not working correct. ActivePluginsChanged not triggering
-        var foundCraftimizer = this.dalamudServices.PluginInterface.InstalledPlugins.Any(p => p is { InternalName: "Craftimizer", IsLoaded: true });
-        if (this.featureEnabledCraftimizer != foundCraftimizer)
+        if (name == CraftimizerAssemblyName)
         {
-            if (foundCraftimizer)
-            {
-                this.rotationResolvers.Add(ActivatorUtilities.CreateInstance<CraftimizerResolver>(this.serviceProvider));
-            }
-            else
-            {
-                this.rotationResolvers.RemoveAll(o => o.GetType() == typeof(CraftimizerResolver));
-            }
-
-            this.featureEnabledCraftimizer = foundCraftimizer;
+            this.UpdateCraftimizerIntegration(state);
         }
+    }
+
+    private void UpdateCraftimizerIntegration(bool enableState)
+    {
+        if (enableState)
+        {
+            this.rotationResolvers.Add(ActivatorUtilities.CreateInstance<CraftimizerResolver>(this.serviceProvider));
+        }
+        else
+        {
+            this.rotationResolvers.RemoveAll(o => o.GetType() == typeof(CraftimizerResolver));
+        }
+
+        this.featureEnabledCraftimizer = enableState;
     }
 
     private class DebugTab : Tab

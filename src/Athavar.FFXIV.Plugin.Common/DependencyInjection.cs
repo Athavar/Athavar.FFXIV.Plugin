@@ -33,6 +33,7 @@ public static class DependencyInjection
            .AddSingleton<IOpcodeManager, OpcodeManager>()
            .AddSingleton<IDutyManager, DutyManager>()
            .AddSingleton<ICommandInterface, CommandInterface>()
+           .AddSingleton<IPluginMonitorService, PluginMonitorService>()
            .AddSingleton(
                 o =>
                 {

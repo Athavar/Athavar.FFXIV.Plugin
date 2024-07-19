@@ -45,6 +45,6 @@ internal sealed class CraftQueueModule : Module<CraftQueueTab, CraftQueueConfigu
     protected override CraftQueueTab InitTab()
     {
         this.craftQueue = ActivatorUtilities.CreateInstance<CraftQueue>(this.provider);
-        return new CraftQueueTab(this.provider, this.craftQueue, this.ModuleConfig);
+        return ActivatorUtilities.CreateInstance<CraftQueueTab>(this.provider, this.craftQueue);
     }
 }
