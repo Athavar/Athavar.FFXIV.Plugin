@@ -11,6 +11,8 @@ internal class PluginMonitorService : IDisposable, IPluginMonitorService
 
     private readonly Dictionary<string, Version> loadedPlugins = [];
 
+    private DateTimeOffset nextUpdate = DateTimeOffset.MinValue;
+
     public PluginMonitorService(IDalamudServices dalamudServices, IFrameworkManager frameworkManager)
     {
         this.dalamudServices = dalamudServices;
@@ -31,13 +33,20 @@ internal class PluginMonitorService : IDisposable, IPluginMonitorService
 
     private void FrameworkUpdate(IFramework framework)
     {
+        if (this.nextUpdate > DateTimeOffset.UtcNow)
+        {
+            return;
+        }
+
+        this.nextUpdate = DateTimeOffset.UtcNow.AddSeconds(1);
+
         Dictionary<string, Version> tmp = new(this.loadedPlugins);
         foreach (var exposedPlugin in this.dalamudServices.PluginInterface.InstalledPlugins)
         {
             var name = exposedPlugin.InternalName;
             if (exposedPlugin.IsLoaded)
             {
-                if (!tmp.TryGetValue(name, out var version))
+                if (!tmp.Remove(name, out var version))
                 {
                     this.loadedPlugins.Add(name, exposedPlugin.Version);
                     this.LoadingStateHasChanged?.Invoke(name, true, exposedPlugin);
@@ -53,7 +62,7 @@ internal class PluginMonitorService : IDisposable, IPluginMonitorService
             }
             else
             {
-                if (tmp.TryGetValue(name, out _))
+                if (tmp.Remove(name, out _))
                 {
                     this.loadedPlugins.Remove(name);
                     this.LoadingStateHasChanged?.Invoke(name, false, exposedPlugin);
