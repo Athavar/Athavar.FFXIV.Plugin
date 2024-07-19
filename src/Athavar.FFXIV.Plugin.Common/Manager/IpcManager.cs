@@ -19,7 +19,10 @@ using Dalamud.Plugin.Ipc.Exceptions;
 /// </summary>
 internal sealed class IpcManager : IIpcManager, IDisposable
 {
+    private const string GlamourerAssemblyName = "Glamourer";
+
     private readonly IDalamudServices dalamudServices;
+    private readonly IPluginMonitorService pluginMonitorService;
     private readonly IPluginLogger logger;
 
     private ICallGateSubscriber<(int Breaking, int Features)> glamourerApiVersionsSubscriber;
@@ -29,11 +32,14 @@ internal sealed class IpcManager : IIpcManager, IDisposable
     ///     Initializes a new instance of the <see cref="IpcManager"/> class.
     /// </summary>
     /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
-    public IpcManager(IDalamudServices dalamudServices)
+    /// <param name="pluginMonitorService"><see cref="IPluginMonitorService"/> added by DI.</param>
+    public IpcManager(IDalamudServices dalamudServices, IPluginMonitorService pluginMonitorService)
     {
         this.dalamudServices = dalamudServices;
+        this.pluginMonitorService = pluginMonitorService;
         this.logger = dalamudServices.PluginLogger;
         this.Initialize();
+        pluginMonitorService.LoadingStateHasChanged += this.OnPluginLoadingStateHasChanged;
         this.UpdateActivePluginState();
     }
 
@@ -80,19 +86,14 @@ internal sealed class IpcManager : IIpcManager, IDisposable
 
     public void UpdateActivePluginState()
     {
-        this.GlamourerEnabled = false;
-        foreach (var installedPlugin in this.dalamudServices.PluginInterface.InstalledPlugins)
-        {
-            switch (installedPlugin.InternalName)
-            {
-                case "Glamourer":
-                    if (installedPlugin.IsLoaded)
-                    {
-                        this.GlamourerEnabled = true;
-                    }
+        this.GlamourerEnabled = this.pluginMonitorService.IsLoaded(GlamourerAssemblyName);
+    }
 
-                    break;
-            }
+    private void OnPluginLoadingStateHasChanged(string name, bool state, IExposedPlugin? plugin)
+    {
+        if (name == GlamourerAssemblyName)
+        {
+            this.GlamourerEnabled = state;
         }
     }
 
