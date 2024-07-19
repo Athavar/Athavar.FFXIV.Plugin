@@ -55,7 +55,7 @@ internal class TargetCommand : MacroCommand
     {
         this.Logger.Debug($"Executing: {this.Text}");
 
-        var target = await DalamudServices.Framework.RunOnFrameworkThread(() => DalamudServices.ObjectTable.FirstOrDefault(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName));
+        var target = await DalamudServices.Framework.Run(() => DalamudServices.ObjectTable.FirstOrDefault(obj => obj.Name.TextValue.ToLowerInvariant() == this.targetName), token).ConfigureAwait(true);
 
         if (target == default)
         {
