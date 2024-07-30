@@ -269,11 +269,11 @@
       "9076": "full metal field",
       "damage": [
         {
-          "potency": 700,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 350
+          "potency": 450
         }
       ]
     }
@@ -320,7 +320,7 @@
       }
     },
     {
-      "2B0": "hypercharge",
+      "A80": "overheated",
       "potency": [
         {
           "type": "DamageAddPotency",

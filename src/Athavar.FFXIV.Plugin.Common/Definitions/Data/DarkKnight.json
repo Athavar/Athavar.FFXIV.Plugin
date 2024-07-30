@@ -5,7 +5,7 @@
       "E21": "hard slash",
       "damage": [
         {
-          "potency": 260
+          "potency": 300
         }
       ]
     },
@@ -13,8 +13,8 @@
       "E27": "syphon strike",
       "damage": [
         {
-          "potency": 220,
-          "combo": 360
+          "potency": 240,
+          "combo": 380
         }
       ]
     },
@@ -38,8 +38,8 @@
       "E30": "souleater",
       "damage": [
         {
-          "potency": 240,
-          "combo": 460
+          "potency": 260,
+          "combo": 480
         }
       ],
       "heal": [
@@ -90,7 +90,7 @@
       "E3B": "carve and spit",
       "damage": [
         {
-          "potency": 510
+          "potency": 540
         }
       ]
     },
@@ -189,7 +189,7 @@
           "potency": 400
         },
         {
-          "potency": 800,
+          "potency": 1000,
           "targetindex": 0
         }
       ]

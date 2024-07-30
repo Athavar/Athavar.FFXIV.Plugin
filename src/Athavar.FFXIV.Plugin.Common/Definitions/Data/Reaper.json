@@ -88,7 +88,7 @@
       "5f3c": "soul slice",
       "damage": [
         {
-          "potency": 460
+          "potency": 520
         }
       ]
     },
@@ -264,11 +264,11 @@
       "906d": "perfectio",
       "damage": [
         {
-          "potency": 1200,
+          "potency": 1300,
           "targetindex": 0
         },
         {
-          "potency": 480
+          "potency": 520
         }
       ]
     }

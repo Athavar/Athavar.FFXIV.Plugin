@@ -28,12 +28,11 @@ public sealed unsafe class EventData : SharedBuffer
     /// <param name="listener">Event listener.</param>
     /// <returns>Event data.</returns>
     public static AtkEvent ForNormalTarget(AtkEventTarget* target, AtkEventListener* listener)
-    {
-        var data = default(AtkEvent);
-        data.Target = target;
-        data.Listener = listener;
-        return data;
-    }
+        => new()
+        {
+            Listener = listener,
+            Target = target,
+        };
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="EventData"/> class.

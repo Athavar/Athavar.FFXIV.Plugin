@@ -13,8 +13,8 @@
       "8C2": "gust slash",
       "damage": [
         {
-          "potency": 220,
-          "combo": 380
+          "potency": 240,
+          "combo": 400
         }
       ]
     },
@@ -131,7 +131,7 @@
       "64B1": "forked raiju",
       "damage": [
         {
-          "potency": 640
+          "potency": 700
         }
       ]
     },
@@ -139,7 +139,7 @@
       "64B2": "fleeting raiju",
       "damage": [
         {
-          "potency": 640
+          "potency": 700
         }
       ]
     },
@@ -247,11 +247,11 @@
       "9061": "tenri jindo",
       "damage": [
         {
-          "potency": 1000,
+          "potency": 1100,
           "targetindex": 0
         },
         {
-          "potency": 500
+          "potency": 550
         }
       ]
     }

@@ -166,11 +166,11 @@
       "4060": "stardiver",
       "damage": [
         {
-          "potency": 620,
+          "potency": 720,
           "targetindex": 0
         },
         {
-          "potency": 310
+          "potency": 360
         }
       ]
     },
@@ -253,11 +253,11 @@
       "905c": "starcross",
       "damage": [
         {
-          "potency": 700,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 350
+          "potency": 400
         }
       ]
     }
@@ -351,7 +351,7 @@
       }
     },
     {
-      "c69": "life of the dragon",
+      "f04": "life of the dragon",
       "potency": [
         {
           "type": "damagedonemultiplier",

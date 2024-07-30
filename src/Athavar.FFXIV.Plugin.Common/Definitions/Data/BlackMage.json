@@ -21,7 +21,7 @@
       "90": "thunder",
       "damage": [
         {
-          "potency": 120
+          "potency": 100
         }
       ]
     },
@@ -85,7 +85,7 @@
       "99": "thunder iii",
       "damage": [
         {
-          "potency": 160
+          "potency": 120
         }
       ]
     },
@@ -169,7 +169,7 @@
       "64C5": "paradox",
       "damage": [
         {
-          "potency": 500
+          "potency": 520
         }
       ]
     },
@@ -177,7 +177,7 @@
       "907a": "high thunder",
       "damage": [
         {
-          "potency": 200
+          "potency": 150
         }
       ]
     },
@@ -203,7 +203,7 @@
       "A1": "thunder",
       "timeproc": {
         "type": "dot",
-        "potency": 40,
+        "potency": 45,
         "damagetype": "magic",
         "maxticks": 8
       }
@@ -221,7 +221,7 @@
       "A3": "thunder iii",
       "timeproc": {
         "type": "dot",
-        "potency": 45,
+        "potency": 50,
         "damagetype": "magic",
         "maxticks": 9
       }
@@ -239,7 +239,7 @@
       "f1f": "high thunder",
       "timeproc": {
         "type": "dot",
-        "potency": 55,
+        "potency": 60,
         "damagetype": "magic",
         "maxticks": 10
       }

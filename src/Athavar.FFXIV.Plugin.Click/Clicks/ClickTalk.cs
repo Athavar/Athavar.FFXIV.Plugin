@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public sealed class ClickTalk : ClickBase<ClickTalk, AddonTalk>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickTalk" /> class.
+    ///     Initializes a new instance of the <see cref="ClickTalk"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickTalk(nint addon = default)
@@ -36,5 +36,5 @@ public sealed class ClickTalk : ClickBase<ClickTalk, AddonTalk>
     ///     Click the talk dialog.
     /// </summary>
     [ClickName("talk")]
-    public void Click() => this.ClickAddonStage(0);
+    public void Click() => this.ClickAddonStage();
 }

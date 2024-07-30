@@ -219,11 +219,11 @@ internal sealed class MeterWindow : IConfigurable
                     borderSize = borderSize.AddY(-headerConfig.HeaderHeight);
                 }
 
-                for (var i = 0; i < generalConfig.BorderThickness; i++)
-                {
-                    var offset = new Vector2(i, i);
-                    drawList.AddRect(borderPos + offset, (borderPos + borderSize) - offset, generalConfig.BorderColor.Base);
-                }
+                    for (var i = 0; i < generalConfig.BorderThickness; i++)
+                    {
+                        var offset = new Vector2(i, i);
+                        drawList.AddRect(borderPos + offset, (borderPos + borderSize) - offset, generalConfig.BorderColor.Base);
+                    }
 
                 localPos += Vector2.One * generalConfig.BorderThickness;
                 size -= Vector2.One * generalConfig.BorderThickness * 2;
@@ -253,7 +253,7 @@ internal sealed class MeterWindow : IConfigurable
         this.unlocked = !locked;
         this.hovered = ImGui.IsMouseHoveringRect(pos, pos + size);
         this.dragging = this.lastFrameWasDragging && ImGui.IsMouseDown(ImGuiMouseButton.Left);
-        this.locked = (this.unlocked && !this.lastFrameWasUnlocked || !this.hovered) && !this.dragging;
+        this.locked = ((this.unlocked && !this.lastFrameWasUnlocked) || !this.hovered) && !this.dragging;
         this.lastFrameWasDragging = this.hovered || this.dragging;
     }
 

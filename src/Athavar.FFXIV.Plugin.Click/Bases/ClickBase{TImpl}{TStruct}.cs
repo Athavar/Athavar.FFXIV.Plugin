@@ -95,16 +95,17 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <summary>
     ///     Send a click.
     /// </summary>
-    /// <param name="which">Internal game click routing.</param>
-    /// <param name="type">Event type.</param>
-    protected void ClickAddonStage(int which, AtkEventType type = AtkEventType.MouseClick)
+    protected void ClickAddonStage()
     {
         var target = AtkStage.Instance();
 
-        var eventData = EventData.ForNormalTarget(target, this.UnitBase);
-        var inputData = InputData.Empty();
+        var @event = stackalloc AtkEvent[1]
+        {
+            EventData.ForNormalTarget(target, this.UnitBase),
+        };
+        var data = stackalloc AtkEventData[1];
 
-        this.InvokeReceiveEvent(&this.UnitBase->AtkEventListener, type, which, ref eventData, ref inputData);
+        this.UnitBase->ReceiveEvent(AtkEventType.MouseClick, 0, @event, data);
     }
 
     /// <summary>

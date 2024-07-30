@@ -146,7 +146,7 @@
       "4094": "dia",
       "damage": [
         {
-          "potency": 70
+          "potency": 75
         }
       ]
     },
@@ -295,7 +295,7 @@
       "74F": "dia",
       "timeproc": {
         "type": "dot",
-        "potency": 70,
+        "potency": 75,
         "damagetype": "magic",
         "maxticks": 10
       }

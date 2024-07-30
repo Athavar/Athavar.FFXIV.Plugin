@@ -143,7 +143,7 @@
       "1D5F": "contre sixte",
       "damage": [
         {
-          "potency": 400
+          "potency": 420
         }
       ]
     },
@@ -211,7 +211,7 @@
       "64FF": "verthunder iii",
       "damage": [
         {
-          "potency": 420
+          "potency": 440
         }
       ]
     },
@@ -219,7 +219,7 @@
       "6500": "veraero iii",
       "damage": [
         {
-          "potency": 420
+          "potency": 440
         }
       ]
     },
@@ -317,7 +317,7 @@
       "4090": "enchanted reprise",
       "damage": [
         {
-          "potency": 380
+          "potency": 420
         }
       ]
     },

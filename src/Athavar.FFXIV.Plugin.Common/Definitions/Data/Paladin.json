@@ -104,8 +104,8 @@
       "DD3": "royal authority",
       "damage": [
         {
-          "potency": 180,
-          "combo": 440
+          "potency": 200,
+          "combo": 460
         }
       ]
     },
@@ -155,7 +155,7 @@
       "404C": "atonement",
       "damage": [
         {
-          "potency": 440
+          "potency": 460
         }
       ]
     },
@@ -227,7 +227,7 @@
       "9036": "supplication",
       "damage": [
         {
-          "potency": 460
+          "potency": 500
         }
       ]
     },
@@ -235,7 +235,7 @@
       "9037": "sepulchre",
       "damage": [
         {
-          "potency": 480
+          "potency": 540
         }
       ]
     },

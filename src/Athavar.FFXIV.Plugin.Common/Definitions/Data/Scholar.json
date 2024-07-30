@@ -37,7 +37,7 @@
       "45CE": "ruin ii",
       "damage": [
         {
-          "potency": 220
+          "potency": 240
         }
       ]
     },
@@ -379,7 +379,7 @@
       }
     },
     {
-      "f2c": "seraphism",
+      "f2d": "seraphism",
       "timeproc": {
         "type": "hot",
         "potency": 100,

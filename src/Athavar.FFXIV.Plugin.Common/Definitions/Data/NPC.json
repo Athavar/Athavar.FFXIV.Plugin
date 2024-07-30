@@ -449,6 +449,16 @@
       ]
     },
     {
+      "274": "damage down",
+      "potency": [
+        {
+          "type": "DamagedoneMultiplier",
+          "amount": 0,
+          "amountbyte": 2
+        }
+      ]
+    },
+    {
       "2AA": "defensive optimization",
       "potency": [
         {

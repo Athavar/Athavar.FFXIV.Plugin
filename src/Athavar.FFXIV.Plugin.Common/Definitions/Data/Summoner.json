@@ -465,7 +465,7 @@
           "targetindex": 0
         },
         {
-          "potency": 64
+          "potency": 48
         }
       ]
     },
@@ -521,7 +521,7 @@
       "907e": "necrotize",
       "damage": [
         {
-          "potency": 420
+          "potency": 440
         }
       ]
     },
@@ -545,7 +545,7 @@
       "9082": "umbral impulse",
       "damage": [
         {
-          "potency": 600
+          "potency": 620
         }
       ]
     },
@@ -561,11 +561,11 @@
       "9084": "sunflare",
       "damage": [
         {
-          "potency": 600,
+          "potency": 700,
           "targetindex": 0
         },
         {
-          "potency": 240
+          "potency": 280
         }
       ]
     },

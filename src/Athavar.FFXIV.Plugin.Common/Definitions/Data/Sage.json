@@ -501,13 +501,6 @@
       }
     },
     {
-      "118004": "eukrasian prognosis ii",
-      "damageshield": {
-        "type": "healpercent",
-        "amount": 360
-      }
-    },
-    {
       "f3a": "philosophia",
       "potency": [
         {

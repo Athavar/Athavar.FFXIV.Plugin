@@ -76,7 +76,7 @@ internal sealed class BarConfigPage : IConfigPage
         float top,
         float current)
     {
-        var barHeight = (size.Y - (barCount - 1) * this.Config.BarGaps) / barCount;
+        var barHeight = (size.Y - ((barCount - 1) * this.Config.BarGaps)) / barCount;
         var barSize = size with { Y = barHeight };
         var barFillSize = new Vector2(size.X * (current / top), barHeight);
         drawList.AddRectFilled(localPos, localPos + barFillSize, this.Config.UseJobColor ? jobColor.Base : barColor.Base);

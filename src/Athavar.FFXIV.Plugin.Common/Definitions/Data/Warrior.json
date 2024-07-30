@@ -94,7 +94,7 @@
       "DDD": "fell cleave",
       "damage": [
         {
-          "potency": 580
+          "potency": 0
         }
       ]
     },
@@ -110,7 +110,7 @@
       "DDE": "decimate",
       "damage": [
         {
-          "potency": 180
+          "potency": 0
         }
       ]
     },

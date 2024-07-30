@@ -75,7 +75,7 @@ internal abstract class BaseCraftingJob
         Potion = 2,
         Both = Food | Potion,
     }
-    
+
     public BuffConfig BuffConfig { get; }
 
     public CraftingJobFlags Flags { get; }
@@ -420,7 +420,7 @@ internal abstract class BaseCraftingJob
         var recipeId = this.Recipe.RecipeId;
 
         var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
-        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis) || ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId))
+        if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
         {
             ci.OpenRecipeByRecipeId(recipeId);
             return -500;
@@ -523,7 +523,7 @@ internal abstract class BaseCraftingJob
 
         var ci = this.Queue.CommandInterface;
 
-        if (this.rotationResolver.Length != -1 && this.RotationCurrentStep >= this.rotationResolver.Length || !ci.IsAddonVisible(Constants.Addons.Synthesis))
+        if ((this.rotationResolver.Length != -1 && this.RotationCurrentStep >= this.rotationResolver.Length) || !ci.IsAddonVisible(Constants.Addons.Synthesis))
         {
             if (ci.IsAddonVisible(Constants.Addons.Synthesis))
             {

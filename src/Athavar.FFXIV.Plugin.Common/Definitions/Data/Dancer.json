@@ -119,11 +119,7 @@
       "3F3F": "single standard finish",
       "damage": [
         {
-          "potency": 540,
-          "targetindex": 0
-        },
-        {
-          "potency": 135
+          "potency": 0
         }
       ]
     },
@@ -131,11 +127,7 @@
       "3f40": "double standard finish",
       "damage": [
         {
-          "potency": 850,
-          "targetindex": 0
-        },
-        {
-          "potency": 213
+          "potency": 0
         }
       ]
     },
@@ -143,11 +135,7 @@
       "3E84": "technical finish",
       "damage": [
         {
-          "potency": 350,
-          "targetindex": 0
-        },
-        {
-          "potency": 88
+          "potency": 0
         }
       ]
     },
@@ -155,11 +143,7 @@
       "3f41": "single technical finish",
       "damage": [
         {
-          "potency": 540,
-          "targetindex": 0
-        },
-        {
-          "potency": 135
+          "potency": 0
         }
       ]
     },
@@ -167,11 +151,7 @@
       "3f42": "double technical finish",
       "damage": [
         {
-          "potency": 720,
-          "targetindex": 0
-        },
-        {
-          "potency": 180
+          "potency": 0
         }
       ]
     },
@@ -179,11 +159,7 @@
       "3f43": "triple technical finish",
       "damage": [
         {
-          "potency": 900,
-          "targetindex": 0
-        },
-        {
-          "potency": 225
+          "potency": 0
         }
       ]
     },
@@ -191,11 +167,7 @@
       "3f44": "quadruple technical finish",
       "damage": [
         {
-          "potency": 1300,
-          "targetindex": 0
-        },
-        {
-          "potency": 325
+          "potency": 0
         }
       ]
     },
@@ -227,10 +199,10 @@
       "64bf": "fan dance iv",
       "damage": [
         {
-          "potency": 150
+          "potency": 210
         },
         {
-          "potency": 300,
+          "potency": 420,
           "targetindex": 0
         }
       ]
