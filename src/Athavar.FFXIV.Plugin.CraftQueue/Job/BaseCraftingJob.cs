@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.Job;
 
 using System.Diagnostics;
 using Athavar.FFXIV.Plugin.Click.Clicks;
+using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
@@ -15,6 +16,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
 using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 internal abstract class BaseCraftingJob
 {
@@ -208,6 +210,28 @@ internal abstract class BaseCraftingJob
             this.Queue.Pause();
             return -1000;
         }
+
+        async Task TriggerKey()
+        {
+            const int limit = 60;
+
+            // this should set the afk timer/input timer to 0
+            unsafe
+            {
+                var timerModule = UIModule.Instance()->GetInputTimerModule();
+                if (timerModule == null || (timerModule->AfkTimer < limit && timerModule->InputTimer < limit))
+                {
+                    return;
+                }
+            }
+
+            var mWnd = Process.GetCurrentProcess().MainWindowHandle;
+            Native.KeyDown(mWnd, Native.KeyCode.LAlt);
+            await Task.Delay(15);
+            Native.KeyUp(mWnd, Native.KeyCode.LAlt);
+        }
+
+        _ = TriggerKey();
 
         return 0;
     }
