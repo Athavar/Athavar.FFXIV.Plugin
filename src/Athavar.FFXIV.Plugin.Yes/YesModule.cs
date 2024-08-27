@@ -60,6 +60,20 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
 
         this.LoadTerritories();
 
+        // clean up invalid configuration nodes
+        var invalidNodes = configuration.GetAllNodes().Where(node => string.IsNullOrWhiteSpace(node.Name)).ToList();
+        foreach (var node in invalidNodes)
+        {
+            if (node is TextFolderNode textFolderNode)
+            {
+                textFolderNode.Name = "Unknown Folder";
+            }
+            else if (configuration.TryFindParent(node, out var parentNode))
+            {
+                parentNode.Children.Remove(node);
+            }
+        }
+
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 
         this.features = new List<IBaseFeature>();
@@ -192,6 +206,11 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
     /// <param name="selectNo">Select no instead.</param>
     internal void CreateTextNode(TextFolderNode folder, bool zoneRestricted, bool createFolder, bool selectNo)
     {
+        if (string.IsNullOrWhiteSpace(this.LastSeenDialogText))
+        {
+            return;
+        }
+
         var newNode = new TextEntryNode { Enabled = true, Text = this.LastSeenDialogText };
         var chosenFolder = folder;
 

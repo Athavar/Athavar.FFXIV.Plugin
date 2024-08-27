@@ -7,6 +7,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Net;
+using System.Net.Http.Headers;
 using System.Reflection;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
@@ -40,6 +41,8 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
                 AutomaticDecompression = DecompressionMethods.All,
                 ConnectCallback = happyEyeballsCallback.ConnectCallback,
             });
+        this.HttpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("Mozilla", "5.0"));
+        this.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/html"));
 
         try
         {

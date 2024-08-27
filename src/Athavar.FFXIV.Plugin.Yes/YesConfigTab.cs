@@ -589,7 +589,7 @@ internal sealed class YesConfigTab : Tab
         }
 
         ImGui.SameLine();
-        if (ImGuiEx.IconButton(FontAwesomeIcon.SearchPlus, "Add last selected as new entry"))
+        if (ImGuiEx.IconButton(FontAwesomeIcon.SearchPlus, "Add last selected as new entry") && !string.IsNullOrEmpty(this.module.LastSeenListSelection))
         {
             var newNode = new ListEntryNode { Enabled = true, Text = this.module.LastSeenListSelection, TargetRestricted = true, TargetText = this.module.LastSeenListTarget };
             this.ListRootFolder.Children.Add(newNode);
@@ -666,10 +666,13 @@ internal sealed class YesConfigTab : Tab
                 ? this.module.GetSeStringText(target.Name)
                 : string.Empty;
 
-            this.module.LastSeenTargetSkip = true;
-            var newNode = new TalkEntryNode { Enabled = true, TargetText = targetName };
-            this.TalkRootFolder.Children.Add(newNode);
-            this.Configuration.Save();
+            if (!string.IsNullOrWhiteSpace(targetName))
+            {
+                this.module.LastSeenTargetSkip = true;
+                var newNode = new TalkEntryNode { Enabled = true, TargetText = targetName };
+                this.TalkRootFolder.Children.Add(newNode);
+                this.Configuration.Save();
+            }
         }
 
         ImGui.SameLine();
@@ -1218,8 +1221,6 @@ internal sealed class YesConfigTab : Tab
                         var selectNo = io.KeyAlt;
 
                         this.module.CreateTextNode(folderNode, zoneRestricted, createFolder, selectNo);
-                        var newNode = new TextEntryNode { Enabled = true, Text = this.module.LastSeenDialogText };
-                        folderNode.Children.Add(newNode);
                         this.Configuration.Save();
                     }
                     else if (root == this.ListRootFolder)
