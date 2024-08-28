@@ -213,22 +213,29 @@ internal abstract class BaseCraftingJob
 
         async Task TriggerKey()
         {
-            const int limit = 60;
-
-            // this should set the afk timer/input timer to 0
-            unsafe
+            try
             {
-                var timerModule = UIModule.Instance()->GetInputTimerModule();
-                if (timerModule == null || (timerModule->AfkTimer < limit && timerModule->InputTimer < limit))
-                {
-                    return;
-                }
-            }
+                const int limit = 60;
 
-            var mWnd = Process.GetCurrentProcess().MainWindowHandle;
-            Native.KeyDown(mWnd, Native.KeyCode.LAlt);
-            await Task.Delay(15);
-            Native.KeyUp(mWnd, Native.KeyCode.LAlt);
+                // this should set the afk timer/input timer to 0
+                unsafe
+                {
+                    var timerModule = UIModule.Instance()->GetInputTimerModule();
+                    if (timerModule == null || (timerModule->AfkTimer < limit && timerModule->InputTimer < limit))
+                    {
+                        return;
+                    }
+                }
+
+                var mWnd = Process.GetCurrentProcess().MainWindowHandle;
+                Native.KeyDown(mWnd, Native.KeyCode.LAlt);
+                await Task.Delay(15);
+                Native.KeyUp(mWnd, Native.KeyCode.LAlt);
+            }
+            catch (Exception ex)
+            {
+                this.Queue.DalamudServices.PluginLogger.Error(ex, "Error during trigger key to reset afk timer");
+            }
         }
 
         _ = TriggerKey();
