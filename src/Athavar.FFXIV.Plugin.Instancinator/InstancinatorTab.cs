@@ -23,6 +23,7 @@ internal sealed class InstancinatorTab : Tab
     /// <inheritdoc />
     public override void Draw()
     {
+        ImGui.TextUnformatted("Require's the Yes Module enabled");
         ImGui.SetNextItemWidth(100f);
         var delay = this.Configuration.ExtraDelay;
         if (ImGui.DragInt("Extra delay, MS", ref delay, 1f, 0, 2000))

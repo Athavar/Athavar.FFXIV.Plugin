@@ -58,4 +58,6 @@ public enum JobFlag : ulong
     Dancer = 1ul << 38,
     Reaper = 1ul << 39,
     Sage = 1ul << 40,
+    Viper = 1ul << 41,
+    Pictomancer = 1ul << 42,
 }
