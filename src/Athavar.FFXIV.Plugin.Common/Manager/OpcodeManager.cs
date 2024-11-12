@@ -60,20 +60,8 @@ internal sealed class OpcodeManager : IOpcodeManager
         }
     }
 
-    private async Task Populate()
+    public async Task CheckRemote()
     {
-        void Add(Opcode opcode, ushort code) => this.opcodes.TryAdd(code, opcode);
-        void AddKeyValuePair(KeyValuePair<Opcode, ushort> keyValue) => Add(keyValue.Key, keyValue.Value);
-
-        if (this.configuration.GameVersion != this.definitionManager.StartInfo.GameVersion?.ToString())
-        {
-            // reset
-            this.configuration.Opcodes.Clear();
-            this.configuration.RemoteUpdate = false;
-            this.configuration.GameVersion = this.definitionManager.StartInfo.GameVersion?.ToString() ?? string.Empty;
-            this.configuration.Save();
-        }
-
         if (!this.configuration.RemoteUpdate)
         {
             try
@@ -85,7 +73,7 @@ internal sealed class OpcodeManager : IOpcodeManager
                     foreach (var (key, value) in updateConfig.Opcodes)
                     {
                         this.configuration.Opcodes.TryAdd(key, value);
-                        Add(key, value);
+                        this.Add(key, value);
                     }
 
                     this.logger.Information("Opcodes updated from Remote");
@@ -99,10 +87,24 @@ internal sealed class OpcodeManager : IOpcodeManager
                 this.logger.Error(ex, "Fail to update Opcodes from Remote");
             }
         }
+    }
+
+    private async Task Populate()
+    {
+        if (this.configuration.GameVersion != this.definitionManager.StartInfo.GameVersion?.ToString())
+        {
+            // reset
+            this.configuration.Opcodes.Clear();
+            this.configuration.RemoteUpdate = false;
+            this.configuration.GameVersion = this.definitionManager.StartInfo.GameVersion?.ToString() ?? string.Empty;
+            this.configuration.Save();
+        }
+
+        await this.CheckRemote();
 
         foreach (var (opcode, value) in this.configuration.Opcodes)
         {
-            Add(opcode, value);
+            this.Add(opcode, value);
         }
 
         /*
@@ -116,6 +118,8 @@ internal sealed class OpcodeManager : IOpcodeManager
         // Add(Opcode.SpawnBoss, codes["NpcSpawn2"]);
         */
     }
+
+    private void Add(Opcode opcode, ushort code) => this.opcodes.TryAdd(code, opcode);
 
     private class UpdateConfig
     {

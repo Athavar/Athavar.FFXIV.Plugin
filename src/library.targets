@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <LangVersion>12</LangVersion>
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
+        <NoWarn>SA0001</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

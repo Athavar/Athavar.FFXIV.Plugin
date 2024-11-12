@@ -14,4 +14,6 @@ public interface IOpcodeManager
     void AddOrUpdate(Opcode opcode, ushort value);
 
     void Remove(Opcode opcode);
+
+    Task CheckRemote();
 }
