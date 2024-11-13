@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class StaticCraftingJob : BaseCraftingJob
 {
@@ -34,7 +34,7 @@ internal sealed class StaticCraftingJob : BaseCraftingJob
             CurrentStatModifiers = [buffConfig.Food?.Stats, buffConfig.Potion?.Stats],
         };
 
-        this.localizedExcellent = this.Queue.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
+        this.localizedExcellent = this.Queue.DalamudServices.DataManager.GetExcelSheet<Addon>().GetRowOrDefault(228)?.Text.ToString().ToLowerInvariant() ?? throw new AthavarPluginException();
 
         this.simulation.SetHqIngredients(hqIngredients);
         this.RunSimulation();

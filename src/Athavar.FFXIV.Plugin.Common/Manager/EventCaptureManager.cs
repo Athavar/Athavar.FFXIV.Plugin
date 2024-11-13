@@ -44,7 +44,7 @@ public sealed class EventCaptureManager : IDisposable
         SetTargetSign = 0x1F6,
         LimitBreak = 0x1F9,
         HoT = 0x603,
-        DoT = 0x604,
+        DoT = 0x605,
     }
 
     public void Dispose()

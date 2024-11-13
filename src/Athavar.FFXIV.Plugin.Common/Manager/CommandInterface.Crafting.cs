@@ -169,19 +169,20 @@ internal sealed partial class CommandInterface
     public unsafe void OpenRecipeByRecipeId(uint recipeId) => ((AgentRecipeNote*)Framework.Instance()->UIModule->GetAgentModule()->GetAgentByInternalId(AgentId.RecipeNote))->OpenRecipeByRecipeId(recipeId);
 
     /// <inheritdoc/>
-    public unsafe int GetRecipeNoteSelectedRecipeId()
+    public unsafe uint? GetRecipeNoteSelectedRecipeId()
     {
         var list = RecipeNote.Instance()->RecipeList;
         if (list == null)
         {
-            return -1;
+            return null;
         }
 
-        var selection = list->SelectedRecipe;
+        var index = ((ushort*)((byte*)list + 0x428))[0];
+        var selection = list->Recipes + index;
 
         if (selection == null)
         {
-            return -1;
+            return null;
         }
 
         return selection->RecipeId;

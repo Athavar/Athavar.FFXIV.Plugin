@@ -580,6 +580,7 @@ internal abstract class BaseCraftingJob
         if (nextAction is null)
         {
             // wait
+            this.Queue.DalamudServices.PluginLogger.Debug("Wait for Next Action");
             return -10;
         }
 
@@ -594,6 +595,7 @@ internal abstract class BaseCraftingJob
                 skill.Action.ActionType is ActionType.Quality &&
                 ci.HasMaxQuality())
             {
+                // TODO: simulate and validate quality change if static rotation is used.
                 ++this.CurrentRotationStep;
                 return -1;
             }
@@ -607,6 +609,7 @@ internal abstract class BaseCraftingJob
         var mutate = this.MutateRotation();
         if (mutate is { } wait)
         {
+            this.Queue.DalamudServices.PluginLogger.Debug("Wait for MutateRotation");
             return wait;
         }
 
@@ -615,6 +618,7 @@ internal abstract class BaseCraftingJob
         if (!ci.UseAction(simAction.GetId(this.Recipe.Class)))
         {
             this.ActionUseFailed(skill);
+            this.Queue.DalamudServices.PluginLogger.Debug("Failed used action " + skill.Skill);
             return -10;
         }
 

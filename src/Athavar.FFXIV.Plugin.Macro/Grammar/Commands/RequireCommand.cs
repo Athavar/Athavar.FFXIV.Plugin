@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 /// <summary>
 ///     The /require command.
@@ -37,11 +37,11 @@ internal class RequireCommand : MacroCommand
         : base(text, waitMod)
     {
         statusName = statusName.ToLowerInvariant();
-        var sheet = DalamudServices.DataManager.GetExcelSheet<Status>()!;
+        var sheet = DalamudServices.DataManager.GetExcelSheet<Status>();
         this.statusIDs = sheet
-           .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
+           .Where(row => row.Name.ExtractText().ToLowerInvariant() == statusName)
            .Select(row => row.RowId)
-           .ToArray()!;
+           .ToArray();
 
         this.maxWait = maxWait.Wait == 0
             ? StatusCheckMaxWait

@@ -15,8 +15,9 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Lumina.Extensions;
+using TerritoryIntendedUse = Lumina.Excel.Sheets.TerritoryIntendedUse;
 
 internal sealed partial class DutyManager : IDisposable, IDutyManager
 {
@@ -177,8 +178,7 @@ internal sealed partial class DutyManager
 
     private DutyInfo? CreateDutyInfo(ushort territoryTypeId, CfPopData? cfPopData)
     {
-        var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId);
-        if (territoryType is null)
+        if (this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId) is not { } territoryType)
         {
             return null;
         }
@@ -188,7 +188,7 @@ internal sealed partial class DutyManager
         {
             // exit, no duty
 #if DEBUG
-            if (!Enum.IsDefined(typeof(TerritoryIntendedUse), territoryType.TerritoryIntendedUse))
+            if (territoryType.TerritoryIntendedUse.RowId is var rowId && !Enum.IsDefined(typeof(TerritoryIntendedUse), rowId))
             {
                 // TODO: find undefined value.
             }

@@ -28,9 +28,9 @@ using Dalamud.Interface.Utility;
 using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Action = Action;
-using Recipe = Lumina.Excel.GeneratedSheets.Recipe;
+using Recipe = Lumina.Excel.Sheets.Recipe;
 
 internal sealed class QueueTab : Tab
 {
@@ -101,9 +101,9 @@ internal sealed class QueueTab : Tab
         this.baseParamsSheet = dataManager.GetExcelSheet<BaseParam>() ?? throw new AthavarPluginException();
         this.addonsSheet = dataManager.GetExcelSheet<Addon>() ?? throw new AthavarPluginException();
         var sheet = dataManager.GetExcelSheet<ItemSearchCategory>();
-        this.gearsetLabel = this.addonsSheet.GetRow(756)?.Text ?? string.Empty;
-        this.foodLabel = sheet?.GetRow(45)?.Name ?? string.Empty;
-        this.potionLabel = sheet?.GetRow(43)?.Name ?? string.Empty;
+        this.gearsetLabel = this.addonsSheet.GetRowOrDefault(756)?.Text.ToString() ?? string.Empty;
+        this.foodLabel = sheet?.GetRowOrDefault(45)?.Name.ToString() ?? string.Empty;
+        this.potionLabel = sheet?.GetRowOrDefault(43)?.Name.ToString() ?? string.Empty;
     }
 
     /// <inheritdoc/>
@@ -231,7 +231,7 @@ internal sealed class QueueTab : Tab
     private void DisplayRecipeSelect()
     {
         ImGui.SetNextItemWidth(-1f);
-        if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.Value?.Name.ToDalamudString().TextValue ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
+        if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.ValueNullable?.Name.ToDalamudString().TextValue ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
         {
             ImGui.SetNextItemWidth(-1f);
             if (ImGui.InputTextWithHint("##recipe-search", "Search...", ref this.recipeSearch, 512U, ImGuiInputTextFlags.AutoSelectAll))
@@ -260,8 +260,7 @@ internal sealed class QueueTab : Tab
                     {
                         ImGui.TableNextRow();
                         var (num, recipe, job) = filteredRecipe;
-                        var obj = recipe.ItemResult.Value;
-                        var text = this.classJobsSheet.GetRow((uint)job)?.Abbreviation.RawString ?? "???";
+                        var text = this.classJobsSheet.GetRowOrDefault((uint)job)?.Abbreviation.ExtractText() ?? "???";
                         ImGui.TableSetColumnIndex(0);
                         var cursorPos = ImGui.GetCursorPos();
                         if (ImGui.Selectable($"##recipe-{recipe.RowId}", num == this.recipeIdx, ImGuiSelectableFlags.SpanAllColumns))
@@ -276,7 +275,8 @@ internal sealed class QueueTab : Tab
                             ImGui.CloseCurrentPopup();
                         }
 
-                        if (obj is not null && this.iconManager.TryGetIcon(obj.Icon, out var texture) && texture.TryGetWrap(out var textureWrap, out _))
+                        var obj = recipe.ItemResult.ValueNullable;
+                        if (obj is not null && this.iconManager.TryGetIcon(obj.Value.Icon, out var texture) && texture.TryGetWrap(out var textureWrap, out _))
                         {
                             ImGui.SetCursorPos(cursorPos);
                             ImGuiEx.ScaledImageY(textureWrap, ImGui.GetTextLineHeight());
@@ -289,9 +289,9 @@ internal sealed class QueueTab : Tab
                         ImGui.TableSetColumnIndex(1);
                         ImGui.TextUnformatted(text);
                         ImGui.TableSetColumnIndex(2);
-                        ImGui.TextUnformatted($"{recipe.RecipeLevelTable.Row}");
+                        ImGui.TextUnformatted($"{recipe.RecipeLevelTable.RowId}");
                         ImGui.TableSetColumnIndex(3);
-                        ImGui.TextUnformatted(obj?.Name.ToDalamudString().TextValue);
+                        ImGui.TextUnformatted(obj.GetValueOrDefault().Name.ToDalamudString().TextValue);
                     },
                     ImGui.GetTextLineHeightWithSpacing());
 
@@ -543,7 +543,7 @@ internal sealed class QueueTab : Tab
                     if (ImGui.TableSetColumnIndex(0) && this.iconManager.TryGetIcon(ingredient.Icon, out var texture) && texture.TryGetWrap(out var textureWarp, out _))
                     {
                         ImGuiEx.ScaledImageY(textureWarp.ImGuiHandle, textureWarp.Width, textureWarp.Height, ImGui.GetTextLineHeight());
-                        ImGuiEx.TextTooltip(this.itemsSheet.GetRow(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
+                        ImGuiEx.TextTooltip(this.itemsSheet.GetRowOrDefault(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
                     }
 
                     if (ImGui.TableSetColumnIndex(1))
@@ -876,7 +876,7 @@ internal sealed class QueueTab : Tab
             var timeSpan1 = drawnJob.Duration;
             var timeSpan2 = drawnJob.LoopDuration;
             var str1 = drawnJob.Recipe.ResultItemName ?? "???";
-            var str2 = this.classJobsSheet.GetRow(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.RawString ?? "???";
+            var str2 = this.classJobsSheet.GetRowOrDefault(drawnJob.Recipe.Class.GetRowId())?.Abbreviation.ExtractText() ?? "???";
             var values = new object[columnCount];
             values[0] = str1;
             values[1] = str2;
@@ -1076,7 +1076,7 @@ internal sealed class QueueTab : Tab
             for (var index = 0; index < recipes.Count; ++index)
             {
                 var (recipe, job) = recipes[index];
-                if (recipe.ItemResult.Value != null && recipe.ItemResult.Value.Name.RawString.ToLowerInvariant().Contains(needle))
+                if (recipe.ItemResult.ValueNullable is { } itemResult && itemResult.Name.ExtractText().ToLowerInvariant().Contains(needle))
                 {
                     this.filteredRecipes.Add((index, recipe, job));
                 }

@@ -36,7 +36,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.13" GeneratePathProperty="false"/>
+        <PackageReference Include="DalamudPackager" Version="11.0.0" GeneratePathProperty="false"/>
     </ItemGroup>
 
     <ItemGroup>

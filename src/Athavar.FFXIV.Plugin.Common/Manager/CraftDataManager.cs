@@ -13,7 +13,7 @@ using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game;
 using Dalamud.Plugin.Services;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class CraftDataManager : ICraftDataManager
 {
@@ -129,19 +129,16 @@ internal sealed class CraftDataManager : ICraftDataManager
                 actionId = value.GetId(loopClass.Value);
                 useCraftActionSheet = actionId > 100000;
 
-                if (useCraftActionSheet)
+                if (actionId != 0)
                 {
-                    var row = this.dataManager.GetExcelSheet<CraftAction>()!.GetRow(actionId);
-                    if (actionId != 0 && row is not null)
+                    if (useCraftActionSheet)
                     {
+                        var row = this.dataManager.GetExcelSheet<CraftAction>()!.GetRow(actionId);
                         iconIds[index] = row.Icon;
                     }
-                }
-                else
-                {
-                    var row = this.dataManager.GetExcelSheet<Action>()!.GetRow(actionId);
-                    if (actionId != 0 && row is not null)
+                    else
                     {
+                        var row = this.dataManager.GetExcelSheet<Action>().GetRow(actionId);
                         iconIds[index] = row.Icon;
                     }
                 }

@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class FishingSpot
 {
@@ -17,8 +17,8 @@ internal sealed class FishingSpot
     {
         this.data = spot;
 
-        this.Items = spot.GatheringPointBase.Value?.Item.Where(i => i > 0)
-                        .Select(i => data.Values.FirstOrDefault(f => f.FishId == i))
+        this.Items = spot.GatheringPointBase.Value.Item.Where(i => i.RowId > 0)
+                        .Select(i => data.Values.FirstOrDefault(f => f.FishId == i.RowId))
                         .Where(f => f != null).Cast<SpearFish>()
                         .ToArray()
                   ?? [];
@@ -29,19 +29,19 @@ internal sealed class FishingSpot
         }
     }
 
-    public SpearfishingNotebook? SpearfishingSpotData => this.data as SpearfishingNotebook;
+    public SpearfishingNotebook? SpearfishingSpotData => (SpearfishingNotebook)this.data;
 
-    public Lumina.Excel.GeneratedSheets.FishingSpot? FishingSpotData => this.data as Lumina.Excel.GeneratedSheets.FishingSpot;
+    public Lumina.Excel.Sheets.FishingSpot? FishingSpotData => (Lumina.Excel.Sheets.FishingSpot)this.data;
 
     public uint SheetId
         => this.data is SpearfishingNotebook sf
             ? sf.RowId
-            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this.data).RowId;
+            : ((Lumina.Excel.Sheets.FishingSpot)this.data).RowId;
 
     public uint Id
         => this.data is SpearfishingNotebook sf
             ? sf.RowId | SpearfishingIdOffset
-            : ((Lumina.Excel.GeneratedSheets.FishingSpot)this.data).RowId;
+            : ((Lumina.Excel.Sheets.FishingSpot)this.data).RowId;
 
     public bool Spearfishing => this.data is SpearfishingNotebook;
 
@@ -49,7 +49,7 @@ internal sealed class FishingSpot
 
     public int CompareTo(FishingSpot? obj) => this.SheetId.CompareTo(obj?.SheetId ?? 0);
 
-    private TerritoryType? FishingSpotTerritoryHacks(IDalamudServices data, Lumina.Excel.GeneratedSheets.FishingSpot spot)
+    private TerritoryType? FishingSpotTerritoryHacks(IDalamudServices data, Lumina.Excel.Sheets.FishingSpot spot)
         => spot.RowId switch
         {
             10_000 => data.DataManager.GetExcelSheet<TerritoryType>()!.GetRow(759), // the rows in between are no longer used diadem objects

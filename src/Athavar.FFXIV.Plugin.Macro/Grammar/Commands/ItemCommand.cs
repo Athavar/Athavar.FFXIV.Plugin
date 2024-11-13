@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Sheets = Lumina.Excel.GeneratedSheets;
+using Sheets = Lumina.Excel.Sheets;
 
 /// <summary>
 ///     The /item command.
@@ -113,12 +113,12 @@ internal class ItemCommand : MacroCommand
     private uint SearchItemId(string itemName)
     {
         var sheet = DalamudServices.DataManager.GetExcelSheet<Sheets.Item>()!;
-        var item = sheet.FirstOrDefault(r => r.Name.ToString().ToLowerInvariant() == itemName);
+        Sheets.Item? item = sheet.FirstOrDefault(r => r.Name.ToString().ToLowerInvariant() == itemName);
         if (item == null)
         {
             throw new MacroCommandError("Item not found");
         }
 
-        return item.RowId;
+        return item?.RowId ?? 0;
     }
 }

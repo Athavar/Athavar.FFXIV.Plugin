@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 /// <summary>
 ///     AddonMateriaRetrieveDialog feature.
@@ -20,7 +20,7 @@ internal class AddonPurifyResultFeature : OnSetupFeature
 
     public AddonPurifyResultFeature(YesModule module)
         : base(module)
-        => this.aetherialReductionSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(2171)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 2171 not found");
+        => this.aetherialReductionSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRowOrDefault(2171)?.Text.ExtractText() ?? throw new AthavarPluginException("Sheet Addon or row 2171 not found");
 
     /// <inheritdoc/>
     protected override string AddonName => "PurifyResult";

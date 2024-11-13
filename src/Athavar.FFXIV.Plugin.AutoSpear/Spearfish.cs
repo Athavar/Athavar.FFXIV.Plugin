@@ -8,8 +8,8 @@ namespace Athavar.FFXIV.Plugin.AutoSpear;
 using Athavar.FFXIV.Plugin.AutoSpear.Enum;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Plugin.Services;
-using ItemRow = Lumina.Excel.GeneratedSheets.Item;
-using SpearFishRow = Lumina.Excel.GeneratedSheets.SpearfishingItem;
+using ItemRow = Lumina.Excel.Sheets.Item;
+using SpearFishRow = Lumina.Excel.Sheets.SpearfishingItem;
 
 internal sealed class SpearFish : IComparable<SpearFish>
 {
@@ -17,18 +17,18 @@ internal sealed class SpearFish : IComparable<SpearFish>
 
     public SpearFish(IDataManager gameData, SpearFishRow fishRow)
     {
-        this.ItemData = fishRow.Item.Value ?? new ItemRow();
+        this.ItemData = fishRow.Item.ValueNullable ?? new ItemRow();
         this.fishData = fishRow;
         this.Name = MultiString.FromItem(gameData, this.ItemData.RowId);
         this.Size = SpearfishSize.Unknown;
         this.Speed = SpearfishSpeed.Unknown;
     }
 
-    public SpearFishRow? SpearfishData => this.fishData as SpearFishRow;
+    public SpearFishRow? SpearfishData => (SpearFishRow)this.fishData;
 
     public uint ItemId => this.ItemData.RowId;
 
-    public uint FishId => this.SpearfishData!.RowId;
+    public uint FishId => this.SpearfishData.GetValueOrDefault().RowId;
 
     public SpearfishSize Size { get; internal set; } = SpearfishSize.Unknown;
 

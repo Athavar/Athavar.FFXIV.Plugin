@@ -16,7 +16,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
 using ImGuiNET;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class Utils
 {
@@ -105,7 +105,7 @@ internal sealed class Utils
 
     public string ActionString(ActionId actionId) => this.ActionString(actionId.Id);
 
-    public string JobName(Job input) => this.jobsSheet.GetRow((uint)input)?.Name.ToDalamudString().ToString() ?? string.Empty;
+    public string JobName(Job input) => this.jobsSheet.GetRowOrDefault((uint)input)?.Name.ToDalamudString().ToString() ?? string.Empty;
 
     public string Vec3String(Vector3 pos) => $"[{pos.X:f2}, {pos.Y:f2}, {pos.Z:f2}]";
 
@@ -137,7 +137,7 @@ internal sealed class Utils
                     return name;
                 }
 
-                name = $"[S]{this.statusTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty}";
+                name = $"[S]{this.statusTable.GetRowOrDefault(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty}";
                 this.statusText.Add(actionSummary.Id, name);
                 return name;
             }
@@ -147,7 +147,7 @@ internal sealed class Utils
                 return name;
             }
 
-            name = this.actionTable.GetRow(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
+            name = this.actionTable.GetRowOrDefault(actionSummary.Id)?.Name.ToDalamudString().ToString() ?? string.Empty;
             this.actionText.Add(actionSummary.Id, name);
             return name;
         }

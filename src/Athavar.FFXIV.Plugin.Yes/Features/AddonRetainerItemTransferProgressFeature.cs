@@ -9,7 +9,7 @@ using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Yes.BaseFeatures;
 using Dalamud.Game.Addon.Lifecycle;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal class AddonRetainerItemTransferProgressFeature : OnSetupFeature
 {
@@ -17,7 +17,7 @@ internal class AddonRetainerItemTransferProgressFeature : OnSetupFeature
 
     public AddonRetainerItemTransferProgressFeature(YesModule module)
         : base(module, AddonEvent.PostUpdate)
-        => this.retainerEntrustItemsSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRow(13528)?.Text.RawString ?? throw new AthavarPluginException("Sheet Addon or row 13528 not found");
+        => this.retainerEntrustItemsSuccessfulText = this.Module.DalamudServices.DataManager.GetExcelSheet<Addon>()?.GetRowOrDefault(13528)?.Text.ExtractText() ?? throw new AthavarPluginException("Sheet Addon or row 13528 not found");
 
     /// <inheritdoc/>
     protected override string AddonName => "RetainerItemTransferProgress";

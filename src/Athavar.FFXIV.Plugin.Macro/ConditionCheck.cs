@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Macro;
 
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 /// <summary>
 ///     Contains condition checks.
@@ -68,7 +68,7 @@ internal sealed class ConditionCheck
     {
         this.statusSheet ??= this.dalamudServices.DataManager.GetExcelSheet<Status>()!;
 
-        var effectIDs = this.statusSheet.Where(row => row.Name.RawString.ToLower() == statusName).Select(row => row.RowId).ToList();
+        var effectIDs = this.statusSheet.Where(row => row.Name.ExtractText().ToLower() == statusName).Select(row => row.RowId).ToList();
 
         return this.dalamudServices.ClientState.LocalPlayer?.StatusList.Select(se => se.StatusId).ToList().Intersect(effectIDs).Any() ?? false;
     }

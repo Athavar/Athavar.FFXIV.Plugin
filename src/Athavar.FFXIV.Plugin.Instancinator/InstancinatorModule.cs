@@ -14,11 +14,9 @@ using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using Lumina;
-using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-using Lumina.Text;
+using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -63,9 +61,9 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.frameworkManager = frameworkManager;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
-        var text = aetheryteSheet.GetRow(12)!.String.RawString;
+        var text = aetheryteSheet.GetRow(12).String.ExtractText();
         this.travelToInstancedArea = text.Trim();
-        this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>()!.GetRow(0)!.Singular;
+        this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>().GetRow(0).Singular.ExtractText();
 
         this.dalamudServices.CommandManager.AddHandler(
             MacroCommandName,
@@ -288,25 +286,15 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     ///     Row of transport/Aetheryte Table.
     /// </summary>
     [Sheet("transport/Aetheryte")]
-    internal class AetheryteString : ExcelRow
+    public struct AetheryteString(ExcelPage page, uint offset, uint row)
+        : IExcelRow<AetheryteString>
     {
-        /// <summary>
-        ///     Gets or sets the key.
-        /// </summary>
-        public SeString Identifier { get; set; } = null!;
+        public uint RowId => row;
 
-        /// <summary>
-        ///     Gets or sets the string value.
-        /// </summary>
-        public SeString String { get; set; } = null!;
+        public readonly ReadOnlySeString Identifier => page.ReadString(offset, offset);
 
-        /// <inheritdoc/>
-        public override void PopulateData(RowParser parser, GameData gameData, Language language)
-        {
-            base.PopulateData(parser, gameData, language);
+        public readonly ReadOnlySeString String => page.ReadString(offset + 4, offset);
 
-            this.Identifier = parser.ReadColumn<SeString>(0)!;
-            this.String = parser.ReadColumn<SeString>(1)!;
-        }
+        static AetheryteString IExcelRow<AetheryteString>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
     }
 }

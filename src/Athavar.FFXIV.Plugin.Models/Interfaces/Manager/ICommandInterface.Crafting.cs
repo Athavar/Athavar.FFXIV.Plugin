@@ -122,6 +122,6 @@ public partial interface ICommandInterface
     /// <summary>
     ///     Open the current selected recipe id of the RecipeNode addon.
     /// </summary>
-    /// <returns>returns the recipeId. May return -1 if the addon is closes.</returns>
-    public int GetRecipeNoteSelectedRecipeId();
+    /// <returns>returns the recipeId. May return null if the addon is closes.</returns>
+    public uint? GetRecipeNoteSelectedRecipeId();
 }

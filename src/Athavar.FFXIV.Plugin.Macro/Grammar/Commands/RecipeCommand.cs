@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 /// <summary>
 ///     The /recipe command.
@@ -99,7 +99,7 @@ internal class RecipeCommand : MacroCommand
             throw new MacroCommandError("ExcelSheet Recipe not found");
         }
 
-        var founds = recipes.Where(r => r.ItemResult.Value?.Name.ToString() == recipeName).ToList();
+        var founds = recipes.Where(r => r.ItemResult.ValueNullable?.Name.ToString() == recipeName).ToList();
         switch (founds.Count)
         {
             case 0:
@@ -107,15 +107,15 @@ internal class RecipeCommand : MacroCommand
             case 1:
                 return founds.First().RowId;
             default:
-                var jobId = DalamudServices.ClientState.LocalPlayer?.ClassJob.Id;
+                var jobId = DalamudServices.ClientState.LocalPlayer?.ClassJob.RowId;
 
-                var recipe = recipes.FirstOrDefault(r => this.GetClassJobId(r) == jobId);
-                if (recipe == default)
+                Recipe? recipe = recipes.FirstOrDefault(r => this.GetClassJobId(r) == jobId);
+                if (recipe == null)
                 {
                     return recipes.First().RowId;
                 }
 
-                return recipe.RowId;
+                return recipe.Value.RowId;
         }
     }
 

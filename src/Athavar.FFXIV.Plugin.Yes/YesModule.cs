@@ -17,7 +17,7 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Memory;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -297,13 +297,12 @@ internal sealed class YesModule : Module<YesConfigTab, YesConfiguration>
         var sheet = this.DalamudServices.DataManager.GetExcelSheet<TerritoryType>()!;
         foreach (var row in sheet)
         {
-            var zone = row.PlaceName.Value;
-            if (zone == null)
+            if (row.PlaceName.ValueNullable is not { } zone)
             {
                 continue;
             }
 
-            var text = this.GetSeStringText((SeString)zone.Name);
+            var text = this.GetSeStringText(zone.Name.ToDalamudString());
             if (string.IsNullOrEmpty(text))
             {
                 continue;

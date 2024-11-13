@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed partial class AutoSpear : Tab
 {
@@ -52,32 +52,32 @@ internal sealed partial class AutoSpear : Tab
         this.configuration = configuration;
         this.frameworkManager = frameworkManager;
 
-        var sheet = dalamudServices.DataManager.GetExcelSheet<Action>()!;
-        this.useSpearSkillName = sheet.GetRow(7632)!.Name;
+        var sheet = dalamudServices.DataManager.GetExcelSheet<Action>();
+        this.useSpearSkillName = sheet.GetRowOrDefault(7632)?.Name.ToString() ?? string.Empty;
 
         var dataManager = dalamudServices.DataManager;
         var spearFishes = dalamudServices.DataManager.GetExcelSheet<SpearfishingItem>()!
-           .Where(sf => sf.Item.Row != 0 && sf.Item.Row < 1000000)
+           .Where(sf => sf.Item.RowId != 0 && sf.Item.RowId < 1000000)
            .Select(sf => new SpearFish(dataManager, sf)).ToDictionary(f => f.ItemId, f => f);
 
         this.ApplyData(spearFishes);
 
         var fishingSpots = dalamudServices.DataManager.GetExcelSheet<SpearfishingNotebook>()!
-           .Where(sf => sf.PlaceName.Row != 0 && sf.TerritoryType.Row > 0)
+           .Where(sf => sf.PlaceName.RowId != 0 && sf.TerritoryType.RowId > 0)
            .Select(f => new FishingSpot(spearFishes, f));
 
         var points = dalamudServices.DataManager.GetExcelSheet<GatheringPoint>()!;
 
         // We go through all fishingspots and correspond them to their gathering point base.
         var baseNodes = fishingSpots
-           .Where(fs => fs is { Spearfishing: true, SpearfishingSpotData: not null })
-           .ToDictionary(fs => fs.SpearfishingSpotData!.GatheringPointBase.Row, fs => fs);
+           .Where(fs => fs is { Spearfishing: true, SpearfishingSpotData.GatheringPointBase.IsValid: true })
+           .ToDictionary(fs => fs.SpearfishingSpotData!.Value.GatheringPointBase.RowId, fs => fs);
 
         // Now we correspond all gathering nodes to their associated fishing spot.
         this.spearfishingSpots = new Dictionary<uint, FishingSpot>(baseNodes.Count);
         foreach (var point in points)
         {
-            if (!baseNodes.TryGetValue(point.GatheringPointBase.Row, out var node))
+            if (!baseNodes.TryGetValue(point.GatheringPointBase.RowId, out var node))
             {
                 continue;
             }

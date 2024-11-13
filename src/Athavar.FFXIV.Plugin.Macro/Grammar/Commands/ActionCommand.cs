@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Grammar.Modifiers;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.ClientState.Conditions;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -149,15 +149,14 @@ internal class ActionCommand : MacroCommand
         var actions = dalamudServices.DataManager.GetExcelSheet<Action>()!;
         foreach (var row in actions)
         {
-            var job = row.ClassJob?.Value?.ClassJobCategory?.Value;
-            if (job == null)
+            if (row.ClassJob.ValueNullable?.ClassJobCategory.ValueNullable is not { } job)
             {
                 continue;
             }
 
             if (job.CRP || job.BSM || job.ARM || job.GSM || job.LTW || job.WVR || job.ALC || job.CUL)
             {
-                var name = row.Name.RawString.ToLowerInvariant();
+                var name = row.Name.ExtractText().ToLowerInvariant();
                 if (name.Length == 0)
                 {
                     continue;
@@ -170,7 +169,7 @@ internal class ActionCommand : MacroCommand
         var craftActions = dalamudServices.DataManager.GetExcelSheet<CraftAction>()!;
         foreach (var row in craftActions)
         {
-            var name = row.Name.RawString.ToLowerInvariant();
+            var name = row.Name.ExtractText().ToLowerInvariant();
             if (name.Length == 0)
             {
                 continue;
@@ -208,14 +207,14 @@ internal class ActionCommand : MacroCommand
         var actions = DalamudServices.DataManager.GetExcelSheet<Action>()!;
         foreach (var actionId in actionIDs)
         {
-            var name = actions.GetRow(actionId)!.Name.RawString.ToLowerInvariant();
+            var name = actions.GetRow(actionId).Name.ExtractText().ToLowerInvariant();
             CraftingQualityActionNames.Add(name);
         }
 
         var craftActions = DalamudServices.DataManager.GetExcelSheet<CraftAction>()!;
         foreach (var craftId in craftIDs)
         {
-            var name = craftActions.GetRow(craftId)!.Name.RawString.ToLowerInvariant();
+            var name = craftActions.GetRow(craftId).Name.ExtractText().ToLowerInvariant();
             CraftingQualityActionNames.Add(name);
         }
     }

@@ -7,13 +7,14 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Models;
+using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class GearsetManager : IGearsetManager, IDisposable
 {
@@ -89,8 +90,8 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
                 continue;
             }
 
-            var expArrayIndex = this.classJobSheet.GetRow(gearsetEntryPtr->ClassJob)?.ExpArrayIndex;
-            if (expArrayIndex is not { } levelArrayIndex || levelArray[levelArrayIndex] == 0)
+            var expArrayIndex = this.classJobSheet.GetRow(gearsetEntryPtr->ClassJob).ExpArrayIndex;
+            if (expArrayIndex < 0 || levelArray[expArrayIndex] == 0)
             {
                 continue;
             }
@@ -122,7 +123,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
                     this.GetName(gearsetEntryPtr),
                     gearsetEntryPtr->Id,
                     gearsetEntryPtr->ClassJob,
-                    (byte)levelArray[levelArrayIndex],
+                    (byte)levelArray[expArrayIndex],
                     stats,
                     gearsetEntryPtr->Items[(int)RaptureGearsetModule.GearsetItemIndex.SoulStone].ItemId != 0,
                     gearsetEntryPtr->Items[(int)RaptureGearsetModule.GearsetItemIndex.MainHand].ItemId,
@@ -158,7 +159,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         return new Gearset(
             name,
             gearsetId,
-            player?.ClassJob.Id ?? 0,
+            player?.ClassJob.RowId ?? 0,
             player?.Level ?? 0,
             stats,
             equipmentItems.Length >= 12 && equipmentItems[11].ItemId != 0,
@@ -186,7 +187,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
     private void ClientStateOnLogin() => this.UpdateGearsets();
 
-    private void ClientStateOnLogout() => this.Gearsets.Clear();
+    private void ClientStateOnLogout(int a, int b) => this.Gearsets.Clear();
 
     private unsafe void GetItemStats(ref uint[] stats, RaptureGearsetModule.GearsetItem* item)
     {
@@ -219,23 +220,22 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
     private void GetItemStats(ref uint[] stats, uint itemId, (ushort Id, byte Grade)[]? materia = null)
     {
         var flag = itemId > 1000000U;
-        var item = this.itemsSheet.GetRow(itemId % 1000000U);
-        if (item?.LevelItem.Value is null)
+        if (this.itemsSheet.GetRowOrDefault(itemId % 1000000U) is not { } item || item.LevelItem.ValueNullable is null)
         {
             return;
         }
 
         var tmpStats = new uint[StatLength];
-        foreach (var itemUnkData59Obj in item.UnkData59)
+        foreach (var itemUnkData59Obj in item.BaseParam.Zip(item.BaseParamValue))
         {
-            tmpStats[itemUnkData59Obj.BaseParam] += Convert.ToUInt32(itemUnkData59Obj.BaseParamValue);
+            tmpStats[itemUnkData59Obj.First.RowId] += Convert.ToUInt32(itemUnkData59Obj.Second);
         }
 
         if (flag)
         {
-            foreach (var itemUnkData73Obj in item.UnkData73)
+            foreach (var itemUnkData73Obj in item.BaseParamSpecial.Zip(item.BaseParamValueSpecial))
             {
-                tmpStats[itemUnkData73Obj.BaseParamSpecial] += Convert.ToUInt32(itemUnkData73Obj.BaseParamValueSpecial);
+                tmpStats[itemUnkData73Obj.First.RowId] += Convert.ToUInt32(itemUnkData73Obj.Second);
             }
         }
 
@@ -250,10 +250,9 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
                     continue;
                 }
 
-                var m = this.materiaSheet.GetRow(id);
-                if (m != null)
+                if (this.materiaSheet.GetRowOrDefault(id) is { } m)
                 {
-                    tmpStats[(byte)m.BaseParam.Row] += Convert.ToUInt32(m.Value[grade]);
+                    tmpStats[(byte)m.BaseParam.RowId] += Convert.ToUInt32(m.Value[grade]);
                     hasMateria = true;
                 }
             }
@@ -273,16 +272,15 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
                 continue;
             }
 
-            var baseParam = this.baseParamSheet.GetRow(statId);
-            if (baseParam is null)
+            if (this.baseParamSheet.GetRowOrDefault(statId) is not { } baseParam)
             {
                 throw new AthavarPluginException($"Fail to find baseParam for statId {statId}");
             }
 
-            var ilvlBase = this.itemLevelSheet.GetRowParser(item.LevelItem.Row)?.ReadColumn<ushort>(statId - 1);
+            var ilvlBase = this.GetColum(this.itemLevelSheet.GetRow(item.LevelItem.RowId), (StatIds)statId);
             if (ilvlBase is null)
             {
-                throw new AthavarPluginException($"Fail to find ilvlBase for ilvl {item.LevelItem.Row} and statId {statId}");
+                throw new AthavarPluginException($"Fail to find ilvlBase for ilvl {item.LevelItem.RowId} and statId {statId}");
             }
 
             var maxStat = this.GetMaxStat(baseParam, item, ilvlBase.Value);
@@ -291,9 +289,92 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         }
     }
 
+    public ushort? GetColum(ItemLevel sheet, StatIds id)
+    {
+        return id switch
+        {
+            StatIds.None => null,
+            StatIds.Strength => sheet.Strength,
+            StatIds.Dexterity => sheet.Dexterity,
+            StatIds.Vitality => sheet.Vitality,
+            StatIds.Intelligence => sheet.Intelligence,
+            StatIds.Mind => sheet.Mind,
+            StatIds.Piety => sheet.Piety,
+            StatIds.HP => sheet.HP,
+            StatIds.MP => sheet.MP,
+            StatIds.TP => sheet.TP,
+            StatIds.GP => sheet.GP,
+            StatIds.CP => sheet.CP,
+            StatIds.PhysicalDamage => sheet.PhysicalDamage,
+            StatIds.MagicalDamage => sheet.MagicalDamage,
+            StatIds.Delay => sheet.Delay,
+            StatIds.AdditionalEffect => sheet.AdditionalEffect,
+            StatIds.AttackSpeed => sheet.AttackSpeed,
+            StatIds.BlockRate => sheet.BlockRate,
+            StatIds.BlockStrength => sheet.BlockStrength,
+            StatIds.Tenacity => sheet.Tenacity,
+            StatIds.AttackPower => sheet.AttackPower,
+            StatIds.Defense => sheet.Defense,
+            StatIds.DirectHitRate => sheet.DirectHitRate,
+            StatIds.Evasion => sheet.Evasion,
+            StatIds.MagicDefense => sheet.MagicDefense,
+            StatIds.CriticalHitPower => sheet.CriticalHitPower,
+            StatIds.CriticalHitResilience => sheet.CriticalHitResilience,
+            StatIds.CriticalHit => sheet.CriticalHit,
+            StatIds.CriticalHitEvasion => sheet.CriticalHitEvasion,
+            StatIds.SlashingResistance => sheet.SlashingResistance,
+            StatIds.PiercingResistance => sheet.PiercingResistance,
+            StatIds.BluntResistance => sheet.BluntResistance,
+            StatIds.ProjectileResistance => sheet.ProjectileResistance,
+            StatIds.AttackMagicPotency => sheet.AttackMagicPotency,
+            StatIds.HealingMagicPotency => sheet.HealingMagicPotency,
+            StatIds.EnhancementMagicPotency => sheet.EnhancementMagicPotency,
+            StatIds.EnfeeblingMagicPotency => sheet.EnfeeblingMagicPotency,
+            StatIds.FireResistance => sheet.FireResistance,
+            StatIds.IceResistance => sheet.IceResistance,
+            StatIds.WindResistance => sheet.WindResistance,
+            StatIds.EarthResistance => sheet.EarthResistance,
+            StatIds.LightningResistance => sheet.LightningResistance,
+            StatIds.WaterResistance => sheet.WaterResistance,
+            StatIds.MagicResistance => sheet.MagicResistance,
+            StatIds.Determination => sheet.Determination,
+            StatIds.SkillSpeed => sheet.SkillSpeed,
+            StatIds.SpellSpeed => sheet.SpellSpeed,
+            StatIds.Haste => sheet.Haste,
+            StatIds.Morale => sheet.Morale,
+            StatIds.Enmity => sheet.Enmity,
+            StatIds.EnmityReduction => sheet.EnmityReduction,
+            StatIds.CarefulDesynthesis => sheet.CarefulDesynthesis,
+            StatIds.EXPBonus => sheet.EXPBonus,
+            StatIds.Regen => sheet.Regen,
+            StatIds.Refresh => sheet.Refresh,
+            StatIds.MovementSpeed => sheet.MovementSpeed,
+            StatIds.Spikes => sheet.Spikes,
+            StatIds.SlowResistance => sheet.SlowResistance,
+            StatIds.PetrificationResistance => sheet.PetrificationResistance,
+            StatIds.ParalysisResistance => sheet.ParalysisResistance,
+            StatIds.SilenceResistance => sheet.SilenceResistance,
+            StatIds.BlindResistance => sheet.BlindResistance,
+            StatIds.PoisonResistance => sheet.PoisonResistance,
+            StatIds.StunResistance => sheet.StunResistance,
+            StatIds.SleepResistance => sheet.SleepResistance,
+            StatIds.BindResistance => sheet.BindResistance,
+            StatIds.HeavyResistance => sheet.HeavyResistance,
+            StatIds.DoomResistance => sheet.DoomResistance,
+            StatIds.ReducedDurabilityLoss => sheet.ReducedDurabilityLoss,
+            StatIds.IncreasedSpiritbondGain => sheet.IncreasedSpiritbondGain,
+            StatIds.Craftsmanship => sheet.Craftsmanship,
+            StatIds.Control => sheet.Control,
+            StatIds.Gathering => sheet.Gathering,
+            StatIds.Perception => sheet.Perception,
+            StatIds.Unknown73 => sheet.Unknown0,
+            _ => throw new ArgumentOutOfRangeException(nameof(id), id, null),
+        };
+    }
+
     private uint GetMaxStat(BaseParam param, Item item, uint ilvlBase)
     {
-        var equipSlotPercent = this.GetEquipSlotPercent(param, item.EquipSlotCategory.Row);
+        var equipSlotPercent = this.GetEquipSlotPercent(param, item.EquipSlotCategory.RowId);
         var num = item.BaseParamModifier <= 12 ? param.MeldParam[item.BaseParamModifier] : 0;
         return (uint)Math.Round(ilvlBase * equipSlotPercent * num / 100000.0, MidpointRounding.AwayFromZero);
     }
@@ -304,46 +385,46 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         switch (category)
         {
             case 1:
-                equipSlotPercent = param.oneHWpnPct;
+                equipSlotPercent = param.OneHandWeaponPercent;
                 break;
             case 2:
-                equipSlotPercent = param.OHPct;
+                equipSlotPercent = param.OffHandPercent;
                 break;
             case 3:
-                equipSlotPercent = param.HeadPct;
+                equipSlotPercent = param.HeadPercent;
                 break;
             case 4:
-                equipSlotPercent = param.ChestPct;
+                equipSlotPercent = param.ChestPercent;
                 break;
             case 5:
-                equipSlotPercent = param.HandsPct;
+                equipSlotPercent = param.HandsPercent;
                 break;
             case 6:
-                equipSlotPercent = param.WaistPct;
+                equipSlotPercent = param.WaistPercent;
                 break;
             case 7:
-                equipSlotPercent = param.LegsPct;
+                equipSlotPercent = param.LegsPercent;
                 break;
             case 8:
-                equipSlotPercent = param.FeetPct;
+                equipSlotPercent = param.FeetPercent;
                 break;
             case 9:
-                equipSlotPercent = param.EarringPct;
+                equipSlotPercent = param.EarringPercent;
                 break;
             case 10:
-                equipSlotPercent = param.NecklacePct;
+                equipSlotPercent = param.NecklacePercent;
                 break;
             case 11:
-                equipSlotPercent = param.BraceletPct;
+                equipSlotPercent = param.BraceletPercent;
                 break;
             case 12:
-                equipSlotPercent = param.RingPct;
+                equipSlotPercent = param.RingPercent;
                 break;
             case 13:
-                equipSlotPercent = param.twoHWpnPct;
+                equipSlotPercent = param.TwoHandWeaponPercent;
                 break;
             case 14:
-                equipSlotPercent = param.oneHWpnPct;
+                equipSlotPercent = param.UnderArmorPercent;
                 break;
             default:
                 equipSlotPercent = 0U;

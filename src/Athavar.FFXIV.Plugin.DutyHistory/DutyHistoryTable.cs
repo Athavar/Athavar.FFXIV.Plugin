@@ -16,7 +16,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Table;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
 {
@@ -78,9 +78,9 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
         {
             globalScale = ImGuiHelpers.GlobalScale;
             itemSpacingX = ImGui.GetStyle().ItemSpacing.X;
-            territoryColumnWidth = (this.dataManager.GetExcelSheet<TerritoryType>()!.Max(tt => ImGui.CalcTextSize(tt.Name).X) + (itemSpacingX * 2)) / globalScale;
-            contentFinderNameColumnWidth = (this.dataManager.GetExcelSheet<ContentFinderCondition>()!.Max(tt => ImGui.CalcTextSize(tt.Name).X) + (itemSpacingX * 2)) / globalScale;
-            rouletteColumnWidth = (this.dataManager.GetExcelSheet<ContentRoulette>()!.Max(tt => ImGui.CalcTextSize(tt.Name).X) + (itemSpacingX * 2)) / globalScale;
+            territoryColumnWidth = (this.dataManager.GetExcelSheet<TerritoryType>().Max(tt => ImGui.CalcTextSize(tt.Name.ToString()).X) + (itemSpacingX * 2)) / globalScale;
+            contentFinderNameColumnWidth = (this.dataManager.GetExcelSheet<ContentFinderCondition>().Max(tt => ImGui.CalcTextSize(tt.Name.ToString()).X) + (itemSpacingX * 2)) / globalScale;
+            rouletteColumnWidth = (this.dataManager.GetExcelSheet<ContentRoulette>().Max(tt => ImGui.CalcTextSize(tt.Name.ToString()).X) + (itemSpacingX * 2)) / globalScale;
             startTimeColumnWidth = (ImGui.CalcTextSize("000-00-00T00:00:00").X + (itemSpacingX * 2)) / globalScale;
             durationTimeColumnWidth = (ImGui.CalcTextSize("0:00:00.000").X + (itemSpacingX * 2)) / globalScale;
             completeColumnWidth = (ImGui.CalcTextSize(CompleteColumnValue.Label).X + (itemSpacingX * 2)) / globalScale;
@@ -180,7 +180,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
             for (var index = 0; index < this.Values.Count; index++)
             {
                 var flag = this.Values[index];
-                names[index] = sheet?.GetRow(GetTooltipId(flag))?.Text.RawString ?? flag.ToString();
+                names[index] = sheet?.GetRowOrDefault(GetTooltipId(flag))?.Text.ExtractText() ?? flag.ToString();
             }
 
             this.flagNames = names;
@@ -285,7 +285,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
             for (var index = 0; index < this.Values.Count; index++)
             {
                 var flag = this.Values[index];
-                names[index] = sheet?.GetRow((uint)index)?.Name.RawString ?? flag.ToString();
+                names[index] = sheet?.GetRowOrDefault((uint)index)?.Name.ExtractText() ?? flag.ToString();
             }
 
             this.flagNames = names;

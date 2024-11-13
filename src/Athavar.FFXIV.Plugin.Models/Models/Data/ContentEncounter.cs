@@ -5,7 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Models.Data;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public sealed class ContentEncounter
 {

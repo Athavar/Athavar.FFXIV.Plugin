@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Duty;
 using Dalamud.Plugin.Services;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public sealed class SavedDutyInfo
 {
@@ -47,14 +47,12 @@ public sealed class SavedDutyInfo
 
     public DutyInfo? GetDutyInfo(IDataManager dataManager)
     {
-        var territoryType = dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.TerritoryTypeId);
-        if (territoryType is null)
+        if (dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.TerritoryTypeId) is not { } territoryType)
         {
             return null;
         }
 
-        var contentRoulette = dataManager.Excel.GetSheet<ContentRoulette>()?.GetRow(this.ContentRouletteId);
-        if (contentRoulette is null)
+        if (dataManager.Excel.GetSheet<ContentRoulette>()?.GetRow(this.ContentRouletteId) is not { } contentRoulette)
         {
             return null;
         }

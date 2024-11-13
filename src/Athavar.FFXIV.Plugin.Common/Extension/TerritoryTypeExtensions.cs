@@ -5,10 +5,10 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Extension;
 
-using Athavar.FFXIV.Plugin.Models.Duty;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
+using TerritoryIntendedUse = Athavar.FFXIV.Plugin.Models.Duty.TerritoryIntendedUse;
 
 public static class TerritoryTypeExtensions
 {
-    public static TerritoryIntendedUse GetTerritoryIntendedUse(this TerritoryType territoryType) => (TerritoryIntendedUse)territoryType.TerritoryIntendedUse;
+    public static TerritoryIntendedUse GetTerritoryIntendedUse(this TerritoryType territoryType) => (TerritoryIntendedUse)territoryType.TerritoryIntendedUse.RowId;
 }

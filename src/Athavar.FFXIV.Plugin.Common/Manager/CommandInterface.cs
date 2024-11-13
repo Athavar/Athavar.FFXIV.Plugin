@@ -16,7 +16,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 /// <summary>
@@ -36,7 +36,7 @@ internal sealed partial class CommandInterface : ICommandInterface
         this.dalamudServices = dalamudServices;
         this.logger = dalamudServices.PluginLogger;
         var mainSheet = dalamudServices.DataManager.GetExcelSheet<MainCommand>(ClientLanguage.English)!;
-        this.logOutId = mainSheet.FirstOrDefault(c => c.Name?.RawString == "Log Out")?.RowId ?? 0u;
+        this.logOutId = mainSheet.FirstOrDefault(c => c.Name.ExtractText() == "Log Out").RowId;
     }
 
     /// <inheritdoc/>

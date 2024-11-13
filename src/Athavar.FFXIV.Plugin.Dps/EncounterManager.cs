@@ -16,7 +16,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin.Services;
-using Action = Lumina.Excel.GeneratedSheets.Action;
+using Action = Lumina.Excel.Sheets.Action;
 
 internal sealed partial class EncounterManager : IDisposable
 {
@@ -55,7 +55,7 @@ internal sealed partial class EncounterManager : IDisposable
         this.objectTable = services.ObjectTable;
         Encounter.ObjectTable = services.ObjectTable;
 
-        this.limitBreaks = services.DataManager.GetExcelSheet<Action>()?.Where(a => a.ActionCategory.Row == 9).Select(a => a.RowId).ToArray() ?? throw new AthavarPluginException();
+        this.limitBreaks = services.DataManager.GetExcelSheet<Action>()?.Where(a => a.ActionCategory.RowId == 9).Select(a => a.RowId).ToArray() ?? throw new AthavarPluginException();
 
         this.damageDealtHealProcs = definitions.GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType.HealOnDamageDealt);
         this.damageReceivedHealProcs = definitions.GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType.HealOnDamageReceived);

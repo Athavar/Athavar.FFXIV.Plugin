@@ -56,7 +56,7 @@ public sealed class StateTracker : IDisposable
             TerritoryType = args.DutyInfo.TerritoryType,
             ContentFinderCondition = args.DutyInfo.TerritoryType.ContentFinderCondition.Value,
             PlayerContentId = this.clientState.LocalContentId,
-            ClassJobId = this.clientState.LocalPlayer?.ClassJob.Id ?? this.classJobId ?? this.clientState.LocalPlayer?.ClassJob.Id ?? 0,
+            ClassJobId = this.clientState.LocalPlayer?.ClassJob.RowId ?? this.classJobId ?? this.clientState.LocalPlayer?.ClassJob.RowId ?? 0,
             Completed = args.Completed,
             StartDate = args.StartTime,
             EndDate = args.EndTime,
@@ -82,9 +82,9 @@ public sealed class StateTracker : IDisposable
 
     private void OnDutyStarted(DutyStartedEventArgs args)
     {
-        this.classJobId = this.clientState.LocalPlayer?.ClassJob.Id;
+        this.classJobId = this.clientState.LocalPlayer?.ClassJob.RowId;
 #if DEBUG
-        this.chatManager.PrintChat($"[DT] Duty start: {args.DutyInfo.TerritoryType.RowId}|{args.DutyInfo.TerritoryType.TerritoryIntendedUse}");
+        this.chatManager.PrintChat($"[DT] Duty start: {args.DutyInfo.TerritoryType.RowId}|{args.DutyInfo.TerritoryType.TerritoryIntendedUse.RowId}");
 #endif
     }
 }

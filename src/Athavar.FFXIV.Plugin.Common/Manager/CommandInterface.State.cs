@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Dalamud.Game.ClientState.Conditions;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed partial class CommandInterface
 {
@@ -17,7 +17,7 @@ internal sealed partial class CommandInterface
     public ushort GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
 
     /// <inheritdoc/>
-    public byte GetCurrentJob() => (byte?)this.dalamudServices.ClientState.LocalPlayer?.ClassJob.Id ?? 0;
+    public byte GetCurrentJob() => (byte?)this.dalamudServices.ClientState.LocalPlayer?.ClassJob.RowId ?? 0;
 
     /// <inheritdoc/>
     public string? GetCurrentTarget() => this.dalamudServices.TargetManager.Target?.Name.ToString();
@@ -52,7 +52,7 @@ internal sealed partial class CommandInterface
         statusName = statusName.ToLowerInvariant();
         var sheet = this.dalamudServices.DataManager.GetExcelSheet<Status>()!;
         var statusIDs = sheet
-           .Where(row => row.Name.RawString.ToLowerInvariant() == statusName)
+           .Where(row => row.Name.ExtractText().ToLowerInvariant() == statusName)
            .Select(row => row.RowId)
            .ToArray()!;
 

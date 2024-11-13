@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 /// <summary>
 ///     Currently unused.
@@ -26,8 +26,8 @@ public class GroupStateManager : IDisposable
     public GroupStateManager(IFrameworkManager frameworkManager, IDalamudServices dalamudServices)
     {
         this.frameworkManager = frameworkManager;
-        var addonSheet = dalamudServices.DataManager.GetExcelSheet<Addon>()!;
-        allianceTexts = AllianceTextSheetRows.Select(rowId => addonSheet.GetRow(rowId)!.Text.RawString).ToArray();
+        var addonSheet = dalamudServices.DataManager.GetExcelSheet<Addon>();
+        allianceTexts = AllianceTextSheetRows.Select(rowId => addonSheet.GetRow(rowId).Text.ExtractText()).ToArray();
 
         frameworkManager.Subscribe(this.OnFrameworkUpdate);
     }

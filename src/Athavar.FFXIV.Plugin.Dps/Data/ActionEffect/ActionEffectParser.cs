@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal static class ActionEffectParser
 {
@@ -123,8 +123,12 @@ internal static class ActionEffectParser
                 res.Append(StatusString(eff.Value));
                 break;
             case ActionEffectType.Knockback:
-                var kbData = dalamudServices.DataManager.GetExcelSheet<Knockback>()?.GetRow(eff.Value);
-                res.Append($"row={eff.Value}, dist={kbData?.Distance}+{eff.Param0}, dir={(KnockbackDirection?)kbData?.Direction}{(kbData?.Direction == (byte)KnockbackDirection.Arg ? $" ({kbData.DirectionArg}deg)" : string.Empty)}, speed={kbData?.Speed}");
+                if (dalamudServices.DataManager.GetExcelSheet<Knockback>().GetRowOrDefault(eff.Value) is not { } kbData)
+                {
+                    break;
+                }
+
+                res.Append($"row={eff.Value}, dist={kbData.Distance}+{eff.Param0}, dir={(KnockbackDirection?)kbData.Direction}{(kbData.Direction == (byte)KnockbackDirection.Arg ? $" ({kbData.DirectionArg}deg)" : string.Empty)}, speed={kbData.Speed}");
                 break;
             case ActionEffectType.Attract1:
             case ActionEffectType.Attract2:

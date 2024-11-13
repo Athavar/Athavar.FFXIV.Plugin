@@ -5,11 +5,11 @@
 
 namespace Athavar.FFXIV.Plugin.Models.Duty;
 
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public sealed class DutyInfo
 {
-    public TerritoryIntendedUse IntendedUse => (TerritoryIntendedUse)this.TerritoryType.TerritoryIntendedUse;
+    public TerritoryIntendedUse IntendedUse => (TerritoryIntendedUse)this.TerritoryType.TerritoryIntendedUse.RowId;
 
     public required TerritoryType TerritoryType { get; init; }
 

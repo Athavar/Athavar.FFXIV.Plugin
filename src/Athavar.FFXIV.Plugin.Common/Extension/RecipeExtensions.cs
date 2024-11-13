@@ -5,14 +5,14 @@
 namespace Athavar.FFXIV.Plugin.Common.Extension;
 
 using Athavar.FFXIV.Plugin.Models;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public static class RecipeExtensions
 {
     public static Job GetJobType(this Recipe recipe)
     {
         Job jobType;
-        switch (recipe.CraftType.Row)
+        switch (recipe.CraftType.RowId)
         {
             case 0:
                 jobType = Job.Carpenter;

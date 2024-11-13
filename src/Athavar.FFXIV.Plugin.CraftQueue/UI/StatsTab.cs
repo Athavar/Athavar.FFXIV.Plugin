@@ -10,7 +10,7 @@ using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Plugin.Services;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed class StatsTab : Tab
 {
@@ -63,7 +63,7 @@ internal sealed class StatsTab : Tab
                 ImGui.TableSetColumnIndex(0);
                 columns[0] = gearset.Id + 1;
                 columns[1] = gearset.Name;
-                columns[2] = sheet?.GetRow((uint)gearset.JobClass)?.Abbreviation?.RawString ?? "???";
+                columns[2] = sheet?.GetRowOrDefault((uint)gearset.JobClass)?.Abbreviation.ExtractText() ?? "???";
                 columns[3] = gearset.JobLevel;
                 columns[4] = gearset.Craftsmanship;
                 columns[5] = gearset.Control;

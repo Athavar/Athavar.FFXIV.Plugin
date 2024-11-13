@@ -8,8 +8,9 @@ namespace Athavar.FFXIV.Plugin.Common.Utils;
 using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-using Lumina.Text;
+using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
+using SeString = Dalamud.Game.Text.SeStringHandling.SeString;
 
 public record MultiString(string English, string German, string French, string Japanese) : IEquatable<string>
 {
@@ -45,10 +46,10 @@ public record MultiString(string English, string German, string French, string J
 
     public override int GetHashCode() => HashCode.Combine(this.English, this.German, this.French, this.Japanese);
 
-    private static MultiString From<T>(IDataManager gameData, uint id, Func<T?, SeString?> action)
-        where T : ExcelRow
+    private static MultiString From<T>(IDataManager gameData, uint id, Func<T?, ReadOnlySeString?> action)
+        where T : struct, IExcelRow<T>
     {
-        string ParseSeStringLumina(SeString? luminaString) => luminaString == null ? string.Empty : Dalamud.Game.Text.SeStringHandling.SeString.Parse(luminaString.RawData).TextValue;
+        string ParseSeStringLumina(ReadOnlySeString? luminaString) => luminaString == null ? string.Empty : SeString.Parse(luminaString.GetValueOrDefault()).TextValue;
 
         var en = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.English)!.GetRow(id)));
         var de = ParseSeStringLumina(action(gameData.GetExcelSheet<T>(ClientLanguage.German)!.GetRow(id)));

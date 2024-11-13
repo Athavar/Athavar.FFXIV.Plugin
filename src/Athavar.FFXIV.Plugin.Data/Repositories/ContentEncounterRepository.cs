@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Models.Data;
 using Dalamud.Plugin.Services;
 using Dapper;
 using Dapper.Contrib.Extensions;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 public sealed class ContentEncounterRepository : BaseRepository
 {
@@ -113,7 +113,7 @@ public sealed class ContentEncounterRepository : BaseRepository
     {
         var territoryTypeSheet = this.dataManager.GetExcelSheet<TerritoryType>()!;
         encounter.TerritoryType = territoryTypeSheet.GetRow(encounter.TerritoryTypeId);
-        encounter.ContentFinderCondition = encounter.TerritoryType!.ContentFinderCondition.Value;
+        encounter.ContentFinderCondition = encounter.TerritoryType?.ContentFinderCondition.Value;
         if (encounter.ContentRouletteId > 0)
         {
             var rouletteSheet = this.dataManager.GetExcelSheet<ContentRoulette>()!;

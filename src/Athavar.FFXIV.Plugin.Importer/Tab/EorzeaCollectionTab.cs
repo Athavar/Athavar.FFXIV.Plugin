@@ -23,8 +23,8 @@ using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using HtmlAgilityPack;
 using ImGuiNET;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
-using Item = Lumina.Excel.GeneratedSheets.Item;
+using Lumina.Excel.Sheets;
+using Item = Lumina.Excel.Sheets.Item;
 
 internal sealed class EorzeaCollectionTab : Tab
 {
@@ -256,8 +256,8 @@ internal sealed class EorzeaCollectionTab : Tab
 
                         var itemNameNode = itemNode.SelectSingleNode(".//span[contains(concat(' ', normalize-space(@class), ' '), 'c-gear-slot-item-name')]");
                         var itemName = HttpUtility.HtmlDecode(itemNameNode.InnerText);
-                        var item = this.englishItemSheet.FirstOrDefault(i => i.Name.RawString.Equals(itemName));
-                        if (item is null)
+                        Item? i = this.englishItemSheet.FirstOrDefault(i => i.Name.ExtractText().Equals(itemName));
+                        if (i is not { } item)
                         {
                             this.dalamudServices.PluginLogger.Warning("Item {Item} not found", itemName);
                             continue;
@@ -274,23 +274,23 @@ internal sealed class EorzeaCollectionTab : Tab
                         if (colorNode is not null)
                         {
                             var colorText = colorNode.InnerText.Trim();
-                            stain = this.englishStainSheet.FirstOrDefault(i => i.Name.RawString.Equals(colorText));
+                            stain = this.englishStainSheet.FirstOrDefault(i => i.Name.ExtractText().Equals(colorText));
                             if (stain is not null)
                             {
-                                if (stain.RowId == 0)
+                                if (stain.Value.RowId == 0)
                                 {
                                     stain = null;
                                 }
                                 else if (this.stainSheet is not null)
                                 {
                                     // use item from a sheet with the client localisation.
-                                    stain = this.stainSheet.GetRow(stain.RowId)!;
+                                    stain = this.stainSheet.GetRowOrDefault(stain.Value.RowId);
                                 }
                             }
                         }
 
-                        var rgbaColor = stain is not null ? SeColorToRgba(stain.Color) : 0;
-                        equipmentSlots.Add(new EquipmentSlotItem(slot.Value, item.RowId, item.Name.RawString, item.Icon, stain?.RowId, stain?.Name.RawString ?? string.Empty, rgbaColor));
+                        var rgbaColor = stain is not null ? SeColorToRgba(stain.Value.Color) : 0;
+                        equipmentSlots.Add(new EquipmentSlotItem(slot.Value, item.RowId, item.Name.ExtractText(), item.Icon, stain?.RowId, stain?.Name.ExtractText() ?? string.Empty, rgbaColor));
                     }
                 }
 

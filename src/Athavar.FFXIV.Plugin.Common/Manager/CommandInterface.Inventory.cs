@@ -52,11 +52,7 @@ internal sealed partial class CommandInterface
             return 0;
         }
 
-        var num = 0;
-        foreach (var playerInventory in this.playerInventories)
-        {
-            num += InventoryManager.Instance()->GetItemCountInContainer(itemId, playerInventory, hq);
-        }
+        var num = InventoryManager.Instance()->GetInventoryItemCount(itemId, hq, false, false);
 
         return (uint)num;
     }

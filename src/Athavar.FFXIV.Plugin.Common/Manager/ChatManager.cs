@@ -183,6 +183,32 @@ internal sealed class ChatManager : IDisposable, IChatManager
         Marshal.FreeHGlobal(chatPayloadPtr);
     }
 
+    /// <summary>
+    ///     <para>
+    ///         Send a given message to the chat box. <b>This can send chat to the server.</b>
+    ///     </para>
+    ///     <para>
+    ///         <b>This method is unsafe.</b> This method does no checking on your input and
+    ///         may send content to the server that the normal client could not. You must
+    ///         verify what you're sending and handle content and length to properly use
+    ///         this.
+    ///     </para>
+    /// </summary>
+    /// <param name="payloadMessage">Message to send.</param>
+    /// <exception cref="InvalidOperationException">If the signature for this function could not be found.</exception>
+    private unsafe void SendMessageUnsafe2(string payloadMessage)
+    {
+        var utf8String = Utf8String.FromString(payloadMessage);
+        try
+        {
+            UIModule.ProcessChatBoxEntry(utf8String);
+        }
+        finally
+        {
+            utf8String->Dtor(true);
+        }
+    }
+
 #if DEBUG
     private void OnChatMessageDebug(XivChatType type, uint senderId, ref SeString sender, ref SeString message, ref bool isHandled)
     {

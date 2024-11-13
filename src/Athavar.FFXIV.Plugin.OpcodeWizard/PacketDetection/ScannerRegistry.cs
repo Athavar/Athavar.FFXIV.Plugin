@@ -305,9 +305,9 @@ internal sealed class ScannerRegistry
                     return false;
                 }
 
-                var x = (float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 6) / 65536 * 2000 - 1000;
-                var y = (float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 8) / 65536 * 2000 - 1000;
-                var z = (float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 12) / 65536 * 2000 - 1000;
+                var x = (((float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 6) / 65536) * 2000) - 1000;
+                var y = (((float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 8) / 65536) * 2000) - 1000;
+                var z = (((float)BitConverter.ToUInt16(packet.Data, Offsets.IpcData + 12) / 65536) * 2000) - 1000;
 
                 return inRange(new Vector3(x, y, z) - actorMoveCenter, new Vector3(15, 2, 15));
             });
@@ -324,7 +324,7 @@ internal sealed class ScannerRegistry
                     return false;
                 }
 
-                var world = this.dalamudServices.ClientState.LocalPlayer?.CurrentWorld.Id;
+                var world = this.dalamudServices.ClientState.LocalPlayer?.CurrentWorld.RowId;
                 if (world is null)
                 {
                     return false;
@@ -429,7 +429,7 @@ internal sealed class ScannerRegistry
 
                 for (var i = 0; i < 24; i++)
                 {
-                    if (BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 0x04 + 4 * i) != 0)
+                    if (BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 0x04 + (4 * i)) != 0)
                     {
                         return false;
                     }
@@ -531,7 +531,7 @@ internal sealed class ScannerRegistry
 
                 for (var i = 0; i < 22; ++i)
                 {
-                    var itemId = BitConverter.ToUInt32(packet.Data, Offsets.IpcData + 8 * i);
+                    var itemId = BitConverter.ToUInt32(packet.Data, Offsets.IpcData + (8 * i));
                     if (itemId == 0)
                     {
                         break;

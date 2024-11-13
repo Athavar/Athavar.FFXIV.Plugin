@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Dps;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Dalamud.Utility;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 internal sealed partial class EncounterManager
 {
@@ -86,7 +86,7 @@ internal sealed partial class EncounterManager
         }
 
         var territory = this.services.ClientState.TerritoryType;
-        var territoryName = this.services.DataManager.GetExcelSheet<TerritoryType>()?.GetRow(territory)?.PlaceName.Value?.Name.ToDalamudString();
+        var territoryName = this.services.DataManager.GetExcelSheet<TerritoryType>()?.GetRowOrDefault(territory)?.PlaceName.ValueNullable?.Name.ToDalamudString();
         var start = time ?? DateTime.Now;
         this.CurrentEncounter = new Encounter(territoryName?.ToString() ?? string.Empty, territory, start);
     }
