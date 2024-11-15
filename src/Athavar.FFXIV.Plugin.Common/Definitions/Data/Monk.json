@@ -189,11 +189,11 @@
       "64a9": "phantom rush",
       "damage": [
         {
-          "potency": 1400,
+          "potency": 1500,
           "targetindex": 0
         },
         {
-          "potency": 700
+          "potency": 750
         }
       ]
     },
@@ -245,11 +245,11 @@
       "9055": "wind's reply",
       "damage": [
         {
-          "potency": 800,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 400
+          "potency": 450
         }
       ]
     },
@@ -257,11 +257,11 @@
       "9056": "fire's reply",
       "damage": [
         {
-          "potency": 1100,
+          "potency": 1200,
           "targetindex": 0
         },
         {
-          "potency": 550
+          "potency": 600
         }
       ]
     }

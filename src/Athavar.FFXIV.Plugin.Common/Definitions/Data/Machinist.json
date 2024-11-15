@@ -108,8 +108,8 @@
       "1CF5": "heated clean shot",
       "damage": [
         {
-          "potency": 140,
-          "combo": 400
+          "potency": 160,
+          "combo": 420
         }
       ]
     },
@@ -225,7 +225,7 @@
       "9072": "blazing shot",
       "damage": [
         {
-          "potency": 220
+          "potency": 240
         }
       ]
     },
@@ -233,11 +233,11 @@
       "9073": "double check",
       "damage": [
         {
-          "potency": 160,
+          "potency": 170,
           "targetindex": 0
         },
         {
-          "potency": 80
+          "potency": 85
         }
       ]
     },
@@ -245,11 +245,11 @@
       "9074": "checkmate",
       "damage": [
         {
-          "potency": 160,
+          "potency": 170,
           "targetindex": 0
         },
         {
-          "potency": 80
+          "potency": 85
         }
       ]
     },
@@ -305,7 +305,7 @@
       "4B5": "flamethrower",
       "timeproc": {
         "type": "grounddamage",
-        "potency": 80,
+        "potency": 100,
         "damagetype": "physical",
         "maxticks": 4
       }

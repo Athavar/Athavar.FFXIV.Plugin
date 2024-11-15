@@ -82,7 +82,7 @@
       ],
       "heal": [
         {
-          "potency": 200
+          "potency": 500
         }
       ]
     },
@@ -92,13 +92,18 @@
         {
           "potency": 540
         }
+      ],
+      "heal": [
+        {
+          "potency": 500
+        }
       ]
     },
     {
       "1CE0": "bloodspiller",
       "damage": [
         {
-          "potency": 580
+          "potency": 600
         }
       ]
     },
@@ -154,7 +159,7 @@
       "9040": "scarlet delirium",
       "damage": [
         {
-          "potency": 600
+          "potency": 620
         }
       ]
     },
@@ -162,7 +167,7 @@
       "9041": "comeuppance",
       "damage": [
         {
-          "potency": 700
+          "potency": 720
         }
       ]
     },
@@ -170,7 +175,7 @@
       "9042": "torcleaver",
       "damage": [
         {
-          "potency": 800
+          "potency": 820
         }
       ]
     },
@@ -186,7 +191,7 @@
       "9044": "disesteem",
       "damage": [
         {
-          "potency": 400
+          "potency": 500
         },
         {
           "potency": 1000,
@@ -230,6 +235,11 @@
           "type": "DamageReceivedMultiplier",
           "amount": -10,
           "limittodamagetype": "Magic"
+        },
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -5,
+          "limittodamagetype": "Physical"
         }
       ]
     },
@@ -240,6 +250,11 @@
           "type": "DamageReceivedMultiplier",
           "amount": -20,
           "limittodamagetype": "Magic"
+        },
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -10,
+          "limittodamagetype": "Physical"
         }
       ]
     },

@@ -22,7 +22,7 @@
       "5A": "piercing talon",
       "damage": [
         {
-          "potency": 150
+          "potency": 0
         }
       ]
     },
@@ -121,7 +121,7 @@
       "1CE7": "mirage dive",
       "damage": [
         {
-          "potency": 200
+          "potency": 380
         }
       ]
     },
@@ -129,10 +129,10 @@
       "1CE8": "nastrond",
       "damage": [
         {
-          "potency": 180
+          "potency": 360
         },
         {
-          "potency": 360,
+          "potency": 720,
           "targetindex": 0
         }
       ]
@@ -166,11 +166,11 @@
       "4060": "stardiver",
       "damage": [
         {
-          "potency": 720,
+          "potency": 820,
           "targetindex": 0
         },
         {
-          "potency": 360
+          "potency": 410
         }
       ]
     },
@@ -253,11 +253,11 @@
       "905c": "starcross",
       "damage": [
         {
-          "potency": 900,
+          "potency": 1000,
           "targetindex": 0
         },
         {
-          "potency": 400
+          "potency": 500
         }
       ]
     }

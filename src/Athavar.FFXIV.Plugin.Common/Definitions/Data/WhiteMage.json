@@ -170,11 +170,11 @@
       "4097": "afflatus misery",
       "damage": [
         {
-          "potency": 1320,
+          "potency": 1360,
           "targetindex": 0
         },
         {
-          "potency": 660
+          "potency": 680
         }
       ]
     },
@@ -182,7 +182,7 @@
       "6503": "glare iii",
       "damage": [
         {
-          "potency": 330
+          "potency": 340
         }
       ]
     },

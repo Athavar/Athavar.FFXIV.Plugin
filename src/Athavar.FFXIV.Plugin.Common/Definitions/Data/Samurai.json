@@ -238,7 +238,7 @@
       "9063": "gyofu",
       "damage": [
         {
-          "potency": 230
+          "potency": 240
         }
       ]
     },
@@ -246,11 +246,11 @@
       "9064": "zanshin",
       "damage": [
         {
-          "potency": 820,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 328
+          "potency": 360
         }
       ]
     },
@@ -328,13 +328,12 @@
     },
     {
       "f0d": "tengetsu",
-      "potency": [
-        {
-          "type": "damagedonemultiplier",
-          "amount": 0,
-          "amountbyte": 2
-        }
-      ]
+      "timeproc": {
+        "type": "hot",
+        "potency": 200,
+        "damagetype": "physical",
+        "maxticks": 3
+      }
     }
   ]
 }

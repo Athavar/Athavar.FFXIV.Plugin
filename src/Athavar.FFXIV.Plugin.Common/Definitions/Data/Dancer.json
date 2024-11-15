@@ -47,7 +47,7 @@
       "3E87": "fan dance",
       "damage": [
         {
-          "potency": 150
+          "potency": 180
         }
       ]
     },
@@ -95,10 +95,10 @@
       "3E89": "fan dance iii",
       "damage": [
         {
-          "potency": 100
+          "potency": 110
         },
         {
-          "potency": 200,
+          "potency": 220,
           "targetindex": 0
         }
       ]

@@ -22,7 +22,7 @@
       "8C7": "throwing dagger",
       "damage": [
         {
-          "potency": 120
+          "potency": 200
         }
       ]
     },
@@ -87,7 +87,7 @@
       "DEE": "dream within a dream",
       "damage": [
         {
-          "potency": 150
+          "potency": 180
         }
       ]
     },
@@ -211,7 +211,11 @@
       "905d": "dokumori",
       "damage": [
         {
-          "potency": 300
+          "potency": 300,
+          "targetindex": 0
+        },
+        {
+          "potency": 225
         }
       ]
     },

@@ -5,7 +5,7 @@
       "872e": "steel fangs",
       "damage": [
         {
-          "potency": 200
+          "potency": 0
         }
       ]
     },
@@ -13,7 +13,7 @@
       "8730": "hunter's sting",
       "damage": [
         {
-          "potency": 260
+          "potency": 300
         }
       ]
     },
@@ -21,7 +21,7 @@
       "872f": "dread fangs",
       "damage": [
         {
-          "potency": 140
+          "potency": 0
         }
       ]
     },
@@ -37,7 +37,7 @@
       "8731": "swiftskin's sting",
       "damage": [
         {
-          "potency": 260
+          "potency": 300
         }
       ]
     },
@@ -45,7 +45,7 @@
       "8736": "steel maw",
       "damage": [
         {
-          "potency": 100
+          "potency": 0
         }
       ]
     },
@@ -82,10 +82,10 @@
       ]
     },
     {
-      "8737": "dread maw",
+      "8737": "reaving maw",
       "damage": [
         {
-          "potency": 80
+          "potency": 0
         }
       ]
     },
@@ -93,7 +93,7 @@
       "8738": "hunter's bite",
       "damage": [
         {
-          "potency": 120
+          "potency": 130
         }
       ]
     },
@@ -101,7 +101,7 @@
       "8739": "swiftskin's bite",
       "damage": [
         {
-          "potency": 120
+          "potency": 130
         }
       ]
     },
@@ -125,7 +125,7 @@
       "874a": "death rattle",
       "damage": [
         {
-          "potency": 250
+          "potency": 280
         }
       ]
     },
@@ -138,10 +138,10 @@
       ]
     },
     {
-      "873c": "dreadwinder",
+      "873c": "vicewinder",
       "damage": [
         {
-          "potency": 450
+          "potency": 500
         }
       ]
     },
@@ -162,10 +162,10 @@
       ]
     },
     {
-      "873f": "pit of dread",
+      "873f": "vicepit",
       "damage": [
         {
-          "potency": 200
+          "potency": 220
         }
       ]
     },
@@ -173,7 +173,7 @@
       "8740": "hunter's den",
       "damage": [
         {
-          "potency": 250
+          "potency": 280
         }
       ]
     },
@@ -181,7 +181,7 @@
       "8741": "swiftskin's den",
       "damage": [
         {
-          "potency": 250
+          "potency": 280
         }
       ]
     },
@@ -221,11 +221,11 @@
       "8749": "uncoiled fury",
       "damage": [
         {
-          "potency": 600,
+          "potency": 680,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 340
         }
       ]
     },
@@ -233,11 +233,11 @@
       "8742": "reawaken",
       "damage": [
         {
-          "potency": 700,
+          "potency": 750,
           "targetindex": 0
         },
         {
-          "potency": 280
+          "potency": 300
         }
       ]
     },
@@ -293,11 +293,11 @@
       "8747": "ouroboros",
       "damage": [
         {
-          "potency": 1050,
+          "potency": 1150,
           "targetindex": 0
         },
         {
-          "potency": 420
+          "potency": 460
         }
       ]
     },
@@ -305,11 +305,11 @@
       "8750": "first legacy",
       "damage": [
         {
-          "potency": 250,
+          "potency": 280,
           "targetindex": 0
         },
         {
-          "potency": 100
+          "potency": 112
         }
       ]
     },
@@ -317,11 +317,11 @@
       "8751": "second legacy",
       "damage": [
         {
-          "potency": 250,
+          "potency": 280,
           "targetindex": 0
         },
         {
-          "potency": 100
+          "potency": 112
         }
       ]
     },
@@ -329,11 +329,11 @@
       "8752": "third legacy",
       "damage": [
         {
-          "potency": 250,
+          "potency": 280,
           "targetindex": 0
         },
         {
-          "potency": 100
+          "potency": 112
         }
       ]
     },
@@ -341,11 +341,11 @@
       "8753": "fourth legacy",
       "damage": [
         {
-          "potency": 250,
+          "potency": 280,
           "targetindex": 0
         },
         {
-          "potency": 100
+          "potency": 112
         }
       ]
     }

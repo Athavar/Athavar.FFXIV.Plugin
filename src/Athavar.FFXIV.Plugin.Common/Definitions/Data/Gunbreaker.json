@@ -157,7 +157,7 @@
       "649F": "hypervelocity",
       "damage": [
         {
-          "potency": 220
+          "potency": 200
         }
       ]
     },
@@ -265,7 +265,7 @@
       "72B": "aurora",
       "timeproc": {
         "type": "hot",
-        "potency": "200",
+        "potency": "300",
         "maxticks": 6
       }
     },
@@ -292,6 +292,11 @@
           "type": "DamageReceivedMultiplier",
           "amount": -10,
           "limittodamagetype": "Magic"
+        },
+        {
+          "type": "DamageReceivedMultiplier",
+          "amount": -5,
+          "limittodamagetype": "Physical"
         }
       ]
     },

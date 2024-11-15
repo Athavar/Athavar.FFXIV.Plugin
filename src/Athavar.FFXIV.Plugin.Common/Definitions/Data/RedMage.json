@@ -167,11 +167,11 @@
       "1D65": "verflare",
       "damage": [
         {
-          "potency": 620,
+          "potency": 650,
           "targetindex": 0
         },
         {
-          "potency": 248
+          "potency": 260
         }
       ]
     },
@@ -179,11 +179,11 @@
       "1D66": "verholy",
       "damage": [
         {
-          "potency": 620,
+          "potency": 650,
           "targetindex": 0
         },
         {
-          "potency": 248
+          "potency": 260
         }
       ]
     },
@@ -199,11 +199,11 @@
       "4092": "scorch",
       "damage": [
         {
-          "potency": 700,
+          "potency": 750,
           "targetindex": 0
         },
         {
-          "potency": 280
+          "potency": 300
         }
       ]
     },
@@ -235,11 +235,11 @@
       "6502": "resolution",
       "damage": [
         {
-          "potency": 800,
+          "potency": 850,
           "targetindex": 0
         },
         {
-          "potency": 320
+          "potency": 340
         }
       ]
     },

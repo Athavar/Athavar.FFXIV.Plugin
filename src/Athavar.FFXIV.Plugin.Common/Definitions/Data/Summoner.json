@@ -561,11 +561,11 @@
       "9084": "sunflare",
       "damage": [
         {
-          "potency": 700,
+          "potency": 800,
           "targetindex": 0
         },
         {
-          "potency": 280
+          "potency": 320
         }
       ]
     },
