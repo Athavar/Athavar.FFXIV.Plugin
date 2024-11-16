@@ -10,7 +10,6 @@ using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.UI;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 ///     Plugin Service.
@@ -96,6 +95,7 @@ internal sealed class PluginService
             return;
         }
 
+        /* Disable, currently broken
         switch (args)
         {
             case "t":
@@ -103,6 +103,6 @@ internal sealed class PluginService
                 this.translateWindow ??= this.provider.GetRequiredService<AutoTranslateWindow>();
                 this.translateWindow.Toggle();
                 break;
-        }
+        }*/
     }
 }

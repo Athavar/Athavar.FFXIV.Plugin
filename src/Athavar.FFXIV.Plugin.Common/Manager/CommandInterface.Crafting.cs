@@ -4,6 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using System.Runtime.InteropServices;
 using Dalamud.Game.ClientState.Conditions;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
@@ -158,7 +159,7 @@ internal sealed partial class CommandInterface
         {
             var current = this.GetNodeTextAsInt(addon->CurrentQuality, "Could not parse current quality number in the Synthesis addon");
             var max = this.GetNodeTextAsInt(addon->MaxQuality, "Could not parse max quality number in the Synthesis addon");
-            return HqPercentTable[(int)Math.Clamp((float)current / max * 100, 0, 100)];
+            return HqPercentTable[(int)Math.Clamp(((float)current / max) * 100, 0, 100)];
         }
 
         var percentHq = this.GetNodeTextAsInt(addon->HQPercentage, "Could not parse percent hq number in the Synthesis addon");
@@ -177,14 +178,22 @@ internal sealed partial class CommandInterface
             return null;
         }
 
-        var index = ((ushort*)((byte*)list + 0x428))[0];
-        var selection = list->Recipes + index;
+        // TODO: reverse change when CS is fixed
+        // 0x428 -> SelectedIndex
+        var index = BitConverter.ToUInt16(BitConverter.GetBytes(Marshal.ReadInt16((nint)list, 0x428)));
 
-        if (selection == null)
-        {
-            return null;
-        }
+        // 0x400 size of RecipeNote.RecipeEntry
+        // 0x3B2 -> RecipeId
+        var recipeId = BitConverter.ToUInt16(BitConverter.GetBytes(Marshal.ReadInt16((nint)list->Recipes, (0x400 * index) + 0x3B2)));
+        return recipeId;
+        /*
+                var selection = list->SelectedRecipe;
 
-        return selection->RecipeId;
+                if (selection == null)
+                {
+                    return null;
+                }
+
+                return index;*/
     }
 }
