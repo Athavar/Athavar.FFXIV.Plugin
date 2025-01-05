@@ -15,8 +15,6 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
-using Dalamud.Utility.Signatures;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.String;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
@@ -29,22 +27,15 @@ internal sealed class ChatManager : IDisposable, IChatManager
     private readonly IDalamudServices dalamud;
     private readonly IFrameworkManager frameworkManager;
 
-    [Signature("48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9")]
-    private readonly ProcessChatBoxDelegate processChatBox;
-
     /// <summary>
     ///     Initializes a new instance of the <see cref="ChatManager"/> class.
     /// </summary>
     /// <param name="dalamud"><see cref="IDalamudServices"/> added by DI.</param>
     /// <param name="frameworkManager"><see cref="IFrameworkManager"/> added by DI.</param>
-    /// <param name="addressResolver"><see cref="AddressResolver"/> added by DI.</param>
-    public ChatManager(IDalamudServices dalamud, IFrameworkManager frameworkManager, AddressResolver addressResolver)
+    public ChatManager(IDalamudServices dalamud, IFrameworkManager frameworkManager)
     {
         this.dalamud = dalamud;
         this.frameworkManager = frameworkManager;
-
-        // init processChatBox
-        this.processChatBox = Marshal.GetDelegateForFunctionPointer<ProcessChatBoxDelegate>(addressResolver.ProcessChatBox);
 
         this.frameworkManager.Subscribe(this.FrameworkUpdate);
 #if DEBUG
@@ -52,10 +43,6 @@ internal sealed class ChatManager : IDisposable, IChatManager
         // this.dalamud.ChatGui.ChatMessage += this.OnChatMessageDebug;
 #endif
     }
-
-    private unsafe delegate void ProcessChatBoxDelegate(UIModule* uiModule, nint message, nint unused, byte a4);
-
-    private unsafe delegate void ProcessChat(Utf8String* message, int flag, nint f);
 
     /// <inheritdoc/>
     public void Dispose()
@@ -152,35 +139,7 @@ internal sealed class ChatManager : IDisposable, IChatManager
             return;
         }
 
-        this.SendMessageUnsafe(bytes);
-    }
-
-    /// <summary>
-    ///     <para>
-    ///         Send a given message to the chat box. <b>This can send chat to the server.</b>
-    ///     </para>
-    ///     <para>
-    ///         <b>This method is unsafe.</b> This method does no checking on your input and
-    ///         may send content to the server that the normal client could not. You must
-    ///         verify what you're sending and handle content and length to properly use
-    ///         this.
-    ///     </para>
-    /// </summary>
-    /// <param name="message">Message to send.</param>
-    /// <exception cref="InvalidOperationException">If the signature for this function could not be found.</exception>
-    private unsafe void SendMessageUnsafe(byte[] message)
-    {
-        if (this.processChatBox == null)
-        {
-            throw new InvalidOperationException("Could not find signature for chat sending");
-        }
-
-        var uiModule = Framework.Instance()->UIModule;
-        using var payload = new ChatPayload(message);
-        var chatPayloadPtr = Marshal.AllocHGlobal(400);
-        Marshal.StructureToPtr(payload, chatPayloadPtr, false);
-        this.processChatBox(uiModule, chatPayloadPtr, nint.Zero, 0);
-        Marshal.FreeHGlobal(chatPayloadPtr);
+        this.SendMessageUnsafe(payloadMessage);
     }
 
     /// <summary>
@@ -196,12 +155,12 @@ internal sealed class ChatManager : IDisposable, IChatManager
     /// </summary>
     /// <param name="payloadMessage">Message to send.</param>
     /// <exception cref="InvalidOperationException">If the signature for this function could not be found.</exception>
-    private unsafe void SendMessageUnsafe2(string payloadMessage)
+    private unsafe void SendMessageUnsafe(string payloadMessage)
     {
         var utf8String = Utf8String.FromString(payloadMessage);
         try
         {
-            UIModule.ProcessChatBoxEntry(utf8String);
+            UIModule.Instance()->ProcessChatBoxEntry(utf8String);
         }
         finally
         {
