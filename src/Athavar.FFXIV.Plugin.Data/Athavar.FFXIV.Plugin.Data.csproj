@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(SolutionDir)\src\dalamud.targets"/>
     <ItemGroup>
-        <PackageReference Include="Dapper" Version="2.1.35"/>
+        <PackageReference Include="Dapper" Version="2.1.66"/>
         <PackageReference Include="Dapper.Contrib" Version="2.0.78"/>
-        <PackageReference Include="FluentMigrator" Version="6.2.0"/>
-        <PackageReference Include="FluentMigrator.Runner.Core" Version="6.2.0"/>
-        <PackageReference Include="FluentMigrator.Runner.SQLite" Version="6.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1"/>
+        <PackageReference Include="FluentMigrator" Version="7.0.0"/>
+        <PackageReference Include="FluentMigrator.Runner.Core" Version="7.0.0"/>
+        <PackageReference Include="FluentMigrator.Runner.SQLite" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3"/>
         <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119"/>
     </ItemGroup>
     <ItemGroup>
