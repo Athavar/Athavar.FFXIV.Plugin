@@ -65,7 +65,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
     private void DrawCreateMenu(Vector2 size, float padX)
     {
         const int buttonSize = 40;
-        var textInputWidth = size.X - buttonSize * 2 - padX * 4;
+        var textInputWidth = size.X - (buttonSize * 2) - (padX * 4);
 
         if (ImGui.BeginChild("##Buttons", new Vector2(size.X, MenuBarHeight), true))
         {
@@ -104,7 +104,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
         if (ImGui.BeginTable("##Profile_Table", 3, flags, size with { Y = size.Y - MenuBarHeight }))
         {
             const int buttonSize = 30;
-            var actionsWidth = buttonSize * 3 + padX * 2;
+            var actionsWidth = (buttonSize * 3) + (padX * 2);
 
             ImGui.TableSetupColumn("   #", ImGuiTableColumnFlags.WidthFixed, 18, 0);
             ImGui.TableSetupColumn("Profile Name", ImGuiTableColumnFlags.WidthStretch, 0, 1);
@@ -132,7 +132,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
                     var columnWidth = ImGui.GetColumnWidth();
                     var cursorPos = ImGui.GetCursorPos();
                     var textSize = ImGui.CalcTextSize(num);
-                    ImGui.SetCursorPos(new Vector2(cursorPos.X + columnWidth - textSize.X, cursorPos.Y + 3f));
+                    ImGui.SetCursorPos(new Vector2((cursorPos.X + columnWidth) - textSize.X, cursorPos.Y + 3f));
                     ImGui.Text(num);
                 }
 
@@ -162,6 +162,8 @@ internal sealed class ProfileListConfigPage : IConfigPage
                         this.DeleteMeter(meter);
                     }
                 }
+
+                ImGui.PopID();
             }
 
             ImGui.EndTable();

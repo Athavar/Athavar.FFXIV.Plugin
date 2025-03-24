@@ -91,6 +91,6 @@ internal class AddonTalkFeature : OnSetupFeature
     }
 
     private bool EntryMatchesTargetName(TalkEntryNode node, string targetName)
-        => node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false) ||
-           !node.TargetIsRegex && targetName.Contains(node.TargetText);
+        => (node.TargetIsRegex && (node.TargetRegex.Value?.IsMatch(targetName) ?? false)) ||
+           (!node.TargetIsRegex && targetName.Contains(node.TargetText));
 }

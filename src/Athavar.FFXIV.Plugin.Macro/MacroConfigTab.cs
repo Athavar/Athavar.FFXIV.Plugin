@@ -290,7 +290,7 @@ internal sealed class MacroConfigTab : Tab
         ImGui.PushItemWidth(-1);
 
         var style = ImGui.GetStyle();
-        var runningHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 2;
+        var runningHeight = (ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 3) + (style.FramePadding.Y * 2) + (style.ItemSpacing.Y * 2);
         if (ImGui.BeginListBox("##running-macros", new Vector2(-1, runningHeight)))
         {
             var macroStatus = this.macroManager.MacroStatus;
@@ -309,7 +309,7 @@ internal sealed class MacroConfigTab : Tab
             ImGui.EndListBox();
         }
 
-        var contentHeight = ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 5 + style.FramePadding.Y * 2 + style.ItemSpacing.Y * 4;
+        var contentHeight = (ImGui.CalcTextSize("CalcTextSize").Y * ImGuiHelpers.GlobalScale * 5) + (style.FramePadding.Y * 2) + (style.ItemSpacing.Y * 4);
         var macroContent = this.macroManager.CurrentMacroContent();
         if (ImGui.BeginListBox("##current-macro", new Vector2(-1, contentHeight)))
         {

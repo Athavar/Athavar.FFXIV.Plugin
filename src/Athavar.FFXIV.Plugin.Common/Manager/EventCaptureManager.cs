@@ -43,7 +43,7 @@ public sealed class EventCaptureManager : IDisposable
         DirectorUpdate = 0x6D,
         SetTargetSign = 0x1F6,
         LimitBreak = 0x1F9,
-        HoT = 0x603,
+        HoT = 0x604,
         DoT = 0x605,
     }
 

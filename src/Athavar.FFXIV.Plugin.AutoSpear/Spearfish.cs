@@ -17,7 +17,7 @@ internal sealed class SpearFish : IComparable<SpearFish>
 
     public SpearFish(IDataManager gameData, SpearFishRow fishRow)
     {
-        this.ItemData = fishRow.Item.ValueNullable ?? new ItemRow();
+        this.ItemData = fishRow.Item.ValueNullable ?? default(ItemRow);
         this.fishData = fishRow;
         this.Name = MultiString.FromItem(gameData, this.ItemData.RowId);
         this.Size = SpearfishSize.Unknown;

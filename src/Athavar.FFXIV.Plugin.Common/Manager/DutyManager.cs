@@ -17,7 +17,7 @@ using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using Lumina.Excel.Sheets;
 using Lumina.Extensions;
-using TerritoryIntendedUse = Lumina.Excel.Sheets.TerritoryIntendedUse;
+using TerritoryIntendedUse = Athavar.FFXIV.Plugin.Models.Duty.TerritoryIntendedUse;
 
 internal sealed partial class DutyManager : IDisposable, IDutyManager
 {
@@ -188,7 +188,7 @@ internal sealed partial class DutyManager
         {
             // exit, no duty
 #if DEBUG
-            if (territoryType.TerritoryIntendedUse.RowId is var rowId && !Enum.IsDefined(typeof(TerritoryIntendedUse), rowId))
+            if (territoryType.TerritoryIntendedUse.RowId is var rowId && !Enum.IsDefined(typeof(TerritoryIntendedUse), (byte)rowId))
             {
                 // TODO: find undefined value.
             }

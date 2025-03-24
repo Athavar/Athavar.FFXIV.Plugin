@@ -104,7 +104,7 @@ internal sealed partial class CommandInterface
             return false;
         }
 
-        if (equipped->Loaded == 0)
+        if (!equipped->IsLoaded)
         {
             this.logger.Error("InventoryContainer is not loaded");
             return false;
@@ -149,7 +149,7 @@ internal sealed partial class CommandInterface
             return false;
         }
 
-        if (equipped->Loaded == 0)
+        if (!equipped->IsLoaded)
         {
             this.logger.Error("InventoryContainer is not loaded");
             return false;

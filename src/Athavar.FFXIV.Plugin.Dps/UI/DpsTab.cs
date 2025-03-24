@@ -62,7 +62,7 @@ internal sealed class DpsTab : Tab
 
         var configItem = this.configStack.Peek();
         var spacing = ImGui.GetStyle().ItemSpacing;
-        var size = ImGui.GetContentRegionAvail() - spacing * 2;
+        var size = ImGui.GetContentRegionAvail() - (spacing * 2);
         var drawNavBar = this.configStack.Count > 1;
 
         if (drawNavBar)
@@ -132,7 +132,7 @@ internal sealed class DpsTab : Tab
             }
 
             // calculate empty horizontal space based on size of buttons and text box
-            var offset = size.X - buttonSize * 5 - textInputWidth - padX * 7;
+            var offset = size.X - (buttonSize * 5) - textInputWidth - (padX * 7);
 
             ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
 

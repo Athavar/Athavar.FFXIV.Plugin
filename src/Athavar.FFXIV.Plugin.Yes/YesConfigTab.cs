@@ -885,7 +885,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayTalkEntryNode(TalkEntryNode node)
     {
-        var validTarget = node.TargetIsRegex && node.TargetRegex != null || !node.TargetIsRegex;
+        var validTarget = node is { TargetIsRegex: true, TargetRegex: not null } || !node.TargetIsRegex;
 
         if (!node.Enabled && !validTarget)
         {
