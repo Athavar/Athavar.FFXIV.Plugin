@@ -166,8 +166,8 @@ internal sealed partial class CommandInterface
                 continue;
             }
 
-            var spiritbond = item->Spiritbond / 100;
-            if (spiritbond == 100f)
+            var spiritbond = item->SpiritbondOrCollectability / 100;
+            if (spiritbond == 100)
             {
                 canExtract = true;
             }

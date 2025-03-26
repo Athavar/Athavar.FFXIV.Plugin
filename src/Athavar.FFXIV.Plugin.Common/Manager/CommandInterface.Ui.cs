@@ -5,7 +5,6 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
-using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -130,13 +129,7 @@ internal sealed partial class CommandInterface
             throw new AthavarPluginException("Index out of range");
         }
 
-        var textPtr = popup->EntryNames[index];
-        if (textPtr == null)
-        {
-            throw new AthavarPluginException("Text pointer was null");
-        }
-
-        return Marshal.PtrToStringUTF8((nint)textPtr) ?? string.Empty;
+        return popup->EntryNames[index];
     }
 
     /// <inheritdoc/>
@@ -172,12 +165,6 @@ internal sealed partial class CommandInterface
             throw new AthavarPluginException("Index out of range");
         }
 
-        var textPtr = popup->EntryNames[index];
-        if (textPtr == null)
-        {
-            throw new AthavarPluginException("Text pointer was null");
-        }
-
-        return Marshal.PtrToStringUTF8((nint)textPtr) ?? string.Empty;
+        return popup->EntryNames[index];
     }
 }

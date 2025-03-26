@@ -1,8 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="$(SolutionDir)\src\dalamud.targets"/>
 
     <PropertyGroup>
+        <Use_DalamudPackager>true</Use_DalamudPackager>
         <Authors>athavar</Authors>
         <Company>-</Company>
         <Description></Description>
@@ -34,10 +34,6 @@
         <DocumentationFile>bin\Debug\Athavar.FFXIV.Plugin.xml</DocumentationFile>
         <Optimize>true</Optimize>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="12.0.0" GeneratePathProperty="false"/>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Athavar.FFXIV.Plugin.AutoSpear\Athavar.FFXIV.Plugin.AutoSpear.csproj"/>

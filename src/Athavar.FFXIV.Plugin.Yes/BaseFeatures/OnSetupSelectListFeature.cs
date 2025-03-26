@@ -136,10 +136,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
             var popupMenuPtr = (PopupMenu*)popupMenu;
             if (index < popupMenuPtr->EntryCount)
             {
-                var entryPtr = popupMenuPtr->EntryNames[index];
-                var entryText = this.Module.LastSeenListSelection = entryPtr != null
-                    ? this.Module.GetSeStringText(entryPtr)
-                    : string.Empty;
+                var entryText = this.Module.LastSeenListSelection = this.Module.GetSeStringText(popupMenuPtr->EntryNames[index]);
 
                 var target = this.dalamudServices.TargetManager.Target;
                 var targetName = this.Module.LastSeenListTarget = target != null
@@ -165,10 +162,7 @@ internal abstract class OnSetupSelectListFeature : OnSetupFeature, IDisposable
         this.Module.Logger.Debug($"SelectString: Reading {count} strings");
         for (var i = 0; i < count; i++)
         {
-            var textPtr = popupMenu->EntryNames[i];
-            entryTexts[i] = textPtr != null
-                ? this.Module.GetSeStringText(textPtr)
-                : null;
+            entryTexts[i] = this.Module.GetSeStringText(popupMenu->EntryNames[i]);
         }
 
         return entryTexts;

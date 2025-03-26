@@ -46,7 +46,7 @@ internal sealed class ByregotsBlessing : QualityAction
     protected override int GetBaseSuccessRate(Simulation simulation) => 100;
 
     /// <inheritdoc/>
-    protected override int GetPotency(Simulation simulation) => Math.Min(100 + (simulation.GetBuff(Buffs.INNER_QUIET)?.Stacks ?? 0) * 20, 300);
+    protected override int GetPotency(Simulation simulation) => Math.Min(100 + ((simulation.GetBuff(Buffs.INNER_QUIET)?.Stacks ?? 0) * 20), 300);
 
     /// <inheritdoc/>
     protected override int GetBaseDurabilityCost(Simulation simulation) => 10;

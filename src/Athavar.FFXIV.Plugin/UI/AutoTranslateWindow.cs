@@ -143,7 +143,7 @@ internal sealed class AutoTranslateWindow : Window
             var groupId = completionGroup.Group;
             var groupName = completionGroup.GroupTitle.ExtractText().TrimEnd('.');
 
-            if (lookUpGroups.TryGetValue(groupId, out var lookUpGroup))
+            if (lookUpGroups.TryGetValue(groupId, out var lookUpGroup) && lookUpGroup is not null)
             {
                 tmpList.AddRange(from rowId in lookUpGroup.RowIds() let text = lookUpGroup.GetMessage(rowId) where text is not null select (groupId, groupName, rowId, text.TextValue));
             }
@@ -183,6 +183,24 @@ internal sealed class AutoTranslateWindow : Window
         protected static readonly Regex LookUpRegex = new("(?<Sheet>\\w+)(?:\\[(?:(?<Colume>col\\-.*?),?)*((?:(?<RangeStart>\\d+)-(?<RangeEnd>\\d+),?)+)\\])?", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
         protected static readonly Type RowInterfaceType = typeof(Item).GetInterfaces()[0];
 
+        public static LookUpGroup? CreateLookUpGroup(IDataManager dataManager, string lookUp)
+        {
+            var match = LookUpRegex.Match(lookUp);
+            var sheet = match.Groups["Sheet"];
+
+            var type = GetSheetType(sheet.Value);
+            if (type is not null && type.IsSubclassOf(RowInterfaceType))
+            {
+                var methode = typeof(IDataManager).GetMethods().FirstOrDefault(m => m.Name == "GetExcelSheet" && m.GetParameters().Length == 0 && m.IsGenericMethod)?.MakeGenericMethod(type);
+                var sheetObject = methode?.Invoke(dataManager, null);
+
+                var t = typeof(LookUpGroup<>).MakeGenericType(type);
+                return (LookUpGroup?)Activator.CreateInstance(t, sheetObject, match);
+            }
+
+            return null;
+        }
+
         public abstract uint[] RowIds();
 
         public abstract SeString? GetMessage(uint key);
@@ -210,24 +228,6 @@ internal sealed class AutoTranslateWindow : Window
                 "Weather" => typeof(Weather),
                 _ => null,
             };
-
-        public static LookUpGroup? CreateLookUpGroup(IDataManager dataManager, string lookUp)
-        {
-            var match = LookUpRegex.Match(lookUp);
-            var sheet = match.Groups["Sheet"];
-
-            var type = GetSheetType(sheet.Value);
-            if (type is not null && type.IsSubclassOf(RowInterfaceType))
-            {
-                var methode = typeof(IDataManager).GetMethods().FirstOrDefault(m => m.Name == "GetExcelSheet" && m.GetParameters().Length == 0 && m.IsGenericMethod)?.MakeGenericMethod(type);
-                var sheetObject = methode?.Invoke(dataManager, null);
-
-                var t = typeof(LookUpGroup<>).MakeGenericType(type);
-                return (LookUpGroup?)Activator.CreateInstance(t, sheetObject, match);
-            }
-
-            return null;
-        }
     }
 
     private class LookUpGroup<T> : LookUpGroup

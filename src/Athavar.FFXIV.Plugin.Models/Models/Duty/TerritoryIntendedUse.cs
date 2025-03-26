@@ -373,7 +373,11 @@ public enum TerritoryIntendedUse : byte
     CurrentlyUnused3 = 60,
 }
 
+#pragma warning disable SA1649
+#pragma warning disable SA1402
 public static class TerritoryIntendedUseExtensions
+#pragma warning restore SA1402
+#pragma warning restore SA1649
 {
     public static bool HasAlliance(this TerritoryIntendedUse territory)
         => territory switch

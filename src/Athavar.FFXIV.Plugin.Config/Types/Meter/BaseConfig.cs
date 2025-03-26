@@ -26,7 +26,7 @@ public abstract class BaseConfig : IConfig
     {
         if (string.IsNullOrEmpty(importString))
         {
-            return default;
+            return null;
         }
 
         try
@@ -47,7 +47,7 @@ public abstract class BaseConfig : IConfig
             // PluginLog.Error(ex.ToString());
         }
 
-        return default;
+        return null;
     }
 
     public string? GetExportString()

@@ -147,7 +147,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="popupMenu">PopupMenu event listener.</param>
     /// <param name="index">List index.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonList(PopupMenu* popupMenu, ushort index, AtkEventType type = AtkEventType.ListItemToggle)
+    protected void ClickAddonList(PopupMenu* popupMenu, ushort index, AtkEventType type = AtkEventType.ListItemClick)
     {
         var targetList = popupMenu->List;
         if (index < 0 || index >= popupMenu->EntryCount)
@@ -168,7 +168,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="index">List index.</param>
     /// <param name="which">Internal routing number.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonComponentList(AtkComponentNode* node, ushort index, int which = 0, AtkEventType type = AtkEventType.ListItemToggle)
+    protected void ClickAddonComponentList(AtkComponentNode* node, ushort index, int which = 0, AtkEventType type = AtkEventType.ListItemClick)
     {
         var targetList = (AtkComponentList*)node->Component;
         if (index >= targetList->ListLength)

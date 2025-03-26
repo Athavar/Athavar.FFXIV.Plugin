@@ -148,7 +148,7 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
             }
 
             // ReSharper disable once RedundantCatchClause
-            catch (Exception ex)
+            catch (Exception)
             {
                 // ignored
 #if DEBUG
@@ -211,6 +211,42 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
 
     private sealed record ModuleData(ModuleDef Def, string Name, bool HasTab) : IModuleManager.IModuleData, IComparable<ModuleData>, IComparable
     {
+        public int CompareTo(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return 1;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return 0;
+            }
+
+            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
+        }
+
+        public int CompareTo(ModuleData? other)
+        {
+            if (ReferenceEquals(this, other))
+            {
+                return 0;
+            }
+
+            if (ReferenceEquals(null, other))
+            {
+                return 1;
+            }
+
+            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
+            if (nameComparison != 0)
+            {
+                return nameComparison;
+            }
+
+            return this.HasTab.CompareTo(other.HasTab);
+        }
+
         public bool Enabled
         {
             get => this.Def.Enabled;
@@ -283,41 +319,5 @@ internal sealed class ModuleManager : IModuleManager, IDisposable
         public bool Loaded => this.Def.Instance is not null;
 
         public Exception? LoadingError => this.Def.LoadingError;
-
-        public int CompareTo(object? obj)
-        {
-            if (ReferenceEquals(null, obj))
-            {
-                return 1;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return 0;
-            }
-
-            return obj is ModuleData other ? this.CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(ModuleData)}");
-        }
-
-        public int CompareTo(ModuleData? other)
-        {
-            if (ReferenceEquals(this, other))
-            {
-                return 0;
-            }
-
-            if (ReferenceEquals(null, other))
-            {
-                return 1;
-            }
-
-            var nameComparison = string.Compare(this.Name, other.Name, StringComparison.Ordinal);
-            if (nameComparison != 0)
-            {
-                return nameComparison;
-            }
-
-            return this.HasTab.CompareTo(other.HasTab);
-        }
     }
 }
