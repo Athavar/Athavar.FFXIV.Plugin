@@ -40,7 +40,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
 
       - name: Download Dalamud
         run: |
@@ -53,7 +53,7 @@ jobs:
       - name: Build
         run: |
           release_version=$(echo ${{ github.ref_name }} | sed 's/^v//')
-          dotnet build --configuration Release -v n /p:DalamudLibPath="${{ github.workspace }}/dalamud" /p:SolutionDir=`pwd` -o ./bin/Release /p:Version=$release_version src/${{ env.INTERNAL_NAME }}
+          dotnet build --configuration Release -v n /p:DALAMUD_HOME="${{ github.workspace }}/dalamud" /p:SolutionDir=`pwd` -o ./bin/Release /p:Version=$release_version src/${{ env.INTERNAL_NAME }}
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -93,7 +93,7 @@ jobs:
           repository: ${{ env.PERSONAL_PLUGIN_REPO }}
           token: ${{ secrets.GIT_SECRET }}
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: PluginRepoZip
           path: /tmp
