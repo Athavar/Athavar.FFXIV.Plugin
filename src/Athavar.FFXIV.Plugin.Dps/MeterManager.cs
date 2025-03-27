@@ -126,9 +126,9 @@ internal sealed class MeterManager : IDisposable
                     meter.CacheReset();
                 }
             }
-        }
 
-        ImGui.End();
+            ImGui.End();
+        }
     }
 
     private bool CheckRequiredOpcodes()

@@ -55,6 +55,7 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
         this.stateTracker.NewContentEncounter += this.OnNewContentEncounter;
         ClassJobColumnValue.Init(dataManager, iconManager);
         ConditionColumnValue.Init(dataManager, iconManager);
+        this.Flags |= ImGuiTableFlags.SizingFixedFit;
     }
 
     public void Dispose() => this.stateTracker.NewContentEncounter -= this.OnNewContentEncounter;

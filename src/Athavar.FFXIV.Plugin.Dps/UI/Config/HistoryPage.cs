@@ -49,7 +49,7 @@ internal sealed class HistoryPage : IConfigPage
     {
         if (ImGui.BeginTable("Encounter", 6, Flags))
         {
-            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide | ImGuiTableColumnFlags.NoSort, 150f);
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide | ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoSort, 150f);
             ImGui.TableSetupColumn("Duration", ImGuiTableColumnFlags.WidthStretch | ImGuiTableColumnFlags.NoSort, 10 * 12.0f);
             ImGui.TableSetupColumn("Dps", ImGuiTableColumnFlags.WidthStretch | ImGuiTableColumnFlags.DefaultSort | ImGuiTableColumnFlags.PreferSortDescending, 8 * 18.0f);
             ImGui.TableSetupColumn("Hps", ImGuiTableColumnFlags.WidthStretch | ImGuiTableColumnFlags.PreferSortDescending, 8 * 18.0f);

@@ -69,9 +69,8 @@ internal sealed class ProfileListConfigPage : IConfigPage
 
         if (ImGui.BeginChild("##Buttons", new Vector2(size.X, MenuBarHeight), true))
         {
-            ImGui.PushItemWidth(textInputWidth);
+            ImGui.SetNextItemWidth(textInputWidth);
             ImGui.InputTextWithHint("##Input", "Profile Name/Import String", ref this.input, 10000);
-            ImGui.PopItemWidth();
 
             ImGui.SameLine();
             if (ImGuiEx.IconButton(FontAwesomeIcon.Plus, "Create new Meter", buttonSize))
@@ -84,8 +83,6 @@ internal sealed class ProfileListConfigPage : IConfigPage
             {
                 this.ImportMeter(this.input);
             }
-
-            ImGui.PopItemWidth();
         }
 
         ImGui.EndChild();

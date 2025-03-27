@@ -245,7 +245,7 @@ internal sealed class QueueTab : Tab
                 ImGui.SetKeyboardFocusHere(-1);
             }
 
-            if (ImGui.BeginChild("##recipe-list-child", new Vector2(0.0f, 250f) * ImGuiHelpers.GlobalScale, false, ImGuiWindowFlags.NoScrollbar) && ImGui.BeginTable("##cq-recipe-list-table", 4, ImGuiTableFlags.ScrollY))
+            if (ImGui.BeginTable("##cq-recipe-list-table", 4, ImGuiTableFlags.ScrollY, new Vector2(0.0f, 250f) * ImGuiHelpers.GlobalScale))
             {
                 ImGui.TableSetupColumn("##icon", ImGuiTableColumnFlags.WidthFixed);
                 ImGui.TableSetupColumn("Job##job", ImGuiTableColumnFlags.WidthFixed);
@@ -296,7 +296,6 @@ internal sealed class QueueTab : Tab
                     ImGui.GetTextLineHeightWithSpacing());
 
                 ImGui.EndTable();
-                ImGui.EndChild();
             }
 
             ImGui.EndCombo();
