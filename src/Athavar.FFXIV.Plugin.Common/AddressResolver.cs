@@ -22,7 +22,17 @@ public sealed class AddressResolver : BaseAddressResolver
     /// <summary>
     ///     Gets or sets the pointer to the method responsible for receiving ActorControl network packages.
     /// </summary>
+    public nint ActionEffectHandler { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the pointer to the method responsible for receiving ActorControl network packages.
+    /// </summary>
     public nint ActorControlHandler { get; set; }
+
+    /// <summary>
+    ///     Gets or sets the pointer to the method responsible for receiving EffectResult network packages.
+    /// </summary>
+    public nint EffectResultHandler { get; set; }
 
     protected override void Setup64Bit(ISigScanner scanner)
     {
@@ -30,7 +40,9 @@ public sealed class AddressResolver : BaseAddressResolver
 
         // this.AgentReceiveEvent = scanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2");
 
-        // from: https://github.com/Kouzukii/ffxiv-deathrecap/blob/1d596906358d7f170c3d40ed015696d7772dd9e1/Events/CombatEventCapture.cs#L81
+        // from: https://github.com/Kouzukii/ffxiv-deathrecap/blob/75826ebe91713e34578ad4d7ed0cc98f5622154b/Events/CombatEventCapture.cs#L26C1-L33C100
+        this.ActionEffectHandler = scanner.ScanText("40 55 53 56 41 54 41 55 41 56 41 57 48 8D AC 24 60 FF FF FF 48 81 EC A0 01 00 00");
         this.ActorControlHandler = scanner.ScanText("E8 ?? ?? ?? ?? 0F B7 0B 83 E9 64");
+        this.EffectResultHandler = scanner.ScanText("48 8B C4 44 88 40 18 89 48 08");
     }
 }

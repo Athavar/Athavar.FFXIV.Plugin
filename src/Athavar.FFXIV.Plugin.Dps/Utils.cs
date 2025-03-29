@@ -91,14 +91,14 @@ internal sealed class Utils
 
     public string StatusString(uint statusId)
     {
-        var statusData = this.dalamudServices.DataManager.GetExcelSheet<Status>()?.GetRow(statusId);
+        var statusData = this.dalamudServices.DataManager.GetExcelSheet<Status>().GetRowOrDefault(statusId);
         var name = statusData?.Name ?? "<not found>";
         return $"{statusId} '{name}'";
     }
 
     public string ActionString(uint actionId)
     {
-        var statusData = this.dalamudServices.DataManager.GetExcelSheet<Action>()?.GetRow(actionId);
+        var statusData = this.dalamudServices.DataManager.GetExcelSheet<Action>().GetRowOrDefault(actionId);
         var name = statusData?.Name ?? "<not found>";
         return $"{actionId} '{name}'";
     }

@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
@@ -26,26 +27,13 @@ public sealed class EventCaptureManager : IDisposable
 
     public delegate void ActorDeathEventDelegation(IGameObject actor, IGameObject? causeActor);
 
+    public delegate void ActorControlEventDelegation(ActorControlCategory category, IGameObject actor, uint param1, uint param2, uint param3, uint param4);
+
     private delegate void ActorControlSelfDelegate(uint entityId, uint type, uint a3, uint a4, uint a5, uint a6, uint a7, uint a8, ulong a9, byte flag);
 
-    public event ActorDeathEventDelegation? ActorDeath;
+    public event ActorControlEventDelegation? ActorControlEvent;
 
-    private enum ActorControlCategory
-    {
-        Death = 0x6,
-        CancelAbility = 0xF,
-        GainEffect = 0x14,
-        LoseEffect = 0x15,
-        UpdateEffect = 0x16,
-        TargetIcon = 0x22,
-        Tether = 0x23,
-        Targetable = 0x36,
-        DirectorUpdate = 0x6D,
-        SetTargetSign = 0x1F6,
-        LimitBreak = 0x1F9,
-        HoT = 0x604,
-        DoT = 0x605,
-    }
+    public event ActorDeathEventDelegation? ActorDeath;
 
     public void Dispose()
     {
@@ -53,9 +41,9 @@ public sealed class EventCaptureManager : IDisposable
         this.actorControlSelfHook?.Dispose();
     }
 
-    private void OnActorControl(uint entityId, uint type, uint a3, uint a4, uint a5, uint a6, uint a7, uint a8, ulong a9, byte flag)
+    private void OnActorControl(uint entityId, uint type, uint param1, uint param2, uint param3, uint param4, uint a7, uint a8, ulong a9, byte flag)
     {
-        this.actorControlSelfHook!.OriginalDisposeSafe(entityId, type, a3, a4, a5, a6, a7, a8, a9, flag);
+        this.actorControlSelfHook!.OriginalDisposeSafe(entityId, type, param1, param2, param3, param4, a7, a8, a9, flag);
         var entity = this.objectTable.SearchById(entityId);
         if (entity is null)
         {
@@ -66,9 +54,11 @@ public sealed class EventCaptureManager : IDisposable
         {
             case ActorControlCategory.Death:
                 // a3 is actorId that has cause the death.
-                var causeEntity = this.objectTable.SearchById(a3);
+                var causeEntity = this.objectTable.SearchById(param1);
                 this.ActorDeath?.Invoke(entity, causeEntity);
                 break;
         }
+
+        this.ActorControlEvent?.Invoke((ActorControlCategory)type, entity, param1, param2, param3, param4);
     }
 }

@@ -15,7 +15,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 public sealed unsafe class ClickRecipeNote : ClickBase<ClickRecipeNote, AddonRecipeNote>
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ClickRecipeNote" /> class.
+    ///     Initializes a new instance of the <see cref="ClickRecipeNote"/> class.
     /// </summary>
     /// <param name="addon">Addon pointer.</param>
     public ClickRecipeNote(nint addon = default)
@@ -36,19 +36,19 @@ public sealed unsafe class ClickRecipeNote : ClickBase<ClickRecipeNote, AddonRec
     ///     Click the synthesize button.
     /// </summary>
     [ClickName("synthesize")]
-    public void Synthesize() => this.ClickAddonButton(this.Addon->SynthesizeButton, 13);
+    public void Synthesize() => this.ClickAddonButton(this.Addon->SynthesizeButton, 14);
 
     /// <summary>
     ///     Click the quick synthesis button.
     /// </summary>
     [ClickName("quick_synthesis")]
-    public void QuickSynthesis() => this.ClickAddonButton(this.Addon->QuickSynthesisButton, 14);
+    public void QuickSynthesis() => this.ClickAddonButton(this.Addon->QuickSynthesisButton, 15);
 
     /// <summary>
     ///     Click the trial synthesis button.
     /// </summary>
     [ClickName("trial_synthesis")]
-    public void TrialSynthesis() => this.ClickAddonButton(this.Addon->TrialSynthesisButton, 15);
+    public void TrialSynthesis() => this.ClickAddonButton(this.Addon->TrialSynthesisButton, 16);
 
     /// <summary>
     ///     Click a material.

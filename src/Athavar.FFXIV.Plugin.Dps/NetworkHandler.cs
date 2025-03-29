@@ -5,27 +5,25 @@
 
 namespace Athavar.FFXIV.Plugin.Dps;
 
-using System.Numerics;
+using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Extension;
+using Athavar.FFXIV.Plugin.Common.Manager;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Dps.Data;
 using Athavar.FFXIV.Plugin.Dps.Data.ActionEffect;
-using Athavar.FFXIV.Plugin.Dps.Data.Protocol;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using Dalamud.Game.Network;
-using Dalamud.Plugin.Services;
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using Machina.FFXIV.Headers;
-using Server_ActorCast = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_ActorCast;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
 
 internal sealed partial class NetworkHandler : IDisposable
 {
     private readonly IPluginLogger logger;
-    private readonly IGameNetwork gameNetwork;
-    private readonly IOpcodeManager opcodeManager;
     private readonly IDefinitionManager definitionManager;
+    private readonly EventCaptureManager eventCaptureManager;
     private readonly Utils utils;
 
     // this is a mega weird thing - apparently some IDs sent over network have some extra delta added to them (e.g. action ids, icon ids, etc.)
@@ -33,26 +31,24 @@ internal sealed partial class NetworkHandler : IDisposable
     // we have one simple way of detecting them - by looking at casts, since they contain both offset id and real ('animation') id
     private long unkDelta;
 
-    public NetworkHandler(IDalamudServices dalamudServices, IOpcodeManager opcodeManager, Utils utils, IDefinitionManager definitionManager)
+    private Hook<ProcessPacketActionEffectDelegate>? actionEffectHook;
+    private Hook<ProcessPacketEffectResultDelegate>? effectResultHook;
+
+    public unsafe NetworkHandler(IDalamudServices dalamudServices, Utils utils, IDefinitionManager definitionManager, AddressResolver addressResolver, EventCaptureManager eventCaptureManager)
     {
         this.logger = dalamudServices.PluginLogger;
-        this.gameNetwork = dalamudServices.GameNetwork;
-        this.opcodeManager = opcodeManager;
         this.utils = utils;
         this.definitionManager = definitionManager;
+        this.eventCaptureManager = eventCaptureManager;
 
-        this.gameNetwork.NetworkMessage += this.HandleMessage;
+        eventCaptureManager.ActorControlEvent += this.EventCaptureManager;
+        dalamudServices.SafeEnableHookFromAddress<ProcessPacketActionEffectDelegate>("NetworkHandler:actionEffectHook", addressResolver.ActionEffectHandler, this.HandleActionEffect, h => this.actionEffectHook = h);
+        dalamudServices.SafeEnableHookFromAddress<ProcessPacketEffectResultDelegate>("NetworkHandler:effectResultHook", addressResolver.EffectResultHandler, this.HandleEffectResultDetour, h => this.effectResultHook = h);
     }
 
-    public event EventHandler<(ulong ActorID, uint Seq, int TargetIndex)>? EventEffectResult;
+    private unsafe delegate void ProcessPacketActionEffectDelegate(uint sourceId, IntPtr sourceCharacter, IntPtr pos, ActionEffectHeader* effectHeader, ActionEffect* effectArray, ulong* effectTrail);
 
-    public event EventHandler<(ulong ActorID, ActionId Action, float CastTime, ulong TargetID)>? EventActorCast;
-
-    public event EventHandler<(ulong ActorID, uint ActionID)>? EventActorControlCancelCast;
-
-    public event EventHandler<(ulong ActorID, uint IconID)>? EventActorControlTargetIcon;
-
-    public event EventHandler<(ulong ActorId, ulong TargetID, uint TetherID)>? EventActorControlTether;
+    private unsafe delegate void ProcessPacketEffectResultDelegate(uint actor, Server_EffectResult* actionIntegrityData, bool isReplay);
 
     public event EventHandler<CombatEvent>? CombatEvent;
 
@@ -60,378 +56,254 @@ internal sealed partial class NetworkHandler : IDisposable
 
     public bool Enable { get; set; } = true;
 
-    public void Dispose() => this.gameNetwork.NetworkMessage -= this.HandleMessage;
-
-    private static Vector3 IntToFloatCoords(uint xy, ushort z) => IntToFloatCoords((ushort)(xy >> 8), (ushort)(xy & 0xF), z);
-
-    private static Vector3 IntToFloatCoords(ushort x, ushort y, ushort z)
+    public void Dispose()
     {
-        var fx = (x * (2000.0f / 65535)) - 1000;
-        var fy = (y * (2000.0f / 65535)) - 1000;
-        var fz = (z * (2000.0f / 65535)) - 1000;
-        return new Vector3(fx, fy, fz);
+        this.actionEffectHook?.Dispose();
+        this.effectResultHook?.Dispose();
+        this.eventCaptureManager.ActorControlEvent -= this.EventCaptureManager;
     }
 
-    private static Angle IntToFloatAngle(ushort rot) => (((rot / 65535.0f) * (2 * MathF.PI)) - MathF.PI).Radians();
-
-    private unsafe void HandleMessage(nint dataPtr, ushort opCode, uint sourceActorId, uint targetActorId, NetworkMessageDirection direction)
+    private unsafe void HandleActionEffect(uint sourceId, IntPtr sourceCharacter, IntPtr pos, ActionEffectHeader* header, ActionEffect* effects, ulong* targetIds)
     {
-        if (!this.Enable)
+        this.actionEffectHook!.OriginalDisposeSafe(sourceId, sourceCharacter, pos, header, effects, targetIds);
+        var maxTargets = header->EffectCount;
+        try
         {
-            return;
-        }
-
-        const int headerSize = 0x20;
-        if (direction != NetworkMessageDirection.ZoneDown)
-        {
-            // client->server
-            return;
-        }
-
-        if (!this.opcodeManager.Opcodes.TryGetValue(opCode, out var opcodeType))
-        {
-            return;
-        }
-
-        dataPtr -= headerSize;
-        if (this.Debug)
-        {
-            this.DumpServerMessage(dataPtr, opCode, targetActorId);
-        }
-
-        // server->client
-        switch (opcodeType)
-        {
-            case Opcode.ActionEffect1:
-                this.HandleActionEffect1((Server_ActionEffect1*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActionEffect8:
-                this.HandleActionEffect8((Server_ActionEffect8*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActionEffect16:
-                this.HandleActionEffect16((Server_ActionEffect16*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActionEffect24:
-                this.HandleActionEffect24((Server_ActionEffect24*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActionEffect32:
-                this.HandleActionEffect32((Server_ActionEffect32*)dataPtr, targetActorId);
-                break;
-            case Opcode.EffectResultBasic:
-                this.HandleEffectResultBasic(Math.Min((byte)1, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResultBasic4:
-                this.HandleEffectResultBasic(Math.Min((byte)4, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResultBasic8:
-                this.HandleEffectResultBasic(Math.Min((byte)8, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResultBasic16:
-                this.HandleEffectResultBasic(Math.Min((byte)16, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResultBasic32:
-                this.HandleEffectResultBasic(Math.Min((byte)32, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResultBasic64:
-                this.HandleEffectResultBasic(Math.Min((byte)64, *(byte*)(dataPtr + headerSize)), (Server_EffectResultBasicEntry*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResult:
-                this.HandleEffectResult(Math.Min((byte)1, *(byte*)(dataPtr + headerSize)), (Server_EffectResult*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResult4:
-                this.HandleEffectResult(Math.Min((byte)4, *(byte*)(dataPtr + headerSize)), (Server_EffectResult*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResult8:
-                this.HandleEffectResult(Math.Min((byte)8, *(byte*)(dataPtr + headerSize)), (Server_EffectResult*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.EffectResult16:
-                this.HandleEffectResult(Math.Min((byte)16, *(byte*)(dataPtr + headerSize)), (Server_EffectResult*)(dataPtr + headerSize + 4), targetActorId);
-                break;
-            case Opcode.ActorCast:
-                this.HandleActorCast((Server_ActorCast*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActorControl:
-                this.HandleActorControl((Server_ActorControl*)dataPtr, targetActorId);
-                break;
-            case Opcode.ActorControlSelf:
-                this.HandleActorControlSelf((Server_ActorControlSelf*)dataPtr, targetActorId);
-                break;
-        }
-    }
-
-    private unsafe void HandleActionEffect1(Server_ActionEffect1* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 1, default);
-
-    private unsafe void HandleActionEffect8(Server_ActionEffect8* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 8, IntToFloatCoords(p->effectflags1, p->effectflags2));
-
-    private unsafe void HandleActionEffect16(Server_ActionEffect16* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 16, IntToFloatCoords(p->effectflags1, p->effectflags2));
-
-    private unsafe void HandleActionEffect24(Server_ActionEffect24* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 24, IntToFloatCoords(p->effectflags1, p->effectflags2));
-
-    private unsafe void HandleActionEffect32(Server_ActionEffect32* p, uint actorId) => this.HandleActionEffect(actorId, &p->Header, (ActionEffect*)p->Effects, p->TargetID, 32, IntToFloatCoords(p->effectflags1, p->effectflags2));
-
-    private unsafe void HandleActionEffect(uint casterId, Server_ActionEffectHeader* header, ActionEffect* effects, ulong* targetIds, uint maxTargets, Vector3 targetPos)
-    {
-        if (this.Debug)
-        {
-            this.DumpActionEffect(header, effects, targetIds, maxTargets, targetPos);
-        }
-
-        if ((byte)header->effectDisplayType == (byte)ActionType.Action)
-        {
-            var newDelta = (int)header->actionId - header->actionAnimationId;
-            if (this.unkDelta != newDelta)
+            if (this.Debug)
             {
-                this.logger.Verbose($"Updating network delta: {this.unkDelta} -> {newDelta}");
-                this.unkDelta = newDelta;
-            }
-        }
-
-        var actionType = (byte)header->effectDisplayType != (byte)ActionType.Mount
-            ? (byte)header->effectDisplayType != (byte)ActionType.Item ? ActionType.Action : ActionType.Item
-            : ActionType.Mount;
-
-        var actionId = actionType == ActionType.Action ? header->actionAnimationId : header->actionId;
-
-        var actionEffects = new List<CombatEvent.ActionEffectEvent>();
-
-        var targets = Math.Min(header->effectCount, maxTargets);
-        for (var i = 0; i < targets; ++i)
-        {
-            var targetId = (uint)(targetIds[i] & uint.MaxValue);
-            ActionEffects actionEffects1;
-            for (var j = 0; j < 8; ++j)
-            {
-                actionEffects1[j] = *(ulong*)(effects + (i * 8) + j);
+                this.DumpActionEffect(header, effects, targetIds, maxTargets);
             }
 
-            foreach (var actionEffect in actionEffects1)
+            if ((byte)header->EffectDisplayType == (byte)ActionType.Action)
             {
-                switch (actionEffect.Type)
+                var newDelta = (int)header->ActionId - header->ActionAnimationId;
+                if (this.unkDelta != newDelta)
                 {
-                    case ActionEffectType.FullResist:
-                    case ActionEffectType.Miss:
-                    case ActionEffectType.Damage:
-                    case ActionEffectType.BlockedDamage:
-                    case ActionEffectType.ParriedDamage:
+                    this.logger.Verbose($"Updating network delta: {this.unkDelta} -> {newDelta}");
+                    this.unkDelta = newDelta;
+                }
+            }
+
+            var actionType = (byte)header->EffectDisplayType != (byte)ActionType.Mount
+                ? (byte)header->EffectDisplayType != (byte)ActionType.Item ? ActionType.Action : ActionType.Item
+                : ActionType.Mount;
+
+            var actionId = actionType == ActionType.Action ? header->ActionAnimationId : header->ActionId;
+
+            var actionEffects = new List<CombatEvent.ActionEffectEvent>();
+
+            var targets = Math.Min(header->EffectCount, maxTargets);
+            for (var i = 0; i < targets; ++i)
+            {
+                var targetId = (uint)(targetIds[i] & uint.MaxValue);
+                ActionEffects actionEffects1;
+                for (var j = 0; j < 8; ++j)
+                {
+                    actionEffects1[j] = *(ulong*)(effects + (i * 8) + j);
+                }
+
+                foreach (var actionEffect in actionEffects1)
+                {
+                    switch (actionEffect.Type)
                     {
-                        actionEffects.Add(new CombatEvent.DamageTaken
+                        case ActionEffectType.FullResist:
+                        case ActionEffectType.Miss:
+                        case ActionEffectType.Damage:
+                        case ActionEffectType.BlockedDamage:
+                        case ActionEffectType.ParriedDamage:
                         {
-                            HitSeverity = actionEffect.Param0,
-                            Param1 = actionEffect.Param1,
-                            Percentage = actionEffect.Param2,
-                            Multiplier = actionEffect.Param3,
-                            Flags2 = actionEffect.Param4,
-                            Value = actionEffect.Value,
+                            actionEffects.Add(
+                                new CombatEvent.DamageTaken
+                                {
+                                    HitSeverity = actionEffect.Param0,
+                                    Param1 = actionEffect.Param1,
+                                    Percentage = actionEffect.Param2,
+                                    Multiplier = actionEffect.Param3,
+                                    Flags2 = actionEffect.Param4,
+                                    Value = actionEffect.Value,
 
-                            EffectTargetId = targetId,
-                            EffectSourceId = casterId,
-                            ActionId = actionId,
-                            ActionType = actionType,
-                        });
-                        break;
-                    }
+                                    EffectTargetId = targetId,
+                                    EffectSourceId = sourceId,
+                                    ActionId = actionId,
+                                    ActionType = actionType,
+                                });
+                            break;
+                        }
 
-                    case ActionEffectType.Heal:
-                    {
-                        actionEffects.Add(new CombatEvent.Healed
+                        case ActionEffectType.Heal:
                         {
-                            HitSeverity = actionEffect.Param1,
-                            Param1 = actionEffect.Param0,
-                            Percentage = actionEffect.Param2,
-                            Multiplier = actionEffect.Param3,
-                            Flags2 = actionEffect.Param4,
-                            Value = actionEffect.Value,
+                            actionEffects.Add(
+                                new CombatEvent.Healed
+                                {
+                                    HitSeverity = actionEffect.Param1,
+                                    Param1 = actionEffect.Param0,
+                                    Percentage = actionEffect.Param2,
+                                    Multiplier = actionEffect.Param3,
+                                    Flags2 = actionEffect.Param4,
+                                    Value = actionEffect.Value,
 
-                            EffectTargetId = targetId,
-                            EffectSourceId = casterId,
-                            ActionId = actionId,
-                            ActionType = actionType,
-                        });
-                        break;
+                                    EffectTargetId = targetId,
+                                    EffectSourceId = sourceId,
+                                    ActionId = actionId,
+                                    ActionType = actionType,
+                                });
+                            break;
+                        }
                     }
                 }
             }
-        }
 
-        var info = new CombatEvent.Action
-        {
-            SequenceId = header->globalEffectCounter,
-            ActionId = new ActionId(actionType, actionId),
-            Definition = this.definitionManager.GetActionById(actionId),
-            TargetId = header->animationTargetId,
-            ActorId = casterId,
-            Effects = actionEffects.ToArray(),
-        };
-
-        this.CombatEvent?.Invoke(this, info);
-    }
-
-    private unsafe void HandleEffectResultBasic(int count, Server_EffectResultBasicEntry* p, uint actorId)
-    {
-        if (this.Debug)
-        {
-            this.DumpEffectResultBasic(count, p);
-        }
-
-        for (var i = 0; i < count; ++i)
-        {
-            this.EventEffectResult?.Invoke(this, (actorId, p->RelatedActionSequence, p->RelatedTargetIndex));
-            ++p;
-        }
-    }
-
-    private unsafe void HandleEffectResult(int count, Server_EffectResult* entries, uint actorId)
-    {
-        if (this.Debug)
-        {
-            this.DumpEffectResult(count, entries);
-        }
-
-        var p = entries;
-        for (var i = 0; i < count; ++i)
-        {
-            var cnt = Math.Min(4, (int)p->EffectCount);
-            var eff = (Server_EffectResultEntry*)p->Effects;
-            for (var j = 0; j < cnt; ++j)
+            var info = new CombatEvent.Action
             {
-                this.CombatEvent?.Invoke(this, new CombatEvent.StatusEffect
-                {
-                    ActorId = p->ActorID,
-                    SourceId = eff->SourceActorID,
-                    Grain = true,
-                    StatusId = eff->EffectID,
-                    Duration = eff->duration,
-                });
-                ++eff;
+                SequenceId = header->GlobalEffectCounter,
+                ActionId = new ActionId(actionType, actionId),
+                Definition = this.definitionManager.GetActionById(actionId),
+                TargetId = header->AnimationTargetId,
+                ActorId = sourceId,
+                Effects = actionEffects.ToArray(),
+            };
+
+            this.CombatEvent?.Invoke(this, info);
+        }
+        catch (Exception e)
+        {
+            this.logger.Error(e, "Error while processing HandleActionEffect");
+        }
+    }
+
+    private unsafe void HandleEffectResultDetour(uint actorId, Server_EffectResult* entries, bool isReplay)
+    {
+        this.effectResultHook?.OriginalDisposeSafe(actorId, entries, isReplay);
+        var count = entries->EffectCount;
+
+        try
+        {
+            if (this.Debug)
+            {
+                this.DumpEffectResult(count, entries);
             }
 
-            ++p;
-        }
-    }
+            var p = entries;
+            for (var i = 0; i < count; ++i)
+            {
+                var cnt = Math.Min(4u, p->EffectCount);
+                var effects = (Server_EffectResultEntry*)p->Effects;
+                for (var j = 0; j < cnt; ++j)
+                {
+                    var eff = effects[j];
+                    var effectId = eff.EffectID;
+                    if (effectId <= 0)
+                    {
+                        continue;
+                    }
 
-    private unsafe void HandleActorCast(Server_ActorCast* p, uint actorId)
-    {
-        var action = new ActionId(p->ActionType, p->SpellId);
-        if (this.Debug)
+                    this.CombatEvent?.Invoke(
+                        this,
+                        new CombatEvent.StatusEffect
+                        {
+                            ActorId = p->ActorID,
+                            SourceId = eff.SourceActorID,
+                            Grain = true,
+                            StatusId = eff.EffectID,
+                            Duration = eff.duration,
+                        });
+                }
+
+                ++p;
+            }
+        }
+        catch (Exception e)
         {
-            this.Log($"[Network] - AID={action} ({new ActionId(ActionType.Action, p->SpellId)}), target={this.utils.ObjectString(p->TargetID)}, time={p->CastTime:f2} ({p->BaseCastTime100ms * 0.1f:f1}), rot={IntToFloatAngle(p->Rotation)}, targetpos={this.utils.Vec3String(IntToFloatCoords(p->PosX, p->PosY, p->PosZ))}, interruptible={p->Interruptible}, u1={p->U1:X2}, u2={this.utils.ObjectString(p->U2ObjID)}, u3={p->U3:X4}");
+            this.logger.Error(e, "Error while processing HandleEffectResultDetour");
         }
-
-        this.EventActorCast?.Invoke(this, (actorId, action, p->CastTime, p->TargetID));
     }
 
-    private unsafe void HandleActorControl(Server_ActorControl* p, uint actorId)
+    private void EventCaptureManager(ActorControlCategory category, IGameObject actor, uint param1, uint param2, uint param3, uint param4)
     {
         if (this.Debug /*|| p->category is Server_ActorControlCategory.HoT or Server_ActorControlCategory.DoT*/)
         {
-            this.Log($"[Network] {this.utils.ObjectString(actorId)} - cat={p->category.AsText()}|{((ActorControlCategory)p->category).AsText()}, params={p->param1:X8} {p->param2:X8} {p->param3:X8} {p->param4:X8} {p->padding1:X8}, unk={p->padding:X4}");
+            this.Log($"[Network] {this.utils.ObjectString(actor)} - cat={(int)category}|{category.AsText()}, params={param1:X8} {param2:X8} {param3:X8} {param4:X8}");
         }
 
-        switch (p->category)
+        var actorId = actor.EntityId;
+        switch (category)
         {
-            case Server_ActorControlCategory.HoT:
-                this.CombatEvent?.Invoke(this, new CombatEvent.DeferredEvent
-                {
-                    ActorId = actorId,
-                    EffectEvent = new CombatEvent.HoT
+            case ActorControlCategory.HoT:
+                this.CombatEvent?.Invoke(
+                    this,
+                    new CombatEvent.DeferredEvent
                     {
-                        Value = (ushort)(p->param2 & ushort.MaxValue),
-                        Flags2 = p->param2 > ushort.MaxValue ? (byte)64 : (byte)0,
-                        Multiplier = (byte)(p->param2 / 0x10000),
+                        ActorId = actorId,
+                        EffectEvent = new CombatEvent.HoT
+                        {
+                            Value = (ushort)(param2 & ushort.MaxValue),
+                            Flags2 = param2 > ushort.MaxValue ? (byte)64 : (byte)0,
+                            Multiplier = (byte)(param2 / 0x10000),
 
-                        EffectTargetId = actorId,
-                        StatusId = p->param1,
-                        EffectSourceId = p->param3,
-                    },
-                });
+                            EffectTargetId = actorId,
+                            StatusId = param1,
+                            EffectSourceId = param3,
+                        },
+                    });
                 break;
-            case Server_ActorControlCategory.DoT:
-                this.CombatEvent?.Invoke(this, new CombatEvent.DeferredEvent
-                {
-                    ActorId = actorId,
-                    EffectEvent = new CombatEvent.DoT
+            case ActorControlCategory.DoT:
+                this.CombatEvent?.Invoke(
+                    this,
+                    new CombatEvent.DeferredEvent
                     {
-                        Value = (ushort)(p->param2 & ushort.MaxValue),
-                        Flags2 = p->param2 > ushort.MaxValue ? (byte)64 : (byte)0,
-                        Multiplier = (byte)(p->param2 / 0x10000),
+                        ActorId = actorId,
+                        EffectEvent = new CombatEvent.DoT
+                        {
+                            Value = (ushort)(param2 & ushort.MaxValue),
+                            Flags2 = param2 > ushort.MaxValue ? (byte)64 : (byte)0,
+                            Multiplier = (byte)(param2 / 0x10000),
 
-                        EffectTargetId = actorId,
-                        StatusId = p->param1,
-                        EffectSourceId = p->param3,
-                    },
-                });
+                            EffectTargetId = actorId,
+                            StatusId = param1,
+                            EffectSourceId = param3,
+                        },
+                    });
                 break;
-            case Server_ActorControlCategory.CancelAbility: // note: some successful boss casts have this message on completion, seen param1=param4=0, param2=1; param1 is related to cast time?.
+            case ActorControlCategory.Death:
+                this.CombatEvent?.Invoke(
+                    this,
+                    new CombatEvent.Death
+                    {
+                        ActorId = actorId,
+                        SourceId = param1,
+                    });
+                break;
+            case ActorControlCategory.GainEffect: // gain status effect, seen param3=param4=0
                 if (this.Debug)
                 {
-                    this.Log($"[Network] -- cancelled {new ActionId((ActionType)p->param2, p->param3)}, interrupted={p->param4 == 1}");
+                    this.Log($"[Network] -- gained {this.utils.StatusString(param1)}, extra={param2:X4}");
                 }
 
-                this.EventActorControlCancelCast?.Invoke(this, (actorId, p->param3));
+                this.CombatEvent?.Invoke(
+                    this,
+                    new CombatEvent.StatusEffect
+                    {
+                        ActorId = actorId,
+                        Grain = true,
+                        StatusId = (ushort)(param1 & ushort.MaxValue),
+                    });
+
                 break;
-            case Server_ActorControlCategory.Death:
-                this.CombatEvent?.Invoke(this, new CombatEvent.Death
-                {
-                    ActorId = actorId,
-                    SourceId = p->param1,
-                });
-                break;
-            case Server_ActorControlCategory.TargetIcon:
-                this.EventActorControlTargetIcon?.Invoke(this, (actorId, (uint)(p->param1 - this.unkDelta)));
-                break;
-            case Server_ActorControlCategory.Tether:
-                this.EventActorControlTether?.Invoke(this, (actorId, p->param3, p->param2));
-                break;
-            case Server_ActorControlCategory.UpdateEffect:
+            case ActorControlCategory.LoseEffect: // lose status effect, seen param2=param4=0, param3=invalid-oid
                 if (this.Debug)
                 {
-                    this.Log($"[Network] -- update {this.utils.StatusString(p->param1)}");
+                    this.Log($"[Network] -- lost {this.utils.StatusString(param1)}");
                 }
 
-                break;
-            case Server_ActorControlCategory.GainEffect: // gain status effect, seen param3=param4=0
-                if (this.Debug)
-                {
-                    this.Log($"[Network] -- gained {this.utils.StatusString(p->param1)}, extra={p->param2:X4}");
-                }
-
-                this.CombatEvent?.Invoke(this, new CombatEvent.StatusEffect
-                {
-                    ActorId = actorId,
-                    Grain = true,
-                    StatusId = (ushort)(p->param1 & ushort.MaxValue),
-                });
-
-                break;
-            case Server_ActorControlCategory.LoseEffect: // lose status effect, seen param2=param4=0, param3=invalid-oid
-                if (this.Debug)
-                {
-                    this.Log($"[Network] -- lost {this.utils.StatusString(p->param1)}");
-                }
-
-                this.CombatEvent?.Invoke(this, new CombatEvent.StatusEffect
-                {
-                    ActorId = actorId,
-                    Grain = false,
-                    StatusId = (ushort)(p->param1 & ushort.MaxValue),
-                    SourceId = p->param3,
-                });
-                break;
-        }
-    }
-
-    private unsafe void HandleActorControlSelf(Server_ActorControlSelf* p, uint actorID)
-    {
-        if (this.Debug)
-        {
-            // this.Log($"[Network] Self - cat={p->category.AsText()}|{((ActorControlCategory)p->category).AsText()}, params={p->param1:X8} {p->param2:X8} {p->param3:X8} {p->param4:X8} {p->param5:X8} {p->param6:X8} {p->padding1:X8}, unk={p->padding:X4}");
-        }
-
-        switch (p->category)
-        {
-            case Server_ActorControlCategory.DirectorUpdate:
-                break;
-            case Server_ActorControlCategory.LimitBreak:
+                this.CombatEvent?.Invoke(
+                    this,
+                    new CombatEvent.StatusEffect
+                    {
+                        ActorId = actorId,
+                        Grain = false,
+                        StatusId = (ushort)(param1 & ushort.MaxValue),
+                        SourceId = param3,
+                    });
                 break;
         }
     }
