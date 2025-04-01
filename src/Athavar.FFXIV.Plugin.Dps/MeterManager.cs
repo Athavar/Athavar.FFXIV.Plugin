@@ -45,7 +45,7 @@ internal sealed class MeterManager : IDisposable
         this.pluginWindow = pluginWindow;
         this.opcodeManager = opcodeManager;
 
-        this.MissingOpCodes = this.requiredOpcodes;
+        this.MissingOpCodes = []; // this.requiredOpcodes;
         this.Load();
 
         this.services.PluginInterface.UiBuilder.Draw += this.Draw;
@@ -133,6 +133,7 @@ internal sealed class MeterManager : IDisposable
 
     private bool CheckRequiredOpcodes()
     {
+        return true;
         if (this.MissingOpCodes.Length == 0)
         {
             return true;
