@@ -17,7 +17,7 @@ on:
       - LICENSE
 
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
 
 env:
   PUBLIC_NAME: "Athavar's Tools"
