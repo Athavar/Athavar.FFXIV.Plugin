@@ -13,6 +13,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Microsoft.Extensions.DependencyInjection;
+using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 public static class DependencyInjection
 {
@@ -26,7 +27,9 @@ public static class DependencyInjection
            .AddSingleton<IGearsetManager, GearsetManager>()
            .AddSingleton<IChatManager, ChatManager>()
            .AddSingleton<EquipmentScanner>()
-           .AddSingleton<IDefinitionManager, DefinitionManager>()
+           .AddSingleton<DefinitionManager>()
+           .AddSingleton<IDefinitionManager>(sp => sp.GetRequiredService<DefinitionManager>())
+           .AddSingleton<Models.Interfaces.Manager.IDefinitionManager>(sp => sp.GetRequiredService<DefinitionManager>())
            .AddSingleton<IFontsManager, FontsManager>()
            .AddSingleton<IIpcManager, IpcManager>()
            .AddSingleton<IFrameworkManager, FrameworkManager>()

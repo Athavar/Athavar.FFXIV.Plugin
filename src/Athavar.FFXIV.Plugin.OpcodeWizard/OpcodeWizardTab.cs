@@ -6,7 +6,6 @@ namespace Athavar.FFXIV.Plugin.OpcodeWizard;
 
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
@@ -14,6 +13,7 @@ using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
 using Dalamud.Interface;
 using ImGuiNET;
+using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 internal sealed class OpcodeWizardTab : Tab
 {

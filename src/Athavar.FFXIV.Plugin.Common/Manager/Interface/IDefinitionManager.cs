@@ -6,15 +6,9 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
-using Dalamud.Common;
 
-public interface IDefinitionManager
+public interface IDefinitionManager : Models.Interfaces.Manager.IDefinitionManager
 {
-    /// <summary>
-    ///     Gets the <see cref="DalamudStartInfo"/> of dalamud.
-    /// </summary>
-    DalamudStartInfo StartInfo { get; }
-
     /// <summary>
     ///     Gets an <see cref="Action"/> by Id.
     /// </summary>

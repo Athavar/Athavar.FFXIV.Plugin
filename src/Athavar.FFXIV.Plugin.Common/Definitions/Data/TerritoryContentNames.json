@@ -1,0 +1,4826 @@
+{
+  "142": {
+    "E": "the Dragon\u0027s Neck",
+    "G": "Das Drachenhals-Kolosseum",
+    "F": "le Col du dragon",
+    "J": "\u30A2\u30DE\u30B8\u30CA\u676F\u95D8\u6280\u4F1A\u6C7A\u52DD\u6226"
+  },
+  "143": {
+    "E": "the Steps of Faith",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "149": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "150": {
+    "E": "the Keeper of the Lake",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "151": {
+    "E": "the World of Darkness",
+    "G": "Die Welt der Dunkelheit",
+    "F": "la Tour de Cristal - Monde des T\u00E9n\u00E8bres",
+    "J": "\u30AF\u30EA\u30B9\u30BF\u30EB\u30BF\u30EF\u30FC\uFF1A\u95C7\u306E\u4E16\u754C"
+  },
+  "157": {
+    "E": "Sastasha",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "158": {
+    "E": "Brayflox\u0027s Longstop",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "159": {
+    "E": "the Wanderer\u0027s Palace",
+    "G": "Palast des Wanderers",
+    "F": "le Palais du Vagabond",
+    "J": "\u65C5\u795E\u8056\u57DF \u30EF\u30F3\u30C0\u30E9\u30FC\u30D1\u30EC\u30B9"
+  },
+  "160": {
+    "E": "Pharos Sirius",
+    "G": "Pharos Sirius",
+    "F": "le Phare de Sirius",
+    "J": "\u602A\u9CE5\u5DE8\u5854 \u30B7\u30EA\u30A6\u30B9\u5927\u706F\u53F0"
+  },
+  "161": {
+    "E": "Copperbell Mines",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "162": {
+    "E": "Halatali",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "163": {
+    "E": "the Sunken Temple of Qarn",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "164": {
+    "E": "the Tam\u2013Tara Deepcroft",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "166": {
+    "E": "Haukke Manor",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "167": {
+    "E": "Amdapor Keep",
+    "G": "Die Ruinen von Amdapor",
+    "F": "le Ch\u00E2teau d\u0027Amdapor",
+    "J": "\u90AA\u6559\u6392\u6483 \u53E4\u57CE\u30A2\u30E0\u30C0\u30D7\u30FC\u30EB"
+  },
+  "168": {
+    "E": "the Stone Vigil",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "169": {
+    "E": "the Thousand Maws of Toto\u2013Rak",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "170": {
+    "E": "Cutter\u0027s Cry",
+    "G": "Sägerschrei",
+    "F": "le Gouffre hurlant",
+    "J": "\u6D41\u7802\u8FF7\u5BAE \u30AB\u30C3\u30BF\u30FC\u30BA\u30AF\u30E9\u30A4"
+  },
+  "171": {
+    "E": "Dzemael Darkhold",
+    "G": "Die Feste Dzemael",
+    "F": "la Forteresse de Dzemael",
+    "J": "\u6383\u8A0E\u4F5C\u6226 \u30BC\u30FC\u30E1\u30EB\u8981\u585E"
+  },
+  "172": {
+    "E": "the Aurum Vale",
+    "G": "Goldklamm",
+    "F": "le Val d\u0027Aurum",
+    "J": "\u9727\u4E2D\u884C\u8ECD \u30AA\u30FC\u30E9\u30E0\u30F4\u30A7\u30A4\u30EB"
+  },
+  "174": {
+    "E": "the Labyrinth of the Ancients",
+    "G": "Kristallturm - Das Labyrinth der Alten",
+    "F": "la Tour de Cristal - D\u00E9dale antique",
+    "J": "\u30AF\u30EA\u30B9\u30BF\u30EB\u30BF\u30EF\u30FC\uFF1A\u53E4\u4EE3\u306E\u6C11\u306E\u8FF7\u5BAE"
+  },
+  "188": {
+    "E": "the Wanderer\u0027s Palace (Hard)",
+    "G": "Palast des Wanderers (schwer)",
+    "F": "le Palais du Vagabond (brutal)",
+    "J": "\u6B66\u88C5\u8056\u57DF \u30EF\u30F3\u30C0\u30E9\u30FC\u30D1\u30EC\u30B9 (Hard)"
+  },
+  "189": {
+    "E": "Amdapor Keep (Hard)",
+    "G": "Die Ruinen von Amdapor (schwer)",
+    "F": "le Ch\u00E2teau d\u0027Amdapor (brutal)",
+    "J": "\u90AA\u5FF5\u6392\u6483 \u53E4\u57CE\u30A2\u30E0\u30C0\u30D7\u30FC\u30EB (Hard)"
+  },
+  "190": {
+    "E": "Under the Armor",
+    "G": "Bockmanns Gefolge",
+    "F": "Chasse au fant\u00F4me fantoche",
+    "J": "\u5F77\u5FA8\u3046\u6B7B\u970A\u3092\u8A0E\u3066\uFF01"
+  },
+  "191": {
+    "E": "Pulling Poison Posies",
+    "G": "Unkraut jäten",
+    "F": "Op\u00E9ration fleurs du mal",
+    "J": "\u6709\u6BD2\u5996\u82B1\u3092\u99C6\u9664\u305B\u3088\uFF01"
+  },
+  "192": {
+    "E": "Stinging Back",
+    "G": "Ins Wespennest stechen",
+    "F": "Exp\u00E9dition punitive contre les Ventrerouge",
+    "J": "\u7121\u6CD5\u8005\u300C\u4F3C\u6211\u8702\u56E3\u300D\u3092\u6483\u6EC5\u305B\u3088\uFF01"
+  },
+  "193": {
+    "E": "the Final Coil of Bahamut - Turn 1",
+    "G": "Verschlungene Schatten 3 - 1",
+    "F": "l\u0027Ab\u00EEme de Bahamut I",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u771F\u6210\u7DE81"
+  },
+  "194": {
+    "E": "the Final Coil of Bahamut - Turn 2",
+    "G": "Verschlungene Schatten 3 - 2",
+    "F": "l\u0027Ab\u00EEme de Bahamut II",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u771F\u6210\u7DE82"
+  },
+  "195": {
+    "E": "the Final Coil of Bahamut - Turn 3",
+    "G": "Verschlungene Schatten 3 - 3",
+    "F": "l\u0027Ab\u00EEme de Bahamut III",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u771F\u6210\u7DE83"
+  },
+  "196": {
+    "E": "the Final Coil of Bahamut - Turn 4",
+    "G": "Verschlungene Schatten 3 - 4",
+    "F": "l\u0027Ab\u00EEme de Bahamut IV",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u771F\u6210\u7DE84"
+  },
+  "202": {
+    "E": "the Bowl of Embers",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "206": {
+    "E": "the Navel",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "207": {
+    "E": "Thornmarch (Hard)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "208": {
+    "E": "the Howling Eye",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "214": {
+    "E": "Basic Training: Enemy Parties",
+    "G": "Einer für alle, alle für einen",
+    "F": "Entra\u00EEnement\u00A0: groupes d\u0027ennemis",
+    "J": "\u96C6\u56E3\u6226\u8A13\u7DF4\u3092\u304F\u3050\u308A\u629C\u3051\u308D\uFF01"
+  },
+  "215": {
+    "E": "Basic Training: Enemy Strongholds",
+    "G": "Sturmkommando",
+    "F": "Entra\u00EEnement\u00A0: infiltration en base ennemie",
+    "J": "\u5168\u95A2\u9580\u3092\u7A81\u7834\u3057\u3001\u6700\u6DF1\u90E8\u306E\u6575\u3092\u8A0E\u3066\uFF01"
+  },
+  "216": {
+    "E": "Hero on the Half Shell",
+    "G": "Gil oder Leben",
+    "F": "Reconqu\u00EAte d\u0027une carapace escamot\u00E9e",
+    "J": "\u30AE\u30EB\u30AC\u30E1\u3092\u6355\u7372\u305B\u3088\uFF01"
+  },
+  "217": {
+    "E": "Castrum Meridianum",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "219": {
+    "E": "Flicking Sticks and Taking Names",
+    "G": "Bombige Goblins",
+    "F": "Les Gobelins bombardiers",
+    "J": "\u7206\u5F3E\u9B54\u30B4\u30D6\u30EA\u30F3\u8ECD\u56E3\u3092\u6483\u6EC5\u305B\u3088\uFF01"
+  },
+  "220": {
+    "E": "All\u0027s Well that Ends in the Well",
+    "G": "Briaxio ausschalten",
+    "F": "Briaxio \u00E0 bras raccourcis",
+    "J": "\u5922\u5E7B\u306E\u30D6\u30E9\u30AD\u30B7\u30AA\u3092\u8A0E\u3066\uFF01"
+  },
+  "221": {
+    "E": "More than a Feeler",
+    "G": "Tödliches Rankenspiel",
+    "F": "Sus au morbol pollueur",
+    "J": "\u6C5A\u67D3\u6E90\u30E2\u30EB\u30DC\u30EB\u3092\u8A0E\u3066\uFF01"
+  },
+  "222": {
+    "E": "Annoy the Void",
+    "G": "Gefahr aus dem Nichts",
+    "F": "Buso l\u0027immolateur",
+    "J": "\u5751\u9053\u306B\u73FE\u308C\u305F\u5996\u7570\u30D6\u30BD\u3092\u8A0E\u3066\uFF01"
+  },
+  "223": {
+    "E": "Shadow and Claw",
+    "G": "Kampf gegen Schatten",
+    "F": "Ombres et griffes",
+    "J": "\u7121\u6575\u306E\u7737\u5C5E\u3092\u5F93\u3048\u3057\u3001\u5927\u578B\u5996\u7570\u3092\u8A0E\u3066\uFF01"
+  },
+  "224": {
+    "E": "the Praetorium",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "225": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "226": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "227": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "228": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "229": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "230": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "231": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "232": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "233": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "234": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "235": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "236": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "237": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "238": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "239": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "240": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "241": {
+    "E": "the Binding Coil of Bahamut - Turn 1",
+    "G": "Verschlungene Schatten 1",
+    "F": "le Labyrinthe de Bahamut I",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u9082\u9005\u7DE81"
+  },
+  "242": {
+    "E": "the Binding Coil of Bahamut - Turn 2",
+    "G": "Verschlungene Schatten 2",
+    "F": "le Labyrinthe de Bahamut II",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u9082\u9005\u7DE82"
+  },
+  "243": {
+    "E": "the Binding Coil of Bahamut - Turn 3",
+    "G": "Verschlungene Schatten 3",
+    "F": "le Labyrinthe de Bahamut III",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u9082\u9005\u7DE83"
+  },
+  "244": {
+    "E": "the Binding Coil of Bahamut - Turn 4",
+    "G": "Verschlungene Schatten 4",
+    "F": "le Labyrinthe de Bahamut IV",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u9082\u9005\u7DE84"
+  },
+  "245": {
+    "E": "the Binding Coil of Bahamut - Turn 5",
+    "G": "Verschlungene Schatten 5",
+    "F": "le Labyrinthe de Bahamut V",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u9082\u9005\u7DE85"
+  },
+  "248": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "249": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "251": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "252": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "253": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "254": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "255": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "256": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "257": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "258": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "259": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "260": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "261": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "262": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "263": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "264": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "265": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "266": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "267": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "268": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "269": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "270": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "271": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "272": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "273": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "274": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "275": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "277": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "278": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "279": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "280": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "281": {
+    "E": "the Whorleater (Hard)",
+    "G": "Götterdämmerung - Leviathan",
+    "F": "le Briseur de mar\u00E9es (brutal)",
+    "J": "\u771F\u30EA\u30F4\u30A1\u30A4\u30A2\u30B5\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "285": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "286": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "287": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "288": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "289": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "290": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "291": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "292": {
+    "E": "the Bowl of Embers (Hard)",
+    "G": "Götterdämmerung - Ifrit",
+    "F": "le Crat\u00E8re des tisons (brutal)",
+    "J": "\u771F\u30A4\u30D5\u30EA\u30FC\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "293": {
+    "E": "the Navel (Hard)",
+    "G": "Götterdämmerung - Titan",
+    "F": "le Nombril (brutal)",
+    "J": "\u771F\u30BF\u30A4\u30BF\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "294": {
+    "E": "the Howling Eye (Hard)",
+    "G": "Götterdämmerung - Garuda",
+    "F": "Hurl\u0153il (brutal)",
+    "J": "\u771F\u30AC\u30EB\u30FC\u30C0\u8A0E\u6EC5\u6226"
+  },
+  "295": {
+    "E": "the Bowl of Embers (Extreme)",
+    "G": "Zenit der Götter - Ifrit",
+    "F": "le Crat\u00E8re des tisons (extr\u00EAme)",
+    "J": "\u6975\u30A4\u30D5\u30EA\u30FC\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "296": {
+    "E": "the Navel (Extreme)",
+    "G": "Zenit der Götter - Titan",
+    "F": "le Nombril (extr\u00EAme)",
+    "J": "\u6975\u30BF\u30A4\u30BF\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "297": {
+    "E": "the Howling Eye (Extreme)",
+    "G": "Zenit der Götter - Garuda",
+    "F": "Hurl\u0153il (extr\u00EAme)",
+    "J": "\u6975\u30AC\u30EB\u30FC\u30C0\u8A0E\u6EC5\u6226"
+  },
+  "298": {
+    "E": "Long Live the Queen",
+    "G": "Miss Bombastic",
+    "F": "Longue vie \u00E0 la Reine",
+    "J": "\u30DC\u30E0\u3092\u7387\u3044\u308B\u300C\u30DC\u30E0\u30AF\u30A4\u30FC\u30F3\u300D\u3092\u8A0E\u3066\uFF01"
+  },
+  "299": {
+    "E": "Ward Up",
+    "G": "Unzertrennlich",
+    "F": "Quintettes infernaux",
+    "J": "\u4E0D\u6C17\u5473\u306A\u9663\u5F62\u3092\u7D44\u3080\u5996\u7570\u3092\u305B\u3093\u6EC5\u305B\u3088\uFF01"
+  },
+  "300": {
+    "E": "Solemn Trinity",
+    "G": "Wuchtige Dreifaltigkeit",
+    "F": "Trinit\u00E9 sinistre",
+    "J": "\u4E09\u3064\u5DF4\u306E\u5DE8\u4EBA\u65CF\u3092\u5236\u3057\u3001\u907A\u7269\u3092\u5B88\u308C\uFF01"
+  },
+  "301": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "302": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "303": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "304": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "305": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "306": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "307": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "308": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "309": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "310": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "311": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "312": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "313": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "314": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "315": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "316": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "317": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "318": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "319": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "320": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "321": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "322": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "323": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "324": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "325": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "326": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "327": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "328": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "329": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "330": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "332": {
+    "E": "Cape Westwind",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "348": {
+    "E": "the Minstrel\u0027s Ballad: Ultima\u0027s Bane",
+    "G": "Heldenlied von Ultima",
+    "F": "le fl\u00E9au d\u0027Ultima",
+    "J": "\u7A76\u6975\u5E7B\u60F3 \u30A2\u30EB\u30C6\u30DE\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "349": {
+    "E": "Copperbell Mines (Hard)",
+    "G": "Kupferglocken-Mine (schwer)",
+    "F": "les Mines de Clochecuivre (brutal)",
+    "J": "\u9A12\u4E71\u5751\u9053 \u30AB\u30C3\u30D1\u30FC\u30D9\u30EB\u9285\u5C71 (Hard)"
+  },
+  "350": {
+    "E": "Haukke Manor (Hard)",
+    "G": "Haukke-Herrenhaus (schwer)",
+    "F": "le Manoir des Haukke (brutal)",
+    "J": "\u5996\u7570\u5C4B\u6577 \u30CF\u30A6\u30B1\u30BF\u5FA1\u7528\u90B8 (Hard)"
+  },
+  "353": {
+    "E": "Special Event I",
+    "G": "Event-Inhalt 1",
+    "F": "D\u00E9fi sp\u00E9cial I",
+    "J": "\u30A4\u30D9\u30F3\u30C8\u7528\u30B3\u30F3\u30C6\u30F3\u30C4\uFF1A1"
+  },
+  "354": {
+    "E": "Special Event II",
+    "G": "Event-Inhalt 2",
+    "F": "D\u00E9fi sp\u00E9cial II",
+    "J": "\u30A4\u30D9\u30F3\u30C8\u7528\u30B3\u30F3\u30C6\u30F3\u30C4\uFF1A2"
+  },
+  "355": {
+    "E": "the Second Coil of Bahamut - Turn 1",
+    "G": "Verschlungene Schatten 2 - 1",
+    "F": "les M\u00E9andres de Bahamut I",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u4FB5\u653B\u7DE81"
+  },
+  "356": {
+    "E": "the Second Coil of Bahamut - Turn 2",
+    "G": "Verschlungene Schatten 2 - 2",
+    "F": "les M\u00E9andres de Bahamut II",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u4FB5\u653B\u7DE82"
+  },
+  "357": {
+    "E": "the Second Coil of Bahamut - Turn 3",
+    "G": "Verschlungene Schatten 2 - 3",
+    "F": "les M\u00E9andres de Bahamut III",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u4FB5\u653B\u7DE83"
+  },
+  "358": {
+    "E": "the Second Coil of Bahamut - Turn 4",
+    "G": "Verschlungene Schatten 2 - 4",
+    "F": "les M\u00E9andres de Bahamut IV",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\uFF1A\u4FB5\u653B\u7DE84"
+  },
+  "359": {
+    "E": "the Whorleater (Extreme)",
+    "G": "Zenit der Götter - Leviathan",
+    "F": "le Briseur de mar\u00E9es (extr\u00EAme)",
+    "J": "\u6975\u30EA\u30F4\u30A1\u30A4\u30A2\u30B5\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "360": {
+    "E": "Halatali (Hard)",
+    "G": "Halatali (schwer)",
+    "F": "Halatali (brutal)",
+    "J": "\u5263\u95D8\u9818\u57DF \u30CF\u30E9\u30BF\u30EA\u4FEE\u7DF4\u6240 (Hard)"
+  },
+  "361": {
+    "E": "Hullbreaker Isle",
+    "G": "Schiffbrecher-Insel",
+    "F": "l\u0027\u00CEle de Cr\u00E8vecar\u00E8ne",
+    "J": "\u8CA1\u5B9D\u4F1D\u8AAC \u30CF\u30EB\u30D6\u30EC\u30FC\u30AB\u30FC\u30FB\u30A2\u30A4\u30EB"
+  },
+  "362": {
+    "E": "Brayflox\u0027s Longstop (Hard)",
+    "G": "Brüllvolx\u0027 Langrast (schwer)",
+    "F": "le Bivouac de Brayflox (brutal)",
+    "J": "\u76DF\u53CB\u652F\u63F4 \u30D6\u30EC\u30A4\u30D5\u30ED\u30AF\u30B9\u306E\u91CE\u55B6\u5730 (Hard)"
+  },
+  "363": {
+    "E": "the Lost City of Amdapor",
+    "G": "Historisches Amdapor",
+    "F": "les Vestiges de la cit\u00E9 d\u0027Amdapor",
+    "J": "\u8150\u6557\u907A\u8DE1 \u53E4\u30A2\u30E0\u30C0\u30D7\u30FC\u30EB\u5E02\u8857"
+  },
+  "364": {
+    "E": "Thornmarch (Extreme)",
+    "G": "Königliche Konfrontation (extrem)",
+    "F": "la Lisi\u00E8re de ronces (extr\u00EAme)",
+    "J": "\u6975\u738B\u30E2\u30B0\u30EB\u30FB\u30E2\u30B0XII\u4E16\u8A0E\u6EC5\u6226"
+  },
+  "365": {
+    "E": "the Stone Vigil (Hard)",
+    "G": "Steinerne Wacht (schwer)",
+    "F": "le Vigile de Pierre (brutal)",
+    "J": "\u57CE\u585E\u596A\u56DE \u30B9\u30C8\u30FC\u30F3\u30F4\u30A3\u30B8\u30EB (Hard)"
+  },
+  "366": {
+    "E": "Battle on the Big Bridge",
+    "G": "Duell auf der gro\u00DFen Brücke",
+    "F": "Affrontement sur le grand pont",
+    "J": "\u30AE\u30EB\u30AC\u30E1\u30C3\u30B7\u30E5\u8A0E\u4F10\u6226"
+  },
+  "367": {
+    "E": "the Sunken Temple of Qarn (Hard)",
+    "G": "Versunkener Tempel von Qarn (schwer)",
+    "F": "le Temple enseveli de Qarn (brutal)",
+    "J": "\u907A\u8DE1\u6551\u63F4 \u30AB\u30EB\u30F3\u57CB\u6CA1\u5BFA\u9662 (Hard)"
+  },
+  "368": {
+    "E": "A Relic Reborn: the Chimera",
+    "G": "Kampf gegen die Dhorme-Chimära",
+    "F": "la chim\u00E8re dhorme du Coerthas",
+    "J": "\u30C9\u30EB\u30E0\u30AD\u30DE\u30A4\u30E9\u8A0E\u4F10\u6226"
+  },
+  "369": {
+    "E": "A Relic Reborn: the Hydra",
+    "G": "Kampf gegen die Hydra",
+    "F": "l\u0027hydre d\u0027Halatali",
+    "J": "\u30CF\u30A4\u30C9\u30E9\u8A0E\u4F10\u6226"
+  },
+  "371": {
+    "E": "Snowcloak",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "372": {
+    "E": "Syrcus Tower",
+    "G": "Kristallturm - Der Syrcus-Turm",
+    "F": "la Tour de Cristal - Tour de Syrcus",
+    "J": "\u30AF\u30EA\u30B9\u30BF\u30EB\u30BF\u30EF\u30FC\uFF1A\u30B7\u30EB\u30AF\u30B9\u306E\u5854"
+  },
+  "373": {
+    "E": "the Tam-Tara Deepcroft (Hard)",
+    "G": "Totenacker Tam-Tara (schwer)",
+    "F": "l\u0027Hypog\u00E9e de Tam-Tara (brutal)",
+    "J": "\u60E8\u5287\u970A\u6BBF \u30BF\u30E0\u30BF\u30E9\u306E\u5893\u6240 (Hard)"
+  },
+  "374": {
+    "E": "the Striking Tree (Hard)",
+    "G": "Götterdämmerung - Ramuh",
+    "F": "l\u0027Arbre du jugement (brutal)",
+    "J": "\u771F\u30E9\u30E0\u30A6\u8A0E\u6EC5\u6226"
+  },
+  "375": {
+    "E": "the Striking Tree (Extreme)",
+    "G": "Zenit der Götter - Ramuh",
+    "F": "l\u0027Arbre du jugement (extr\u00EAme)",
+    "J": "\u6975\u30E9\u30E0\u30A6\u8A0E\u6EC5\u6226"
+  },
+  "376": {
+    "E": "the Borderland Ruins (Secure)",
+    "G": "\u00C4u\u00DFere Ruinen (Sicherung)",
+    "F": "les Ruines frontali\u00E8res (annexion)",
+    "J": "\u5916\u7E01\u907A\u8DE1\u7FA4 (\u5236\u5727\u6226)"
+  },
+  "377": {
+    "E": "the Akh Afah Amphitheatre (Hard)",
+    "G": "Götterdämmerung - Shiva",
+    "F": "l\u0027Amphith\u00E9\u00E2tre d\u0027Akh Afah (brutal)",
+    "J": "\u771F\u30B7\u30F4\u30A1\u8A0E\u6EC5\u6226"
+  },
+  "378": {
+    "E": "the Akh Afah Amphitheatre (Extreme)",
+    "G": "Zenit der Götter - Shiva",
+    "F": "l\u0027Amphith\u00E9\u00E2tre d\u0027Akh Afah (extr\u00EAme)",
+    "J": "\u6975\u30B7\u30F4\u30A1\u8A0E\u6EC5\u6226"
+  },
+  "379": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "380": {
+    "E": "the Second Coil of Bahamut (Savage) - Turn 1",
+    "G": "Verschlungene Schatten 2 - 1 (episch)",
+    "F": "les M\u00E9andres de Bahamut I (sadique)",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\u96F6\u5F0F\uFF1A\u4FB5\u653B\u7DE81"
+  },
+  "381": {
+    "E": "the Second Coil of Bahamut (Savage) - Turn 2",
+    "G": "Verschlungene Schatten 2 - 2 (episch)",
+    "F": "les M\u00E9andres de Bahamut II (sadique)",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\u96F6\u5F0F\uFF1A\u4FB5\u653B\u7DE82"
+  },
+  "382": {
+    "E": "the Second Coil of Bahamut (Savage) - Turn 3",
+    "G": "Verschlungene Schatten 2 - 3 (episch)",
+    "F": "les M\u00E9andres de Bahamut III (sadique)",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\u96F6\u5F0F\uFF1A\u4FB5\u653B\u7DE83"
+  },
+  "383": {
+    "E": "the Second Coil of Bahamut (Savage) - Turn 4",
+    "G": "Verschlungene Schatten 2 - 4 (episch)",
+    "F": "les M\u00E9andres de Bahamut IV (sadique)",
+    "J": "\u5927\u8FF7\u5BAE\u30D0\u30CF\u30E0\u30FC\u30C8\u96F6\u5F0F\uFF1A\u4FB5\u653B\u7DE84"
+  },
+  "387": {
+    "E": "Sastasha (Hard)",
+    "G": "Sastasha (schwer)",
+    "F": "Sastasha (brutal)",
+    "J": "\u9006\u8972\u8981\u5BB3 \u30B5\u30B9\u30BF\u30B7\u30E3\u6D78\u98DF\u6D1E (Hard)"
+  },
+  "394": {
+    "E": "Urth\u0027s Fount",
+    "G": "Jenseits Urths Quelle",
+    "F": "la Fontaine d\u0027Urth",
+    "J": "\u95D8\u795E\u30AA\u30FC\u30C7\u30A3\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "396": {
+    "E": "Battle in the Big Keep",
+    "G": "Revanche in den Ruinen",
+    "F": "Revanche au vieux ch\u00E2teau",
+    "J": "\u771F\u30AE\u30EB\u30AC\u30E1\u30C3\u30B7\u30E5\u8A0E\u6EC5\u6226"
+  },
+  "403": {
+    "E": "Return of the Bull",
+    "G": "Verrat der Qalyana",
+    "F": "Retour au bercail",
+    "J": "\u82F1\u96C4\u306E\u5E30\u9084"
+  },
+  "404": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "405": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "406": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "407": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "408": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "409": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "410": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "411": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "412": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "413": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "414": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "415": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "416": {
+    "E": "the Great Gubal Library",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "420": {
+    "E": "Neverreap",
+    "G": "Nimmerreich",
+    "F": "Nalloncques",
+    "J": "\u795E\u57DF\u6D6E\u5CF6 \u30CD\u30D0\u30FC\u30EA\u30FC\u30D7"
+  },
+  "421": {
+    "E": "the Vault",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "426": {
+    "E": "the Chrysalis",
+    "G": "Chrysalis",
+    "F": "La Chrysalide",
+    "J": "\u30A2\u30B7\u30A8\u30F3\u30FB\u30CA\u30D7\u30EA\u30A2\u30EC\u30B9\u8A0E\u4F10\u6226"
+  },
+  "430": {
+    "E": "the Fractal Continuum",
+    "G": "Die Fraktal-Kontinuum",
+    "F": "Le Continuum fractal",
+    "J": "\u535A\u7269\u6226\u8266 \u30D5\u30E9\u30AF\u30BF\u30EB\u30FB\u30B3\u30F3\u30C6\u30A3\u30CB\u30A2\u30E0"
+  },
+  "431": {
+    "E": "Seal Rock (Seize)",
+    "G": "Robbenholm (Eroberung)",
+    "F": "le Rocher des tr\u00E9fonds (invasion)",
+    "J": "\u30B7\u30FC\u30EB\u30ED\u30C3\u30AF (\u4E89\u596A\u6226)"
+  },
+  "432": {
+    "E": "Thok ast Thok (Hard)",
+    "G": "Götterdämmerung - Ravana",
+    "F": "Thok ast Thok (brutal)",
+    "J": "\u771F\u30E9\u30FC\u30F4\u30A1\u30CA\u8A0E\u6EC5\u6226"
+  },
+  "434": {
+    "E": "the Dusk Vigil",
+    "G": "Abendrot-Wacht",
+    "F": "le Vigile du Cr\u00E9puscule",
+    "J": "\u5EC3\u7826\u635C\u7D22 \u30C0\u30B9\u30AF\u30F4\u30A3\u30B8\u30EB"
+  },
+  "435": {
+    "E": "the Aery",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "436": {
+    "E": "the Limitless Blue (Hard)",
+    "G": "Götterdämmerung - Bismarck",
+    "F": "L\u0027Immensit\u00E9 bleue (brutal)",
+    "J": "\u771F\u30D3\u30B9\u30DE\u30EB\u30AF\u8A0E\u6EC5\u6226"
+  },
+  "437": {
+    "E": "the Singularity Reactor",
+    "G": "Singularitäts-Reaktor",
+    "F": "le R\u00E9acteur de singularit\u00E9",
+    "J": "\u30CA\u30A4\u30C4\u30FB\u30AA\u30D6\u30FB\u30E9\u30A6\u30F3\u30C9\u8A0E\u6EC5\u6226"
+  },
+  "438": {
+    "E": "the Aetherochemical Research Facility",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "441": {
+    "E": "Sohm Al",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "442": {
+    "E": "Alexander - The Fist of the Father",
+    "G": "Alexander - Faust des Vaters",
+    "F": "Alexander - Le Poing du P\u00E8re",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u8D77\u52D5\u7DE81"
+  },
+  "443": {
+    "E": "Alexander - The Cuff of the Father",
+    "G": "Alexander - Elle des Vaters",
+    "F": "Alexander - Le Poignet du P\u00E8re",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u8D77\u52D5\u7DE82"
+  },
+  "444": {
+    "E": "Alexander - The Arm of the Father",
+    "G": "Alexander - Arm des Vaters",
+    "F": "Alexander - Le Bras du P\u00E8re",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u8D77\u52D5\u7DE83"
+  },
+  "445": {
+    "E": "Alexander - The Burden of the Father",
+    "G": "Alexander - Last des Vaters",
+    "F": "Alexander - Le Fardeau du P\u00E8re",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u8D77\u52D5\u7DE84"
+  },
+  "446": {
+    "E": "Thok ast Thok (Extreme)",
+    "G": "Zenit der Götter - Ravana",
+    "F": "Thok ast Thok (extr\u00EAme)",
+    "J": "\u6975\u30E9\u30FC\u30F4\u30A1\u30CA\u8A0E\u6EC5\u6226"
+  },
+  "447": {
+    "E": "the Limitless Blue (Extreme)",
+    "G": "Zenit der Götter - Bismarck",
+    "F": "L\u0027Immensit\u00E9 bleue (extr\u00EAme)",
+    "J": "\u6975\u30D3\u30B9\u30DE\u30EB\u30AF\u8A0E\u6EC5\u6226"
+  },
+  "448": {
+    "E": "the Minstrel\u0027s Ballad: Thordan\u0027s Reign",
+    "G": "Heldenlied von Thordans Fall",
+    "F": "le r\u00E8gne de Thordan",
+    "J": "\u84BC\u5929\u5E7B\u60F3 \u30CA\u30A4\u30C4\u30FB\u30AA\u30D6\u30FB\u30E9\u30A6\u30F3\u30C9\u8A0E\u6EC5\u6226"
+  },
+  "449": {
+    "E": "Alexander - The Fist of the Father (Savage)",
+    "G": "Alexander - Faust des Vaters (episch)",
+    "F": "Alexander - Le Poing du P\u00E8re (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u8D77\u52D5\u7DE81"
+  },
+  "450": {
+    "E": "Alexander - The Cuff of the Father (Savage)",
+    "G": "Alexander - Elle des Vaters (episch)",
+    "F": "Alexander - Le Poignet du P\u00E8re (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u8D77\u52D5\u7DE82"
+  },
+  "451": {
+    "E": "Alexander - The Arm of the Father (Savage)",
+    "G": "Alexander - Arm des Vaters (episch)",
+    "F": "Alexander - Le Bras du P\u00E8re (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u8D77\u52D5\u7DE83"
+  },
+  "452": {
+    "E": "Alexander - The Burden of the Father (Savage)",
+    "G": "Alexander - Last des Vaters (episch)",
+    "F": "Alexander - Le Fardeau du P\u00E8re (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u8D77\u52D5\u7DE84"
+  },
+  "453": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "454": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "455": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "456": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "457": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "458": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "459": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "460": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "461": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "464": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "465": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "466": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "467": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "468": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "469": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "470": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "471": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "472": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "473": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "474": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "475": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "476": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "477": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "479": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "480": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "481": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "482": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "483": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "484": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "485": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "486": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "487": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "488": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "489": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "490": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "491": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "492": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "493": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "494": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "495": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "496": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "497": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "498": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "499": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "500": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "501": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "502": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "503": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "508": {
+    "E": "the Void Ark",
+    "G": "Die Nichts-Arche",
+    "F": "l\u0027Arche du n\u00E9ant",
+    "J": "\u9B54\u822A\u8239\u30F4\u30A9\u30A4\u30C9\u30A2\u30FC\u30AF"
+  },
+  "509": {
+    "E": "the Gilded Araya",
+    "G": "Prophetie - Asura",
+    "F": "Le temple dor\u00E9 d\u0027Araya",
+    "J": "\u30A2\u30B9\u30E9\u8A0E\u6EC5\u6226"
+  },
+  "510": {
+    "E": "Pharos Sirius (Hard)",
+    "G": "Pharos Sirius (schwer)",
+    "F": "le Phare de Sirius (brutal)",
+    "J": "\u5236\u5727\u5DE8\u5854 \u30B7\u30EA\u30A6\u30B9\u5927\u706F\u53F0 (Hard)"
+  },
+  "511": {
+    "E": "Saint Mocianne\u0027s Arboretum",
+    "G": "Sankt Mocianne-Arboretum",
+    "F": "l\u0027Arboretum Sainte-Mocianne",
+    "J": "\u8349\u6728\u5EAD\u5712 \u8056\u30E2\u30B7\u30E3\u30FC\u30CC\u690D\u7269\u5712"
+  },
+  "512": {
+    "E": "the Diadem (Easy)",
+    "G": "Das Diadem (leicht)",
+    "F": "Le Diad\u00E8me (facile)",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6 (Easy)"
+  },
+  "513": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "514": {
+    "E": "the Diadem",
+    "G": "Das Diadem",
+    "F": "Le Diad\u00E8me",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6"
+  },
+  "515": {
+    "E": "the Diadem (Hard)",
+    "G": "Das Diadem (schwer)",
+    "F": "Le Diad\u00E8me (brutal)",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6 (Hard)"
+  },
+  "516": {
+    "E": "the Antitower",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "517": {
+    "E": "Containment Bay S1T7",
+    "G": "Götterdämmerung - Sephirot",
+    "F": "Unit\u00E9 de contention S1P7",
+    "J": "\u9B54\u795E\u30BB\u30D5\u30A3\u30ED\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "519": {
+    "E": "the Lost City of Amdapor (Hard)",
+    "G": "Historisches Amdapor (schwer)",
+    "F": "les Vestiges de la cit\u00E9 d\u0027Amdapor (brutal)",
+    "J": "\u795E\u8056\u907A\u8DE1 \u53E4\u30A2\u30E0\u30C0\u30D7\u30FC\u30EB\u5E02\u8857 (Hard)"
+  },
+  "520": {
+    "E": "Alexander - The Fist of the Son",
+    "G": "Alexander - Faust des Sohnes",
+    "F": "Alexander - Le Poing du Fils",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5F8B\u52D5\u7DE81"
+  },
+  "521": {
+    "E": "Alexander - The Cuff of the Son",
+    "G": "Alexander - Elle des Sohnes",
+    "F": "Alexander - Le Poignet du Fils",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5F8B\u52D5\u7DE82"
+  },
+  "522": {
+    "E": "Alexander - The Arm of the Son",
+    "G": "Alexander - Arm des Sohnes",
+    "F": "Alexander - Le Bras du Fils",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5F8B\u52D5\u7DE83"
+  },
+  "523": {
+    "E": "Alexander - The Burden of the Son",
+    "G": "Alexander - Last des Sohnes",
+    "F": "Alexander - Le Fardeau du Fils",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5F8B\u52D5\u7DE84"
+  },
+  "524": {
+    "E": "Containment Bay S1T7 (Extreme)",
+    "G": "Zenit der Götter - Sephirot",
+    "F": "Unit\u00E9 de contention S1P7 (extr\u00EAme)",
+    "J": "\u6975\u9B54\u795E\u30BB\u30D5\u30A3\u30ED\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "525": {
+    "E": "the Feast (4 on 4 - Training)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "527": {
+    "E": "the Feast (4 on 4 - Ranked)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "529": {
+    "E": "Alexander - The Fist of the Son (Savage)",
+    "G": "Alexander - Faust des Sohnes (episch)",
+    "F": "Alexander - Le Poing du Fils (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5F8B\u52D5\u7DE81"
+  },
+  "530": {
+    "E": "Alexander - The Cuff of the Son (Savage)",
+    "G": "Alexander - Elle des Sohnes (episch)",
+    "F": "Alexander - Le Poignet du Fils (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5F8B\u52D5\u7DE82"
+  },
+  "531": {
+    "E": "Alexander - The Arm of the Son (Savage)",
+    "G": "Alexander - Arm des Sohnes (episch)",
+    "F": "Alexander - Le Bras du Fils (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5F8B\u52D5\u7DE83"
+  },
+  "532": {
+    "E": "Alexander - The Burden of the Son (Savage)",
+    "G": "Alexander - Last des Sohnes (episch)",
+    "F": "Alexander - Le Fardeau du Fils (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5F8B\u52D5\u7DE84"
+  },
+  "533": {
+    "E": "a Spectacle for the Ages",
+    "G": "Truppenübung der Eorzäischen Allianz",
+    "F": "La grande man\u0153uvre \u00E9orz\u00E9enne",
+    "J": "\u56DB\u56FD\u5408\u540C\u6F14\u7FD2"
+  },
+  "537": {
+    "E": "Avoid Area of Effect Attacks",
+    "G": "Flächenangriffen ausweichen",
+    "F": "\u00C9viter les attaques \u00E0 aire d\u0027effet",
+    "J": "\u7BC4\u56F2\u653B\u6483\u3092\u907F\u3051\u3088\u3046\uFF01"
+  },
+  "538": {
+    "E": "Execute a Combo to Increase Enmity",
+    "G": "Mit Kombos Feindseligkeit auf sich ziehen",
+    "F": "G\u00E9n\u00E9rer de l\u0027inimiti\u00E9 avec un combo",
+    "J": "\u30B3\u30F3\u30DC\u3067\u6575\u8996\u3092\u96C6\u3081\u3088\u3046\uFF01"
+  },
+  "539": {
+    "E": "Execute a Combo in Battle",
+    "G": "Kombos im Kampf einsetzen",
+    "F": "Effectuer le combo en combat",
+    "J": "\u5B9F\u6226\u3067\u30B3\u30F3\u30DC\u306B\u6311\u6226\u3057\u3088\u3046\uFF01"
+  },
+  "540": {
+    "E": "Accrue Enmity from Multiple Targets",
+    "G": "Feindseligkeit mehrerer Gegner auf sich ziehen",
+    "F": "Attirer l\u0027inimiti\u00E9 de plusieurs ennemis sur soi",
+    "J": "\u8907\u6570\u306E\u6575\u304B\u3089\u6575\u8996\u3092\u96C6\u3081\u3088\u3046\uFF01"
+  },
+  "541": {
+    "E": "Engage Multiple Targets",
+    "G": "Gegen mehrere Gegner auf einmal kämpfen",
+    "F": "Affronter plusieurs ennemis",
+    "J": "\u5B9F\u6226\u3067\u8907\u6570\u306E\u6575\u3068\u6226\u3063\u3066\u307F\u3088\u3046\uFF01"
+  },
+  "542": {
+    "E": "Execute a Ranged Attack to Increase Enmity",
+    "G": "Aus der Ferne Feindseligkeit auf sich ziehen",
+    "F": "G\u00E9n\u00E9rer de l\u0027inimiti\u00E9 \u00E0 distance",
+    "J": "\u9060\u8DDD\u96E2\u304B\u3089\u6575\u8996\u3092\u96C6\u3081\u3088\u3046\uFF01"
+  },
+  "543": {
+    "E": "Engage Enemy Reinforcements",
+    "G": "Feindliche Verstärkung aufhalten",
+    "F": "Faire face \u00E0 des renforts ennemis",
+    "J": "\u6575\u306E\u5897\u63F4\u306B\u5BFE\u5FDC\u3057\u3088\u3046\uFF01"
+  },
+  "544": {
+    "E": "Assist Allies in Defeating a Target",
+    "G": "Gegner gemeinsam besiegen",
+    "F": "Vaincre un ennemi en assistant des alli\u00E9s",
+    "J": "\u5473\u65B9\u3068\u5354\u529B\u3057\u3066\u6575\u3092\u5012\u305D\u3046\uFF01"
+  },
+  "545": {
+    "E": "Defeat an Occupied Target",
+    "G": "Den Gegner eines Verbündeten besiegen",
+    "F": "Vaincre un ennemi occup\u00E9 par un alli\u00E9",
+    "J": "\u5473\u65B9\u304C\u5F15\u304D\u3064\u3051\u3066\u3044\u308B\u6575\u3092\u5012\u305D\u3046\uFF01"
+  },
+  "546": {
+    "E": "Avoid Engaged Targets",
+    "G": "Angriffen ausweichen",
+    "F": "Combattre en \u00E9vitant les attaques ennemies",
+    "J": "\u6575\u306E\u653B\u6483\u3092\u907F\u3051\u306A\u304C\u3089\u6226\u304A\u3046\uFF01"
+  },
+  "547": {
+    "E": "Engage Enemy Reinforcements",
+    "G": "Feindliche Verstärkung aufhalten",
+    "F": "\u00C9liminer les renforts ennemis",
+    "J": "\u6575\u306E\u5897\u63F4\u306B\u5BFE\u5FDC\u3057\u3088\u3046\uFF01"
+  },
+  "548": {
+    "E": "Interact with the Battlefield",
+    "G": "Mit dem Gelände interagieren",
+    "F": "Interagir avec le d\u00E9cor en combat",
+    "J": "\u30AE\u30DF\u30C3\u30AF\u3092\u6D3B\u7528\u3057\u3066\u6226\u304A\u3046\uFF01"
+  },
+  "549": {
+    "E": "Heal an Ally",
+    "G": "Verbündete heilen",
+    "F": "Soigner un alli\u00E9",
+    "J": "\u5473\u65B9\u3092\u56DE\u5FA9\u3057\u3088\u3046\uFF01"
+  },
+  "550": {
+    "E": "Heal Multiple Allies",
+    "G": "Mehrere Verbündete heilen",
+    "F": "Soigner plusieurs alli\u00E9s",
+    "J": "\u8907\u6570\u306E\u5473\u65B9\u3092\u56DE\u5FA9\u3057\u3088\u3046\uFF01"
+  },
+  "551": {
+    "E": "Avoid Engaged Targets",
+    "G": "Angriffen ausweichen",
+    "F": "Combattre en \u00E9vitant les attaques ennemies",
+    "J": "\u6575\u306E\u653B\u6483\u3092\u907F\u3051\u306A\u304C\u3089\u6226\u304A\u3046\uFF01"
+  },
+  "552": {
+    "E": "Final Exercise",
+    "G": "Letzte \u00DCbung",
+    "F": "Exercice final",
+    "J": "\u6700\u7D42\u8A13\u7DF4\uFF01"
+  },
+  "554": {
+    "E": "the Fields of Glory (Shatter)",
+    "G": "Feld der Ehre (Zersplitterung)",
+    "F": "les Champs de la Gloire (brise-glace)",
+    "J": "\u30D5\u30A3\u30FC\u30EB\u30C9\u30FB\u30AA\u30D6\u30FB\u30B0\u30ED\u30FC\u30EA\u30FC (\u7815\u6C37\u6226)"
+  },
+  "555": {
+    "E": "Sohr Khai",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "556": {
+    "E": "the Weeping City of Mhach",
+    "G": "Die Stadt der Tränen",
+    "F": "la Cit\u00E9 d\u00E9fendue de Mhach",
+    "J": "\u7981\u5FCC\u90FD\u5E02\u30DE\u30CF"
+  },
+  "557": {
+    "E": "Hullbreaker Isle (Hard)",
+    "G": "Schiffbrecher-Insel (schwer)",
+    "F": "l\u0027\u00CEle de Cr\u00E8vecar\u00E8ne (brutal)",
+    "J": "\u9ED2\u6E26\u4F1D\u8AAC \u30CF\u30EB\u30D6\u30EC\u30FC\u30AB\u30FC\u30FB\u30A2\u30A4\u30EB (Hard)"
+  },
+  "558": {
+    "E": "the Aquapolis",
+    "G": "Aquapolis",
+    "F": "l\u0027Aquapole",
+    "J": "\u5B9D\u7269\u5EAB \u30A2\u30AF\u30A2\u30DD\u30EA\u30B9"
+  },
+  "559": {
+    "E": "the Final Steps of Faith",
+    "G": "Der letzte Schicksalsweg",
+    "F": "la Derni\u00E8re avanc\u00E9e de la Foi",
+    "J": "\u30CB\u30FC\u30BA\u30D8\u30C3\u30B0\u5F81\u7ADC\u6226"
+  },
+  "560": {
+    "E": "a Bloody Reunion",
+    "G": "Blutiges Wiedersehen",
+    "F": "Course-poursuite dans le laboratoire",
+    "J": "\u30EC\u30B0\u30E9\u30FB\u30F4\u30A1\u30F3\u30FB\u30D2\u30E5\u30C9\u30EB\u30B9\u8FFD\u6483\u6226"
+  },
+  "561": {
+    "E": "the Palace of the Dead (Floors 1-10)",
+    "G": "Palast der Toten (Ebenen 1-10)",
+    "F": "le Palais des morts (sous-sols 1-10)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B1\uFF5EB10"
+  },
+  "562": {
+    "E": "the Palace of the Dead (Floors 11-20)",
+    "G": "Palast der Toten (Ebenen 11-20)",
+    "F": "le Palais des morts (sous-sols 11-20)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B11\uFF5EB20"
+  },
+  "563": {
+    "E": "the Palace of the Dead (Floors 21-30)",
+    "G": "Palast der Toten (Ebenen 21-30)",
+    "F": "le Palais des morts (sous-sols 21-30)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B21\uFF5EB30"
+  },
+  "564": {
+    "E": "the Palace of the Dead (Floors 31-40)",
+    "G": "Palast der Toten (Ebenen 31-40)",
+    "F": "le Palais des morts (sous-sols 31-40)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B31\uFF5EB40"
+  },
+  "565": {
+    "E": "the Palace of the Dead (Floors 41-50)",
+    "G": "Palast der Toten (Ebenen 41-50)",
+    "F": "le Palais des morts (sous-sols 41-50)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B41\uFF5EB50"
+  },
+  "566": {
+    "E": "the Minstrel\u0027s Ballad: Nidhogg\u0027s Rage",
+    "G": "Das Lied von Nidhoggs letztem Ruf",
+    "F": "l\u0027ire de Nidhogg",
+    "J": "\u6975\u30CB\u30FC\u30BA\u30D8\u30C3\u30B0\u5F81\u7ADC\u6226"
+  },
+  "571": {
+    "E": "the Haunted Manor",
+    "G": "Das Geisterschloss",
+    "F": "le Manoir hant\u00E9",
+    "J": "\u4EA1\u970A\u5C4B\u6577 \u30DB\u30FC\u30F3\u30C6\u30C3\u30C9\u30DE\u30CA\u30FC"
+  },
+  "572": {
+    "E": "Xelphatol",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "576": {
+    "E": "Containment Bay P1T6",
+    "G": "Götterdämmerung - Sophia",
+    "F": "Unit\u00E9 de contention P1P6",
+    "J": "\u5973\u795E\u30BD\u30D5\u30A3\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "577": {
+    "E": "Containment Bay P1T6 (Extreme)",
+    "G": "Zenit der Götter - Sophia",
+    "F": "Unit\u00E9 de contention P1P6 (extr\u00EAme)",
+    "J": "\u6975\u5973\u795E\u30BD\u30D5\u30A3\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "578": {
+    "E": "the Great Gubal Library (Hard)",
+    "G": "Gro\u00DFe Gubal-Bibliothek (schwer)",
+    "F": "la Grande biblioth\u00E8que de Gubal (brutal)",
+    "J": "\u7A00\u66F8\u56DE\u53CE \u30B0\u30D6\u30E9\u5E7B\u60F3\u56F3\u66F8\u9928 (Hard)"
+  },
+  "579": {
+    "E": "The Triple Triad Battlehall",
+    "G": "Triple Triad: Weltensalon",
+    "F": "Ar\u00E8ne Triple Triade",
+    "J": "\u30C8\u30EA\u30D7\u30EB\u30C8\u30E9\u30A4\u30A2\u30C9\uFF1A\u30AB\u30FC\u30C9\u30D0\u30C8\u30EB\u30EB\u30FC\u30E0"
+  },
+  "580": {
+    "E": "Alexander - The Eyes of the Creator",
+    "G": "Alexander - Augen des Schöpfers",
+    "F": "Alexander - Les Yeux du Cr\u00E9ateur",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE81"
+  },
+  "581": {
+    "E": "Alexander - The Breath of the Creator",
+    "G": "Alexander - Atem des Schöpfers",
+    "F": "Alexander - Le Souffle du Cr\u00E9ateur",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE82"
+  },
+  "582": {
+    "E": "Alexander - The Heart of the Creator",
+    "G": "Alexander - Herz des Schöpfers",
+    "F": "Alexander - Le C\u0153ur du Cr\u00E9ateur",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE83"
+  },
+  "583": {
+    "E": "Alexander - The Soul of the Creator",
+    "G": "Alexander - Seele des Schöpfers",
+    "F": "Alexander - L\u0027\u00C2me du Cr\u00E9ateur",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE84"
+  },
+  "584": {
+    "E": "Alexander - The Eyes of the Creator (Savage)",
+    "G": "Alexander - Augen des Schöpfers (episch)",
+    "F": "Alexander - Les Yeux du Cr\u00E9ateur (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE81"
+  },
+  "585": {
+    "E": "Alexander - The Breath of the Creator (Savage)",
+    "G": "Alexander - Atem des Schöpfers (episch)",
+    "F": "Alexander - Le Souffle du Cr\u00E9ateur (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE82"
+  },
+  "586": {
+    "E": "Alexander - The Heart of the Creator (Savage)",
+    "G": "Alexander - Herz des Schöpfers (episch)",
+    "F": "Alexander - Le C\u0153ur du Cr\u00E9ateur (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE83"
+  },
+  "587": {
+    "E": "Alexander - The Soul of the Creator (Savage)",
+    "G": "Alexander - Seele des Schöpfers (episch)",
+    "F": "Alexander - L\u0027\u00C2me du Cr\u00E9ateur (sadique)",
+    "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE84"
+  },
+  "589": {
+    "E": "LoVM: Player Battle (RP)",
+    "G": "Kampf der Trabanten: Gegen Spieler (um RP)",
+    "F": "Bataille simple contre un joueur (avec PR)",
+    "J": "LoVM\uFF1A\u30D7\u30EC\u30A4\u30E4\u30FC\u5BFE\u6226 (RP\u5909\u52D5\u3042\u308A)"
+  },
+  "590": {
+    "E": "LoVM: Tournament",
+    "G": "Kampf der Trabanten: Turnier (gegen Spieler)",
+    "F": "Bataille de tournoi contre des joueurs",
+    "J": "LoVM\uFF1A\u5927\u4F1A\u5BFE\u6226 (\u30D7\u30EC\u30A4\u30E4\u30FC\u5BFE\u6226\uFF09"
+  },
+  "591": {
+    "E": "LoVM: Player Battle (Non-RP)",
+    "G": "Kampf der Trabanten: Gegen Spieler (ohne RP)",
+    "F": "Bataille simple contre un joueur (sans PR)",
+    "J": "LoVM\uFF1A\u30D7\u30EC\u30A4\u30E4\u30FC\u5BFE\u6226 (RP\u5909\u52D5\u306A\u3057)"
+  },
+  "592": {
+    "E": "One Life for One World",
+    "G": "Weltenübergreifendes Schicksal",
+    "F": "Destins entrecrois\u00E9s",
+    "J": "\u7D61\u307F\u5408\u3046\u5BBF\u547D"
+  },
+  "593": {
+    "E": "the Palace of the Dead (Floors 51-60)",
+    "G": "Palast der Toten (Ebenen 51 - 60)",
+    "F": "le Palais des morts (sous-sols 51-60)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B51\uFF5EB60"
+  },
+  "594": {
+    "E": "the Palace of the Dead (Floors 61-70)",
+    "G": "Palast der Toten (Ebenen 61 - 70)",
+    "F": "le Palais des morts (sous-sols 61-70)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B61\uFF5EB70"
+  },
+  "595": {
+    "E": "the Palace of the Dead (Floors 71-80)",
+    "G": "Palast der Toten (Ebenen 71 - 80)",
+    "F": "le Palais des morts (sous-sols 71-80)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B71\uFF5EB80"
+  },
+  "596": {
+    "E": "the Palace of the Dead (Floors 81-90)",
+    "G": "Palast der Toten (Ebenen 81 - 90)",
+    "F": "le Palais des morts (sous-sols 81-90)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B81\uFF5EB90"
+  },
+  "597": {
+    "E": "the Palace of the Dead (Floors 91-100)",
+    "G": "Palast der Toten (Ebenen 91 - 100)",
+    "F": "le Palais des morts (sous-sols 91-100)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B91\uFF5EB100"
+  },
+  "598": {
+    "E": "the Palace of the Dead (Floors 101-110)",
+    "G": "Palast der Toten (Ebenen 101 - 110)",
+    "F": "le Palais des morts (sous-sols 101-110)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B101\uFF5EB110"
+  },
+  "599": {
+    "E": "the Palace of the Dead (Floors 111-120)",
+    "G": "Palast der Toten (Ebenen 111 - 120)",
+    "F": "le Palais des morts (sous-sols 111-120)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B111\uFF5EB120"
+  },
+  "600": {
+    "E": "the Palace of the Dead (Floors 121-130)",
+    "G": "Palast der Toten (Ebenen 121 - 130)",
+    "F": "le Palais des morts (sous-sols 121-130)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B121\uFF5EB130"
+  },
+  "601": {
+    "E": "the Palace of the Dead (Floors 131-140)",
+    "G": "Palast der Toten (Ebenen 131 - 140)",
+    "F": "le Palais des morts (sous-sols 131-140)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B131\uFF5EB140"
+  },
+  "602": {
+    "E": "the Palace of the Dead (Floors 141-150)",
+    "G": "Palast der Toten (Ebenen 141 - 150)",
+    "F": "le Palais des morts (sous-sols 141-150)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B141\uFF5EB150"
+  },
+  "603": {
+    "E": "the Palace of the Dead (Floors 151-160)",
+    "G": "Palast der Toten (Ebenen 151 - 160)",
+    "F": "le Palais des morts (sous-sols 151-160)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B151\uFF5EB160"
+  },
+  "604": {
+    "E": "the Palace of the Dead (Floors 161-170)",
+    "G": "Palast der Toten (Ebenen 161 - 170)",
+    "F": "le Palais des morts (sous-sols 161-170)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B161\uFF5EB170"
+  },
+  "605": {
+    "E": "the Palace of the Dead (Floors 171-180)",
+    "G": "Palast der Toten (Ebenen 171 - 180)",
+    "F": "le Palais des morts (sous-sols 171-180)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B171\uFF5EB180"
+  },
+  "606": {
+    "E": "the Palace of the Dead (Floors 181-190)",
+    "G": "Palast der Toten (Ebenen 181 - 190)",
+    "F": "le Palais des morts (sous-sols 181-190)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B181\uFF5EB190"
+  },
+  "607": {
+    "E": "the Palace of the Dead (Floors 191-200)",
+    "G": "Palast der Toten (Ebenen 191 - 200)",
+    "F": "le Palais des morts (sous-sols 191-200)",
+    "J": "\u6B7B\u8005\u306E\u5BAE\u6BBF B191\uFF5EB200"
+  },
+  "615": {
+    "E": "Baelsar\u0027s Wall",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "616": {
+    "E": "Shisui of the Violet Tides",
+    "G": "Shisui",
+    "F": "le Palais aux Mar\u00E9es violettes",
+    "J": "\u6D77\u5E95\u5BAE\u6BBF \u7D2B\u6C34\u5BAE"
+  },
+  "617": {
+    "E": "Sohm Al (Hard)",
+    "G": "Sohm Al (schwer)",
+    "F": "Sohm Al (brutal)",
+    "J": "\u970A\u5CF0\u6D44\u5316 \u30BD\u30FC\u30E0\u30FB\u30A2\u30EB (Hard)"
+  },
+  "619": {
+    "E": "the Feast (Custom Match - Feasting Grounds)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "623": {
+    "E": "Bardam\u0027s Mettle",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "624": {
+    "E": "the Diadem Hunting Grounds (Easy)",
+    "G": "Das Diadem - Jagdgründe (leicht)",
+    "F": "Le Diad\u00E8me\u00A0: terrains de chasse (facile)",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6\uFF1A\u72E9\u731F\u9650\u5B9A (Easy)"
+  },
+  "625": {
+    "E": "the Diadem Hunting Grounds",
+    "G": "Das Diadem - Jagdgründe",
+    "F": "Le Diad\u00E8me\u00A0: terrains de chasse",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6\uFF1A\u72E9\u731F\u9650\u5B9A"
+  },
+  "626": {
+    "E": "the Sirensong Sea",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "627": {
+    "E": "Dun Scaith",
+    "G": "Dun Scaith",
+    "F": "Dun Scaith",
+    "J": "\u5F71\u306E\u56FD\u30C0\u30F3\u30FB\u30B9\u30AB\u30FC"
+  },
+  "630": {
+    "E": "the Diadem - Trials of the Fury",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "632": {
+    "E": "the Feast (4 on 4 - Training)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "633": {
+    "E": "The Carteneau Flats: Heliodrome",
+    "G": "Heliodrom",
+    "F": "Rixe \u00E0 l\u0027H\u00E9liodrome",
+    "J": "\u30AB\u30EB\u30C6\u30CE\u30FC\u5E73\u539F\u906D\u9047\u6226"
+  },
+  "634": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "637": {
+    "E": "Containment Bay Z1T9",
+    "G": "Götterdämmerung - Zurvan",
+    "F": "Unit\u00E9 de contention Z1P9",
+    "J": "\u9B3C\u795E\u30BA\u30EB\u30EF\u30FC\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "638": {
+    "E": "Containment Bay Z1T9 (Extreme)",
+    "G": "Zenit der Götter - Zurvan",
+    "F": "Unit\u00E9 de contention Z1P9 (extr\u00EAme)",
+    "J": "\u6975\u9B3C\u795E\u30BA\u30EB\u30EF\u30FC\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "640": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "644": {
+    "E": "the Feast (4 on 4 - Ranked)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "646": {
+    "E": "the Feast (Custom Match - Lichenweed)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "647": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "648": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "656": {
+    "E": "the Diadem - Trials of the Matron",
+    "G": "Das Diadem - Nophicas Prüfung",
+    "F": "Le Diad\u00E8me - \u00C9preuves de Nophica",
+    "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6 (\u63A1\u96C6)"
+  },
+  "657": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "658": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "659": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "660": {
+    "E": "Doma Castle",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "661": {
+    "E": "Castrum Abania",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "662": {
+    "E": "Kugane Castle",
+    "G": "Schloss Kugane",
+    "F": "le Ch\u00E2teau de Kugane",
+    "J": "\u60AA\u515A\u6210\u6557 \u30AF\u30AC\u30CD\u57CE"
+  },
+  "663": {
+    "E": "the Temple of the Fist",
+    "G": "Tempel der Faust",
+    "F": "le Temple du Poing",
+    "J": "\u58CA\u795E\u4FEE\u884C \u661F\u5C0E\u5C71\u5BFA\u9662"
+  },
+  "664": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "665": {
+    "E": "It\u0027s Probably a Trap",
+    "G": "Ein zweifelhaftes Angebot",
+    "F": "Un dr\u00F4le de Namazu",
+    "J": "\u30AE\u30E7\u30C9\u30A6\u73FE\u308B\uFF01"
+  },
+  "666": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "667": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "668": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "669": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "670": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "671": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "672": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "673": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "674": {
+    "E": "the Pool of Tribute",
+    "G": "Götterdämmerung - Susano",
+    "F": "la Crique aux tributs",
+    "J": "\u30B9\u30B5\u30CE\u30AA\u8A0E\u6EC5\u6226"
+  },
+  "675": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "676": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "677": {
+    "E": "the Pool of Tribute (Extreme)",
+    "G": "Zenit der Götter - Susano",
+    "F": "la Crique aux tributs (extr\u00EAme)",
+    "J": "\u6975\u30B9\u30B5\u30CE\u30AA\u8A0E\u6EC5\u6226"
+  },
+  "678": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "679": {
+    "E": "the Royal Menagerie",
+    "G": "Königliche Menagerie",
+    "F": "la M\u00E9nagerie royale",
+    "J": "\u795E\u9F8D\u8A0E\u6EC5\u6226"
+  },
+  "684": {
+    "E": "The Resonant",
+    "G": "Wege zur Transzendenz",
+    "F": "La ruse d\u0027Urianger",
+    "J": "\u30A6\u30EA\u30A8\u30F3\u30B8\u30A7\u306E\u79D8\u7B56"
+  },
+  "685": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "686": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "687": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "688": {
+    "E": "Naadam",
+    "G": "Naadam",
+    "F": "La grande bataille du Naadam",
+    "J": "\u7D42\u7BC0\u306E\u5408\u6226"
+  },
+  "689": {
+    "E": "Ala Mhigo",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "690": {
+    "E": "Interdimensional Rift",
+    "G": "Interdimensionaler Riss",
+    "F": "Fissure interdimensionnelle",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\uFF1A\u5916\u7E01"
+  },
+  "691": {
+    "E": "Deltascape V1.0",
+    "G": "Deltametrie 1.0",
+    "F": "Deltastice v1.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30C7\u30EB\u30BF\u7DE81"
+  },
+  "692": {
+    "E": "Deltascape V2.0",
+    "G": "Deltametrie 2.0",
+    "F": "Deltastice v2.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30C7\u30EB\u30BF\u7DE82"
+  },
+  "693": {
+    "E": "Deltascape V3.0",
+    "G": "Deltametrie 3.0",
+    "F": "Deltastice v3.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30C7\u30EB\u30BF\u7DE83"
+  },
+  "694": {
+    "E": "Deltascape V4.0",
+    "G": "Deltametrie 4.0",
+    "F": "Deltastice v4.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30C7\u30EB\u30BF\u7DE84"
+  },
+  "695": {
+    "E": "Deltascape V1.0 (Savage)",
+    "G": "Deltametrie 1.0 (episch)",
+    "F": "Deltastice v1.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30C7\u30EB\u30BF\u7DE81"
+  },
+  "696": {
+    "E": "Deltascape V2.0 (Savage)",
+    "G": "Deltametrie 2.0 (episch)",
+    "F": "Deltastice v2.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30C7\u30EB\u30BF\u7DE82"
+  },
+  "697": {
+    "E": "Deltascape V3.0 (Savage)",
+    "G": "Deltametrie 3.0 (episch)",
+    "F": "Deltastice v3.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30C7\u30EB\u30BF\u7DE83"
+  },
+  "698": {
+    "E": "Deltascape V4.0 (Savage)",
+    "G": "Deltametrie 4.0 (episch)",
+    "F": "Deltastice v4.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30C7\u30EB\u30BF\u7DE84"
+  },
+  "699": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "700": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "701": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "702": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "703": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "704": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "705": {
+    "E": "In Thal\u0027s Name",
+    "G": "Thal zu Ehren",
+    "F": "Le tournoi comm\u00E9moratif du sultanat",
+    "J": "\u30A6\u30EB\u738B\u676F\u95D8\u6280\u4F1A\u306E\u59CB\u307E\u308A"
+  },
+  "706": {
+    "E": "Raising the Sword",
+    "G": "Die hohe Kunst des Schwertkampfs",
+    "F": "La finale des champions",
+    "J": "\u3055\u3089\u306A\u308B\u5263\u8853\u306E\u9AD8\u307F\u3078"
+  },
+  "707": {
+    "E": "With Heart and Steel",
+    "G": "Die Kraft des Widerstands",
+    "F": "Transmigration d\u00E9moniaque",
+    "J": "\u6297\u3046\u529B"
+  },
+  "708": {
+    "E": "Blood on the Deck",
+    "G": "Mord ist sein Hobby",
+    "F": "La l\u00E9gende de Musosai\u00A0: l\u0027assassin de Limsa Lominsa",
+    "J": "\u6D77\u90FD\u3092\u9707\u308F\u3059\u4EBA\u65AC\u308A\u306E\u5BB4\uFF01"
+  },
+  "709": {
+    "E": "The Face of True Evil",
+    "G": "Der Inbegriff des Bösen",
+    "F": "L\u0027abominable Kogarashi",
+    "J": "\u6975\u60AA\u4EBA\u30B3\u30AC\u30E9\u30B7"
+  },
+  "710": {
+    "E": "Matsuba Mayhem",
+    "G": "Vorfall auf dem Matsuba-Platz",
+    "F": "R\u00E8glement de compte au square Matsuba",
+    "J": "\u677E\u8449\u9580\u5916\u306E\u5909"
+  },
+  "711": {
+    "E": "The Battle on Bekko",
+    "G": "Entscheidungsschlacht auf Bekko",
+    "F": "L\u0027affrontement de deux justices",
+    "J": "\u30D9\u30C3\u30B3\u30A6\u5CF6\u306E\u6C7A\u95D8"
+  },
+  "712": {
+    "E": "the Lost Canals of Uznair",
+    "G": "Kanäle von Uznair",
+    "F": "les Canaux perdus d\u0027Uznair",
+    "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB"
+  },
+  "713": {
+    "E": "Dark as the Night Sky",
+    "G": "Der tobende Drache",
+    "F": "Aussi sombre que la nuit",
+    "J": "\u6F06\u9ED2\u306E\u5DE8\u7ADC"
+  },
+  "714": {
+    "E": "Dragon Sound",
+    "G": "Der Rubin-Drachenreiter",
+    "F": "Le Dragon \u00E9carlate",
+    "J": "\u7D05\u306E\u7ADC\u9A0E\u58EB"
+  },
+  "715": {
+    "E": "The Orphans and the Broken Blade",
+    "G": "Probe des Meisters",
+    "F": "L\u0027aspiration refoul\u00E9e",
+    "J": "\u3042\u3068\u4E09\u5EA6\u3001\u9065\u304B\u306A\u61A7\u61AC"
+  },
+  "716": {
+    "E": "Our Compromise",
+    "G": "Aus der Tiefe des Herzens",
+    "F": "La derni\u00E8re s\u00E9paration",
+    "J": "\u3042\u3068\u4E00\u5EA6\u3001\u541B\u306B\u4F1A\u3048\u305F\u3089"
+  },
+  "717": {
+    "E": "Curious Gorge Meets His Match",
+    "G": "Die Urkraft in ihr",
+    "F": "L\u0027\u00E9preuve de force",
+    "J": "\u539F\u521D\u7684\u306A\u5F7C\u5973"
+  },
+  "718": {
+    "E": "The Heart of the Problem",
+    "G": "Kriegerische Leidenschaft",
+    "F": "Passion guerri\u00E8re",
+    "J": "\u71C3\u3048\u3088\u30B4\u30FC\u30B8\uFF01"
+  },
+  "719": {
+    "E": "Emanation",
+    "G": "Götterdämmerung - Lakshmi",
+    "F": "\u00C9manation",
+    "J": "\u30E9\u30AF\u30B7\u30E5\u30DF\u8A0E\u6EC5\u6226"
+  },
+  "720": {
+    "E": "Emanation (Extreme)",
+    "G": "Zenit der Götter - Lakshmi",
+    "F": "\u00C9manation (extr\u00EAme)",
+    "J": "\u6975\u30E9\u30AF\u30B7\u30E5\u30DF\u8A0E\u6EC5\u6226"
+  },
+  "721": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "722": {
+    "E": "Our Unsung Heroes",
+    "G": "Ein Wunsch aus alten Zeiten",
+    "F": "L\u0027espoir en h\u00E9ritage",
+    "J": "\u6642\u3092\u304B\u3051\u308B\u9858\u3044"
+  },
+  "723": {
+    "E": "When Clans Collide",
+    "G": "Aus dem Verborgenen",
+    "F": "La bataille des clans",
+    "J": "\u5F71\u96A0\u5FCD\u6CD5\u5E16"
+  },
+  "725": {
+    "E": "the Hidden Canals of Uznair",
+    "G": "Vergessene Kanäle von Uznair",
+    "F": "les Canaux cach\u00E9s d\u0027Uznair",
+    "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB\u6DF1\u5C64"
+  },
+  "726": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "729": {
+    "E": "Astragalos",
+    "G": "Astragalos",
+    "F": "Astragalos (machinerie)",
+    "J": "\u30A2\u30B9\u30C8\u30E9\u30AC\u30ED\u30B9 (\u6A5F\u5DE5\u6226)"
+  },
+  "730": {
+    "E": "the Minstrel\u0027s Ballad: Shinryu\u0027s Domain",
+    "G": "Heldenlied von Shinryu",
+    "F": "Le domaine de Shinryu",
+    "J": "\u6975\u795E\u9F8D\u8A0E\u6EC5\u6226"
+  },
+  "731": {
+    "E": "the Drowned City of Skalla",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "732": {
+    "E": "the Forbidden Land, Eureka Anemos",
+    "G": "Eureka Anemos",
+    "F": "Eur\u00EAka Anemos",
+    "J": "\u7981\u65AD\u306E\u5730 \u30A8\u30A6\u30EC\u30AB\uFF1A\u30A2\u30CD\u30E2\u30B9\u7DE8"
+  },
+  "733": {
+    "E": "the Unending Coil of Bahamut (Ultimate)",
+    "G": "Endlose Schatten von Bahamut (fatal)",
+    "F": "l\u0027Ab\u00EEme infini de Bahamut (fatal)",
+    "J": "\u7D76\u30D0\u30CF\u30E0\u30FC\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "734": {
+    "E": "the Royal City of Rabanastre",
+    "G": "Rabanastre",
+    "F": "la Cit\u00E9 royale de Rabanastre",
+    "J": "\u5931\u308F\u308C\u305F\u90FD \u30E9\u30D0\u30CA\u30B9\u30BF"
+  },
+  "741": {
+    "E": "the Valentione\u0027s Ceremony",
+    "G": "Valentionzeremonie",
+    "F": "la C\u00E9r\u00E9monie de la Valention",
+    "J": "\u30F4\u30A1\u30EC\u30F3\u30C6\u30A3\u30AA\u30F3\u30BB\u30EC\u30E2\u30CB\u30FC"
+  },
+  "742": {
+    "E": "Hells\u0027 Lid",
+    "G": "Höllenspund",
+    "F": "le Couvercle des enfers",
+    "J": "\u7D05\u7389\u706B\u5C71 \u7344\u4E4B\u84CB"
+  },
+  "743": {
+    "E": "the Fractal Continuum (Hard)",
+    "G": "Die Fraktal-Kontinuum (schwer)",
+    "F": "le Continuum fractal (brutal)",
+    "J": "\u66B4\u8D70\u6226\u8266 \u30D5\u30E9\u30AF\u30BF\u30EB\u30FB\u30B3\u30F3\u30C6\u30A3\u30CB\u30A2\u30E0 (Hard)"
+  },
+  "745": {
+    "E": "the Feast (Team Ranked)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "746": {
+    "E": "the Jade Stoa",
+    "G": "Seelentanz - Byakko",
+    "F": "la Clairi\u00E8re de Jade",
+    "J": "\u767D\u864E\u5F81\u9B42\u6226"
+  },
+  "748": {
+    "E": "Sigmascape V1.0",
+    "G": "Sigmametrie 1.0",
+    "F": "Sigmastice v1.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30B7\u30B0\u30DE\u7DE81"
+  },
+  "749": {
+    "E": "Sigmascape V2.0",
+    "G": "Sigmametrie 2.0",
+    "F": "Sigmastice v2.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30B7\u30B0\u30DE\u7DE82"
+  },
+  "750": {
+    "E": "Sigmascape V3.0",
+    "G": "Sigmametrie 3.0",
+    "F": "Sigmastice v3.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30B7\u30B0\u30DE\u7DE83"
+  },
+  "751": {
+    "E": "Sigmascape V4.0",
+    "G": "Sigmametrie 4.0",
+    "F": "Sigmastice v4.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30B7\u30B0\u30DE\u7DE84"
+  },
+  "752": {
+    "E": "Sigmascape V1.0 (Savage)",
+    "G": "Sigmametrie 1.0 (episch)",
+    "F": "Sigmastice v1.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30B7\u30B0\u30DE\u7DE81"
+  },
+  "753": {
+    "E": "Sigmascape V2.0 (Savage)",
+    "G": "Sigmametrie 2.0 (episch)",
+    "F": "Sigmastice v2.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30B7\u30B0\u30DE\u7DE82"
+  },
+  "754": {
+    "E": "Sigmascape V3.0 (Savage)",
+    "G": "Sigmametrie 3.0 (episch)",
+    "F": "Sigmastice v3.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30B7\u30B0\u30DE\u7DE83"
+  },
+  "755": {
+    "E": "Sigmascape V4.0 (Savage)",
+    "G": "Sigmametrie 4.0 (episch)",
+    "F": "Sigmastice v4.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30B7\u30B0\u30DE\u7DE84"
+  },
+  "757": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "758": {
+    "E": "the Jade Stoa (Extreme)",
+    "G": "Seelensturm - Byakko",
+    "F": "la Clairi\u00E8re de Jade (extr\u00EAme)",
+    "J": "\u6975\u767D\u864E\u5F81\u9B42\u6226"
+  },
+  "760": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "761": {
+    "E": "the Great Hunt",
+    "G": "Jagd auf Rathalos",
+    "F": "Chasse au Rathalos",
+    "J": "\u30EA\u30AA\u30EC\u30A6\u30B9\u72E9\u731F\u6226"
+  },
+  "762": {
+    "E": "the Great Hunt (Extreme)",
+    "G": "Jagd auf Rathalos (schwer)",
+    "F": "Chasse au Rathalos (extr\u00EAme)",
+    "J": "\u6975\u30EA\u30AA\u30EC\u30A6\u30B9\u72E9\u731F\u6226"
+  },
+  "763": {
+    "E": "the Forbidden Land, Eureka Pagos",
+    "G": "Eureka Pagos",
+    "F": "Eur\u00EAka Pagos",
+    "J": "\u7981\u65AD\u306E\u5730 \u30A8\u30A6\u30EC\u30AB\uFF1A\u30D1\u30B4\u30B9\u7DE8"
+  },
+  "765": {
+    "E": "the Feast (Ranked)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "766": {
+    "E": "the Feast (Training)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "767": {
+    "E": "the Feast (Custom Match - Crystal Tower)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "768": {
+    "E": "the Swallow\u0027s Compass",
+    "G": "Kompass der Schwalbe",
+    "F": "le Compas de l\u0027Hirondelle",
+    "J": "\u98A8\u6C34\u970A\u6BBF \u30AC\u30F3\u30A8\u30F3\u5EDF"
+  },
+  "769": {
+    "E": "Emissary of the Dawn",
+    "G": "Der Knabe der Morgenröte",
+    "F": "Voyage en terre hostile",
+    "J": "\u300C\u6681\u300D\u306E\u5C11\u5E74"
+  },
+  "776": {
+    "E": "the Ridorana Lighthouse",
+    "G": "Richtfeuer von Ridorana",
+    "F": "le Phare de Ridorana",
+    "J": "\u5C01\u3058\u3089\u308C\u305F\u8056\u5854 \u30EA\u30C9\u30EB\u30A2\u30CA"
+  },
+  "777": {
+    "E": "the Weapon\u0027s Refrain (Ultimate)",
+    "G": "Heldenlied von Ultima (fatal)",
+    "F": "la Fantasmagorie d\u0027Ultima (fatal)",
+    "J": "\u7D76\u30A2\u30EB\u30C6\u30DE\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "778": {
+    "E": "Castrum Fluminis",
+    "G": "Götterdämmerung - Tsukuyomi",
+    "F": "Castrum Fluminis",
+    "J": "\u30C4\u30AF\u30E8\u30DF\u8A0E\u6EC5\u6226"
+  },
+  "779": {
+    "E": "the Minstrel\u0027s Ballad: Tsukuyomi\u0027s Pain",
+    "G": "Zenit der Götter - Tsukuyomi",
+    "F": "Castrum Fluminis (extr\u00EAme)",
+    "J": "\u6975\u30C4\u30AF\u30E8\u30DF\u8A0E\u6EC5\u6226"
+  },
+  "781": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "788": {
+    "E": "Saint Mocianne\u0027s Arboretum (Hard)",
+    "G": "Sankt Mocianne-Arboretum (schwer)",
+    "F": "l\u0027Arboretum Sainte-Mocianne (brutal)",
+    "J": "\u8349\u6728\u6C5A\u67D3 \u8056\u30E2\u30B7\u30E3\u30FC\u30CC\u690D\u7269\u5712 (Hard)"
+  },
+  "789": {
+    "E": "the Burn",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "790": {
+    "E": "the Calamity Retold",
+    "G": "Gedenkschlacht der Eorzäischen Allianz",
+    "F": "les grandes man\u0153uvres comm\u00E9moratives",
+    "J": "\u65B0\u751F\u796D\u8ECD\u4E8B\u6F14\u7FD2"
+  },
+  "791": {
+    "E": "Hidden Gorge",
+    "G": "Verborgene Schlucht",
+    "F": "Gorge d\u00E9rob\u00E9e (machinerie)",
+    "J": "\u30D2\u30C9\u30A5\u30F3\u30B4\u30FC\u30B8 (\u6A5F\u5DE5\u6226)"
+  },
+  "792": {
+    "E": "Leap of Faith",
+    "G": "Kaktor-Kletterwand",
+    "F": "Haute voltige",
+    "J": "\u6311\u6226\uFF01 \u30B8\u30E3\u30F3\u30D4\u30F3\u30B0\u30A2\u30B9\u30EC\u30C1\u30C3\u30AF"
+  },
+  "793": {
+    "E": "the Ghimlyt Dark",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "794": {
+    "E": "the Shifting Altars of Uznair",
+    "G": "Glücksaltäre von Uznair",
+    "F": "le Temple sacr\u00E9 d\u0027Uznair",
+    "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB\u796D\u6BBF"
+  },
+  "795": {
+    "E": "the Forbidden Land, Eureka Pyros",
+    "G": "Eureka Pyros",
+    "F": "Eur\u00EAka Pyros",
+    "J": "\u7981\u65AD\u306E\u5730 \u30A8\u30A6\u30EC\u30AB\uFF1A\u30D4\u30E5\u30FC\u30ED\u30B9\u7DE8"
+  },
+  "796": {
+    "E": "All\u0027s Well That Starts Well",
+    "G": "Debüt in der Himmlischen Arena",
+    "F": "D\u00E9but du spectacle",
+    "J": "\u30C7\u30D3\u30E5\u30FC\u30DE\u30C3\u30C1"
+  },
+  "797": {
+    "E": "The Will of the Moon",
+    "G": "Der Wille der Mondgöttin",
+    "F": "Ralliement dans la steppe",
+    "J": "\u6954\u77F3\u306E\u865A"
+  },
+  "798": {
+    "E": "Alphascape V1.0",
+    "G": "Alphametrie 1.0",
+    "F": "Alphastice v1.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE81"
+  },
+  "799": {
+    "E": "Alphascape V2.0",
+    "G": "Alphametrie 2.0",
+    "F": "Alphastice v2.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE82"
+  },
+  "800": {
+    "E": "Alphascape V3.0",
+    "G": "Alphametrie 3.0",
+    "F": "Alphastice v3.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE83"
+  },
+  "801": {
+    "E": "Alphascape V4.0",
+    "G": "Alphametrie 4.0",
+    "F": "Alphastice v4.0",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE84"
+  },
+  "802": {
+    "E": "Alphascape V1.0 (Savage)",
+    "G": "Alphametrie 1.0 (episch)",
+    "F": "Alphastice v1.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE81"
+  },
+  "803": {
+    "E": "Alphascape V2.0 (Savage)",
+    "G": "Alphametrie 2.0 (episch)",
+    "F": "Alphastice v2.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE82"
+  },
+  "804": {
+    "E": "Alphascape V3.0 (Savage)",
+    "G": "Alphametrie 3.0 (episch)",
+    "F": "Alphastice v3.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE83"
+  },
+  "805": {
+    "E": "Alphascape V4.0 (Savage)",
+    "G": "Alphametrie 4.0 (episch)",
+    "F": "Alphastice v4.0 (sadique)",
+    "J": "\u6B21\u5143\u306E\u72ED\u9593\u30AA\u30E1\u30AC\u96F6\u5F0F\uFF1A\u30A2\u30EB\u30D5\u30A1\u7DE84"
+  },
+  "806": {
+    "E": "Kugane Ohashi",
+    "G": "Duell auf der Kugane-Brücke",
+    "F": "le Pont Ohashi",
+    "J": "\u771F\u30E8\u30A6\u30B8\u30F3\u30DC\u30A6\u8A0E\u6EC5\u6226"
+  },
+  "810": {
+    "E": "Hells\u0027 Kier",
+    "G": "Seelentanz - Suzaku",
+    "F": "le Nid des Lamentations",
+    "J": "\u6731\u96C0\u5F81\u9B42\u6226"
+  },
+  "811": {
+    "E": "Hells\u0027 Kier (Extreme)",
+    "G": "Seelensturm - Suzaku",
+    "F": "le Nid des Lamentations (extr\u00EAme)",
+    "J": "\u6975\u6731\u96C0\u5F81\u9B42\u6226"
+  },
+  "821": {
+    "E": "Dohn Mheg",
+    "G": "Dohn Mheg",
+    "F": "Dohn Mheg",
+    "J": "\u6C34\u5996\u5E7B\u5712 \u30C9\u30A9\u30FC\u30CC\u30FB\u30E1\u30B0"
+  },
+  "822": {
+    "E": "Mt. Gulg",
+    "G": "Der Gulg",
+    "F": "Mont Gulg",
+    "J": "\u507D\u9020\u5929\u754C \u30B0\u30EB\u30B0\u706B\u5C71"
+  },
+  "823": {
+    "E": "the Qitana Ravel",
+    "G": "Irrungen der Qitari",
+    "F": "L\u0027Enchev\u00EAtrement des Qitari",
+    "J": "\u53E4\u8DE1\u63A2\u7D22 \u30AD\u30BF\u30F3\u30CA\u795E\u5F71\u6D1E"
+  },
+  "824": {
+    "E": "the Wreath of Snakes",
+    "G": "Seelentanz - Seiryu",
+    "F": "l\u0027\u00CElot des Amertumes",
+    "J": "\u9752\u9F8D\u5F81\u9B42\u6226"
+  },
+  "825": {
+    "E": "the Wreath of Snakes (Extreme)",
+    "G": "Seelensturm - Seiryu",
+    "F": "l\u0027\u00CElot des Amertumes (extr\u00EAme)",
+    "J": "\u6975\u9752\u9F8D\u5F81\u9B42\u6226"
+  },
+  "826": {
+    "E": "the Orbonne Monastery",
+    "G": "Kloster von Orbonne",
+    "F": "le Monast\u00E8re d\u0027Orbonne",
+    "J": "\u697D\u6B32\u306E\u50E7\u9662 \u30AA\u30FC\u30DC\u30F3\u30CC"
+  },
+  "827": {
+    "E": "the Forbidden Land, Eureka Hydatos",
+    "G": "Eureka Hydatos",
+    "F": "Eur\u00EAka Hydatos",
+    "J": "\u7981\u65AD\u306E\u5730 \u30A8\u30A6\u30EC\u30AB\uFF1A\u30D2\u30E5\u30C0\u30C8\u30B9\u7DE8"
+  },
+  "830": {
+    "E": "a Requiem for Heroes",
+    "G": "Requiem der Helden",
+    "F": "Un requiem pour les h\u00E9ros",
+    "J": "\u82F1\u96C4\u3078\u306E\u93AE\u9B42\u6B4C"
+  },
+  "834": {
+    "E": "Messenger of the Winds",
+    "G": "Durch den Sturm und zurück",
+    "F": "La Messag\u00E8re du vent",
+    "J": "\u6765\u8A2A\u305B\u3057\u98A8\u306E\u5FA1\u4F7F"
+  },
+  "836": {
+    "E": "Malikah\u0027s Well",
+    "G": "Malikahs Brunnen",
+    "F": "le Puits de Malikah",
+    "J": "\u723D\u6DBC\u96E2\u5BAE \u30DE\u30EA\u30AB\u306E\u5927\u4E95\u6238"
+  },
+  "837": {
+    "E": "Holminster Switch",
+    "G": "Holminster",
+    "F": "Holminster",
+    "J": "\u6BBA\u622E\u90F7\u6751 \u30DB\u30EB\u30DF\u30F3\u30B9\u30BF\u30FC"
+  },
+  "838": {
+    "E": "Amaurot",
+    "G": "Amaurot",
+    "F": "Amaurote",
+    "J": "\u7D42\u672B\u5E7B\u60F3 \u30A2\u30FC\u30E2\u30ED\u30FC\u30C8"
+  },
+  "839": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "840": {
+    "E": "the Twinning",
+    "G": "Der Kristallzwilling",
+    "F": "La Macle de Syrcus",
+    "J": "\u7570\u754C\u907A\u69CB \u30B7\u30EB\u30AF\u30B9\u30FB\u30C4\u30A4\u30CB\u30F3\u30B0"
+  },
+  "841": {
+    "E": "Akadaemia Anyder",
+    "G": "Akadaemia Anyder",
+    "F": "Akadaemia Anydre",
+    "J": "\u5275\u9020\u6A5F\u95A2 \u30A2\u30CA\u30A4\u30C0\u30A2\u30AB\u30C7\u30DF\u30A2"
+  },
+  "845": {
+    "E": "the Dancing Plague",
+    "G": "Offenbarung - Titania",
+    "F": "la Valse du Monarque",
+    "J": "\u30C6\u30A3\u30BF\u30FC\u30CB\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "846": {
+    "E": "the Crown of the Immaculate",
+    "G": "Offenbarung - Innozenz",
+    "F": "La Couronne de l\u0027Immacul\u00E9",
+    "J": "\u30A4\u30CE\u30BB\u30F3\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "847": {
+    "E": "the Dying Gasp",
+    "G": "Offenbarung - Hades",
+    "F": "le R\u00E2le de l\u0027Agonie",
+    "J": "\u30CF\u30FC\u30C7\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "848": {
+    "E": "the Crown of the Immaculate (Extreme)",
+    "G": "Letzte Läuterung - Innozenz",
+    "F": "La Couronne de l\u0027Immacul\u00E9 (extr\u00EAme)",
+    "J": "\u6975\u30A4\u30CE\u30BB\u30F3\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "849": {
+    "E": "Eden\u0027s Gate: Resurrection",
+    "G": "Edens Erwachen - Auferstehung",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - R\u00E9surrection",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u899A\u9192\u7DE81"
+  },
+  "850": {
+    "E": "Eden\u0027s Gate: Descent",
+    "G": "Edens Erwachen - Niederkunft",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - Descente",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u899A\u9192\u7DE82"
+  },
+  "851": {
+    "E": "Eden\u0027s Gate: Inundation",
+    "G": "Edens Erwachen - \u00DCberflutung",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - D\u00E9luge",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u899A\u9192\u7DE83"
+  },
+  "852": {
+    "E": "Eden\u0027s Gate: Sepulture",
+    "G": "Edens Erwachen - Beerdigung",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - Inhumation",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u899A\u9192\u7DE84"
+  },
+  "853": {
+    "E": "Eden\u0027s Gate: Resurrection (Savage)",
+    "G": "Edens Erwachen - Auferstehung (episch)",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - R\u00E9surrection (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u899A\u9192\u7DE81"
+  },
+  "854": {
+    "E": "Eden\u0027s Gate: Descent (Savage)",
+    "G": "Edens Erwachen - Niederkunft (episch)",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - Descente (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u899A\u9192\u7DE82"
+  },
+  "855": {
+    "E": "Eden\u0027s Gate: Inundation (Savage)",
+    "G": "Edens Erwachen - \u00DCberflutung (episch)",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - D\u00E9luge (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u899A\u9192\u7DE83"
+  },
+  "856": {
+    "E": "Eden\u0027s Gate: Sepulture (Savage)",
+    "G": "Edens Erwachen - Beerdigung (episch)",
+    "F": "L\u0027\u00C9veil d\u0027\u00C9den - Inhumation (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u899A\u9192\u7DE84"
+  },
+  "858": {
+    "E": "the Dancing Plague (Extreme)",
+    "G": "Letzte Läuterung - Titania",
+    "F": "la Valse du Monarque (extr\u00EAme)",
+    "J": "\u6975\u30C6\u30A3\u30BF\u30FC\u30CB\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "859": {
+    "E": "Legend of the Not-so-hidden Temple",
+    "G": "Der Beichtstuhl von Toupasa dem \u00C4lteren",
+    "F": "Le Confessionnal de Toupasa l\u0027ancien",
+    "J": "\u4ED5\u639B\u3051\u3068\u546A\u3044\u3068\u6BD2\u3068"
+  },
+  "860": {
+    "E": "Coming Clean",
+    "G": "Vater und Bruder",
+    "F": "Sur les rails de Nabaath Areng",
+    "J": "\u5EC3\u90FD\u30CA\u30D0\u30B9\u30A2\u30EC\u30F3"
+  },
+  "861": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "862": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "863": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "864": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "865": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "866": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "867": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "868": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "869": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "870": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "871": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "872": {
+    "E": "",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "873": {
+    "E": "The Hardened Heart",
+    "G": "Ob Mitleid oder Hass",
+    "F": "Naissance d\u0027un bourreau",
+    "J": "\u63FA\u308C\u308B\u5929\u79E4"
+  },
+  "874": {
+    "E": "The Lost and the Found",
+    "G": "Alter Zauber",
+    "F": "Magie ancestrale",
+    "J": "\u53E4\u306E\u5927\u518D\u751F\u9B54\u6CD5"
+  },
+  "875": {
+    "E": "The Hunter\u0027s Legacy",
+    "G": "Der Legende auf der Spur",
+    "F": "La chasseuse de l\u00E9gende",
+    "J": "\u52C7\u6C17\u306E\u72E9\u4EBA"
+  },
+  "876": {
+    "E": "Nyelbert\u0027s Lament",
+    "G": "Ein gro\u00DFes Opfer",
+    "F": "Une cupidit\u00E9 bien g\u00E9n\u00E9reuse",
+    "J": "\u30CA\u30A4\u30EB\u30D9\u30EB\u30C8\u306E\u5F8C\u6094"
+  },
+  "879": {
+    "E": "The Dungeons of Lyhe Ghiah",
+    "G": "Verliese von Lyhe Ghiah",
+    "F": "le Donjon hypog\u00E9en du Lyhe Ghiah",
+    "J": "\u5B9D\u7269\u5EAB \u30EA\u30A7\u30FC\u30FB\u30AE\u30A2\u30FB\u30C0\u30F3\u30B8\u30E7\u30F3"
+  },
+  "882": {
+    "E": "the Copied Factory",
+    "G": "Die kopierte Fabrik",
+    "F": "La r\u00E9plique de l\u0027usine d\u00E9saffect\u00E9e",
+    "J": "\u8907\u88FD\u30B5\u30EC\u30BF\u5DE5\u5834\u5EC3\u589F"
+  },
+  "884": {
+    "E": "the Grand Cosmos",
+    "G": "Chateau Cosmea",
+    "F": "le Cosmos coruscant",
+    "J": "\u9B54\u6CD5\u5BAE\u6BBF \u30B0\u30E9\u30F3\u30FB\u30B3\u30B9\u30E2\u30B9"
+  },
+  "885": {
+    "E": "the Minstrel\u0027s Ballad: Hades\u0027s Elegy",
+    "G": "Letzte Läuterung - Hades",
+    "F": "Le R\u00E2le de l\u0027Agonie (extr\u00EAme)",
+    "J": "\u6975\u30CF\u30FC\u30C7\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "887": {
+    "E": "the Epic of Alexander (Ultimate)",
+    "G": "Alexander (fatal)",
+    "F": "L\u0027Odyss\u00E9e d\u0027Alexander (fatal)",
+    "J": "\u7D76\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u8A0E\u6EC5\u6226"
+  },
+  "888": {
+    "E": "Onsal Hakair (Danshig Naadam)",
+    "G": "Onsal Hakair (Danshig Naadam)",
+    "F": "Onsal Hakair (Danshig Naadam)",
+    "J": "\u30AA\u30F3\u30B5\u30EB\u30FB\u30CF\u30AB\u30A4\u30EB (\u7D42\u7BC0\u6226)"
+  },
+  "893": {
+    "E": "Vows of Virtue, Deeds of Cruelty",
+    "G": "Der Wolf und der Drachenreiter",
+    "F": "V\u0153ux de vertu, actes de cruaut\u00E9",
+    "J": "\u767D\u304D\u8A93\u7D04\u3001\u9ED2\u304D\u5BC6\u7D04"
+  },
+  "894": {
+    "E": "As the Heart Bids",
+    "G": "Trubel im Traumland",
+    "F": "\u00C0 l\u0027\u00E9coute de soi",
+    "J": "\u3053\u306E\u5FC3\u304C\u671B\u3080\u304C\u307E\u307E\u306B"
+  },
+  "897": {
+    "E": "Cinder Drift",
+    "G": "Rubinfeuer - Entfesselung",
+    "F": "Les Nu\u00E9es de Brandons",
+    "J": "\u30EB\u30D3\u30FC\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "898": {
+    "E": "Anamnesis Anyder",
+    "G": "Anamnesis Anyder",
+    "F": "Anamnesis Anydre",
+    "J": "\u9ED2\u98A8\u6D77\u5E95 \u30A2\u30CB\u30C9\u30E9\u30B9\u30FB\u30A2\u30CA\u30E0\u30CD\u30FC\u30B7\u30B9"
+  },
+  "899": {
+    "E": "Leap of Faith",
+    "G": "Kaktor-Kletterwand",
+    "F": "Haute voltige",
+    "J": "\u6311\u6226\uFF01 \u30B8\u30E3\u30F3\u30D4\u30F3\u30B0\u30A2\u30B9\u30EC\u30C1\u30C3\u30AF"
+  },
+  "900": {
+    "E": "Ocean Fishing",
+    "G": "Auf gro\u00DFer Fahrt",
+    "F": "P\u00EAche en mer",
+    "J": "\u30AA\u30FC\u30B7\u30E3\u30F3\u30D5\u30A3\u30C3\u30B7\u30F3\u30B0"
+  },
+  "901": {
+    "E": "the Diadem",
+    "G": "Das Diadem - Erschlie\u00DFung",
+    "F": "Le Diad\u00E8me",
+    "J": "\u96F2\u6D77\u63A1\u96C6 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6"
+  },
+  "902": {
+    "E": "Eden\u0027s Verse: Fulmination",
+    "G": "Edens Resonanz - Entladung",
+    "F": "Les Accords d\u0027\u00C9den - Fulmination",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u5171\u9CF4\u7DE81"
+  },
+  "903": {
+    "E": "Eden\u0027s Verse: Furor",
+    "G": "Edens Resonanz - Raserei",
+    "F": "Les Accords d\u0027\u00C9den - Fureur",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u5171\u9CF4\u7DE82"
+  },
+  "904": {
+    "E": "Eden\u0027s Verse: Iconoclasm",
+    "G": "Edens Resonanz - Bildersturm",
+    "F": "Les Accords d\u0027\u00C9den - Iconoclasme",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u5171\u9CF4\u7DE83"
+  },
+  "905": {
+    "E": "Eden\u0027s Verse: Refulgence",
+    "G": "Edens Resonanz - Erstarrung",
+    "F": "Les Accords d\u0027\u00C9den - \u00C9clat",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u5171\u9CF4\u7DE84"
+  },
+  "906": {
+    "E": "Eden\u0027s Verse: Fulmination (Savage)",
+    "G": "Edens Resonanz - Entladung (episch)",
+    "F": "Les Accords d\u0027\u00C9den - Fulmination (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u5171\u9CF4\u7DE81"
+  },
+  "907": {
+    "E": "Eden\u0027s Verse: Furor (Savage)",
+    "G": "Edens Resonanz - Raserei (episch)",
+    "F": "Les Accords d\u0027\u00C9den - Fureur (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u5171\u9CF4\u7DE82"
+  },
+  "908": {
+    "E": "Eden\u0027s Verse: Iconoclasm (Savage)",
+    "G": "Edens Resonanz - Bildersturm (episch)",
+    "F": "Les Accords d\u0027\u00C9den - Iconoclasme (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u5171\u9CF4\u7DE83"
+  },
+  "909": {
+    "E": "Eden\u0027s Verse: Refulgence (Savage)",
+    "G": "Edens Resonanz - Erstarrung (episch)",
+    "F": "Les Accords d\u0027\u00C9den - \u00C9clat (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u5171\u9CF4\u7DE84"
+  },
+  "911": {
+    "E": "the Bozja Incident",
+    "G": "Der Bozja-Vorfall",
+    "F": "Pr\u00E9lude \u00E0 la catastrophe",
+    "J": "\u30B7\u30BF\u30C7\u30EB\u30FB\u30DC\u30BA\u30E4\u84B8\u767A\u4E8B\u5909"
+  },
+  "912": {
+    "E": "Cinder Drift (Extreme)",
+    "G": "Rubinfeuer - Trauma",
+    "F": "Les Nu\u00E9es de Brandons (extr\u00EAme)",
+    "J": "\u6975\u30EB\u30D3\u30FC\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "913": {
+    "E": "Memoria Misera (Extreme)",
+    "G": "Memoria Misera (extrem)",
+    "F": "Memoria Misera (extr\u00EAme)",
+    "J": "\u6975\u30B7\u30BF\u30C7\u30EB\u30FB\u30DC\u30BA\u30E4\u8FFD\u61B6\u6226"
+  },
+  "914": {
+    "E": "A Sleep Disturbed",
+    "G": "Von schlafenden Helden",
+    "F": "L\u0027\u00E9preuve ronka",
+    "J": "\u6C5D\u3001\u82F1\u96C4\u306E\u7720\u308A\u59A8\u3052\u308B\u306F"
+  },
+  "916": {
+    "E": "the Heroes\u0027 Gauntlet",
+    "G": "Schlacht um Norvrandt",
+    "F": "La Travers\u00E9e de Norvrandt",
+    "J": "\u6F06\u9ED2\u6C7A\u6226 \u30CE\u30EB\u30F4\u30E9\u30F3\u30C8"
+  },
+  "917": {
+    "E": "the Puppets\u0027 Bunker",
+    "G": "Die Puppenfestung",
+    "F": "La base militaire des Pantins",
+    "J": "\u4EBA\u5F62\u30BF\u30C1\u30CE\u8ECD\u4E8B\u57FA\u5730"
+  },
+  "920": {
+    "E": "the Bozjan Southern Front",
+    "G": "Bozja-Südfront",
+    "F": "Front sud de Bozja",
+    "J": "\u5357\u65B9\u30DC\u30BA\u30E4\u6226\u7DDA"
+  },
+  "922": {
+    "E": "the Seat of Sacrifice",
+    "G": "Krieger des Lichts",
+    "F": "Le Tr\u00F4ne du Sacrifice",
+    "J": "\u30A6\u30A9\u30FC\u30EA\u30A2\u30FB\u30AA\u30D6\u30FB\u30E9\u30A4\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "923": {
+    "E": "the Seat of Sacrifice (Extreme)",
+    "G": "Krieger des Lichts (extrem)",
+    "F": "Le Tr\u00F4ne du Sacrifice (extr\u00EAme)",
+    "J": "\u6975\u30A6\u30A9\u30FC\u30EA\u30A2\u30FB\u30AA\u30D6\u30FB\u30E9\u30A4\u30C8\u8A0E\u6EC5\u6226"
+  },
+  "924": {
+    "E": "the Shifting Oubliettes of Lyhe Ghiah",
+    "G": "Das Karussell von Lyhe Ghiah",
+    "F": "le Jardin secret du Lyhe Ghiah",
+    "J": "\u5B9D\u7269\u5EAB \u30EA\u30A7\u30FC\u30FB\u30AE\u30A2\u30FB\u30C0\u30F3\u30B8\u30E7\u30F3\u796D\u6BBF"
+  },
+  "925": {
+    "E": "Sleep Now in Sapphire",
+    "G": "Luftangriff auf Werlyt",
+    "F": "Sur la mer de saphir",
+    "J": "\u98DB\u3079\uFF01 \u30A6\u30A7\u30EB\u30EA\u30C8\u3078 "
+  },
+  "926": {
+    "E": "Sleep Now in Sapphire",
+    "G": "Luftangriff auf Werlyt",
+    "F": "Sur la mer de saphir",
+    "J": "\u98DB\u3079\uFF01 \u30A6\u30A7\u30EB\u30EA\u30C8\u3078 "
+  },
+  "929": {
+    "E": "the Diadem",
+    "G": "Das Diadem - Erschlie\u00DFung",
+    "F": "Le Diad\u00E8me",
+    "J": "\u96F2\u6D77\u63A1\u96C6 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6"
+  },
+  "930": {
+    "E": "the Akh Afah Amphitheatre (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "932": {
+    "E": "Faded Memories",
+    "G": "Verblasste Erinnerungen",
+    "F": "Souvenir p\u00E9rissable",
+    "J": "\u8272\u3042\u305B\u305F\u8A18\u61B6"
+  },
+  "933": {
+    "E": "Matoya\u0027s Relict",
+    "G": "Matoyas Atelier",
+    "F": "l\u0027Atelier abandonn\u00E9 de Matoya",
+    "J": "\u9B54\u8853\u5DE5\u623F \u30DE\u30C8\u30FC\u30E4\u306E\u30A2\u30C8\u30EA\u30A8"
+  },
+  "934": {
+    "E": "Castrum Marinum",
+    "G": "Smaragdsturm - Entfesselung",
+    "F": "Castrum Marinum",
+    "J": "\u30A8\u30E1\u30E9\u30EB\u30C9\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "935": {
+    "E": "Castrum Marinum (Extreme)",
+    "G": "Smaragdsturm - Trauma",
+    "F": "Castrum Marinum (extr\u00EAme)",
+    "J": "\u6975\u30A8\u30E1\u30E9\u30EB\u30C9\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "936": {
+    "E": "Delubrum Reginae",
+    "G": "Delubrum Reginae",
+    "F": "Delubrum Reginae",
+    "J": "\u30B0\u30F3\u30D2\u30EB\u30C9\u30FB\u30C7\u30A3\u30EB\u30FC\u30D6\u30E9\u30E0"
+  },
+  "937": {
+    "E": "Delubrum Reginae (Savage)",
+    "G": "Delubrum Reginae (episch)",
+    "F": "Delubrum Reginae (sadique)",
+    "J": "\u30B0\u30F3\u30D2\u30EB\u30C9\u30FB\u30C7\u30A3\u30EB\u30FC\u30D6\u30E9\u30E0\u96F6\u5F0F"
+  },
+  "938": {
+    "E": "Paglth\u0027an",
+    "G": "Die Goldene Ebene von Paglth\u0027an",
+    "F": "La grande prairie de Paglth\u0027an",
+    "J": "\u9EC4\u91D1\u5E73\u539F \u30D1\u30AC\u30EB\u30B6\u30F3"
+  },
+  "939": {
+    "E": "the Diadem",
+    "G": "Das Diadem - Erschlie\u00DFung",
+    "F": "Le Diad\u00E8me",
+    "J": "\u96F2\u6D77\u63A1\u96C6 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6"
+  },
+  "940": {
+    "E": "Triple Triad Open Tournament",
+    "G": "Triple Triad: Manderville-Turnier",
+    "F": "Tournoi officiel de Triple Triade",
+    "J": "\u30C8\u30EA\u30D7\u30EB\u30C8\u30E9\u30A4\u30A2\u30C9\uFF1A\u30AA\u30D5\u30A3\u30B7\u30E3\u30EB\u30C8\u30FC\u30CA\u30E1\u30F3\u30C8"
+  },
+  "941": {
+    "E": "Triple Triad Invitational Parlor",
+    "G": "Triple Triad: Privatturnier",
+    "F": "Salle de tournoi libre de Triple Triade",
+    "J": "\u30C8\u30EA\u30D7\u30EB\u30C8\u30E9\u30A4\u30A2\u30C9\uFF1A\u30AB\u30B9\u30BF\u30E0\u30C8\u30FC\u30CA\u30E1\u30F3\u30C8\u30EB\u30FC\u30E0"
+  },
+  "942": {
+    "E": "Eden\u0027s Promise: Umbra",
+    "G": "Edens Verhei\u00DFung - Umbra",
+    "F": "La Promesse d\u0027\u00C9den - Nu\u00E9e",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u518D\u751F\u7DE81"
+  },
+  "943": {
+    "E": "Eden\u0027s Promise: Litany",
+    "G": "Edens Verhei\u00DFung - Litanei",
+    "F": "La Promesse d\u0027\u00C9den - Litanie",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u518D\u751F\u7DE82"
+  },
+  "944": {
+    "E": "Eden\u0027s Promise: Anamorphosis",
+    "G": "Edens Verhei\u00DFung - Anamorphose",
+    "F": "La Promesse d\u0027\u00C9den - Anamorphose",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u518D\u751F\u7DE83"
+  },
+  "945": {
+    "E": "Eden\u0027s Promise: Eternity",
+    "G": "Edens Verhei\u00DFung - Ewigkeit",
+    "F": "La Promesse d\u0027\u00C9den - \u00C9ternit\u00E9",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\uFF1A\u518D\u751F\u7DE84"
+  },
+  "946": {
+    "E": "Eden\u0027s Promise: Umbra (Savage)",
+    "G": "Edens Verhei\u00DFung - Umbra (episch)",
+    "F": "La Promesse d\u0027\u00C9den - Nu\u00E9e (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u518D\u751F\u7DE81"
+  },
+  "947": {
+    "E": "Eden\u0027s Promise: Litany (Savage)",
+    "G": "Edens Verhei\u00DFung - Litanei (episch)",
+    "F": "La Promesse d\u0027\u00C9den - Litanie (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u518D\u751F\u7DE82"
+  },
+  "948": {
+    "E": "Eden\u0027s Promise: Anamorphosis (Savage)",
+    "G": "Edens Verhei\u00DFung - Anamorphose (episch)",
+    "F": "La Promesse d\u0027\u00C9den - Anamorphose (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u518D\u751F\u7DE83"
+  },
+  "949": {
+    "E": "Eden\u0027s Promise: Eternity (Savage)",
+    "G": "Edens Verhei\u00DFung - Ewigkeit (episch)",
+    "F": "La Promesse d\u0027\u00C9den - \u00C9ternit\u00E9 (sadique)",
+    "J": "\u5E0C\u671B\u306E\u5712\u30A8\u30C7\u30F3\u96F6\u5F0F\uFF1A\u518D\u751F\u7DE84"
+  },
+  "950": {
+    "E": "the Cloud Deck",
+    "G": "Diamantblitz - Entfesselung",
+    "F": "Le Tillac des Cirrus",
+    "J": "\u30C0\u30A4\u30E4\u30A6\u30A7\u30DD\u30F3\u6355\u7372\u4F5C\u6226"
+  },
+  "951": {
+    "E": "the Cloud Deck (Extreme)",
+    "G": "Diamantblitz - Trauma",
+    "F": "Le Tillac des Cirrus (extr\u00EAme)",
+    "J": "\u6975\u30C0\u30A4\u30E4\u30A6\u30A7\u30DD\u30F3\u6355\u7372\u4F5C\u6226"
+  },
+  "952": {
+    "E": "the Tower of Zot",
+    "G": "Der Turm von Zot",
+    "F": "La tour de Zott",
+    "J": "\u7570\u5F62\u697C\u95A3 \u30BE\u30C3\u30C8\u306E\u5854"
+  },
+  "953": {
+    "E": "the Navel (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "954": {
+    "E": "The Great Ship Vylbrand",
+    "G": "Gute Winde für Vylbrand",
+    "F": "Un navire nomm\u00E9 Vylbrand",
+    "J": "\u30D0\u30A4\u30EB\u30D6\u30E9\u30F3\u30C9\u306E\u8239\u51FA"
+  },
+  "955": {
+    "E": "Fit for a Queen",
+    "G": "Hinab in die Ruinen",
+    "F": "Que les Dieux gardent la Reine",
+    "J": "\u30B4\u30C3\u30C9\u30FB\u30BB\u30A4\u30D6\u30FB\u30B6\u30FB\u30AF\u30A4\u30FC\u30F3"
+  },
+  "966": {
+    "E": "the Tower at Paradigm\u0027s Breach",
+    "G": "Der Turm, Paradigmenbrecher",
+    "F": "La tour de la Contingence",
+    "J": "\u5E0C\u671B\u30CE\u7832\u53F0\uFF1A\u300C\u5854\u300D"
+  },
+  "968": {
+    "E": "Dragonsong\u0027s Reprise (Ultimate)",
+    "G": "Drachenkrieg (fatal)",
+    "F": "la Guerre du chant des dragons (fatal)",
+    "J": "\u7D76\u7ADC\u8A69\u6226\u4E89"
+  },
+  "969": {
+    "E": "the Tower of Babil",
+    "G": "Der Turm von Babil",
+    "F": "La tour de Babil",
+    "J": "\u9B54\u5C0E\u795E\u9580 \u30D0\u30D6\u30A4\u30EB\u306E\u5854"
+  },
+  "970": {
+    "E": "Vanaspati",
+    "G": "Vanaspati",
+    "F": "Vanaspati",
+    "J": "\u7D42\u672B\u6A39\u6D77 \u30F4\u30A1\u30CA\u30B9\u30D1\u30C6\u30A3"
+  },
+  "972": {
+    "E": "the Whorleater (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "973": {
+    "E": "the Dead Ends",
+    "G": "Das Sternengrab",
+    "F": "L\u0027Issue aux Impasses",
+    "J": "\u6700\u7D42\u5E7B\u60F3 \u30EC\u30E0\u30CA\u30F3\u30C8"
+  },
+  "974": {
+    "E": "Ktisis Hyperboreia",
+    "G": "Ktisis Hyperboreia",
+    "F": "l\u0027Hyperbor\u00E9e",
+    "J": "\u5275\u9020\u74B0\u5883 \u30D2\u30E5\u30DA\u30EB\u30DC\u30EC\u30A2\u9020\u7269\u9662"
+  },
+  "975": {
+    "E": "Zadnor",
+    "G": "Zadnor-Hochebene",
+    "F": "Hauts plateaux de Zadnor",
+    "J": "\u30B6\u30C8\u30A5\u30CE\u30EB\u9AD8\u539F"
+  },
+  "976": {
+    "E": "Smileton",
+    "G": "Smileton",
+    "F": "Risette-sur-lune",
+    "J": "\u697D\u5712\u90FD\u5E02 \u30B9\u30DE\u30A4\u30EB\u30C8\u30F3"
+  },
+  "977": {
+    "E": "Death Unto Dawn",
+    "G": "Kampf im Morgengrauen",
+    "F": "Aube meurtri\u00E8re",
+    "J": "\u9ECE\u660E\u306E\u6B7B\u95D8"
+  },
+  "978": {
+    "E": "the Aitiascope",
+    "G": "Das Aitiaskop",
+    "F": "le Prisme de l\u0027Aitia",
+    "J": "\u661F\u6D77\u6F5C\u822A \u30A2\u30A4\u30C6\u30A3\u30AA\u30F3\u661F\u6676\u93E1"
+  },
+  "986": {
+    "E": "the Stigma Dreamscape",
+    "G": "Stigma-Holometrie",
+    "F": "R\u00EAve \u00E9lectrique de Stigma-4",
+    "J": "\u96FB\u8133\u5922\u60F3 \u30B9\u30C6\u30A3\u30B0\u30DE\u30FB\u30D5\u30A9\u30FC"
+  },
+  "992": {
+    "E": "the Dark Inside",
+    "G": "Prophetie - Zodiark",
+    "F": "Le Crat\u00E8re des Martyrs",
+    "J": "\u30BE\u30C7\u30A3\u30A2\u30FC\u30AF\u8A0E\u6EC5\u6226"
+  },
+  "993": {
+    "E": "the Minstrel\u0027s Ballad: Zodiark\u0027s Fall",
+    "G": "Eschatos - Zodiark",
+    "F": "Le Crat\u00E8re des Martyrs (extr\u00EAme)",
+    "J": "\u6975\u30BE\u30C7\u30A3\u30A2\u30FC\u30AF\u8A0E\u6EC5\u6226"
+  },
+  "994": {
+    "E": "The Phantoms\u0027 Feast",
+    "G": "Lustiges Bankett",
+    "F": "Le banquet cauchemardesque",
+    "J": "\u9053\u5316\u9957\u5BB4 \u30DB\u30FC\u30F3\u30C6\u30C3\u30C9\u30D5\u30A3\u30FC\u30B9\u30C8"
+  },
+  "995": {
+    "E": "the Mothercrystal",
+    "G": "Prophetie - Hydaelyn",
+    "F": "Le Cristal-m\u00E8re",
+    "J": "\u30CF\u30A4\u30C7\u30EA\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "996": {
+    "E": "the Minstrel\u0027s Ballad: Hydaelyn\u0027s Call",
+    "G": "Eschatos - Hydaelyn",
+    "F": "Le Cristal-m\u00E8re (extr\u00EAme)",
+    "J": "\u6975\u30CF\u30A4\u30C7\u30EA\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "997": {
+    "E": "the Final Day",
+    "G": "Prophetie - Endsängerin",
+    "F": "le R\u00E9pons final",
+    "J": "\u7D42\u7109\u306E\u6226\u3044"
+  },
+  "998": {
+    "E": "the Minstrel\u0027s Ballad: Endsinger\u0027s Aria",
+    "G": "Eschatos - Endsängerin",
+    "F": "le R\u00E9pons final (extr\u00EAme)",
+    "J": "\u7D42\u6975\u306E\u6226\u3044"
+  },
+  "1000": {
+    "E": "the Excitatron 6000",
+    "G": "Euphoratron",
+    "F": "Le Ludodrome",
+    "J": "\u5B9D\u7269\u5EAB \u30A8\u30AD\u30B5\u30A4\u30C8\u30ED\u30F3"
+  },
+  "1002": {
+    "E": "Asphodelos: The First Circle",
+    "G": "Asphodelos - Erster Kreis",
+    "F": "Les Limbes du Pand\u00E6monium - Parvis",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u8FBA\u7344\u7DE81"
+  },
+  "1003": {
+    "E": "Asphodelos: The First Circle (Savage)",
+    "G": "Asphodelos - Erster Kreis (episch)",
+    "F": "Les Limbes du Pand\u00E6monium - Parvis (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u8FBA\u7344\u7DE81"
+  },
+  "1004": {
+    "E": "Asphodelos: The Second Circle",
+    "G": "Asphodelos - Zweiter Kreis",
+    "F": "Les Limbes du Pand\u00E6monium - Cloaque",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u8FBA\u7344\u7DE82"
+  },
+  "1005": {
+    "E": "Asphodelos: The Second Circle (Savage)",
+    "G": "Asphodelos - Zweiter Kreis (episch)",
+    "F": "Les Limbes du Pand\u00E6monium - Cloaque (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u8FBA\u7344\u7DE82"
+  },
+  "1006": {
+    "E": "Asphodelos: The Third Circle",
+    "G": "Asphodelos - Dritter Kreis",
+    "F": "Les Limbes du Pand\u00E6monium - Fournaise",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u8FBA\u7344\u7DE83"
+  },
+  "1007": {
+    "E": "Asphodelos: The Third Circle (Savage)",
+    "G": "Asphodelos - Dritter Kreis (episch)",
+    "F": "Les Limbes du Pand\u00E6monium - Fournaise (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u8FBA\u7344\u7DE83"
+  },
+  "1008": {
+    "E": "Asphodelos: The Fourth Circle",
+    "G": "Asphodelos - Vierter Kreis",
+    "F": "Les Limbes du Pand\u00E6monium - Ab\u00EEme",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u8FBA\u7344\u7DE84"
+  },
+  "1009": {
+    "E": "Asphodelos: The Fourth Circle (Savage)",
+    "G": "Asphodelos - Vierter Kreis (episch)",
+    "F": "Les Limbes du Pand\u00E6monium - Ab\u00EEme (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u8FBA\u7344\u7DE84"
+  },
+  "1010": {
+    "E": "A Frosty Reception",
+    "G": "Ein frostiger Empfang",
+    "F": "Un accueil glacial",
+    "J": "\u971C\u96EA\u3092\u8E0F\u307F\u3057\u3081\u3066"
+  },
+  "1011": {
+    "E": "In from the Cold",
+    "G": "In fremder Haut",
+    "F": "Le voleur de corps",
+    "J": "\u5BD2\u591C\u306E\u3053\u3068"
+  },
+  "1012": {
+    "E": "As the Heavens Burn",
+    "G": "Rote Himmel, roter Schnee",
+    "F": "L\u0027ar\u00E8ne des neiges",
+    "J": "\u62E1\u304C\u308B\u7D42\u672B"
+  },
+  "1013": {
+    "E": "Endwalker",
+    "G": "Endschreiter",
+    "F": "Arpenteur des finitudes",
+    "J": "\u6681\u6708\u306E\u30D5\u30A3\u30CA\u30FC\u30EC"
+  },
+  "1014": {
+    "E": "Worthy of His Back",
+    "G": " Es reimt sich auf Gebell",
+    "F": "Le d\u00E9fi de l\u0027ancienne Azem",
+    "J": "\u524D\u4EE3\u30A2\u30BC\u30E0\u306E\u624B\u307B\u3069\u304D"
+  },
+  "1015": {
+    "E": "A Path Unveiled",
+    "G": "Offen für neue Wege",
+    "F": "Des esprits et des hommes",
+    "J": "\u958B\u304B\u308C\u305F\u9053\u306E\u5148\u3078"
+  },
+  "1016": {
+    "E": "To Calmer Seas",
+    "G": "Im Hafen des Friedens",
+    "F": "Cap sur la paix",
+    "J": "\u878D\u548C\u3078\u306E\u8239\u51FA"
+  },
+  "1017": {
+    "E": "Laid to Rest",
+    "G": "Domanisches Begräbnis",
+    "F": "Des adieux domiens",
+    "J": "\u30C9\u30DE\u306E\u5F14\u3044"
+  },
+  "1018": {
+    "E": "Ever March Heavensward",
+    "G": "Der Weg zur Erneuerung",
+    "F": "La voie du renouveau",
+    "J": "\u84BC\u5929\u3092\u4EF0\u304E\u3001\u6B69\u307F\u7D9A\u3051\u308B"
+  },
+  "1019": {
+    "E": "The Gift of Mercy",
+    "G": "Trauer und Hoffnung",
+    "F": "Acceptation",
+    "J": "\u50D5\u305F\u3061\u306F\u9084\u308A\u3001\u541B\u3092\u898B\u9001\u308D\u3046"
+  },
+  "1020": {
+    "E": "The Harvest Begins",
+    "G": "Die Bedeutung der Sense",
+    "F": "La vraie puissance de la faux",
+    "J": "\u5927\u938C\u306E\u610F\u5473"
+  },
+  "1021": {
+    "E": "The Killing Art",
+    "G": "Die Kunst des Tötens",
+    "F": "La voie du n\u00E9ant",
+    "J": "\u6697\u6BBA\u9053"
+  },
+  "1022": {
+    "E": "Sage\u0027s Focus",
+    "G": "Des Weisen wundersames Werkzeug",
+    "F": "Les armes du sage",
+    "J": "\u8CE2\u8005\u306E\u77ED\u6756"
+  },
+  "1023": {
+    "E": "Life Ephemeral, Path Eternal",
+    "G": "Das Leben ist kurz, die Kunst ist lang",
+    "F": "Existences \u00E9ph\u00E9m\u00E8res et savoir \u00E9ternel",
+    "J": "\u4EBA\u547D\u306F\u511A\u304F\u3001\u8853\u306E\u307F\u3061\u306F\u6C38\u4E45\u306B"
+  },
+  "1035": {
+    "E": "Ultima\u0027s Bane (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1036": {
+    "E": "Sastasha",
+    "G": "Sastasha",
+    "F": "Sastasha",
+    "J": "\u5929\u7136\u8981\u5BB3 \u30B5\u30B9\u30BF\u30B7\u30E3\u6D78\u98DF\u6D1E"
+  },
+  "1037": {
+    "E": "the Tam-Tara Deepcroft",
+    "G": "Totenacker Tam-Tara",
+    "F": "l\u0027Hypog\u00E9e de Tam-Tara",
+    "J": "\u5730\u4E0B\u970A\u6BBF \u30BF\u30E0\u30BF\u30E9\u306E\u5893\u6240"
+  },
+  "1038": {
+    "E": "Copperbell Mines",
+    "G": "Kupferglocken-Mine",
+    "F": "les Mines de Clochecuivre",
+    "J": "\u5C01\u9396\u5751\u9053 \u30AB\u30C3\u30D1\u30FC\u30D9\u30EB\u9285\u5C71"
+  },
+  "1039": {
+    "E": "the Thousand Maws of Toto-Rak",
+    "G": "Tausend Löcher von Toto-Rak",
+    "F": "les Mille Gueules de Toto-Rak",
+    "J": "\u76E3\u7344\u5EC3\u589F \u30C8\u30C8\u30E9\u30AF\u306E\u5343\u7344"
+  },
+  "1040": {
+    "E": "Haukke Manor",
+    "G": "Haukke-Herrenhaus",
+    "F": "le Manoir des Haukke",
+    "J": "\u540D\u9580\u5C4B\u6577 \u30CF\u30A6\u30B1\u30BF\u5FA1\u7528\u90B8"
+  },
+  "1041": {
+    "E": "Brayflox\u0027s Longstop",
+    "G": "Brüllvolx\u0027 Langrast",
+    "F": "le Bivouac de Brayflox",
+    "J": "\u596A\u9084\u652F\u63F4 \u30D6\u30EC\u30A4\u30D5\u30ED\u30AF\u30B9\u306E\u91CE\u55B6\u5730"
+  },
+  "1042": {
+    "E": "the Stone Vigil",
+    "G": "Steinerne Wacht",
+    "F": "le Vigile de Pierre",
+    "J": "\u57CE\u585E\u653B\u7565 \u30B9\u30C8\u30FC\u30F3\u30F4\u30A3\u30B8\u30EB"
+  },
+  "1043": {
+    "E": "Castrum Meridianum",
+    "G": "Castrum Meridianum - Au\u00DFenbereich",
+    "F": "Castrum Meridianum",
+    "J": "\u5916\u90ED\u653B\u7565 \u30AB\u30B9\u30C8\u30EB\u30E0\u30FB\u30E1\u30EA\u30C7\u30A3\u30A2\u30CC\u30E0"
+  },
+  "1044": {
+    "E": "the Praetorium",
+    "G": "Castrum Meridianum - Praetorium",
+    "F": "le Praetorium",
+    "J": "\u6700\u7D42\u6C7A\u6226 \u9B54\u5C0E\u57CE\u30D7\u30E9\u30A8\u30C8\u30EA\u30A6\u30E0"
+  },
+  "1045": {
+    "E": "the Bowl of Embers",
+    "G": "Das Grab der Lohe",
+    "F": "le Crat\u00E8re des tisons",
+    "J": "\u30A4\u30D5\u30EA\u30FC\u30C8\u8A0E\u4F10\u6226"
+  },
+  "1046": {
+    "E": "the Navel",
+    "G": "Der Nabel",
+    "F": "le Nombril",
+    "J": "\u30BF\u30A4\u30BF\u30F3\u8A0E\u4F10\u6226"
+  },
+  "1047": {
+    "E": "the Howling Eye",
+    "G": "Das Tosende Auge",
+    "F": "Hurl\u0153il",
+    "J": "\u30AC\u30EB\u30FC\u30C0\u8A0E\u4F10\u6226"
+  },
+  "1048": {
+    "E": "the Porta Decumana",
+    "G": "Porta Decumana",
+    "F": "Porta Decumana",
+    "J": "\u30A2\u30EB\u30C6\u30DE\u30A6\u30A7\u30DD\u30F3\u7834\u58CA\u4F5C\u6226"
+  },
+  "1049": {
+    "E": "Cape Westwind",
+    "G": "Kap Westwind",
+    "F": "le Cap Vendouest",
+    "J": "\u30EA\u30C3\u30C8\u30A2\u30C6\u30A3\u30F3\u5F37\u8972\u6226"
+  },
+  "1050": {
+    "E": "Alzadaal\u0027s Legacy",
+    "G": "Alzadaals Vermächtnis",
+    "F": "Le legs d\u0027Alzadaal",
+    "J": "\u8FD1\u6771\u79D8\u5B9D \u30A2\u30EB\u30B6\u30C0\u30FC\u30EB\u6D77\u5E95\u907A\u8DE1\u7FA4"
+  },
+  "1051": {
+    "E": "Forlorn Glory",
+    "G": "Nervas Reich",
+    "F": "Nerva, le patriote",
+    "J": "\u30CD\u30EB\u30A6\u30A1\u306E\u5E1D\u56FD"
+  },
+  "1052": {
+    "E": "Devastation",
+    "G": "Das Antlitz der Kaltblütigkeit",
+    "F": "le Praetorium en flammes",
+    "J": "\u30A2\u30B7\u30A8\u30F3\u30FB\u30E9\u30CF\u30D6\u30EC\u30A2\u8A0E\u4F10\u6226"
+  },
+  "1054": {
+    "E": "Aglaia",
+    "G": "Aglaia",
+    "F": "Domaine divin - Agla\u00E9",
+    "J": "\u8F1D\u3051\u308B\u795E\u57DF \u30A2\u30B0\u30E9\u30A4\u30A2"
+  },
+  "1062": {
+    "E": "Snowcloak",
+    "G": "Das Schneekleid",
+    "F": "Manteneige",
+    "J": "\u6C37\u7D50\u6F5C\u7A9F \u30B9\u30CE\u30FC\u30AF\u30ED\u30FC\u30AF\u5927\u6C37\u58C1"
+  },
+  "1063": {
+    "E": "the Keeper of the Lake",
+    "G": "Hüter des Sees",
+    "F": "le Gardien du lac",
+    "J": "\u5E7B\u9F8D\u6B8B\u9AB8 \u9ED9\u7D04\u306E\u5854"
+  },
+  "1064": {
+    "E": "Sohm Al",
+    "G": "Sohm Al",
+    "F": "Sohm Al",
+    "J": "\u970A\u5CF0\u8E0F\u7834 \u30BD\u30FC\u30E0\u30FB\u30A2\u30EB"
+  },
+  "1065": {
+    "E": "the Aery",
+    "G": "Nest des Drachen",
+    "F": "L\u0027Aire",
+    "J": "\u90AA\u7ADC\u8840\u6226 \u30C9\u30E9\u30B4\u30F3\u30BA\u30A8\u30A2\u30EA\u30FC"
+  },
+  "1066": {
+    "E": "the Vault",
+    "G": "Erzbasilika",
+    "F": "La Vo\u00FBte",
+    "J": "\u5F37\u786C\u7A81\u5165 \u30A4\u30B7\u30E5\u30AC\u30EB\u30C9\u6559\u7687\u5E81"
+  },
+  "1067": {
+    "E": "Thornmarch (Hard)",
+    "G": "Königliche Konfrontation (schwer)",
+    "F": "la Lisi\u00E8re de ronces (brutal)",
+    "J": "\u5584\u738B\u30E2\u30B0\u30EB\u30FB\u30E2\u30B0XII\u4E16\u8A0E\u6EC5\u6226"
+  },
+  "1068": {
+    "E": "the Steps of Faith",
+    "G": "Der Schicksalsweg",
+    "F": "Le Si\u00E8ge de la sainte Cit\u00E9 d\u0027Ishgard",
+    "J": "\u7687\u90FD\u30A4\u30B7\u30E5\u30AC\u30EB\u30C9\u9632\u885B\u6226"
+  },
+  "1069": {
+    "E": "the Sil\u0027dihn Subterrane",
+    "G": "Die Unterstadt von Sil\u0027dih",
+    "F": "Les canalisations sildiennes - Donjon \u00E0 embranchements",
+    "J": "\u30F4\u30A1\u30EA\u30A2\u30F3\u30C8\u30C0\u30F3\u30B8\u30E7\u30F3 \u30B7\u30E9\u30C7\u30A3\u30CF\u6C34\u9053"
+  },
+  "1070": {
+    "E": "the Fell Court of Troia",
+    "G": "Der Schwarze Hof von Troia",
+    "F": "Le Ch\u00E2teau de Tro\u00EFa",
+    "J": "\u7570\u754C\u5B64\u57CE \u30C8\u30ED\u30A4\u30A2\u30B3\u30FC\u30C8"
+  },
+  "1071": {
+    "E": "Storm\u0027s Crown",
+    "G": "Prophetie - Barbarizia",
+    "F": "La Toison des temp\u00EAtes",
+    "J": "\u30D0\u30EB\u30D0\u30EA\u30B7\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "1072": {
+    "E": "Storm\u0027s Crown (Extreme)",
+    "G": "Eschatos - Barbarizia",
+    "F": "La Toison des temp\u00EAtes (extr\u00EAme)",
+    "J": "\u6975\u30D0\u30EB\u30D0\u30EA\u30B7\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "1075": {
+    "E": "Another Sil\u0027dihn Subterrane",
+    "G": "Die kuriose Unterstadt von Sil\u0027dih",
+    "F": "Les canalisations sildiennes annexes - Donjon alternatif",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u30B7\u30E9\u30C7\u30A3\u30CF\u6C34\u9053"
+  },
+  "1076": {
+    "E": "Another Sil\u0027dihn Subterrane (Savage)",
+    "G": "Die kuriose Unterstadt von Sil\u0027dih (episch)",
+    "F": "Les canalisations sildiennes annexes - Donjon alternatif (sadique)",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u30B7\u30E9\u30C7\u30A3\u30CF\u6C34\u9053 \u96F6\u5F0F"
+  },
+  "1081": {
+    "E": "Abyssos: The Fifth Circle",
+    "G": "Abyssos - Fünfter Kreis",
+    "F": "Le Purgatoire du Pand\u00E6monium - Cages",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u7149\u7344\u7DE81"
+  },
+  "1082": {
+    "E": "Abyssos: The Fifth Circle (Savage)",
+    "G": "Abyssos - Fünfter Kreis (episch)",
+    "F": "Le Purgatoire du Pand\u00E6monium - Cages (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u7149\u7344\u7DE81"
+  },
+  "1083": {
+    "E": "Abyssos: The Sixth Circle",
+    "G": "Abyssos - Sechster Kreis",
+    "F": "Le Purgatoire du Pand\u00E6monium - Croisements",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u7149\u7344\u7DE82"
+  },
+  "1084": {
+    "E": "Abyssos: The Sixth Circle (Savage)",
+    "G": "Abyssos - Sechster Kreis (episch)",
+    "F": "Le Purgatoire du Pand\u00E6monium - Croisements (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u7149\u7344\u7DE82"
+  },
+  "1085": {
+    "E": "Abyssos: The Seventh Circle",
+    "G": "Abyssos - Siebter Kreis",
+    "F": "Le Purgatoire du Pand\u00E6monium - Racines",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u7149\u7344\u7DE83"
+  },
+  "1086": {
+    "E": "Abyssos: The Seventh Circle (Savage)",
+    "G": "Abyssos - Siebter Kreis (episch)",
+    "F": "Le Purgatoire du Pand\u00E6monium - Racines (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u7149\u7344\u7DE83"
+  },
+  "1087": {
+    "E": "Abyssos: The Eighth Circle",
+    "G": "Abyssos - Achter Kreis",
+    "F": "Le Purgatoire du Pand\u00E6monium - H\u00E9r\u00E9dit\u00E9",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u7149\u7344\u7DE84"
+  },
+  "1088": {
+    "E": "Abyssos: The Eighth Circle (Savage)",
+    "G": "Abyssos - Achter Kreis (episch)",
+    "F": "Le Purgatoire du Pand\u00E6monium - H\u00E9r\u00E9dit\u00E9 (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u7149\u7344\u7DE84"
+  },
+  "1090": {
+    "E": "Containment Bay S1T7 (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1091": {
+    "E": "Where Everything Begins",
+    "G": "Wo alles seinen Anfang nimmt",
+    "F": "Au commencement \u00E9tait Zero",
+    "J": "\u5931\u308F\u308C\u305F\u529B"
+  },
+  "1095": {
+    "E": "Mount Ordeals",
+    "G": "Prophetie - Rubicante",
+    "F": "Le Mont du Supplice",
+    "J": "\u30EB\u30D3\u30AB\u30F3\u30C6\u8A0E\u6EC5\u6226"
+  },
+  "1096": {
+    "E": "Mount Ordeals (Extreme)",
+    "G": "Eschatos - Rubicante",
+    "F": "Le Mont du Supplice (extr\u00EAme)",
+    "J": "\u6975\u30EB\u30D3\u30AB\u30F3\u30C6\u8A0E\u6EC5\u6226"
+  },
+  "1097": {
+    "E": "Lapis Manalis",
+    "G": "Lapis Manalis",
+    "F": "Lapis Manalis",
+    "J": "\u96EA\u5C71\u51A5\u6D1E \u30E9\u30D4\u30B9\u30FB\u30DE\u30CA\u30EA\u30B9"
+  },
+  "1098": {
+    "E": "Leap of Faith",
+    "G": "Kaktor-Kletterwand",
+    "F": "Haute voltige",
+    "J": "\u6311\u6226\uFF01 \u30B8\u30E3\u30F3\u30D4\u30F3\u30B0\u30A2\u30B9\u30EC\u30C1\u30C3\u30AF"
+  },
+  "1099": {
+    "E": "Eureka Orthos (Floors 1-10)",
+    "G": "Eureka Orthos (Ebenen 1-10)",
+    "F": "Eur\u00EAka Orthos (sous-sols 1-10)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B1\uFF5EB10"
+  },
+  "1100": {
+    "E": "Eureka Orthos (Floors 11-20)",
+    "G": "Eureka Orthos (Ebenen 11-20)",
+    "F": "Eur\u00EAka Orthos (sous-sols 11-20)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B11\uFF5EB20"
+  },
+  "1101": {
+    "E": "Eureka Orthos (Floors 21-30)",
+    "G": "Eureka Orthos (Ebenen 21-30)",
+    "F": "Eur\u00EAka Orthos (sous-sols 21-30)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B21\uFF5EB30"
+  },
+  "1102": {
+    "E": "Eureka Orthos (Floors 31-40)",
+    "G": "Eureka Orthos (Ebenen 31-40)",
+    "F": "Eur\u00EAka Orthos (sous-sols 31-40)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B31\uFF5EB40"
+  },
+  "1103": {
+    "E": "Eureka Orthos (Floors 41-50)",
+    "G": "Eureka Orthos (Ebenen 41-50)",
+    "F": "Eur\u00EAka Orthos (sous-sols 41-50)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B41\uFF5EB50"
+  },
+  "1104": {
+    "E": "Eureka Orthos (Floors 51-60)",
+    "G": "Eureka Orthos (Ebenen 51-60)",
+    "F": "Eur\u00EAka Orthos (sous-sols 51-60)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B51\uFF5EB60"
+  },
+  "1105": {
+    "E": "Eureka Orthos (Floors 61-70)",
+    "G": "Eureka Orthos (Ebenen 61-70)",
+    "F": "Eur\u00EAka Orthos (sous-sols 61-70)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B61\uFF5EB70"
+  },
+  "1106": {
+    "E": "Eureka Orthos (Floors 71-80)",
+    "G": "Eureka Orthos (Ebenen 71-80)",
+    "F": "Eur\u00EAka Orthos (sous-sols 71-80)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B71\uFF5EB80"
+  },
+  "1107": {
+    "E": "Eureka Orthos (Floors 81-90)",
+    "G": "Eureka Orthos (Ebenen 81-90)",
+    "F": "Eur\u00EAka Orthos (sous-sols 81-90)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B81\uFF5EB90"
+  },
+  "1108": {
+    "E": "Eureka Orthos (Floors 91-100)",
+    "G": "Eureka Orthos (Ebenen 91-100)",
+    "F": "Eur\u00EAka Orthos (sous-sols 91-100)",
+    "J": "\u30AA\u30EB\u30C8\u30FB\u30A8\u30A6\u30EC\u30AB B91\uFF5EB100"
+  },
+  "1109": {
+    "E": "the Great Gubal Library",
+    "G": "Gro\u00DFe Gubal-Bibliothek",
+    "F": "la Grande biblioth\u00E8que de Gubal",
+    "J": "\u7981\u66F8\u56DE\u53CE \u30B0\u30D6\u30E9\u5E7B\u60F3\u56F3\u66F8\u9928"
+  },
+  "1110": {
+    "E": "the Aetherochemical Research Facility",
+    "G": "\u00C4therochemisches Forschungslabor",
+    "F": "le Laboratoire de magismologie",
+    "J": "\u84BC\u5929\u8056\u6226 \u9B54\u79D1\u5B66\u7814\u7A76\u6240"
+  },
+  "1111": {
+    "E": "the Antitower",
+    "G": "Antiturm",
+    "F": "L\u0027Antitour",
+    "J": "\u661F\u6D77\u89B3\u6E2C \u9006\u3055\u306E\u5854"
+  },
+  "1112": {
+    "E": "Sohr Khai",
+    "G": "Sohr Khai",
+    "F": "Sohr Khai",
+    "J": "\u5929\u7ADC\u5BAE\u6BBF \u30BD\u30FC\u30EB\u30FB\u30AB\u30A4"
+  },
+  "1113": {
+    "E": "Xelphatol",
+    "G": "Xelphatol",
+    "F": "Xelphatol",
+    "J": "\u5CFB\u53B3\u6E13\u8C37 \u30BC\u30EB\u30D5\u30A1\u30C8\u30EB"
+  },
+  "1114": {
+    "E": "Baelsar\u0027s Wall",
+    "G": "Baelsar-Wall",
+    "F": "la Muraille de Baelsar",
+    "J": "\u5DE8\u5927\u9632\u58C1 \u30D0\u30A8\u30B5\u30EB\u306E\u9577\u57CE"
+  },
+  "1115": {
+    "E": "Generational Bonding",
+    "G": "Väterliche Liebe",
+    "F": "Tel gentilhomme, tel gentilhomme",
+    "J": "\u306F\u3064\u3089\u3064\u3068\u3057\u305F\u89AA\u5B50"
+  },
+  "1118": {
+    "E": "Euphrosyne",
+    "G": "Euphrosyne",
+    "F": "Domaine divin - Euphrosyne",
+    "J": "\u559C\u3073\u306E\u795E\u57DF \u30A8\u30A6\u30D7\u30ED\u30B7\u30E5\u30CD"
+  },
+  "1120": {
+    "E": "An Unforeseen Bargain",
+    "G": "Der Wert einer Buuds",
+    "F": "Pour une bouch\u00E9e de pain",
+    "J": "\u30D1\u30F3\u3072\u3068\u3064\u3068\u5F15\u304D\u63DB\u3048\u306B"
+  },
+  "1121": {
+    "E": "Containment Bay P1T6 (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1122": {
+    "E": "the Omega Protocol (Ultimate)",
+    "G": "Omega (fatal)",
+    "F": "le Protocole Om\u00E9ga (fatal)",
+    "J": "\u7D76\u30AA\u30E1\u30AC\u691C\u8A3C\u6226"
+  },
+  "1123": {
+    "E": "the Shifting Gymnasion Agonon",
+    "G": "Gymnasion Agonon",
+    "F": "Elpis Gymnasion",
+    "J": "\u5B9D\u7269\u5EAB \u30A8\u30EB\u30D4\u30B9\u30FB\u30AE\u30E5\u30E0\u30CA\u30B7\u30AA\u30F3\u796D\u6BBF"
+  },
+  "1126": {
+    "E": "the Aetherfont",
+    "G": "\u00C4therborn",
+    "F": "L\u0027\u00EEle de Haam",
+    "J": "\u661F\u970A\u9593\u6B20 \u30CF\u30FC\u30E0\u5CF6"
+  },
+  "1127": {
+    "E": "React to Attack Markers",
+    "G": "Achte auf Attackenmarkierungen!",
+    "F": "R\u00E9agir \u00E0 des marquages",
+    "J": "\u30DE\u30FC\u30AB\u30FC\u304C\u51FA\u308B\u653B\u6483\u306B\u5BFE\u51E6\u3057\u3088\u3046\uFF01"
+  },
+  "1128": {
+    "E": "React to Floor Markers",
+    "G": "Achte auf Geländemarkierungen!",
+    "F": "R\u00E9agir \u00E0 des indications au sol",
+    "J": "\u5730\u9762\u306B\u4E88\u5146\u304C\u51FA\u308B\u653B\u6483\u306B\u5BFE\u51E6\u3057\u3088\u3046\uFF01"
+  },
+  "1129": {
+    "E": "React to Advanced Visual Indicators",
+    "G": "Stelle dich allerlei Angriffsmanövern!",
+    "F": "R\u00E9agir \u00E0 des m\u00E9caniques vari\u00E9es",
+    "J": "\u3055\u307E\u3056\u307E\u306A\u653B\u6483\u306B\u5BFE\u51E6\u3057\u3088\u3046\uFF01"
+  },
+  "1136": {
+    "E": "the Gilded Araya",
+    "G": "Prophetie - Asura",
+    "F": "Le temple dor\u00E9 d\u0027Araya",
+    "J": "\u30A2\u30B9\u30E9\u8A0E\u6EC5\u6226"
+  },
+  "1137": {
+    "E": "Mount Rokkon",
+    "G": "Der Rokkon",
+    "F": "Le mont Rokkon - Donjon \u00E0 embranchements",
+    "J": "\u30F4\u30A1\u30EA\u30A2\u30F3\u30C8\u30C0\u30F3\u30B8\u30E7\u30F3 \u516D\u6839\u5C71"
+  },
+  "1140": {
+    "E": "the Voidcast Dais",
+    "G": "Prophetie - Golbez",
+    "F": "La Chaire de l\u0027Exil\u00E9e",
+    "J": "\u30B4\u30EB\u30D9\u30FC\u30B6\u8A0E\u6EC5\u6226"
+  },
+  "1141": {
+    "E": "the Voidcast Dais (Extreme)",
+    "G": "Eschatos - Golbez",
+    "F": "La Chaire de l\u0027Exil\u00E9e (extr\u00EAme)",
+    "J": "\u6975\u30B4\u30EB\u30D9\u30FC\u30B6\u8A0E\u6EC5\u6226"
+  },
+  "1142": {
+    "E": "the Sirensong Sea",
+    "G": "Sirenen-See",
+    "F": "la Mer du Chant des sir\u00E8nes",
+    "J": "\u6F02\u6D41\u6D77\u57DF \u30BB\u30A4\u30EC\u30FC\u30F3\u6D77"
+  },
+  "1143": {
+    "E": "Bardam\u0027s Mettle",
+    "G": "Bardams Probe",
+    "F": "la Force de Bardam",
+    "J": "\u4F1D\u7D71\u8A66\u7DF4 \u30D0\u30EB\u30C0\u30E0\u8987\u9053"
+  },
+  "1144": {
+    "E": "Doma Castle",
+    "G": "Burg Doma",
+    "F": "le Ch\u00E2teau de Doma",
+    "J": "\u89E3\u653E\u6C7A\u6226 \u30C9\u30DE\u57CE"
+  },
+  "1145": {
+    "E": "Castrum Abania",
+    "G": "Castrum Abania",
+    "F": "Castrum Abania",
+    "J": "\u5DE8\u7832\u8981\u585E \u30AB\u30B9\u30C8\u30EB\u30E0\u30FB\u30A2\u30D0\u30CB\u30A2"
+  },
+  "1146": {
+    "E": "Ala Mhigo",
+    "G": "Ala Mhigo",
+    "F": "Ala Mhigo",
+    "J": "\u7D05\u84EE\u6C7A\u6226 \u30A2\u30E9\u30DF\u30B4"
+  },
+  "1147": {
+    "E": "Anabaseios: The Ninth Circle",
+    "G": "Anabaseios - Neunter Kreis",
+    "F": "Le Paradis du Pand\u00E6monium - M\u00E9tempsycose",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u5929\u7344\u7DE81"
+  },
+  "1148": {
+    "E": "Anabaseios: The Ninth Circle (Savage)",
+    "G": "Anabaseios - Neunter Kreis (episch)",
+    "F": "Le Paradis du Pand\u00E6monium - M\u00E9tempsycose (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u5929\u7344\u7DE81"
+  },
+  "1149": {
+    "E": "Anabaseios: The Tenth Circle",
+    "G": "Anabaseios - Zehnter Kreis",
+    "F": "Le Paradis du Pand\u00E6monium - Monochrome",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u5929\u7344\u7DE82"
+  },
+  "1150": {
+    "E": "Anabaseios: The Tenth Circle (Savage)",
+    "G": "Anabaseios - Zehnter Kreis (episch)",
+    "F": "Le Paradis du Pand\u00E6monium - Monochrome (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u5929\u7344\u7DE82"
+  },
+  "1151": {
+    "E": "Anabaseios: The Eleventh Circle",
+    "G": "Anabaseios - Elfter Kreis",
+    "F": "Le Paradis du Pand\u00E6monium - Tribunal",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u5929\u7344\u7DE83"
+  },
+  "1152": {
+    "E": "Anabaseios: The Eleventh Circle (Savage)",
+    "G": "Anabaseios - Elfter Kreis (episch)",
+    "F": "Le Paradis du Pand\u00E6monium - Tribunal (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u5929\u7344\u7DE83"
+  },
+  "1153": {
+    "E": "Anabaseios: The Twelfth Circle",
+    "G": "Anabaseios - Zwölfter Kreis",
+    "F": "Le Paradis du Pand\u00E6monium - Apoth\u00E9ose",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u5929\u7344\u7DE84"
+  },
+  "1154": {
+    "E": "Anabaseios: The Twelfth Circle (Savage)",
+    "G": "Anabaseios - Zwölfter Kreis (episch)",
+    "F": "Le Paradis du Pand\u00E6monium - Apoth\u00E9ose (sadique)",
+    "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u5929\u7344\u7DE84"
+  },
+  "1155": {
+    "E": "Another Mount Rokkon",
+    "G": "Der kuriose Rokkon",
+    "F": "Le mont Rokkon annexe - Donjon alternatif",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u516D\u6839\u5C71"
+  },
+  "1156": {
+    "E": "Another Mount Rokkon (Savage)",
+    "G": "Der kuriose Rokkon (episch)",
+    "F": "Le mont Rokkon annexe - Donjon alternatif (sadique)",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u516D\u6839\u5C71 \u96F6\u5F0F"
+  },
+  "1157": {
+    "E": "Containment Bay Z1T9 (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1163": {
+    "E": "Ocean Fishing",
+    "G": "Auf gro\u00DFer Fahrt",
+    "F": "P\u00EAche en mer",
+    "J": "\u30AA\u30FC\u30B7\u30E3\u30F3\u30D5\u30A3\u30C3\u30B7\u30F3\u30B0"
+  },
+  "1164": {
+    "E": "the Lunar Subterrane",
+    "G": "Monduntergrund",
+    "F": "Le Souterrain lunaire",
+    "J": "\u6DF1\u6DF5\u6F5C\u884C \u6708\u306E\u5730\u4E0B\u6E13\u8C37"
+  },
+  "1165": {
+    "E": "Blunderville",
+    "G": "Stolperville",
+    "F": "Blunderville",
+    "J": "\u30D6\u30E9\u30F3\u30C0\u30FC\u30F4\u30A3\u30EB"
+  },
+  "1166": {
+    "E": "Memory of Embers",
+    "G": "Der Pfad der Flammen",
+    "F": "Flammes primordiales",
+    "J": "\u708E\u5F71\u306E\u65C5\u8DEF"
+  },
+  "1167": {
+    "E": "Ihuykatumu",
+    "G": "Ihuykatumu",
+    "F": "La Remont\u00E9e de l\u0027Ihuykatumu",
+    "J": "\u6FC1\u6D41\u9061\u4E0A \u30A4\u30D5\u30A4\u30AB\u30FB\u30C8\u30A5\u30E0"
+  },
+  "1168": {
+    "E": "the Abyssal Fracture",
+    "G": "Prophetie - Zeromus",
+    "F": "La Fracture abyssale",
+    "J": "\u30BC\u30ED\u30E0\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "1169": {
+    "E": "the Abyssal Fracture (Extreme)",
+    "G": "Eschatos - Zeromus",
+    "F": "La Fracture abyssale (extr\u00EAme)",
+    "J": "\u6975\u30BC\u30ED\u30E0\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "1172": {
+    "E": "the Drowned City of Skalla",
+    "G": "Die versunkene Stadt Skalla",
+    "F": "la Cit\u00E9 engloutie de Skalla",
+    "J": "\u6C34\u6CA1\u907A\u69CB \u30B9\u30AB\u30E9"
+  },
+  "1173": {
+    "E": "the Burn",
+    "G": "Das Kargland",
+    "F": "L\u0027Escarre",
+    "J": "\u6C38\u4E45\u7126\u571F \u30B6\u30FB\u30D0\u30FC\u30F3"
+  },
+  "1174": {
+    "E": "the Ghimlyt Dark",
+    "G": "Die Ghimlyt-Finsternis",
+    "F": "Les T\u00E9n\u00E8bres de Ghimlyt",
+    "J": "\u5883\u754C\u6226\u7DDA \u30AE\u30E0\u30EA\u30C8\u30C0\u30FC\u30AF"
+  },
+  "1175": {
+    "E": "The Singularity Reactor (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1176": {
+    "E": "Aloalo Island",
+    "G": "Aloalo",
+    "F": "L\u0027\u00EEle d\u0027Aloalo - Donjon \u00E0 embranchements",
+    "J": "\u30F4\u30A1\u30EA\u30A2\u30F3\u30C8\u30C0\u30F3\u30B8\u30E7\u30F3 \u30A2\u30ED\u30A2\u30ED\u5CF6"
+  },
+  "1177": {
+    "E": "The Game Is Afoot",
+    "G": "Die Jagd ist eröffnet",
+    "F": "Par-del\u00E0 l\u0027horizon",
+    "J": "\u305D\u306E\u77B3\u304C\u898B\u636E\u3048\u308B\u3082\u306E"
+  },
+  "1178": {
+    "E": "Thaleia",
+    "G": "Thaleia",
+    "F": "Domaine divin - Thalie",
+    "J": "\u83EF\u3081\u304F\u795E\u57DF \u30BF\u30EC\u30A4\u30A2"
+  },
+  "1179": {
+    "E": "Another Aloalo Island",
+    "G": "Kurioses Aloalo",
+    "F": "L\u0027\u00EEle d\u0027Aloalo annexe - Donjon alternatif",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u30A2\u30ED\u30A2\u30ED\u5CF6"
+  },
+  "1180": {
+    "E": "Another Aloalo Island (Savage)",
+    "G": "Kurioses Aloalo (episch)",
+    "F": "L\u0027\u00EEle d\u0027Aloalo annexe - Donjon alternatif (sadique)",
+    "J": "\u30A2\u30CA\u30B6\u30FC\u30C0\u30F3\u30B8\u30E7\u30F3 \u7570\u805E\u30A2\u30ED\u30A2\u30ED\u5CF6 \u96F6\u5F0F"
+  },
+  "1193": {
+    "E": "Worqor Zormor",
+    "G": "Worqor Zormor",
+    "F": "Worqor Zormor",
+    "J": "\u5C71\u5DBA\u767B\u9802 \u30A6\u30A9\u30FC\u30B3\u30FC\u30FB\u30BE\u30FC\u30E2\u30FC"
+  },
+  "1194": {
+    "E": "the Skydeep Cenote",
+    "G": "Himmelstiefer Cenote",
+    "F": "Le c\u00E9note des Cieux infinis",
+    "J": "\u907A\u7523\u8E0F\u67FB \u5929\u6DF1\u304D\u30BB\u30CE\u30FC\u30C6"
+  },
+  "1195": {
+    "E": "Worqor Lar Dor",
+    "G": "Zel Tajaal - Valigarmanda",
+    "F": "Worqor Lar Dor",
+    "J": "\u30F4\u30A1\u30EA\u30AC\u30EB\u30DE\u30F3\u30C0\u8A0E\u6EC5\u6226"
+  },
+  "1196": {
+    "E": "Worqor Lar Dor (Extreme)",
+    "G": "Gok Tajaal - Valigarmanda",
+    "F": "Worqor Lar Dor (extr\u00EAme)",
+    "J": "\u6975\u30F4\u30A1\u30EA\u30AC\u30EB\u30DE\u30F3\u30C0\u8A0E\u6EC5\u6226"
+  },
+  "1198": {
+    "E": "Vanguard",
+    "G": "Der Au\u00DFenposten",
+    "F": "L\u0027Avant-garde",
+    "J": "\u5916\u5F81\u524D\u54E8 \u30F4\u30A1\u30F3\u30AC\u30FC\u30C9"
+  },
+  "1199": {
+    "E": "Alexandria",
+    "G": "Alexandria",
+    "F": "Alexandrie",
+    "J": "\u8A18\u61B6\u5E7B\u60F3 \u30A2\u30EC\u30AF\u30B5\u30F3\u30C9\u30EA\u30A2"
+  },
+  "1200": {
+    "E": "Everkeep",
+    "G": "Zel Tajaal - Zoraal Ja",
+    "F": "Le Pinacle de l\u0027\u00C9ternit\u00E9",
+    "J": "\u30BE\u30E9\u30FC\u30B8\u30E3\u8A0E\u6EC5\u6226"
+  },
+  "1201": {
+    "E": "Everkeep (Extreme)",
+    "G": "Gok Tajaal - Zoraal Ja",
+    "F": "Le Pinacle de l\u0027\u00C9ternit\u00E9 (extr\u00EAme)",
+    "J": "\u6975\u30BE\u30E9\u30FC\u30B8\u30E3\u8A0E\u6EC5\u6226"
+  },
+  "1202": {
+    "E": "The Interphos",
+    "G": "Zel Tajaal - Ewige Königin",
+    "F": "Interphos",
+    "J": "\u30A8\u30BF\u30FC\u30CA\u30EB\u30AF\u30A4\u30FC\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "1203": {
+    "E": "Tender Valley",
+    "G": "Kaktorsenke",
+    "F": "La Vall\u00E9e des Pampas",
+    "J": "\u8352\u91CE\u79D8\u5883 \u30B5\u30DC\u30C6\u30F3\u30C0\u30FC\u30D0\u30EC\u30FC"
+  },
+  "1204": {
+    "E": "The Strayborough Deadwalk",
+    "G": "Mahrlingen-Promenade",
+    "F": "le Parc-aux-Errants",
+    "J": "\u60AA\u5922\u904A\u5712 \u30B9\u30C8\u30EC\u30A4\u30D0\u30ED\u30FC"
+  },
+  "1208": {
+    "E": "Origenics",
+    "G": "Origenik",
+    "F": "L\u0027Origen\u00E8se",
+    "J": "\u9B42\u9B44\u5DE5\u5EE0 \u30AA\u30EA\u30B8\u30A7\u30CB\u30AF\u30B9"
+  },
+  "1209": {
+    "E": "Cenote Ja Ja Gural",
+    "G": "Cenote Ja Ja Gural",
+    "F": "C\u00E9note Ja Ja Gural",
+    "J": "\u5B9D\u7269\u5EAB \u30BB\u30CE\u30FC\u30C6\u30FB\u30B8\u30E3\u30B8\u30E3\u30B0\u30E9\u30EB"
+  },
+  "1210": {
+    "E": "A Father First",
+    "G": "Des Vaters viele Sorgen",
+    "F": "L\u0027Aurarque et le p\u00E8re",
+    "J": "\u738B\u3068\u3057\u3066\u3001\u7236\u3068\u3057\u3066"
+  },
+  "1211": {
+    "E": "Taking a Stand",
+    "G": "Mit scharfer Axt und leichtem Lächeln",
+    "F": "Pr\u00E9server la paix",
+    "J": "\u7B11\u9854\u3092\u8B77\u308B\u305F\u3081\u306E\u6226\u3044"
+  },
+  "1212": {
+    "E": "The Feat of the Brotherhood",
+    "G": "Von Schuld und Sühne",
+    "F": "L\u0027\u00E9preuve de l\u0027amiti\u00E9",
+    "J": "\u53CB\u306E\u8A66\u7DF4"
+  },
+  "1213": {
+    "E": "The Protector and the Destroyer",
+    "G": "Schützer des Volkes, Schlächter des Volkes",
+    "F": "Protecteurs et destructeurs",
+    "J": "\u8B77\u308B\u8005\u3001\u58CA\u3059\u8005"
+  },
+  "1214": {
+    "E": "Dreams of a New Day",
+    "G": "Neue Bande der Freundschaft",
+    "F": "R\u00EAves \u00E9veill\u00E9s",
+    "J": "\u5BDD\u3066\u3082\u899A\u3081\u3066\u3082"
+  },
+  "1215": {
+    "E": "An Antidote for Anarchy",
+    "G": "Heilkunst gegen Hexerei",
+    "F": "Les deux faces du scorpion",
+    "J": "\u6BD2\u3068\u7652\u3084\u3057\u306E\u9802\u4E0A\u6C7A\u6226"
+  },
+  "1216": {
+    "E": "A Hunter True",
+    "G": "Krönender Abschuss",
+    "F": "Chasseuse \u00E0 lunettes... chasseuse honn\u00EAte",
+    "J": "\u4E00\u7AEF\u306E\u72E9\u4EBA"
+  },
+  "1217": {
+    "E": "The Mightiest Shield",
+    "G": "Der mächtigste Schild",
+    "F": "Mauvais cru pour Chalteaufite",
+    "J": "\u6253\u5012\uFF01 \u30B7\u30E3\u30EB\u30C8\u30D5\u30A3\u30C3\u30C8\u76D7\u8CCA\u56E3"
+  },
+  "1218": {
+    "E": "Heroes and Pretenders",
+    "G": "Ein Mythos in Trümmern",
+    "F": "Le ch\u00E2teau de cartes s\u0027effondre",
+    "J": "\u796D\u5668\u3068\u4F5C\u3089\u308C\u305F\u865A\u50CF"
+  },
+  "1225": {
+    "E": "AAC Light-heavyweight M1",
+    "G": "Arkadion - Halbschwergewicht R1",
+    "F": "Poids mi-lourds CCA - match 1",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A1"
+  },
+  "1226": {
+    "E": "AAC Light-heavyweight M1 (Savage)",
+    "G": "Arkadion - Halbschwergewicht R1 (episch)",
+    "F": "Poids mi-lourds CCA - match 1 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A1"
+  },
+  "1227": {
+    "E": "AAC Light-heavyweight M2",
+    "G": "Arkadion - Halbschwergewicht R2",
+    "F": "Poids mi-lourds CCA - match 2",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A2"
+  },
+  "1228": {
+    "E": "AAC Light-heavyweight M2 (Savage)",
+    "G": "Arkadion - Halbschwergewicht R2 (episch)",
+    "F": "Poids mi-lourds CCA - match 2 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A2"
+  },
+  "1229": {
+    "E": "AAC Light-heavyweight M3",
+    "G": "Arkadion - Halbschwergewicht R3",
+    "F": "Poids mi-lourds CCA - match 3",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A3"
+  },
+  "1230": {
+    "E": "AAC Light-heavyweight M3 (Savage)",
+    "G": "Arkadion - Halbschwergewicht R3 (episch)",
+    "F": "Poids mi-lourds CCA - match 3 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A3"
+  },
+  "1231": {
+    "E": "AAC Light-heavyweight M4",
+    "G": "Arkadion - Halbschwergewicht R4",
+    "F": "Poids mi-lourds CCA - match 4",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A4"
+  },
+  "1232": {
+    "E": "AAC Light-heavyweight M4 (Savage)",
+    "G": "Arkadion - Halbschwergewicht R4 (episch)",
+    "F": "Poids mi-lourds CCA - match 4 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30E9\u30A4\u30C8\u30D8\u30D3\u30FC\u7D1A4"
+  },
+  "1233": {
+    "E": "Mind over Manor",
+    "G": "Nächtliche Ruhestörung",
+    "F": "Tapage nocturne",
+    "J": "\u65C5\u3059\u308B\u753B\u5BB6\u306F\u68EE\u90FD\u3092\u5F81\u304F"
+  },
+  "1234": {
+    "E": "Somewhere Only She Knows",
+    "G": "Begegnungen und Abschiede",
+    "F": "L\u0027\u0153uvre de la maturit\u00E9",
+    "J": "\u65C5\u3059\u308B\u753B\u5BB6\u306F\u5E7B\u60F3\u3092\u5F81\u304F"
+  },
+  "1235": {
+    "E": "Fangs of the Viper",
+    "G": "Einführung in die Viperologie",
+    "F": "Le devoir des r\u00F4deurs vip\u00E8re",
+    "J": "\u30F4\u30A1\u30A4\u30D1\u30FC\u306E\u4F7F\u547D"
+  },
+  "1236": {
+    "E": "Vengeance of the Viper",
+    "G": "Der Wille der Natur",
+    "F": "Le fl\u00E9au des Tural vidraal",
+    "J": "\u30C8\u30E9\u30EB\u30F4\u30A3\u30C9\u30E9\u30FC\u30EB\u3092\u72E9\u308B\u8005"
+  },
+  "1238": {
+    "E": "Futures Rewritten (Ultimate)",
+    "G": "Eine zweite Zukunft (fatal)",
+    "F": "Avenirs r\u00E9\u00E9crits (fatal)",
+    "J": "\u7D76\u3082\u3046\u3072\u3068\u3064\u306E\u672A\u6765"
+  },
+  "1239": {
+    "E": "The Jade Stoa (Unreal)",
+    "G": null,
+    "F": null,
+    "J": null
+  },
+  "1241": {
+    "E": "The Cloud of Darkness (Chaotic)",
+    "G": "Die Wolke der Dunkelheit (chaotisch)",
+    "F": "La Tour de T\u00E9n\u00E8bres (chaotique)",
+    "J": "\u6EC5\u6697\u95C7\u306E\u96F2\u6FC0\u95D8\u6226"
+  },
+  "1242": {
+    "E": "Yuweyawata Field Station",
+    "G": "Forschungsstation Yuweyawata",
+    "F": "Le centre de recherche de Yuweyawata",
+    "J": "\u5EC3\u5730\u8A0E\u7A76 \u30E6\u30A6\u30A7\u30E4\u30FC\u30EF\u30FC\u30BF"
+  },
+  "1243": {
+    "E": "The Minstrel\u0027s Ballad: Sphene\u0027s Burden",
+    "G": "Gok Tajaal - Ewige Königin",
+    "F": "Interphos (extr\u00EAme)",
+    "J": "\u6975\u30A8\u30BF\u30FC\u30CA\u30EB\u30AF\u30A4\u30FC\u30F3\u8A0E\u6EC5\u6226"
+  },
+  "1244": {
+    "E": "The Warmth of Family",
+    "G": "Ein Land, eine Familie",
+    "F": "La famille de l\u0027Aurarque",
+    "J": "\u738B\u306E\u5BB6\u65CF"
+  },
+  "1245": {
+    "E": "Halatali",
+    "G": "Halatali",
+    "F": "Halatali",
+    "J": "\u9B54\u7363\u9818\u57DF \u30CF\u30E9\u30BF\u30EA\u4FEE\u7DF4\u6240"
+  },
+  "1246": {
+    "E": "Bar the Passage",
+    "G": "Kampf an Zorgor der Weiten",
+    "F": "Pour s\u0027affranchir de la tyrannie, tout s\u0027appelle vertu",
+    "J": "\u6C7A\u6226\u3001\u30BE\u30FC\u30B4\u30FC\u6C38\u7D50\u6A4B"
+  },
+  "1248": {
+    "E": "Jeuno: The First Walk",
+    "G": "Jeuno: Die erste Etappe",
+    "F": "Jeuno - La premi\u00E8re perambulation",
+    "J": "\u30B8\u30E5\u30CE\uFF1A\u30B6\u30FB\u30D5\u30A1\u30FC\u30B9\u30C8\u30A6\u30A9\u30FC\u30AF"
+  },
+  "1256": {
+    "E": "AAC Cruiserweight M1",
+    "G": "Arkadion - Schwergewicht R1",
+    "F": "Poids lourds-l\u00E9gers CCA - match 1",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A1"
+  },
+  "1257": {
+    "E": "AAC Cruiserweight M1 (Savage)",
+    "G": "Arkadion - Schwergewicht R1 (episch)",
+    "F": "Poids lourds-l\u00E9gers CCA - match 1 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A1"
+  },
+  "1258": {
+    "E": "AAC Cruiserweight M2",
+    "G": "Arkadion - Schwergewicht R2",
+    "F": "Poids lourds-l\u00E9gers CCA - match 2",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A2"
+  },
+  "1259": {
+    "E": "AAC Cruiserweight M2 (Savage)",
+    "G": "Arkadion - Schwergewicht R2 (episch)",
+    "F": "Poids lourds-l\u00E9gers CCA - match 2 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A2"
+  },
+  "1260": {
+    "E": "AAC Cruiserweight M3",
+    "G": "Arkadion - Schwergewicht R3",
+    "F": "Poids lourds-l\u00E9gers CCA - match 3",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A3"
+  },
+  "1261": {
+    "E": "AAC Cruiserweight M3 (Savage)",
+    "G": "Arkadion - Schwergewicht R3 (episch)",
+    "F": "Poids lourds-l\u00E9gers CCA - match 3 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A3"
+  },
+  "1262": {
+    "E": "AAC Cruiserweight M4",
+    "G": "Arkadion - Schwergewicht R4",
+    "F": "Poids lourds-l\u00E9gers CCA - match 4",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A4"
+  },
+  "1263": {
+    "E": "AAC Cruiserweight M4 (Savage)",
+    "G": "Arkadion - Schwergewicht R4 (episch)",
+    "F": "Poids lourds-l\u00E9gers CCA - match 4 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30AF\u30EB\u30FC\u30B6\u30FC\u7D1A4"
+  },
+  "1266": {
+    "E": "the Underkeep",
+    "G": "Unterfried-Ruinen",
+    "F": "La Gardienne de l\u0027Imm\u00E9morial",
+    "J": "\u738B\u57CE\u65E7\u8DE1 \u30A2\u30F3\u30C0\u30FC\u30AD\u30FC\u30D7"
+  },
+  "1267": {
+    "E": "the Sunken Temple of Qarn",
+    "G": "Versunkener Tempel von Qarn",
+    "F": "le Temple enseveli de Qarn",
+    "J": "\u907A\u8DE1\u63A2\u7D22 \u30AB\u30EB\u30F3\u57CB\u6CA1\u5BFA\u9662"
+  },
+  "1270": {
+    "E": "Recollection",
+    "G": "Zel Tajaal - Zelenia",
+    "F": "Le Sanctuaire du Serment",
+    "J": "\u30BC\u30EC\u30CB\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "1271": {
+    "E": "Recollection (Extreme)",
+    "G": "Gok Tajaal - Zelenia",
+    "F": "Le Sanctuaire du Serment (extr\u00EAme)",
+    "J": "\u6975\u30BC\u30EC\u30CB\u30A2\u8A0E\u6EC5\u6226"
+  },
+  "1272": {
+    "E": "Hells\u0027 Kier (Unreal)",
+    "G": "Traumprüfung - Suzaku",
+    "F": "Le Nid des Lamentations (irr\u00E9el)",
+    "J": "\u5E7B\u6731\u96C0\u5F81\u9B42\u6226"
+  },
+  "1273": {
+    "E": "the Borderland Ruins (Secure)",
+    "G": "\u00C4u\u00DFere Ruinen (Sicherung)",
+    "F": "les Ruines frontali\u00E8res (annexion)",
+    "J": "\u5916\u7E01\u907A\u8DE1\u7FA4 (\u5236\u5727\u6226)"
+  }
+}

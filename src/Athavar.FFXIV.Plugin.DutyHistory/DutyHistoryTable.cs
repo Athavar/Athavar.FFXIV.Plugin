@@ -12,6 +12,7 @@ using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.Models.Types;
+using Dalamud.Game;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Table;
 using Dalamud.Plugin.Services;
@@ -56,6 +57,8 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
         ClassJobColumnValue.Init(dataManager, iconManager);
         ConditionColumnValue.Init(dataManager, iconManager);
         this.Flags |= ImGuiTableFlags.SizingFixedFit;
+
+        ContentFinderNameColumnValue.Language = dataManager.Language;
     }
 
     public void Dispose() => this.stateTracker.NewContentEncounter -= this.OnNewContentEncounter;
@@ -102,9 +105,11 @@ public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable
     {
         public override float Width => contentFinderNameColumnWidth * ImGuiHelpers.GlobalScale;
 
+        public ClientLanguage Language { get; set; }
+
         public override string ToName(ContentEncounter item)
         {
-            var name = item.ContentFinderCondition?.Name.ToString();
+            var name = item.ContentFinderCondition?[this.Language];
             return !string.IsNullOrWhiteSpace(name) ? name : $"Deleted [{item.TerritoryTypeId}]";
         }
     }

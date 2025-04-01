@@ -12,6 +12,7 @@ using Athavar.FFXIV.Plugin.Data.Extensions;
 using Athavar.FFXIV.Plugin.Data.Repositories;
 using Athavar.FFXIV.Plugin.Data.TypeHandler;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Dapper;
 using FluentMigrator.Runner;
@@ -23,12 +24,14 @@ public sealed class RepositoryContext : IDisposable
     private readonly IConnectionStringReader connectionStringReader;
     private readonly IMigrationRunner migrationRunner;
     private readonly IDataManager dataManager;
+    private readonly IDefinitionManager definitionManager;
     private IDbConnection? connection;
 
-    public RepositoryContext(IPluginLogger logger, IDataManager dataManager, IConnectionStringReader connectionStringReader, IMigrationRunner migrationRunner)
+    public RepositoryContext(IPluginLogger logger, IDataManager dataManager, IDefinitionManager definitionManager, IConnectionStringReader connectionStringReader, IMigrationRunner migrationRunner)
     {
         this.logger = logger;
         this.dataManager = dataManager;
+        this.definitionManager = definitionManager;
         this.connectionStringReader = connectionStringReader;
         this.migrationRunner = migrationRunner;
 
@@ -57,7 +60,7 @@ public sealed class RepositoryContext : IDisposable
         this.logger.Debug("[RepositoryContext] BuildSQLiteConnection");
         this.connection = this.BuildSQLiteConnection(connectionString);
         this.logger.Debug("[RepositoryContext] Create Repositories");
-        this.ContentEncounter = new ContentEncounterRepository(this.connection, this.dataManager);
+        this.ContentEncounter = new ContentEncounterRepository(this.connection, this.dataManager, this.definitionManager);
     }
 
     // ReSharper disable once InconsistentNaming

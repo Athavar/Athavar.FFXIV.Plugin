@@ -5,8 +5,8 @@
 
 namespace Athavar.FFXIV.Plugin.Common.Manager.Interface;
 
-using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
+using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game;
 
 public interface ICraftDataManager

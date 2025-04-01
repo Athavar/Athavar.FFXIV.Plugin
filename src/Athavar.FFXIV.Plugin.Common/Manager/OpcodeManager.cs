@@ -7,10 +7,10 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 internal sealed class OpcodeManager : IOpcodeManager
 {

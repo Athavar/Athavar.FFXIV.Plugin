@@ -9,6 +9,7 @@ using System.Data;
 using System.Text;
 using Athavar.FFXIV.Plugin.Data.Dto;
 using Athavar.FFXIV.Plugin.Models.Data;
+using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
 using Dapper;
 using Dapper.Contrib.Extensions;
@@ -17,10 +18,14 @@ using Lumina.Excel.Sheets;
 public sealed class ContentEncounterRepository : BaseRepository
 {
     private readonly IDataManager dataManager;
+    private readonly IDefinitionManager definitionManager;
 
-    internal ContentEncounterRepository(IDbConnection connection, IDataManager dataManager)
+    internal ContentEncounterRepository(IDbConnection connection, IDataManager dataManager, IDefinitionManager definitionManager)
         : base(connection)
-        => this.dataManager = dataManager;
+    {
+        this.dataManager = dataManager;
+        this.definitionManager = definitionManager;
+    }
 
     public IList<ContentEncounter> GetAllContentEncounter()
     {
@@ -81,7 +86,7 @@ public sealed class ContentEncounterRepository : BaseRepository
 
     private List<ContentEncounter> FillData(List<ContentEncounter> encounters)
     {
-        var rouletteSheet = this.dataManager.GetExcelSheet<ContentRoulette>()!;
+        var rouletteSheet = this.dataManager.GetExcelSheet<ContentRoulette>();
 
         foreach (var contentRouletteGroup in encounters.Where(e => e.ContentRouletteId > 0).GroupBy(e => e.ContentRouletteId))
         {
@@ -93,16 +98,15 @@ public sealed class ContentEncounterRepository : BaseRepository
             }
         }
 
-        var territoryTypeSheet = this.dataManager.GetExcelSheet<TerritoryType>()!;
+        var territoryTypeSheet = this.dataManager.GetExcelSheet<TerritoryType>();
         foreach (var territoryTypeGroup in encounters.GroupBy(c => c.TerritoryTypeId))
         {
             var territoryTypeId = territoryTypeGroup.Key;
             var territoryType = territoryTypeSheet.GetRow(territoryTypeId)!;
-            var placeName = territoryType.PlaceName.Value;
             foreach (var contentEncounter in territoryTypeGroup)
             {
                 contentEncounter.TerritoryType = territoryType;
-                contentEncounter.ContentFinderCondition = territoryType.ContentFinderCondition.Value;
+                contentEncounter.ContentFinderCondition = this.definitionManager.GetContentName(territoryTypeId);
             }
         }
 
@@ -111,9 +115,9 @@ public sealed class ContentEncounterRepository : BaseRepository
 
     private ContentEncounter FillData(ContentEncounter encounter)
     {
-        var territoryTypeSheet = this.dataManager.GetExcelSheet<TerritoryType>()!;
+        var territoryTypeSheet = this.dataManager.GetExcelSheet<TerritoryType>();
         encounter.TerritoryType = territoryTypeSheet.GetRow(encounter.TerritoryTypeId);
-        encounter.ContentFinderCondition = encounter.TerritoryType?.ContentFinderCondition.Value;
+        encounter.ContentFinderCondition = this.definitionManager.GetContentName(encounter.TerritoryTypeId);
         if (encounter.ContentRouletteId > 0)
         {
             var rouletteSheet = this.dataManager.GetExcelSheet<ContentRoulette>()!;

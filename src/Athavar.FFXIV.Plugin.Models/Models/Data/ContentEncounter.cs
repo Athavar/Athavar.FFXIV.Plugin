@@ -21,7 +21,7 @@ public sealed class ContentEncounter
 
     public TerritoryType? TerritoryType { get; set; }
 
-    public ContentFinderCondition? ContentFinderCondition { get; set; }
+    public MultiString? ContentFinderCondition { get; set; }
 
     public ulong PlayerContentId { get; set; }
 

@@ -11,21 +11,24 @@ using Athavar.FFXIV.Plugin.Models.Duty;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Plugin.Services;
+using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 public sealed class StateTracker : IDisposable
 {
     private readonly IPluginLogger pluginLogger;
     private readonly IClientState clientState;
+    private readonly IDefinitionManager definitionManager;
     private readonly IDutyManager dutyManager;
     private readonly IChatManager chatManager;
     private readonly RepositoryContext repositoryContext;
 
     private uint? classJobId = 0;
 
-    public StateTracker(IPluginLogger pluginLogger, IClientState clientState, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
+    public StateTracker(IPluginLogger pluginLogger, IClientState clientState, IDefinitionManager definitionManager, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
     {
         this.pluginLogger = pluginLogger;
         this.clientState = clientState;
+        this.definitionManager = definitionManager;
         this.dutyManager = dutyManager;
         this.chatManager = chatManager;
         this.repositoryContext = repositoryContext;
@@ -54,7 +57,7 @@ public sealed class StateTracker : IDisposable
             ContentRoulette = args.DutyInfo.ContentRoulette.RowId > 0 ? args.DutyInfo.ContentRoulette : null,
             TerritoryTypeId = args.DutyInfo.TerritoryType.RowId,
             TerritoryType = args.DutyInfo.TerritoryType,
-            ContentFinderCondition = args.DutyInfo.TerritoryType.ContentFinderCondition.Value,
+            ContentFinderCondition = this.definitionManager.GetContentName(args.DutyInfo.TerritoryType.RowId),
             PlayerContentId = this.clientState.LocalContentId,
             ClassJobId = this.clientState.LocalPlayer?.ClassJob.RowId ?? this.classJobId ?? this.clientState.LocalPlayer?.ClassJob.RowId ?? 0,
             Completed = args.Completed,

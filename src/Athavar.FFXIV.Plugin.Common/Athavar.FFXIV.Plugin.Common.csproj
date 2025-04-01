@@ -5,31 +5,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Definitions\Data\Astrologian.json"/>
-        <EmbeddedResource Include="Definitions\Data\Bard.json"/>
-        <EmbeddedResource Include="Definitions\Data\BlackMage.json"/>
-        <EmbeddedResource Include="Definitions\Data\BlueMage.json"/>
-        <EmbeddedResource Include="Definitions\Data\Chocobo.json"/>
-        <EmbeddedResource Include="Definitions\Data\Dancer.json"/>
-        <EmbeddedResource Include="Definitions\Data\DarkKnight.json"/>
-        <EmbeddedResource Include="Definitions\Data\Dragoon.json"/>
-        <EmbeddedResource Include="Definitions\Data\Eureka.json"/>
-        <EmbeddedResource Include="Definitions\Data\Gunbreaker.json"/>
-        <EmbeddedResource Include="Definitions\Data\JobRole.json"/>
-        <EmbeddedResource Include="Definitions\Data\LimitBreak.json"/>
-        <EmbeddedResource Include="Definitions\Data\Machinist.json"/>
-        <EmbeddedResource Include="Definitions\Data\Monk.json"/>
-        <EmbeddedResource Include="Definitions\Data\Ninja.json"/>
-        <EmbeddedResource Include="Definitions\Data\NPC.json"/>
-        <EmbeddedResource Include="Definitions\Data\Paladin.json"/>
-        <EmbeddedResource Include="Definitions\Data\Reaper.json"/>
-        <EmbeddedResource Include="Definitions\Data\RedMage.json"/>
-        <EmbeddedResource Include="Definitions\Data\Sage.json"/>
-        <EmbeddedResource Include="Definitions\Data\Samurai.json"/>
-        <EmbeddedResource Include="Definitions\Data\Scholar.json"/>
-        <EmbeddedResource Include="Definitions\Data\Summoner.json"/>
-        <EmbeddedResource Include="Definitions\Data\Warrior.json"/>
-        <EmbeddedResource Include="Definitions\Data\WhiteMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Astrologian.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Bard.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\BlackMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\BlueMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Chocobo.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Dancer.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\DarkKnight.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Dragoon.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Eureka.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Gunbreaker.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\JobRole.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\LimitBreak.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Machinist.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Monk.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Ninja.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\NPC.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Paladin.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Reaper.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\RedMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Sage.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Samurai.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Scholar.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Summoner.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Warrior.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\WhiteMage.json"/>
+        <EmbeddedResource Include="Definitions\Data\TerritoryContentNames.json"/>
     </ItemGroup>
 
     <ItemGroup>

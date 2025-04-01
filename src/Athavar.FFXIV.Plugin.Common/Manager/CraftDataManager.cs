@@ -144,7 +144,7 @@ internal sealed class CraftDataManager : ICraftDataManager
                 }
             }
 
-            this.craftSkillDatas.Add(skill.Skill, new ICraftDataManager.CraftSkillData(useCraftActionSheet ? MultiString.FromCraftAction(this.dataManager, actionId) : MultiString.FromAction(this.dataManager, actionId), iconIds));
+            this.craftSkillDatas.Add(skill.Skill, new ICraftDataManager.CraftSkillData(useCraftActionSheet ? MultiStringUtils.FromCraftAction(this.dataManager, actionId) : MultiStringUtils.FromAction(this.dataManager, actionId), iconIds));
         }
     }
 }

@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Dps;
 
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
-using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
@@ -17,6 +16,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Plugin.Services;
 using Action = Lumina.Excel.Sheets.Action;
+using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 internal sealed partial class EncounterManager : IDisposable
 {

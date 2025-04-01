@@ -11,19 +11,31 @@ using System.Text.Json;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
+using Athavar.FFXIV.Plugin.Common.Utils;
+using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Common;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
+using Lumina.Excel.Sheets;
+using Action = Athavar.FFXIV.Plugin.Common.Definitions.Action;
 
-public sealed class DefinitionManager : IDefinitionManager
+internal sealed class DefinitionManager : IDefinitionManager
 {
     private static readonly string DefinitionFolderName = "Athavar.FFXIV.Plugin.Common.Definitions.Data";
+    private static readonly string JobDefinitionFolderName = DefinitionFolderName + ".Jobs";
+
+    private readonly IDalamudServices services;
+    private readonly IDataManager dataManager;
 
     private Dictionary<uint, Action> actionEffectDefinitions;
     private Dictionary<uint, StatusEffect> statusEffectDefinitions;
+    private TerritoryContentNames territoryContentNames;
 
     public DefinitionManager(IDalamudServices services)
     {
+        this.services = services;
+        this.dataManager = services.DataManager;
         this.LoadResources();
 
         if (TryGetDalamudStartInfo(services, out var dalamudStartInfo))
@@ -36,13 +48,26 @@ public sealed class DefinitionManager : IDefinitionManager
     public DalamudStartInfo StartInfo { get; } = new();
 
     /// <inheritdoc/>
-    public Action? GetActionById(uint actionId) => this.actionEffectDefinitions.TryGetValue(actionId, out var data) ? data : null;
+    public Action? GetActionById(uint actionId) => this.actionEffectDefinitions.GetValueOrDefault(actionId);
 
     /// <inheritdoc/>
-    public StatusEffect? GetStatusEffectById(uint statusId) => this.statusEffectDefinitions.TryGetValue(statusId, out var data) ? data : null;
+    public StatusEffect? GetStatusEffectById(uint statusId) => this.statusEffectDefinitions.GetValueOrDefault(statusId);
 
     /// <inheritdoc/>
     public uint[] GetStatusIdsByReactiveProcType(ReactiveProc.ReactiveProcType procType) => this.statusEffectDefinitions.Where(x => x.Value.ReactiveProc?.Type == procType).Select(x => x.Key).ToArray();
+
+    /// <inheritdoc/>
+    public MultiString GetContentName(uint territoryId)
+    {
+        if (!this.territoryContentNames.TryGetValue(territoryId, out var name))
+        {
+            var contentFinderId = this.dataManager.GetExcelSheet<TerritoryType>().GetRow(territoryId).ContentFinderCondition.RowId;
+            name = contentFinderId == 0 ? MultiString.Empty : MultiStringUtils.FromContentFinderCondition(this.dataManager, contentFinderId);
+            this.territoryContentNames.TryAdd(territoryId, name);
+        }
+
+        return name;
+    }
 
     private static bool TryGetDalamudStartInfo(IDalamudServices services, [NotNullWhen(true)] out DalamudStartInfo? dalamudStartInfo)
     {
@@ -72,40 +97,39 @@ public sealed class DefinitionManager : IDefinitionManager
 
     private string[] GetAllJobDefinitionFileNames()
         => typeof(DefinitionManager).Module.Assembly.GetManifestResourceNames()
-           .Where(x => x.StartsWith(DefinitionFolderName, StringComparison.OrdinalIgnoreCase))
+           .Where(x => x.StartsWith(JobDefinitionFolderName, StringComparison.OrdinalIgnoreCase))
            .Select(x => x[DefinitionFolderName.Length..]).ToArray();
 
     [MemberNotNull(nameof(actionEffectDefinitions))]
     [MemberNotNull(nameof(statusEffectDefinitions))]
+    [MemberNotNull(nameof(territoryContentNames))]
     private void LoadResources()
     {
         this.actionEffectDefinitions = new Dictionary<uint, Action>();
         this.statusEffectDefinitions = new Dictionary<uint, StatusEffect>();
         foreach (var definitionFileName in this.GetAllJobDefinitionFileNames())
         {
-            var jobDefinition = this.ReadJobDefinition(definitionFileName);
+            var jobDefinition = this.ReadDefinition<JobDefinition>(definitionFileName);
             foreach (var action in jobDefinition.Actions.Values)
             {
-                if (this.actionEffectDefinitions.ContainsKey(action.Id))
+                if (!this.actionEffectDefinitions.TryAdd(action.Id, action))
                 {
                     throw new ResourceParseException($"Action Id {action.Id:X2} found for Job {jobDefinition.Job} but already added.");
                 }
-
-                this.actionEffectDefinitions.Add(action.Id, action);
             }
 
             foreach (var statusEffect in jobDefinition.Statuseffects.Values)
             {
-                if (this.statusEffectDefinitions.ContainsKey(statusEffect.Id))
+                if (!this.statusEffectDefinitions.TryAdd(statusEffect.Id, statusEffect))
                 {
                     throw new ResourceParseException($"Status Id {statusEffect.Id:X2} found for Job {jobDefinition.Job} but already added.");
                 }
-
-                this.statusEffectDefinitions.Add(statusEffect.Id, statusEffect);
             }
         }
 
         this.PopulateLimitToActionIds();
+
+        this.territoryContentNames = this.ReadDefinition<TerritoryContentNames>(".TerritoryContentNames.json");
     }
 
     private void PopulateLimitToActionIds()
@@ -153,12 +177,13 @@ public sealed class DefinitionManager : IDefinitionManager
         }
     }
 
-    private JobDefinition ReadJobDefinition(string fileName)
+    private T ReadDefinition<T>(string fileName)
     {
+        this.services.PluginLogger.Information(fileName);
         var content = new ResourceFile(fileName).Content;
         try
         {
-            return JsonSerializer.Deserialize<JobDefinition>(
+            return JsonSerializer.Deserialize<T>(
                 content,
                 new JsonSerializerOptions
                 {
