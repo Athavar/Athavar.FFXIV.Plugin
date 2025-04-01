@@ -521,7 +521,7 @@
       "907e": "necrotize",
       "damage": [
         {
-          "potency": 440
+          "potency": 460
         }
       ]
     },
@@ -593,11 +593,11 @@
       "9087": "exodus",
       "damage": [
         {
-          "potency": 1400,
+          "potency": 1500,
           "targetindex": 0
         },
         {
-          "potency": 560
+          "potency": 600
         }
       ]
     }

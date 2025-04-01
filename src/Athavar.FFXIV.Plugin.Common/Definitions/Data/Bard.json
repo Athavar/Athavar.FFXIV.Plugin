@@ -149,7 +149,7 @@
       "64b7": "ladonsbite",
       "damage": [
         {
-          "potency": 130
+          "potency": 140
         }
       ]
     },
@@ -181,7 +181,7 @@
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 270
         }
       ]
     },

@@ -129,7 +129,7 @@
           "targetindex": 0
         },
         {
-          "potency": 240
+          "potency": 450
         }
       ]
     },
@@ -145,7 +145,7 @@
       "407B": "xenoglossy",
       "damage": [
         {
-          "potency": 880
+          "potency": 890
         }
       ]
     },
@@ -169,7 +169,7 @@
       "64C5": "paradox",
       "damage": [
         {
-          "potency": 520
+          "potency": 540
         }
       ]
     },

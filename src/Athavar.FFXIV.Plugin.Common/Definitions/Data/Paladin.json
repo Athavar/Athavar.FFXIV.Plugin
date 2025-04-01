@@ -22,7 +22,7 @@
       "1CD5": "total eclipse",
       "damage": [
         {
-          "potency": 100
+          "potency": 120
         }
       ]
     },
@@ -64,7 +64,7 @@
       "damage": [
         {
           "potency": 100,
-          "combo": 170
+          "combo": 220
         }
       ]
     },
@@ -247,7 +247,7 @@
           "targetindex": 0
         },
         {
-          "potency": 290
+          "potency": 232
         }
       ]
     },
@@ -259,7 +259,7 @@
           "targetindex": 0
         },
         {
-          "potency": 500
+          "potency": 400
         }
       ]
     }

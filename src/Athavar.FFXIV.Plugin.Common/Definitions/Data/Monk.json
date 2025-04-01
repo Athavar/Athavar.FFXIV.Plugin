@@ -113,7 +113,7 @@
           "targetindex": 0
         },
         {
-          "potency": 600
+          "potency": 720
         }
       ]
     },
@@ -125,7 +125,7 @@
           "targetindex": 0
         },
         {
-          "potency": 240
+          "potency": 480
         }
       ]
     },
@@ -145,7 +145,7 @@
           "targetindex": 0
         },
         {
-          "potency": 180
+          "potency": 360
         }
       ]
     },
@@ -153,7 +153,7 @@
       "405A": "enlightenment",
       "damage": [
         {
-          "potency": 200
+          "potency": 160
         }
       ]
     },
@@ -181,7 +181,7 @@
           "targetindex": 0
         },
         {
-          "potency": 270
+          "potency": 540
         }
       ]
     },
@@ -193,7 +193,7 @@
           "targetindex": 0
         },
         {
-          "potency": 750
+          "potency": 900
         }
       ]
     },
@@ -237,7 +237,7 @@
           "targetindex": 0
         },
         {
-          "potency": 270
+          "potency": 540
         }
       ]
     },
@@ -245,11 +245,11 @@
       "9055": "wind's reply",
       "damage": [
         {
-          "potency": 900,
+          "potency": 1040,
           "targetindex": 0
         },
         {
-          "potency": 450
+          "potency": 624
         }
       ]
     },
@@ -257,11 +257,11 @@
       "9056": "fire's reply",
       "damage": [
         {
-          "potency": 1200,
+          "potency": 1400,
           "targetindex": 0
         },
         {
-          "potency": 600
+          "potency": 840
         }
       ]
     }

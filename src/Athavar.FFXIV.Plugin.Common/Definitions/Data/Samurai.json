@@ -114,7 +114,7 @@
       "1D43": "hissatsu: kyuten",
       "damage": [
         {
-          "potency": 120
+          "potency": 100
         }
       ]
     },
@@ -122,11 +122,11 @@
       "1D48": "hissatsu: guren",
       "damage": [
         {
-          "potency": 500,
+          "potency": 400,
           "targetindex": 0
         },
         {
-          "potency": 375
+          "potency": 300
         }
       ]
     },
@@ -166,11 +166,11 @@
       "64b5": "ogi namikiri",
       "damage": [
         {
-          "potency": 900,
+          "potency": 1000,
           "targetindex": 0
         },
         {
-          "potency": 225
+          "potency": 500
         }
       ]
     },
@@ -178,11 +178,11 @@
       "64b6": "kaeshi: namikiri",
       "damage": [
         {
-          "potency": 900,
+          "potency": 100,
           "targetindex": 0
         },
         {
-          "potency": 225
+          "potency": 500
         }
       ]
     },
@@ -246,11 +246,11 @@
       "9064": "zanshin",
       "damage": [
         {
-          "potency": 900,
+          "potency": 940,
           "targetindex": 0
         },
         {
-          "potency": 360
+          "potency": 470
         }
       ]
     },

@@ -135,7 +135,7 @@
       "649C": "salt and darkness",
       "damage": [
         {
-          "potency": 250
+          "potency": 375
         },
         {
           "potency": 500,
@@ -147,7 +147,7 @@
       "649d": "shadowbringer",
       "damage": [
         {
-          "potency": 300
+          "potency": 450
         },
         {
           "potency": 600,
@@ -183,7 +183,7 @@
       "9043": "impalement",
       "damage": [
         {
-          "potency": 320
+          "potency": 300
         }
       ]
     },
@@ -191,7 +191,7 @@
       "9044": "disesteem",
       "damage": [
         {
-          "potency": 500
+          "potency": 750
         },
         {
           "potency": 1000,

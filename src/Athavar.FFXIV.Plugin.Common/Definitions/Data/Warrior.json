@@ -5,7 +5,7 @@
       "1F": "heavy swing",
       "damage": [
         {
-          "potency": 220
+          "potency": 240
         }
       ]
     },
@@ -38,8 +38,8 @@
       "2A": "storm's path",
       "damage": [
         {
-          "potency": 200,
-          "combo": 480
+          "potency": 220,
+          "combo": 500
         }
       ],
       "heal": [
@@ -85,8 +85,8 @@
       "2D": "storm's eye",
       "damage": [
         {
-          "potency": 200,
-          "combo": 480
+          "potency": 220,
+          "combo": 500
         }
       ]
     },
@@ -126,7 +126,7 @@
       "1CDB": "upheaval",
       "damage": [
         {
-          "potency": 400
+          "potency": 420
         }
       ]
     },
@@ -178,7 +178,7 @@
           "targetindex": 0
         },
         {
-          "potency": 210
+          "potency": 350
         }
       ]
     },

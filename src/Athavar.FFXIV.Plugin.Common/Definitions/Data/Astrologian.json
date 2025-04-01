@@ -162,7 +162,7 @@
       "6510": "gravity ii",
       "damage": [
         {
-          "potency": 130
+          "potency": 140
         }
       ]
     },
@@ -206,7 +206,11 @@
       "90a5": "oracle",
       "damage": [
         {
-          "potency": 860
+          "potency": 860,
+          "targetindex": 0
+        },
+        {
+          "potency": 430
         }
       ]
     },

@@ -166,11 +166,11 @@
       "4060": "stardiver",
       "damage": [
         {
-          "potency": 820,
+          "potency": 840,
           "targetindex": 0
         },
         {
-          "potency": 410
+          "potency": 420
         }
       ]
     },
@@ -186,8 +186,8 @@
       "64ab": "heavens' thrust",
       "damage": [
         {
-          "potency": 140,
-          "combo": 440
+          "potency": 160,
+          "combo": 460
         }
       ]
     },
@@ -215,7 +215,7 @@
       "9058": "drakesbane",
       "damage": [
         {
-          "potency": 440
+          "potency": 460
         }
       ]
     },

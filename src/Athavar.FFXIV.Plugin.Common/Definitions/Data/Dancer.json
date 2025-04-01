@@ -22,7 +22,7 @@
       "3E79": "windmill",
       "damage": [
         {
-          "potency": 100
+          "potency": 120
         }
       ]
     },
@@ -39,7 +39,7 @@
       "damage": [
         {
           "potency": 100,
-          "combo": 140
+          "combo": 160
         }
       ]
     },
@@ -55,7 +55,7 @@
       "3E7B": "rising windmill",
       "damage": [
         {
-          "potency": 140
+          "potency": 160
         }
       ]
     },
@@ -71,7 +71,7 @@
       "3E7C": "bloodshower",
       "damage": [
         {
-          "potency": 180
+          "potency": 200
         }
       ]
     },
@@ -95,7 +95,7 @@
       "3E89": "fan dance iii",
       "damage": [
         {
-          "potency": 110
+          "potency": 88
         },
         {
           "potency": 220,
@@ -111,7 +111,7 @@
           "targetindex": 0
         },
         {
-          "potency": 90
+          "potency": 144
         }
       ]
     },
@@ -175,7 +175,7 @@
       "3E85": "saber dance",
       "damage": [
         {
-          "potency": 260
+          "potency": 208
         },
         {
           "potency": 520,
@@ -187,7 +187,7 @@
       "64be": "tillana",
       "damage": [
         {
-          "potency": 300
+          "potency": 240
         },
         {
           "potency": 600,
@@ -199,7 +199,7 @@
       "64bf": "fan dance iv",
       "damage": [
         {
-          "potency": 210
+          "potency": 168
         },
         {
           "potency": 420,
@@ -223,7 +223,7 @@
       "9077": "last dance",
       "damage": [
         {
-          "potency": 260
+          "potency": 208
         },
         {
           "potency": 520,
@@ -235,7 +235,7 @@
       "9078": "finishing move",
       "damage": [
         {
-          "potency": 213
+          "potency": 340
         },
         {
           "potency": 850,
@@ -247,7 +247,7 @@
       "9079": "dance of the dawn",
       "damage": [
         {
-          "potency": 500
+          "potency": 400
         },
         {
           "potency": 1000,

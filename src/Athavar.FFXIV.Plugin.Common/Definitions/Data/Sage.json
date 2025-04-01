@@ -436,7 +436,7 @@
       "a38": "eukrasian dosis iii",
       "timeproc": {
         "type": "dot",
-        "potency": 75,
+        "potency": 80,
         "maxticks": 10
       }
     },

@@ -71,7 +71,7 @@
       "damage": [
         {
           "potency": 100,
-          "combo": 130
+          "combo": 120
         }
       ]
     },
@@ -115,7 +115,7 @@
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 450
         }
       ]
     },
@@ -211,10 +211,6 @@
       "905d": "dokumori",
       "damage": [
         {
-          "potency": 300,
-          "targetindex": 0
-        },
-        {
           "potency": 225
         }
       ]
@@ -227,7 +223,7 @@
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 450
         }
       ]
     },
@@ -235,7 +231,7 @@
       "905f": "deathfrog medium",
       "damage": [
         {
-          "potency": 300
+          "potency": 260
         }
       ]
     },
@@ -255,7 +251,7 @@
           "targetindex": 0
         },
         {
-          "potency": 550
+          "potency": 825
         }
       ]
     }

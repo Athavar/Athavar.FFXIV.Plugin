@@ -193,11 +193,11 @@
       "9049": "reign of beasts",
       "damage": [
         {
-          "potency": 800,
+          "potency": 1000,
           "targetindex": 0
         },
         {
-          "potency": 320
+          "potency": 600
         }
       ]
     },
@@ -205,11 +205,11 @@
       "904a": "noble blood",
       "damage": [
         {
-          "potency": 1000,
+          "potency": 1100,
           "targetindex": 0
         },
         {
-          "potency": 400
+          "potency": 660
         }
       ]
     },
