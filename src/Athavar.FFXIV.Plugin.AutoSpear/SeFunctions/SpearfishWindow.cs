@@ -16,21 +16,13 @@ internal struct SpearfishWindow
     [FieldOffset(0)]
     public AtkUnitBase Base;
 
-    // 0
-    // + 544 (AtkUnitBase)
-    // + 100
-    // 644
-    [FieldOffset(0x294)]
+    [FieldOffset(0x29C)]
     public Info Fish1;
 
-    // + 28
-    // 672
-    [FieldOffset(0x2B0)]
+    [FieldOffset(0x2B8)]
     public Info Fish2;
 
-    // + 28
-    // 700
-    [FieldOffset(0x2CC)]
+    [FieldOffset(0x2D4)]
     public Info Fish3;
 
     public unsafe AtkResNode* FishLines => this.Base.UldManager.NodeList[3];
