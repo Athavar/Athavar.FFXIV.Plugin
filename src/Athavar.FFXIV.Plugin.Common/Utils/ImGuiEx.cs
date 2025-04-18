@@ -479,7 +479,6 @@ public static class ImGuiEx
             ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoScrollbar |
             ImGuiWindowFlags.NoBackground |
-            ImGuiWindowFlags.ChildWindow |
             extraFlags;
 
         if (!needsInput)
@@ -506,9 +505,9 @@ public static class ImGuiEx
         if (ImGui.Begin(name, windowFlags))
         {
             drawAction(ImGui.GetWindowDrawList());
+            ImGui.End();
         }
 
         ImGui.PopStyleVar(3);
-        ImGui.EndChild();
     }
 }
