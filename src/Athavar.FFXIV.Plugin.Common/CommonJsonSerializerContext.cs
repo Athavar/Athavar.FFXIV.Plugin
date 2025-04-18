@@ -8,8 +8,12 @@ namespace Athavar.FFXIV.Plugin.Common;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Definitions;
 
-[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Default)]
+[JsonSourceGenerationOptions(
+    GenerationMode = JsonSourceGenerationMode.Default,
+    AllowTrailingCommas = true,
+    PropertyNameCaseInsensitive = true)]
 [JsonSerializable(typeof(JobDefinition))]
+[JsonSerializable(typeof(TerritoryContentNames))]
 public partial class CommonJsonSerializerContext : JsonSerializerContext
 {
 }

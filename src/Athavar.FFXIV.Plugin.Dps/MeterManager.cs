@@ -30,8 +30,6 @@ internal sealed class MeterManager : IDisposable
     private readonly IPluginWindow pluginWindow;
     private readonly IOpcodeManager opcodeManager;
 
-    private readonly Vector2 origin = ImGui.GetMainViewport().Size / 2f;
-
     private readonly Opcode[] requiredOpcodes = [Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl];
     private Lazy<DpsTab>? tab;
 
@@ -113,6 +111,7 @@ internal sealed class MeterManager : IDisposable
             needReset = true;
         }
 
+        var origin = ImGui.GetMainViewport().Size / 2f;
         ImGuiHelpers.ForceNextWindowMainViewport();
         ImGui.SetNextWindowPos(Vector2.Zero);
         ImGui.SetNextWindowSize(ImGui.GetMainViewport().Size);
@@ -120,7 +119,7 @@ internal sealed class MeterManager : IDisposable
         {
             foreach (var meter in this.Meters.Where(m => m.Enabled))
             {
-                meter.Draw(this.origin);
+                meter.Draw(origin);
                 if (needReset)
                 {
                     meter.CacheReset();

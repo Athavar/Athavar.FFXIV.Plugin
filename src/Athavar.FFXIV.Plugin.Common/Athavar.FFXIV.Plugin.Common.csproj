@@ -22,12 +22,14 @@
         <EmbeddedResource Include="Definitions\Data\Jobs\Ninja.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\NPC.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Paladin.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Pictomancer.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Reaper.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\RedMage.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Sage.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Samurai.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Scholar.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Summoner.json"/>
+        <EmbeddedResource Include="Definitions\Data\Jobs\Viper.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\Warrior.json"/>
         <EmbeddedResource Include="Definitions\Data\Jobs\WhiteMage.json"/>
         <EmbeddedResource Include="Definitions\Data\TerritoryContentNames.json"/>

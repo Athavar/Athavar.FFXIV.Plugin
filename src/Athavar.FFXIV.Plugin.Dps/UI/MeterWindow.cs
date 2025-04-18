@@ -24,6 +24,8 @@ internal sealed class MeterWindow : IConfigurable
 
     private readonly Encounter? previewEvent = null;
 
+    private readonly string contextMenuId;
+
     private bool lastFrameWasUnlocked;
 
     private bool lastFrameWasDragging;
@@ -69,6 +71,8 @@ internal sealed class MeterWindow : IConfigurable
         this.BarConfigPage = new BarConfigPage(this, dalamudServices, utils, fontManager, iconManager);
         this.BarColorsConfigPage = new BarColorsConfigPage(this);
         this.VisibilityConfigPage = new VisibilityConfigPage(this, this.ci);
+
+        this.contextMenuId = $"{this.ID}_ContextMenu";
     }
 
     public MeterConfig Config { get; }
@@ -153,20 +157,19 @@ internal sealed class MeterWindow : IConfigurable
         }
 
         var generalConfig = this.Config.GeneralConfig;
-        var localPos = pos + generalConfig.Position;
-        var size = generalConfig.Size ??= GeneralConfig.SizeDefault;
+        this.UpdateData(pos, out var localPos, out var size);
 
-        if (ImGui.IsMouseHoveringRect(localPos, localPos + size))
+        if (this.hovered)
         {
             this.scrollPosition -= (int)ImGui.GetIO().MouseWheel;
 
             if (ImGui.IsMouseClicked(ImGuiMouseButton.Right) && !generalConfig.Preview)
             {
-                ImGui.OpenPopup($"{this.ID}_ContextMenu", ImGuiPopupFlags.MouseButtonRight);
+                ImGui.OpenPopup(this.contextMenuId, ImGuiPopupFlags.MouseButtonRight);
             }
         }
 
-        if (this.DrawContextMenu($"{this.ID}_ContextMenu", out var territory, out var encounter))
+        if (this.DrawContextMenu(this.contextMenuId, out var territory, out var encounter))
         {
             this.territoryIndex = territory;
             this.encounterIndex = encounter;
@@ -182,42 +185,47 @@ internal sealed class MeterWindow : IConfigurable
             this.encounterIndex = -1;
         }
 
-        this.UpdateDragData(localPos, size, generalConfig.Lock);
         var needsInput = !generalConfig.ClickThrough;
-        ImGuiEx.DrawInWindow($"##{this.ID}", localPos, size, needsInput, this.locked || generalConfig.Lock, drawList =>
-        {
-            if (this.unlocked)
+        ImGuiEx.DrawInWindow(
+            $"##{this.ID}",
+            localPos,
+            size,
+            needsInput,
+            this.locked || generalConfig.Lock,
+            drawList =>
             {
-                if (this.lastFrameWasDragging)
+                if (this.unlocked)
                 {
-                    localPos = ImGui.GetWindowPos();
-                    var newPos = localPos - pos;
-                    if (generalConfig.Position != newPos)
+                    if (this.lastFrameWasDragging)
                     {
-                        generalConfig.Position = newPos;
-                        this.meterManager.Save();
-                    }
+                        localPos = ImGui.GetWindowPos();
+                        var newPos = localPos - pos;
+                        if (generalConfig.Position != newPos)
+                        {
+                            generalConfig.Position = newPos;
+                            this.meterManager.Save();
+                        }
 
-                    size = ImGui.GetWindowSize();
-                    if (generalConfig.Size != size)
-                    {
-                        generalConfig.Size = size;
-                        this.meterManager.Save();
+                        size = ImGui.GetWindowSize();
+                        if (generalConfig.Size != size)
+                        {
+                            generalConfig.Size = size;
+                            this.meterManager.Save();
+                        }
                     }
                 }
-            }
 
-            if (generalConfig.ShowBorder)
-            {
-                var borderPos = localPos;
-                var borderSize = size;
-                var headerConfig = this.Config.HeaderConfig;
-                if (generalConfig.BorderAroundBars &&
-                    headerConfig.ShowHeader)
+                if (generalConfig.ShowBorder)
                 {
-                    borderPos = borderPos.AddY(headerConfig.HeaderHeight);
-                    borderSize = borderSize.AddY(-headerConfig.HeaderHeight);
-                }
+                    var borderPos = localPos;
+                    var borderSize = size;
+                    var headerConfig = this.Config.HeaderConfig;
+                    if (generalConfig.BorderAroundBars &&
+                        headerConfig.ShowHeader)
+                    {
+                        borderPos = borderPos.AddY(headerConfig.HeaderHeight);
+                        borderSize = borderSize.AddY(-headerConfig.HeaderHeight);
+                    }
 
                     for (var i = 0; i < generalConfig.BorderThickness; i++)
                     {
@@ -225,36 +233,40 @@ internal sealed class MeterWindow : IConfigurable
                         drawList.AddRect(borderPos + offset, (borderPos + borderSize) - offset, generalConfig.BorderColor.Base);
                     }
 
-                localPos += Vector2.One * generalConfig.BorderThickness;
-                size -= Vector2.One * generalConfig.BorderThickness * 2;
-            }
+                    localPos += Vector2.One * generalConfig.BorderThickness;
+                    size -= Vector2.One * generalConfig.BorderThickness * 2;
+                }
 
-            if (this.GeneralConfigPage.Preview && !this.lastFrameWasPreview)
-            {
-                // this._previewEvent = Encounter.GetTestData();
-                this.GeneralConfigPage.Preview = false;
-            }
+                if (this.GeneralConfigPage.Preview && !this.lastFrameWasPreview)
+                {
+                    // this._previewEvent = Encounter.GetTestData();
+                    this.GeneralConfigPage.Preview = false;
+                }
 
-            var encounter = this.GeneralConfigPage.Preview ? this.previewEvent : this.encounterManager.GetEncounter(this.territoryIndex, this.encounterIndex);
+                var encounter = this.GeneralConfigPage.Preview ? this.previewEvent : this.encounterManager.GetEncounter(this.territoryIndex, this.encounterIndex);
 
-            (localPos, size) = this.HeaderConfigPage.DrawHeader(localPos, size, encounter, drawList);
-            drawList.AddRectFilled(localPos, localPos + size, generalConfig.BackgroundColor.Base);
-            this.DrawBars(drawList, localPos, size, encounter);
-        });
+                (localPos, size) = this.HeaderConfigPage.DrawHeader(localPos, size, encounter, drawList);
+                drawList.AddRectFilled(localPos, localPos + size, generalConfig.BackgroundColor.Base);
+                this.DrawBars(drawList, localPos, size, encounter);
+            });
 
         this.lastFrameWasUnlocked = this.unlocked;
         this.lastFrameWasPreview = this.GeneralConfigPage.Preview;
         this.lastFrameWasCombat = combat;
     }
 
-    // Dont ask
-    private void UpdateDragData(Vector2 pos, Vector2 size, bool locked)
+    private void UpdateData(Vector2 pos, out Vector2 localPos, out Vector2 size)
     {
-        this.unlocked = !locked;
-        this.hovered = ImGui.IsMouseHoveringRect(pos, pos + size);
-        this.dragging = this.lastFrameWasDragging && ImGui.IsMouseDown(ImGuiMouseButton.Left);
+        var generalConfig = this.Config.GeneralConfig;
+        localPos = pos + generalConfig.Position;
+        size = generalConfig.Size ??= GeneralConfig.SizeDefault;
+
+        var mouseDown = ImGui.IsMouseDown(ImGuiMouseButton.Left);
+        this.unlocked = !generalConfig.Lock;
+        this.hovered = ImGui.IsMouseHoveringRect(localPos, localPos + size);
+        this.dragging = this.lastFrameWasDragging && mouseDown;
         this.locked = ((this.unlocked && !this.lastFrameWasUnlocked) || !this.hovered) && !this.dragging;
-        this.lastFrameWasDragging = this.hovered || this.dragging;
+        this.lastFrameWasDragging = (this.hovered && mouseDown) || this.dragging;
     }
 
     private void DrawBars(ImDrawListPtr drawList, Vector2 localPos, Vector2 size, BaseEncounter? actEvent)

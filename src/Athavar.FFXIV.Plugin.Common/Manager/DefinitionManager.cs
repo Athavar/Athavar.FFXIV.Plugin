@@ -179,16 +179,13 @@ internal sealed class DefinitionManager : IDefinitionManager
 
     private T ReadDefinition<T>(string fileName)
     {
-        this.services.PluginLogger.Information(fileName);
+        this.services.PluginLogger.Information($"Read embedded Resource definition file {fileName}");
         var content = new ResourceFile(fileName).Content;
         try
         {
             return JsonSerializer.Deserialize<T>(
                 content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                }) ?? throw new JsonParseException($"Error while parsing definition file {fileName}");
+                CommonJsonSerializerContext.Default.Options) ?? throw new JsonParseException($"Error while parsing definition file {fileName}");
         }
         catch (Exception ex)
         {

@@ -90,8 +90,18 @@ internal sealed class BarConfigPage : IConfigPage
 
         if (!this.cache.TryGetValue(baseCombatant.Name, out var cache))
         {
-            cache = new Cache();
+            cache = new Cache
+            {
+                LastLocalPosition = localPos,
+            };
             this.cache.Add(baseCombatant.Name, cache);
+        }
+        else
+        {
+            if (cache.LastLocalPosition != localPos)
+            {
+                cache.ResetPosition(localPos);
+            }
         }
 
         var textOffset = 5f;
@@ -105,18 +115,24 @@ internal sealed class BarConfigPage : IConfigPage
             textOffset = iconSize;
         }
 
+        Vector2 GetDataPos(string text, DrawAnchor drawAnchor, Vector2 offset, DrawAnchor? offsetDrawAnchor = null)
+        {
+            var dataTextSize = ImGui.CalcTextSize(text);
+            var dataPos = Utils.GetAnchoredPosition(localPos, -barSize, drawAnchor);
+            return Utils.GetAnchoredPosition(dataPos, dataTextSize, offsetDrawAnchor ?? drawAnchor) + offset;
+        }
+
         if (this.Config.ShowRankText)
         {
-            cache.Rank ??= baseCombatant.GetFormattedString($"{this.Config.RankTextFormat}", this.Config.ThousandsSeparators ? "N" : "F");
+            var rankText = cache.Rank ??= baseCombatant.GetFormattedString(this.Config.RankTextFormat, this.Config.ThousandsSeparators ? "N" : "F");
             using (FontsManager.PushFont(this.Config.RankTextFontKey))
             {
-                textOffset += ImGui.CalcTextSize("00.").X;
-                var rankTextSize = ImGui.CalcTextSize(cache.Rank);
-                var rankTextPos = Utils.GetAnchoredPosition(localPos, -barSize, DrawAnchor.Left);
-                rankTextPos = Utils.GetAnchoredPosition(rankTextPos, rankTextSize, this.Config.RankTextAlign) + this.Config.RankTextOffset;
+                textOffset += this.rankTestSizeOffset ??= ImGui.CalcTextSize("00.").X;
+
+                var rankTextPos = cache.RankTextPosition ??= GetDataPos(rankText, DrawAnchor.Left, this.Config.RankTextOffset, this.Config.RankTextAlign);
                 ImGuiEx.DrawText(
                     drawList,
-                    cache.Rank,
+                    rankText,
                     rankTextPos.AddX(textOffset),
                     this.Config.RankTextJobColor ? jobColor.Base : this.Config.RankTextColor.Base,
                     this.Config.RankTextShowOutline,
@@ -126,14 +142,12 @@ internal sealed class BarConfigPage : IConfigPage
 
         using (FontsManager.PushFont(this.Config.BarNameFontKey))
         {
-            cache.Left ??= baseCombatant.GetFormattedString($" {this.Config.LeftTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
-            var nameTextSize = ImGui.CalcTextSize(cache.Left);
-            var namePos = Utils.GetAnchoredPosition(localPos, -barSize, DrawAnchor.Left);
-            namePos = Utils.GetAnchoredPosition(namePos, nameTextSize, DrawAnchor.Left) + this.Config.LeftTextOffset;
+            var leftText = cache.Left ??= baseCombatant.GetFormattedString($" {this.Config.LeftTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
+            var leftTextPos = cache.LeftTextPosition ??= GetDataPos(leftText, DrawAnchor.Left, this.Config.LeftTextOffset);
             ImGuiEx.DrawText(
                 drawList,
-                cache.Left,
-                namePos.AddX(textOffset),
+                leftText,
+                leftTextPos.AddX(textOffset),
                 this.Config.LeftTextJobColor ? jobColor.Base : this.Config.BarNameColor.Base,
                 this.Config.BarNameShowOutline,
                 this.Config.BarNameOutlineColor.Base);
@@ -141,14 +155,12 @@ internal sealed class BarConfigPage : IConfigPage
 
         using (FontsManager.PushFont(this.Config.BarDataFontKey))
         {
-            cache.Right ??= baseCombatant.GetFormattedString($" {this.Config.RightTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
-            var dataTextSize = ImGui.CalcTextSize(cache.Right);
-            var dataPos = Utils.GetAnchoredPosition(localPos, -barSize, DrawAnchor.Right);
-            dataPos = Utils.GetAnchoredPosition(dataPos, dataTextSize, DrawAnchor.Right) + this.Config.RightTextOffset;
+            var rightText = cache.Right ??= baseCombatant.GetFormattedString($" {this.Config.RightTextFormat} ", this.Config.ThousandsSeparators ? "N" : "F");
+            var rightTextPos = cache.RightTextPosition ??= GetDataPos(rightText, DrawAnchor.Right, this.Config.RightTextOffset);
             ImGuiEx.DrawText(
                 drawList,
-                cache.Right,
-                dataPos,
+                rightText,
+                rightTextPos,
                 this.Config.RightTextJobColor ? jobColor.Base : this.Config.BarDataColor.Base,
                 this.Config.BarDataShowOutline,
                 this.Config.BarDataOutlineColor.Base);
@@ -444,12 +456,28 @@ internal sealed class BarConfigPage : IConfigPage
         drawList.AddImage(textureWrap.ImGuiHandle, position, position + size, Vector2.Zero, Vector2.One);
     }
 
-    private class Cache
+    private sealed class Cache
     {
+        public Vector2 LastLocalPosition { get; set; }
+
         public string? Rank { get; set; }
+
+        public Vector2? RankTextPosition { get; set; }
 
         public string? Left { get; set; }
 
+        public Vector2? LeftTextPosition { get; set; }
+
         public string? Right { get; set; }
+
+        public Vector2? RightTextPosition { get; set; }
+
+        public void ResetPosition(Vector2 localPosition)
+        {
+            this.LastLocalPosition = localPosition;
+            this.RankTextPosition = null;
+            this.LeftTextPosition = null;
+            this.RightTextPosition = null;
+        }
     }
 }
