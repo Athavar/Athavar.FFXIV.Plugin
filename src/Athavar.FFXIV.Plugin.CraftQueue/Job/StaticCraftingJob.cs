@@ -8,13 +8,13 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.Job;
 using System.Diagnostics.CodeAnalysis;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
-using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
 using Lumina.Excel.Sheets;
 
-internal sealed class StaticCraftingJob : BaseCraftingJob
+internal class StaticCraftingJob : BaseCraftingJob
 {
     private readonly string localizedExcellent;
 
@@ -25,11 +25,11 @@ internal sealed class StaticCraftingJob : BaseCraftingJob
 
     private SimulationResult simulationResult;
 
-    public StaticCraftingJob(CraftQueue queue, RecipeExtended recipe, IStaticRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
-        : base(queue, recipe, rotationResolver, gearset, count, buffConfig, hqIngredients, flags)
+    public StaticCraftingJob(CraftQueue queue, RecipeExtended recipe, IRecipeNodeHandler recipeNodeHandler, IStaticRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+        : base(queue, recipe, recipeNodeHandler, rotationResolver, gearset, count, buffConfig, hqIngredients, flags)
     {
         this.rotationResolver = rotationResolver;
-        this.simulation = new(gearset.ToCrafterStats(), this.Recipe)
+        this.simulation = new Simulation(gearset.ToCrafterStats(), this.Recipe)
         {
             CurrentStatModifiers = [buffConfig.Food?.Stats, buffConfig.Potion?.Stats],
         };

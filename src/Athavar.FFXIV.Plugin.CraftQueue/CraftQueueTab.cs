@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Common.Manager.Interface;
 using Athavar.FFXIV.Plugin.Common.UI;
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
 using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftQueue.UI;
@@ -25,6 +26,7 @@ internal sealed class CraftQueueTab : Tab
     private readonly IServiceProvider serviceProvider;
     private readonly IPluginMonitorService monitorService;
     private readonly IDalamudServices dalamudServices;
+    private readonly ICommandInterface commandInterface;
     private readonly TabBarHandler tabBarHandler;
     private readonly List<IRotationResolver> rotationResolvers;
 
@@ -37,30 +39,34 @@ internal sealed class CraftQueueTab : Tab
         this.serviceProvider = serviceProvider;
         this.monitorService = monitorService;
         this.dalamudServices = serviceProvider.GetRequiredService<IDalamudServices>();
+        this.commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
+        this.rotationResolvers = craftQueue.ExternalResolver;
 
-        var commandInterface = serviceProvider.GetRequiredService<ICommandInterface>();
         var iconCacheManager = serviceProvider.GetRequiredService<IIconManager>();
         var chatManager = serviceProvider.GetRequiredService<IChatManager>();
         var gearsetManager = serviceProvider.GetRequiredService<IGearsetManager>();
         var craftSkillManager = serviceProvider.GetRequiredService<ICraftDataManager>();
         this.ClientLanguage = this.dalamudServices.ClientState.ClientLanguage;
 
-        var queueTab = new QueueTab(craftQueue, iconCacheManager, craftSkillManager, this.Configuration, this.ClientLanguage);
-        this.rotationResolvers = queueTab.ExternalResolver;
+        var queueTab = new QueueTab(craftQueue, iconCacheManager, craftSkillManager, this.Configuration);
 
         this.tabBarHandler = new TabBarHandler(this.dalamudServices.PluginLogger, "CraftQueueTabBar");
         this.tabBarHandler
            .Add(new StatsTab(craftQueue))
            .Add(new RotationTab(craftQueue, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
            .Add(queueTab)
+           .Add(new CosmicTab(craftQueue, craftSkillManager, iconCacheManager))
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG
-           .Add(new DebugTab(gearsetManager, commandInterface, craftQueue))
+           .Add(new DebugTab(gearsetManager, this.commandInterface, craftQueue))
 #endif
             ;
 
         this.UpdateCraftimizerIntegration(monitorService.IsLoaded(CraftimizerAssemblyName));
         this.monitorService.LoadingStateHasChanged += this.OnPluginLoadingStateHasChanged;
+
+        this.dalamudServices.ClientState.TerritoryChanged += this.OnTerritoryChanged;
+        this.OnTerritoryChanged(this.dalamudServices.ClientState.TerritoryType);
     }
 
     /// <inheritdoc/>
@@ -84,7 +90,13 @@ internal sealed class CraftQueueTab : Tab
     public override void Dispose()
     {
         this.monitorService.LoadingStateHasChanged -= this.OnPluginLoadingStateHasChanged;
+        this.dalamudServices.ClientState.TerritoryChanged -= this.OnTerritoryChanged;
         base.Dispose();
+    }
+
+    private void OnTerritoryChanged(ushort obj)
+    {
+        this.tabBarHandler.SetEnableState(CosmicTab.Id, this.commandInterface.IsInCosmicExploration());
     }
 
     private void OnPluginLoadingStateHasChanged(string name, bool state, IExposedPlugin? plugin)

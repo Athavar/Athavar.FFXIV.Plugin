@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 
 using System.Collections;
 using System.Reflection;
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Interface.Windowing;

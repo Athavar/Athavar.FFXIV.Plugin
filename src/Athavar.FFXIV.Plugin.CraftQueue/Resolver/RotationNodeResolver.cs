@@ -5,6 +5,7 @@
 
 namespace Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 

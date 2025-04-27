@@ -14,23 +14,24 @@ using Recipe = Lumina.Excel.Sheets.Recipe;
 
 internal static class RecipeExtensions
 {
+    public static bool IsCosmicRecipe(this Recipe recipe) => recipe.RecipeNotebookList.RowId is >= 1496 and <= 1503;
+
     public static RecipeExtended ToCraftSimulatorRecipe(this Recipe recipe, ExcelSheet<Item> sheets)
     {
         var lvlTable = recipe.RecipeLevelTable.ValueNullable ?? throw new AthavarPluginException();
         var maxQuality = (lvlTable.Quality * recipe.QualityFactor) / 100;
 
-        Ingredient[] ingredients = recipe.Ingredient.Zip(recipe.AmountIngredient).Select(
-            pack =>
+        Ingredient[] ingredients = recipe.Ingredient.Zip(recipe.AmountIngredient).Select(pack =>
+        {
+            var i = pack.First;
+            var amount = pack.Second;
+            if (i.ValueNullable is not { } item || item.RowId == 0)
             {
-                var i = pack.First;
-                var amount = pack.Second;
-                if (i.ValueNullable is not { } item || item.RowId == 0)
-                {
-                    return null;
-                }
+                return null;
+            }
 
-                return new Ingredient(item.RowId, item.Icon, item.LevelItem.RowId, amount) { CanBeHq = item.CanBeHq };
-            }).Where(i => i is not null).ToArray()!;
+            return new Ingredient(item.RowId, item.Icon, item.LevelItem.RowId, amount) { CanBeHq = item.CanBeHq };
+        }).Where(i => i is not null).ToArray()!;
         var totalItemLevel = ingredients.Sum(i => i.CanBeHq ? i.Amount * i.ILevel : 0);
         var totalContribution = (maxQuality * recipe.MaterialQualityFactor) / 100;
 

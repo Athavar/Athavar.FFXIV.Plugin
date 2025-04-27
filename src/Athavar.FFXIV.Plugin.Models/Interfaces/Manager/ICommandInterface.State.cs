@@ -70,6 +70,12 @@ public partial interface ICommandInterface
     bool IsInGoldenSaucer();
 
     /// <summary>
+    ///     Checks if the character is in cosmic exploration area.
+    /// </summary>
+    /// <returns>A value indication whether the player is in cosmic exploration area.</returns>
+    bool IsInCosmicExploration();
+
+    /// <summary>
     ///     Checks if the character is in a PvP area.
     /// </summary>
     /// <returns>A value indication whether the player is in a pvp area.</returns>

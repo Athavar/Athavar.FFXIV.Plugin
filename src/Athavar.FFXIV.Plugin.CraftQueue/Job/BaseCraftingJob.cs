@@ -6,11 +6,11 @@
 namespace Athavar.FFXIV.Plugin.CraftQueue.Job;
 
 using System.Diagnostics;
-using Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Config;
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models.Actions;
@@ -18,24 +18,26 @@ using Athavar.FFXIV.Plugin.Models;
 using Dalamud.Game.ClientState.Conditions;
 using FFXIVClientStructs.FFXIV.Client.UI;
 
-internal abstract class BaseCraftingJob
+internal abstract class BaseCraftingJob : IBaseCraftingJob
 {
     private readonly Func<int>[] stepArray;
     private readonly int stepCraftStartIndex;
 
-    private readonly Gearset gearset;
-
+    private readonly IRecipeNodeHandler recipeNodeHandler;
     private readonly IRotationResolver rotationResolver;
+    
+    private readonly Gearset gearset;
 
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
 
     private int waitMs;
 
-    public BaseCraftingJob(CraftQueue queue, RecipeExtended recipe, IRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
+    public BaseCraftingJob(CraftQueue queue, RecipeExtended recipe, IRecipeNodeHandler recipeNodeHandler, IRotationResolver rotationResolver, Gearset gearset, uint count, BuffConfig buffConfig, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         this.Queue = queue;
         this.Recipe = recipe;
         this.Loops = count;
+        this.recipeNodeHandler = recipeNodeHandler;
         this.gearset = gearset;
 
         this.BuffConfig = buffConfig;
@@ -69,6 +71,7 @@ internal abstract class BaseCraftingJob
         this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.WaitSynthesis);
     }
 
+
     [Flags]
     protected enum BuffApplyTest
     {
@@ -88,9 +91,9 @@ internal abstract class BaseCraftingJob
 
     internal uint RemainingLoops => this.Loops - this.CurrentLoop;
 
-    internal RecipeExtended Recipe { get; }
+    public RecipeExtended Recipe { get; }
 
-    internal (uint ItemId, byte Amount)[] HqIngredients { get; }
+    public (uint ItemId, byte Amount)[] HqIngredients { get; }
 
     internal int RotationMaxSteps => this.rotationResolver.Length;
 
@@ -113,6 +116,8 @@ internal abstract class BaseCraftingJob
     private Stopwatch Stopwatch { get; } = new();
 
     private Stopwatch DurationWatch { get; } = new();
+
+    private string CraftingAddonName => this.recipeNodeHandler.AddonName;
 
     private bool IsKneeling => this.Queue.DalamudServices.Condition[ConditionFlag.PreparingToCraft];
 
@@ -189,6 +194,12 @@ internal abstract class BaseCraftingJob
     protected virtual void ActionUseFailed(CraftingSkill skill)
     {
     }
+
+    private int OpenRecipe() => this.recipeNodeHandler.OpenRecipe(this, this.Queue);
+
+    private int SelectIngredients() => this.recipeNodeHandler.SelectIngredients(this, this.Queue);
+
+    private int StartCraft() => this.recipeNodeHandler.StartCraft(this, this.Queue);
 
     private void InternalTick()
     {
@@ -445,85 +456,6 @@ internal abstract class BaseCraftingJob
         return 0;
     }
 
-    private int OpenRecipe()
-    {
-        var ci = this.Queue.CommandInterface;
-        var recipeId = this.Recipe.RecipeId;
-
-        var selectedRecipeItemId = ci.GetRecipeNoteSelectedRecipeId();
-        if ((!ci.IsAddonVisible(Constants.Addons.RecipeNote) && !ci.IsAddonVisible(Constants.Addons.Synthesis)) || (ci.IsAddonVisible(Constants.Addons.RecipeNote) && (selectedRecipeItemId == -1 || recipeId != selectedRecipeItemId)))
-        {
-            ci.OpenRecipeByRecipeId(recipeId);
-            return -500;
-        }
-
-        return !ci.IsAddonVisible(Constants.Addons.RecipeNote) ? -1000 : 100;
-    }
-
-    private int SelectIngredients()
-    {
-        var ci = this.Queue.CommandInterface;
-        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
-        {
-            return -100;
-        }
-
-        var ptr = this.Queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
-        if (ptr == nint.Zero)
-        {
-            return -100;
-        }
-
-        var click = ClickRecipeNote.Using(ptr);
-
-        click.MaterialNq();
-        if (this.HqIngredients.Length != 0)
-        {
-            for (var idx = 0; idx < this.Recipe.Ingredients.Length; ++idx)
-            {
-                var ingredient = this.Recipe.Ingredients[idx];
-                var found = this.HqIngredients.FirstOrDefault(i => i.ItemId == ingredient.Id);
-                if (found != default)
-                {
-                    for (var index = 0; index < found.Amount; ++index)
-                    {
-                        click.Material(idx, true);
-                    }
-                }
-            }
-        }
-
-        return 0;
-    }
-
-    private int StartCraft()
-    {
-        var ci = this.Queue.CommandInterface;
-        if (!ci.IsAddonVisible(Constants.Addons.RecipeNote))
-        {
-            return -100;
-        }
-
-        var ptr = this.Queue.DalamudServices.GameGui.GetAddonByName(Constants.Addons.RecipeNote);
-        if (ptr == nint.Zero)
-        {
-            return -100;
-        }
-
-        var click = ClickRecipeNote.Using(ptr);
-
-        if (this.Flags.HasFlag(CraftingJobFlags.TrialSynthesis))
-        {
-            click.TrialSynthesis();
-        }
-        else
-        {
-            click.Synthesize();
-        }
-
-        return 0;
-    }
-
     private int WaitSynthesis()
     {
         if (!this.Queue.CommandInterface.IsAddonVisible(Constants.Addons.Synthesis))
@@ -639,9 +571,9 @@ internal abstract class BaseCraftingJob
         // is in crafting mode
         if (this.IsKneeling)
         {
-            if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+            if (ci.IsAddonVisible(this.CraftingAddonName))
             {
-                ci.CloseAddon(Constants.Addons.RecipeNote);
+                ci.CloseAddon(this.CraftingAddonName);
                 return -1000;
             }
         }
@@ -651,9 +583,9 @@ internal abstract class BaseCraftingJob
             return -100;
         }
 
-        if (ci.IsAddonVisible(Constants.Addons.RecipeNote))
+        if (ci.IsAddonVisible(this.CraftingAddonName))
         {
-            ci.CloseAddon(Constants.Addons.RecipeNote);
+            ci.CloseAddon(this.CraftingAddonName);
             return -100;
         }
 

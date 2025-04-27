@@ -10,6 +10,7 @@ using Lumina.Excel.Sheets;
 internal sealed partial class CommandInterface
 {
     private static readonly uint[] GoldenSaucerIds = [144, 388, 389, 390, 391, 579, 792, 832, 899, 941, 1098, 1165, 1197];
+    private static readonly uint[] CosmicExplorationIds = [1237];
 
     private readonly uint logOutId;
 
@@ -36,6 +37,9 @@ internal sealed partial class CommandInterface
 
     /// <inheritdoc/>
     public bool IsInGoldenSaucer() => GoldenSaucerIds.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
+
+    /// <inheritdoc/>
+    public bool IsInCosmicExploration() => CosmicExplorationIds.Any(id => id == this.dalamudServices.ClientState.TerritoryType);
 
     /// <inheritdoc/>
     public bool IsPvP() => this.dalamudServices.ClientState.IsPvP;

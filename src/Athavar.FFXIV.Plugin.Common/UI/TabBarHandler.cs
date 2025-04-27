@@ -56,6 +56,18 @@ public sealed class TabBarHandler
 
     public void SelectTab(string identifier) => this.selectTabIdentifier = identifier;
 
+    public void SetEnableState(string identifier, bool enable)
+    {
+        lock (this.lockObject)
+        {
+            var tab = this.tabs.SingleOrDefault(t => t.Identifier == identifier)?.Tab;
+            if (tab != null)
+            {
+                tab.Enabled = enable;
+            }
+        }
+    }
+
     public void Sort(int index)
     {
         lock (this.lockObject)
@@ -94,6 +106,11 @@ public sealed class TabBarHandler
 
             foreach (var tab in tabs)
             {
+                if (!tab.Tab.Enabled)
+                {
+                    continue;
+                }
+
                 var flags = ImGuiTabItemFlags.NoCloseWithMiddleMouseButton;
 
                 if (tab.Identifier == this.selectTabIdentifier)

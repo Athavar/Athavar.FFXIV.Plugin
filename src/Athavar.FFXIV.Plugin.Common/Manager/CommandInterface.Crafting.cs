@@ -6,7 +6,6 @@ namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Dalamud.Game.ClientState.Conditions;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 
 internal sealed partial class CommandInterface
@@ -166,7 +165,7 @@ internal sealed partial class CommandInterface
     }
 
     /// <inheritdoc/>
-    public unsafe void OpenRecipeByRecipeId(uint recipeId) => ((AgentRecipeNote*)Framework.Instance()->UIModule->GetAgentModule()->GetAgentByInternalId(AgentId.RecipeNote))->OpenRecipeByRecipeId(recipeId);
+    public unsafe void OpenRecipeByRecipeId(uint recipeId) => AgentRecipeNote.Instance()->OpenRecipeByRecipeId(recipeId);
 
     /// <inheritdoc/>
     public unsafe uint? GetRecipeNoteSelectedRecipeId()

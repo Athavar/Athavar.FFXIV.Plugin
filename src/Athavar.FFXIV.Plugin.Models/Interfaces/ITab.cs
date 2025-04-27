@@ -23,6 +23,11 @@ public interface ITab
     string Title { get; }
 
     /// <summary>
+    ///     Gets a value indicating if this tab is enabled.
+    /// </summary>
+    bool Enabled { get; set; }
+
+    /// <summary>
     ///     Draw the content of the tab.
     /// </summary>
     void Draw();

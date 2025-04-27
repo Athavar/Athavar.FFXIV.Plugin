@@ -7,8 +7,9 @@ namespace Athavar.FFXIV.Plugin.CraftQueue;
 
 using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
-using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
+using Athavar.FFXIV.Plugin.CraftQueue.RecipeNodes;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
@@ -54,6 +55,8 @@ internal sealed partial class CraftQueue : IDisposable
 
     internal IReadOnlyList<BaseCraftingJob> JobsCompleted => this.completedJobs;
 
+    internal List<IRotationResolver> ExternalResolver { get; } = new();
+
     internal BaseCraftingJob? CurrentJob { get; private set; }
 
     internal QueueState Paused { get; private set; } = QueueState.Paused;
@@ -61,13 +64,15 @@ internal sealed partial class CraftQueue : IDisposable
     public bool CreateJob(RecipeExtended recipe, Gearset gearset, IRotationResolver rotationResolver, uint count, BuffInfo? food, BuffInfo? potion, (uint ItemId, byte Amount)[] hqIngredients, CraftingJobFlags flags)
     {
         BuffConfig buffConfig = new(food, potion);
+
+        IRecipeNodeHandler recipeNodeHandler = flags.HasFlag(CraftingJobFlags.CosmicSynthesis) ? new WksRecipeNodeHandler() : new RecipeNodeHandler();
         if (rotationResolver is IStaticRotationResolver staticRotationResolver)
         {
-            this.queuedJobs.Add(new StaticCraftingJob(this, recipe, staticRotationResolver, gearset, count, buffConfig, hqIngredients, flags));
+            this.queuedJobs.Add(new StaticCraftingJob(this, recipe, recipeNodeHandler, staticRotationResolver, gearset, count, buffConfig, hqIngredients, flags));
         }
         else
         {
-            this.queuedJobs.Add(new CraftingJob(this, recipe, rotationResolver, gearset, count, buffConfig, hqIngredients, flags));
+            this.queuedJobs.Add(new CraftingJob(this, recipe, recipeNodeHandler, rotationResolver, gearset, count, buffConfig, hqIngredients, flags));
         }
 
         return true;
@@ -77,6 +82,12 @@ internal sealed partial class CraftQueue : IDisposable
     public void Dispose() => this.frameworkManager.Unsubscribe(this.FrameworkOnUpdate);
 
     internal void DequeueJob(int idx) => this.queuedJobs.RemoveAt(idx);
+
+    internal void Clear()
+    {
+        this.queuedJobs.Clear();
+        this.completedJobs.Clear();
+    }
 
     internal void DeleteHistory(int idx) => this.completedJobs.RemoveAt(idx);
 

@@ -8,34 +8,27 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 
 public abstract class Tab : IDisposable, ITab
 {
-    /// <summary>
-    ///     Gets the displayName of the tab.
-    /// </summary>
+    /// <inheritdoc/>
     public abstract string Name { get; }
 
-    /// <summary>
-    ///     Gets the identifier of the tab.
-    /// </summary>
+    /// <inheritdoc/>
     public abstract string Identifier { get; }
 
-    /// <summary>
-    ///     Gets the title of the tab.
-    /// </summary>
+    /// <inheritdoc/>
     public virtual string Title => this.Name;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
+    public bool Enabled { get; set; } = true;
+
+    /// <inheritdoc/>
     public virtual void Dispose()
     {
     }
 
-    /// <summary>
-    ///     Draw the content of the tab.
-    /// </summary>
+    /// <inheritdoc/>
     public abstract void Draw();
 
-    /// <summary>
-    ///     Called if content of the tab is not draw.
-    /// </summary>
+    /// <inheritdoc/>
     public virtual void OnNotDraw()
     {
     }

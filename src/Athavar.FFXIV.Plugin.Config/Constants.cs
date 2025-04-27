@@ -18,6 +18,7 @@ public static class Constants
         public const string RecipeNote = "RecipeNote";
         public const string Repair = "Repair";
         public const string Synthesis = "Synthesis";
+        public const string WksRecipeNote = "WKSRecipeNotebook";
     }
 
     public static class FontsManager
