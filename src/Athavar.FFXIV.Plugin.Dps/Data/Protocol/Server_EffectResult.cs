@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 internal unsafe struct Server_EffectResult
 {
+    public uint Unknown1;
     public uint RelatedActionSequence;
     public uint ActorID;
     public uint CurrentHP;
