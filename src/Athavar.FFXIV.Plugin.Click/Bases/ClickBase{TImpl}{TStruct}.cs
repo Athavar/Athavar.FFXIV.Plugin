@@ -103,7 +103,7 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     /// <param name="target">Target node.</param>
     /// <param name="which">Internal game click routing.</param>
     /// <param name="type">Event type.</param>
-    protected void ClickAddonDragDrop(AtkComponentDragDrop* target, int which, AtkEventType type = AtkEventType.DragDropCancel) => this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
+    protected void ClickAddonDragDrop(AtkComponentDragDrop* target, int which, AtkEventType type = AtkEventType.DragDropClick) => this.ClickAddonComponent(target->AtkComponentBase.OwnerNode, which, type);
 
     /// <summary>
     ///     Send a click.

@@ -126,7 +126,7 @@ internal class ActionCommand : MacroCommand
             }
 
             // wait for crafting condition flag to exit.
-            while (DalamudServices.Condition[ConditionFlag.Crafting40])
+            while (DalamudServices.Condition[ConditionFlag.ExecutingCraftingAction])
             {
                 await Task.Delay(10, token);
             }

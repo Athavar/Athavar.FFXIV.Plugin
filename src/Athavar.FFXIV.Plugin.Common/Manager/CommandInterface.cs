@@ -188,12 +188,12 @@ internal sealed partial class CommandInterface : ICommandInterface
     private unsafe AddonSynthesis* GetSynthesisAddon()
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("Synthesis");
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             throw new AthavarPluginException("Could not find Synthesis addon");
         }
 
-        return (AddonSynthesis*)ptr;
+        return (AddonSynthesis*)ptr.Address;
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ internal sealed partial class CommandInterface : ICommandInterface
             return false;
         }
 
-        var module = (UIModule*)this.dalamudServices.GameGui.GetUIModule();
+        var module = (UIModule*)this.dalamudServices.GameGui.GetUIModule().Address;
         module->ExecuteMainCommand(mainCommandId);
         return true;
     }

@@ -12,9 +12,9 @@ using Athavar.FFXIV.Plugin.Dps.Data.ActionSummary;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Utility;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 

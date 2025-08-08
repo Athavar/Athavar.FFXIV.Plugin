@@ -12,7 +12,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class HeaderConfigPage : IConfigPage
 {

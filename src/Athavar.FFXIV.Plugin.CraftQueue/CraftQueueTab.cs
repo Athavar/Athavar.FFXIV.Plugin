@@ -14,9 +14,9 @@ using Athavar.FFXIV.Plugin.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game;
 using Dalamud.Plugin;
-using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class CraftQueueTab : Tab
@@ -55,7 +55,9 @@ internal sealed class CraftQueueTab : Tab
            .Add(new StatsTab(craftQueue))
            .Add(new RotationTab(craftQueue, this.Configuration, chatManager, iconCacheManager, craftSkillManager, this.ClientLanguage))
            .Add(queueTab)
+#if DEBUG
            .Add(new CosmicTab(craftQueue, craftSkillManager, iconCacheManager))
+#endif
            .Add(new ConfigTab(this.Configuration))
 #if DEBUG
            .Add(new DebugTab(gearsetManager, this.commandInterface, craftQueue))
@@ -96,7 +98,9 @@ internal sealed class CraftQueueTab : Tab
 
     private void OnTerritoryChanged(ushort obj)
     {
+#if DEBUG
         this.tabBarHandler.SetEnableState(CosmicTab.Id, this.commandInterface.IsInCosmicExploration());
+#endif
     }
 
     private void OnPluginLoadingStateHasChanged(string name, bool state, IExposedPlugin? plugin)

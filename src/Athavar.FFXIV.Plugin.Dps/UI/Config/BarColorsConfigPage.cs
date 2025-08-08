@@ -8,7 +8,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
 {
@@ -22,45 +22,45 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
 
     public ConfigColor GetColor(Job job)
         => job switch
-           {
-               Job.Gladiator => this.Config.GLAColor,
-               Job.Marauder => this.Config.MRDColor,
-               Job.Paladin => this.Config.PLDColor,
-               Job.Warrior => this.Config.WARColor,
-               Job.DarkKnight => this.Config.DRKColor,
-               Job.Gunbreaker => this.Config.GNBColor,
+        {
+            Job.Gladiator => this.Config.GLAColor,
+            Job.Marauder => this.Config.MRDColor,
+            Job.Paladin => this.Config.PLDColor,
+            Job.Warrior => this.Config.WARColor,
+            Job.DarkKnight => this.Config.DRKColor,
+            Job.Gunbreaker => this.Config.GNBColor,
 
-               Job.Conjurer => this.Config.CNJColor,
-               Job.WhiteMage => this.Config.WHMColor,
-               Job.Scholar => this.Config.SCHColor,
-               Job.Astrologian => this.Config.ASTColor,
-               Job.Sage => this.Config.SGEColor,
+            Job.Conjurer => this.Config.CNJColor,
+            Job.WhiteMage => this.Config.WHMColor,
+            Job.Scholar => this.Config.SCHColor,
+            Job.Astrologian => this.Config.ASTColor,
+            Job.Sage => this.Config.SGEColor,
 
-               Job.Pugilist => this.Config.PGLColor,
-               Job.Lancer => this.Config.LNCColor,
-               Job.Rogue => this.Config.ROGColor,
-               Job.Monk => this.Config.MNKColor,
-               Job.Dragoon => this.Config.DRGColor,
-               Job.Ninja => this.Config.NINColor,
-               Job.Samurai => this.Config.SAMColor,
-               Job.Reaper => this.Config.RPRColor,
-               Job.Viper => this.Config.VPRColor,
+            Job.Pugilist => this.Config.PGLColor,
+            Job.Lancer => this.Config.LNCColor,
+            Job.Rogue => this.Config.ROGColor,
+            Job.Monk => this.Config.MNKColor,
+            Job.Dragoon => this.Config.DRGColor,
+            Job.Ninja => this.Config.NINColor,
+            Job.Samurai => this.Config.SAMColor,
+            Job.Reaper => this.Config.RPRColor,
+            Job.Viper => this.Config.VPRColor,
 
-               Job.Archer => this.Config.ARCColor,
-               Job.Bard => this.Config.BRDColor,
-               Job.Machinist => this.Config.MCHColor,
-               Job.Dancer => this.Config.DNCColor,
+            Job.Archer => this.Config.ARCColor,
+            Job.Bard => this.Config.BRDColor,
+            Job.Machinist => this.Config.MCHColor,
+            Job.Dancer => this.Config.DNCColor,
 
-               Job.Thaumaturge => this.Config.THMColor,
-               Job.Arcanist => this.Config.ACNColor,
-               Job.BlackMage => this.Config.BLMColor,
-               Job.Summoner => this.Config.SMNColor,
-               Job.RedMage => this.Config.RDMColor,
-               Job.BlueMage => this.Config.BLUColor,
-               Job.Pictomancer => this.Config.PCTColor,
+            Job.Thaumaturge => this.Config.THMColor,
+            Job.Arcanist => this.Config.ACNColor,
+            Job.BlackMage => this.Config.BLMColor,
+            Job.Summoner => this.Config.SMNColor,
+            Job.RedMage => this.Config.RDMColor,
+            Job.BlueMage => this.Config.BLUColor,
+            Job.Pictomancer => this.Config.PCTColor,
 
-               _ => this.Config.UKNColor,
-           };
+            _ => this.Config.UKNColor,
+        };
 
     public void DrawConfig(Vector2 size, float padX, float padY)
     {

@@ -6,11 +6,11 @@
 namespace Athavar.FFXIV.Plugin.Instancinator;
 
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using ImGuiNET;
 
 internal sealed class InstancinatorWindow : Window, IDisposable
 {

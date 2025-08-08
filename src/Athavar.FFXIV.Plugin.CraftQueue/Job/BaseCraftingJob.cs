@@ -25,7 +25,7 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
 
     private readonly IRecipeNodeHandler recipeNodeHandler;
     private readonly IRotationResolver rotationResolver;
-    
+
     private readonly Gearset gearset;
 
     private TimeSpan lastLoopDuration = TimeSpan.Zero;
@@ -71,7 +71,6 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
         this.stepCraftStartIndex = Array.IndexOf(this.stepArray, this.WaitSynthesis);
     }
 
-
     [Flags]
     protected enum BuffApplyTest
     {
@@ -87,13 +86,13 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
 
     public string RotationName => this.rotationResolver.Name;
 
-    internal uint Loops { get; }
-
-    internal uint RemainingLoops => this.Loops - this.CurrentLoop;
-
     public RecipeExtended Recipe { get; }
 
     public (uint ItemId, byte Amount)[] HqIngredients { get; }
+
+    internal uint Loops { get; }
+
+    internal uint RemainingLoops => this.Loops - this.CurrentLoop;
 
     internal int RotationMaxSteps => this.rotationResolver.Length;
 
@@ -479,7 +478,7 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
 
     private int DoRotationAction()
     {
-        if (this.Queue.DalamudServices.Condition[ConditionFlag.Crafting40])
+        if (this.Queue.DalamudServices.Condition[ConditionFlag.ExecutingCraftingAction])
         {
             return -25;
         }

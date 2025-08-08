@@ -8,7 +8,7 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class LogPage : IConfigPage
 {

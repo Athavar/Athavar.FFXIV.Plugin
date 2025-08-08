@@ -37,17 +37,17 @@ public sealed unsafe class ClickWksRecipeNote : ClickBase<ClickRecipeNote, Addon
     ///     Click the synthesize button.
     /// </summary>
     [ClickName("wks_synthesize")]
-    public void Synthesize() => this.ClickAddonButton(this.Addon->GetButtonNodeById(50));
+    public void Synthesize() => this.ClickAddonButton(this.Addon->GetComponentButtonById(50));
 
     /// <summary>
     ///     Click the ingredient nq button.
     /// </summary>
     [ClickName("wks_ingredient_nq")]
-    public void IngredientNq() => this.ClickAddonButton(this.Addon->GetButtonNodeById(39));
+    public void IngredientNq() => this.ClickAddonButton(this.Addon->GetComponentButtonById(39));
 
     /// <summary>
     ///     Click the ingredient hq button.
     /// </summary>
     [ClickName("wks_ingredient_hq")]
-    public void IngredientHq() => this.ClickAddonButton(this.Addon->GetButtonNodeById(40));
+    public void IngredientHq() => this.ClickAddonButton(this.Addon->GetComponentButtonById(40));
 }

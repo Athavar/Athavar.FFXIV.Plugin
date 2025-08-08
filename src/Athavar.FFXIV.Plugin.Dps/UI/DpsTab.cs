@@ -11,10 +11,10 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.ImGuiNotification;
-using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class DpsTab : Tab

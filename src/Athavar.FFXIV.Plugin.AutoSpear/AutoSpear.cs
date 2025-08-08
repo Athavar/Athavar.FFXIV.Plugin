@@ -10,8 +10,8 @@ using Athavar.FFXIV.Plugin.AutoSpear.SeFunctions;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 using Lumina.Excel.Sheets;
 
 internal sealed partial class AutoSpear : Tab
@@ -97,7 +97,7 @@ internal sealed partial class AutoSpear : Tab
     private unsafe void Tick(IFramework framework)
     {
         var oldOpen = this.isOpen;
-        this.addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing");
+        this.addon = (SpearfishWindow*)this.dalamudServices.GameGui.GetAddonByName("SpearFishing").Address;
         this.isOpen = this.addon != null && this.addon->Base.WindowNode != null;
         if (!this.isOpen)
         {

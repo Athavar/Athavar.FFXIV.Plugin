@@ -9,9 +9,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Athavar.FFXIV.Plugin.Common.Extension;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Textures.TextureWraps;
-using ImGuiNET;
 
 /// <summary>
 ///     ImGui wrappers.
@@ -29,7 +29,7 @@ public static class ImGuiEx
 
         labelBytes[unterminatedLabelBytes.Length] = 0;
 
-        var num2 = (int)ImGuiNative.igBeginTabItem(labelBytes, null, flags);
+        var num2 = (int)ImGuiNative.BeginTabItem(labelBytes, null, flags);
         return (uint)num2 > 0U;
     }
 
@@ -127,7 +127,7 @@ public static class ImGuiEx
     {
         var style = ImGui.GetStyle();
 
-        return GetIconWidth(icon) + style.FramePadding.X * 2;
+        return GetIconWidth(icon) + (style.FramePadding.X * 2);
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public static class ImGuiEx
         var x = dalamudTextureWrap.Width * num;
         var offset = (ImGui.GetContentRegionAvail().X - x) / 2;
         ImGui.SetCursorPosX(ImGui.GetCursorPosX() + offset);
-        ImGui.Image(dalamudTextureWrap.ImGuiHandle, new Vector2(x, scaledHeight));
+        ImGui.Image(dalamudTextureWrap.Handle, new Vector2(x, scaledHeight));
     }
 
     /// <summary>
@@ -189,7 +189,7 @@ public static class ImGuiEx
     /// <param name="size">Image size.</param>
     /// <param name="scaledHeight">Scaled height.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ScaledImageY(nint handle, Vector2 size, float scaledHeight) => ScaledImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
+    public static void ScaledImageY(ImTextureID handle, Vector2 size, float scaledHeight) => ScaledImageY(handle, (int)size.X, (int)size.Y, scaledHeight);
 
     /// <summary>
     ///     Scales a Image after height.
@@ -201,7 +201,7 @@ public static class ImGuiEx
     {
         if (textureWrap is not null)
         {
-            ScaledImageY(textureWrap.ImGuiHandle, textureWrap.Width, textureWrap.Height, scaledHeight);
+            ScaledImageY(textureWrap.Handle, textureWrap.Width, textureWrap.Height, scaledHeight);
         }
     }
 
@@ -213,7 +213,7 @@ public static class ImGuiEx
     /// <param name="iconHeight">Image height.</param>
     /// <param name="scaledHeight">Scaled height.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ScaledImageY(nint handle, int iconWidth, int iconHeight, float scaledHeight)
+    public static void ScaledImageY(ImTextureID handle, int iconWidth, int iconHeight, float scaledHeight)
     {
         var num = scaledHeight / iconHeight;
         var x = iconWidth * num;
@@ -229,7 +229,7 @@ public static class ImGuiEx
     {
         if (textureWrap is not null)
         {
-            ImGui.Image(textureWrap.ImGuiHandle, new Vector2(textureWrap.Width, textureWrap.Height));
+            ImGui.Image(textureWrap.Handle, new Vector2(textureWrap.Width, textureWrap.Height));
         }
     }
 
@@ -412,7 +412,7 @@ public static class ImGuiEx
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool InputText(string label, string input, Action<string> setter, uint maxLength)
+    public static bool InputText(string label, string input, Action<string> setter, int maxLength)
     {
         if (!ImGui.InputText(label, ref input, maxLength))
         {

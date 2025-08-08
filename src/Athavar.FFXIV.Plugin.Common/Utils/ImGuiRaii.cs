@@ -6,7 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Utils;
 
 using System.Numerics;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 public sealed class ImGuiRaii : IDisposable
 {
@@ -139,7 +139,7 @@ public sealed class ImGuiRaii : IDisposable
         }
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         this.Unindent(this.indentation);

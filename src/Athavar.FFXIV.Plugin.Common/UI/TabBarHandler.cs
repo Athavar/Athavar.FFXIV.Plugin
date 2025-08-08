@@ -8,7 +8,7 @@ namespace Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 /// <summary>
 ///     Handler for ImGui tabs.

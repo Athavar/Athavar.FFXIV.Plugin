@@ -158,10 +158,6 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     [PluginService]
     public IGameLifecycle GameLifecycle { get; init; } = null!;
 
-    /// <inheritdoc/>
-    [PluginService]
-    public IGameNetwork GameNetwork { get; init; } = null!;
-
     /*
     /// <inheritdoc/>
     [PluginService]
@@ -231,25 +227,54 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
         where TDelegate : Delegate
     {
         Hook<TDelegate>? hook = null;
-        Task.Run(
-            () =>
+        Task.Run(() =>
+        {
+            this.PluginLog.Verbose("Create Hook {0}", hookName);
+            hook = this.GameInteropProvider.HookFromAddress(procAddress, detour);
+            this.PluginLog.Verbose("Enable Hook {0}", hookName);
+            hook.Enable();
+            setHook(hook);
+            this.PluginLog.Verbose("Finish Enabling Hook {0}", hookName);
+        });
+        Task.Run(async () =>
+        {
+            await Task.Delay(7000);
+            if (hook is null)
             {
-                this.PluginLog.Verbose("Create Hook {0}", hookName);
-                hook = this.GameInteropProvider.HookFromAddress(procAddress, detour);
-                this.PluginLog.Verbose("Enable Hook {0}", hookName);
-                hook.Enable();
-                setHook(hook);
-                this.PluginLog.Verbose("Finish Enabling Hook {0}", hookName);
-            });
-        Task.Run(
-            async () =>
+                this.PluginLog.Warning("Hook {0} was not created in time", hookName);
+            }
+        });
+    }
+
+    /// <summary>
+    ///     Creates a hook from a signature into the Dalamud target module.
+    /// </summary>
+    /// <param name="hookName">Name of the hook. Used in Logging.</param>
+    /// <param name="signature">A signature for the hook.</param>
+    /// <param name="detour">Callback function. Delegate must have a same original function prototype.</param>
+    /// <param name="setHook">Callback function to give the hook back.</param>
+    /// <typeparam name="TDelegate">Delegate of detour.</typeparam>
+    public void SafeEnableHookFromSignature<TDelegate>(string hookName, string signature, TDelegate detour, Action<Hook<TDelegate>> setHook)
+        where TDelegate : Delegate
+    {
+        Hook<TDelegate>? hook = null;
+        Task.Run(() =>
+        {
+            this.PluginLog.Verbose("Create Hook {0}", hookName);
+            hook = this.GameInteropProvider.HookFromSignature(signature, detour);
+            this.PluginLog.Verbose("Enable Hook {0}", hookName);
+            hook.Enable();
+            setHook(hook);
+            this.PluginLog.Verbose("Finish Enabling Hook {0}", hookName);
+        });
+        Task.Run(async () =>
+        {
+            await Task.Delay(7000);
+            if (hook is null)
             {
-                await Task.Delay(7000);
-                if (hook is null)
-                {
-                    this.PluginLog.Warning("Hook {0} was not created in time", hookName);
-                }
-            });
+                this.PluginLog.Warning("Hook {0} was not created in time", hookName);
+            }
+        });
     }
 
     /// <inheritdoc/>

@@ -12,10 +12,10 @@ using Athavar.FFXIV.Plugin.CraftQueue.Interfaces;
 using Athavar.FFXIV.Plugin.CraftQueue.Job;
 using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using FFXIVClientStructs.FFXIV.Client.Game.WKS;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
@@ -158,6 +158,7 @@ internal sealed class CosmicTab : BaseQueueTab
 
     private CraftDataInfo? NextCraftData(ushort missionUnitRowId)
     {
+        var logger = this.CraftQueue.DalamudServices.PluginLogger;
         void Reset()
         {
             this.selectedRecipe = null;
@@ -166,28 +167,28 @@ internal sealed class CosmicTab : BaseQueueTab
 
         var dataManager = this.CraftQueue.DalamudServices.DataManager;
         var missionsUnit = this.missionUnitSheet.GetRow(missionUnitRowId);
-        foreach (var missionTodoRowId in missionsUnit.GetMissionTodoRowId())
+        foreach (var missionsTodo in missionsUnit.MissionToDo.Select(row => row.Value))
         {
-            var missionsTodo = dataManager.GetExcelSheet<WKSMissionToDo2>().GetRow(missionTodoRowId);
             var wksItemSheet = dataManager.GetExcelSheet<WKSItemInfo>();
 
-            var missionRecipeRowId = missionsUnit.Unknown12;
-            if (missionRecipeRowId == 0)
+            var missionRecipeRowId = missionsUnit.WKSMissionRecipe;
+            if (!missionRecipeRowId.IsValid)
             {
                 Reset();
                 return null;
             }
 
-            var recipes = dataManager.GetExcelSheet<WKSMissionRecipe2>()
-               .GetRow(missionRecipeRowId)
+            var recipes = missionRecipeRowId
+               .Value
                .Recipe
                .Where(r => r.IsValid)
                .Select(recipeRef => recipeRef.Value)
                .ToList();
 
-            CraftDataInfo? NextCraft(uint itemId, uint quantity)
+            CraftDataInfo? NextCraft(Item item, uint quantity, bool requireHq)
             {
-                var currentNq = this.CraftQueue.CommandInterface.CountItem(itemId);
+                var itemId = item.RowId;
+                var currentNq = requireHq is false ? this.CraftQueue.CommandInterface.CountItem(itemId) : 0;
                 var currentHq = this.CraftQueue.CommandInterface.CountItem(itemId, true);
                 var currentItems = currentNq + currentHq;
                 if (currentItems >= quantity)
@@ -203,22 +204,30 @@ internal sealed class CosmicTab : BaseQueueTab
                     return null;
                 }
 
+                logger.Information($"NextCraft -> {itemId}:{item.Name}, Need: {quantity}, Found: {currentItems}, Missing: {remainingQuantity}, HQ?:{requireHq}");
+
                 var ingredients = recipe.Ingredient.Zip(recipe.AmountIngredient).ToArray();
                 foreach (var (rowRef, amount) in ingredients)
                 {
-                    if (NextCraft(rowRef.RowId, remainingQuantity * amount) is { } dataInfo)
+                    if (amount <= 0)
+                    {
+                        continue;
+                    }
+
+                    if (NextCraft(this.itemsSheet.GetRow(rowRef.RowId), remainingQuantity * amount, recipe.Unknown1) is { } dataInfo)
                     {
                         return dataInfo;
                     }
                 }
 
-                return new CraftDataInfo(recipe, itemId, quantity, ingredients.Where(i => i.Second != 0).Select(i => (i.First.RowId, i.Second)).ToArray());
+                return new CraftDataInfo(recipe, itemId, quantity, ingredients.Where(i => i.Second != 0).Select(i => (i.First.RowId, i.Second)).ToArray(), requireHq);
             }
 
-            foreach (var (wksItemId, quantity) in missionsTodo.GetRequiredItem())
+            foreach (var (wksItemRef, quantity) in missionsTodo.RequiredItem.Zip(missionsTodo.RequiredItemQuantity))
             {
-                var itemId = wksItemSheet.GetRow(wksItemId).Unknown0;
-                if (NextCraft(itemId, quantity) is { } dataInfo)
+                var itemId = wksItemRef.Value.Item;
+                var nextItem = itemId.Value;
+                if (NextCraft(nextItem, quantity, false) is { } dataInfo)
                 {
                     return dataInfo;
                 }
@@ -263,7 +272,9 @@ internal sealed class CosmicTab : BaseQueueTab
             return;
         }
 
-        if (this.CraftQueue.CommandInterface.CountItem(nextCraftData.ItemId) >= nextCraftData.Required)
+        var currentNq = nextCraftData.RequireHq is false ? this.CraftQueue.CommandInterface.CountItem(nextCraftData.ItemId) : 0;
+        var currentHq = this.CraftQueue.CommandInterface.CountItem(nextCraftData.ItemId, true);
+        if (currentNq + currentHq >= nextCraftData.Required)
         {
             // finish crafting with this step.
             this.nextCraftDataInfo = null;
@@ -323,72 +334,12 @@ internal sealed class CosmicTab : BaseQueueTab
         if (this.lastMissionUnitRowId != missionsUnitRowId)
         {
             this.lastMissionUnitRowId = missionsUnitRowId;
-            this.currentMission = missionsUnitRowId > 0 ? this.missionUnitSheet.GetRow(this.lastMissionUnitRowId).Unknown0.ExtractText() : string.Empty;
+            this.currentMission = missionsUnitRowId > 0 ? this.missionUnitSheet.GetRow(this.lastMissionUnitRowId).Name.ExtractText() : string.Empty;
+            this.selectedRecipe = null;
+            this.selectedRotationResolver = null;
             this.nextCraftDataInfo = null;
         }
     }
 
-    [Sheet("WKSMissionRecipe", 1809901632)]
-    public readonly struct WKSMissionRecipe2(ExcelPage page, uint offset, uint row) :
-        IExcelRow<WKSMissionRecipe2>
-    {
-        public uint RowId => row;
-
-        public unsafe Collection<RowRef<Recipe>> Recipe => new(page, offset, offset, &RecipeCtor, 5);
-
-        private static RowRef<Recipe> RecipeCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page.Module, page.ReadUInt32(offset + (i * 4U)), page.Language);
-
-        static WKSMissionRecipe2 IExcelRow<WKSMissionRecipe2>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
-    }
-
-    [Sheet("WKSMissionToDo", 3908037790)]
-    public readonly struct WKSMissionToDo2(ExcelPage page, uint offset, uint row) :
-        IExcelRow<WKSMissionToDo2>
-    {
-        public uint RowId => row;
-
-        public uint Unknown0 => page.ReadUInt32(offset);
-
-        public uint Unknown1 => page.ReadUInt32(offset + 4U);
-
-        public ushort Unknown2 => page.ReadUInt16(offset + 8U);
-
-        public ushort Unknown3 => page.ReadUInt16(offset + 10U);
-
-        public ushort Unknown4 => page.ReadUInt16(offset + 12U);
-
-        public ushort Unknown5 => page.ReadUInt16(offset + 14U);
-
-        public ushort Unknown6 => page.ReadUInt16(offset + 16U);
-
-        public ushort Unknown7 => page.ReadUInt16(offset + 18U);
-
-        public ushort Unknown8 => page.ReadUInt16(offset + 20U);
-
-        public ushort Unknown9 => page.ReadUInt16(offset + 22U);
-
-        public ushort Unknown10 => page.ReadUInt16(offset + 24U);
-
-        public ushort Unknown11 => page.ReadUInt16(offset + 26U);
-
-        public ushort Unknown12 => page.ReadUInt16(offset + 28U);
-
-        public ushort Unknown13 => page.ReadUInt16(offset + 30U);
-
-        public byte Unknown14 => page.ReadUInt8(offset + 32U);
-
-        public byte Unknown15 => page.ReadUInt8(offset + 33U);
-
-        public byte Unknown16 => page.ReadUInt8(offset + 34U);
-
-        public byte Unknown17 => page.ReadUInt8(offset + 35U);
-
-        public byte Unknown18 => page.ReadUInt8(offset + 36U);
-
-        public byte Unknown19 => page.ReadUInt8(offset + 37U);
-
-        static WKSMissionToDo2 IExcelRow<WKSMissionToDo2>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
-    }
-
-    private sealed record CraftDataInfo(Recipe Recipe, uint ItemId, uint Required, (uint ItemId, byte Amount)[] Ingredient);
+    private sealed record CraftDataInfo(Recipe Recipe, uint ItemId, uint Required, (uint ItemId, byte Amount)[] Ingredient, bool RequireHq);
 }

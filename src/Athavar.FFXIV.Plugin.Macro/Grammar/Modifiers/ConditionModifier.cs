@@ -67,7 +67,7 @@ internal sealed class ConditionModifier : MacroModifier
             return true;
         }
 
-        var addonPtr = (AddonSynthesis*)addon;
+        var addonPtr = (AddonSynthesis*)addon.Address;
         var text = addonPtr->Condition->NodeText.ToString().ToLowerInvariant();
         return this.negated
             ? text != this.condition

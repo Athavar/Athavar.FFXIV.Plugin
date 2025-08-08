@@ -14,6 +14,7 @@ using Athavar.FFXIV.Plugin.Importer.Models.Glamourer;
 using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Interface;
@@ -21,7 +22,6 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using HtmlAgilityPack;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Item = Lumina.Excel.Sheets.Item;
@@ -184,7 +184,7 @@ internal sealed class EorzeaCollectionTab : Tab
     }
 
     /// <summary> Square stores its colors as BGR values so R and B need to be shuffled and Alpha set to max. </summary>
-    private static uint SeColorToRgba(uint color) => (color & 0xFF) << 16 | color >> 16 & 0xFF | color & 0xFF00 | 0xFF000000;
+    private static uint SeColorToRgba(uint color) => ((color & 0xFF) << 16) | ((color >> 16) & 0xFF) | (color & 0xFF00) | 0xFF000000;
 
     private void ApplyTo(IPlayerCharacter character)
     {

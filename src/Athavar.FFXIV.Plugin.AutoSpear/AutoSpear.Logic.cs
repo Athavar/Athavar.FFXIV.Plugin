@@ -83,7 +83,7 @@ internal sealed partial class AutoSpear
         if (posStart < center && center < posEnd)
         {
             // catch
-            if (this.dalamudServices.Condition[ConditionFlag.Gathering42])
+            if (this.dalamudServices.Condition[ConditionFlag.ExecutingGatheringAction])
             {
                 return;
             }

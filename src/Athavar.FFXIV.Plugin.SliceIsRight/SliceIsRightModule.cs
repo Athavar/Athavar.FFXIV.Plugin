@@ -9,10 +9,10 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(SliceIsRightConfiguration))]
 public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDisposable
@@ -117,7 +117,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
                 {
                     var objectId1 = this.dalamudServices.ClientState.LocalPlayer?.GameObjectId;
                     var objectId2 = gameObject.GameObjectId;
-                    var num = ((int)objectId1.GetValueOrDefault() == (int)objectId2) & objectId1.HasValue ? 1 : 0;
+                    var num = (int)objectId1.GetValueOrDefault() == (int)objectId2 & objectId1.HasValue ? 1 : 0;
                 }
             }
         }
@@ -227,7 +227,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
             {
                 Vector2 screenPos;
                 flag |= this.dalamudServices.GameGui.WorldToScreen(worldPos, out screenPos);
-                if ((screenPos.X > 0.0) & (screenPos.X < (double)displaySize.X) || (screenPos.Y > 0.0) & (screenPos.Y < (double)displaySize.Y))
+                if (screenPos.X > 0.0 & screenPos.X < (double)displaySize.X || screenPos.Y > 0.0 & screenPos.Y < (double)displaySize.Y)
                 {
                     windowDrawList.PathLineTo(screenPos);
                 }

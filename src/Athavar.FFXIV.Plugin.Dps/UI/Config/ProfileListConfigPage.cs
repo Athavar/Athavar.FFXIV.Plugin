@@ -10,9 +10,9 @@ using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.ImGuiNotification;
-using ImGuiNET;
 using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class ProfileListConfigPage : IConfigPage
@@ -103,7 +103,7 @@ internal sealed class ProfileListConfigPage : IConfigPage
             const int buttonSize = 30;
             var actionsWidth = (buttonSize * 3) + (padX * 2);
 
-            ImGui.TableSetupColumn("   #", ImGuiTableColumnFlags.WidthFixed, 18, 0);
+            ImGui.TableSetupColumn("   #", ImGuiTableColumnFlags.WidthFixed, 18);
             ImGui.TableSetupColumn("Profile Name", ImGuiTableColumnFlags.WidthStretch, 0, 1);
             ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, actionsWidth, 2);
 

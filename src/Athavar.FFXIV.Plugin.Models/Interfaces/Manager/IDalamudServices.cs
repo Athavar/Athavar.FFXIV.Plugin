@@ -39,8 +39,6 @@ public interface IDalamudServices
 
     IGameLifecycle GameLifecycle { get; }
 
-    IGameNetwork GameNetwork { get; }
-
     IKeyState KeyState { get; }
 
     INotificationManager NotificationManager { get; }
@@ -74,5 +72,16 @@ public interface IDalamudServices
     /// <param name="setHook">Callback function to give the hook back.</param>
     /// <typeparam name="TDelegate">Delegate of detour.</typeparam>
     void SafeEnableHookFromAddress<TDelegate>(string hookName, nint procAddress, TDelegate detour, Action<Hook<TDelegate>> setHook)
+        where TDelegate : Delegate;
+
+    /// <summary>
+    ///     Creates a hook from a signature into the Dalamud target module.
+    /// </summary>
+    /// <param name="hookName">Name of the hook. Used in Logging.</param>
+    /// <param name="signature">A signature for the hook.</param>
+    /// <param name="detour">Callback function. Delegate must have a same original function prototype.</param>
+    /// <param name="setHook">Callback function to give the hook back.</param>
+    /// <typeparam name="TDelegate">Delegate of detour.</typeparam>
+    void SafeEnableHookFromSignature<TDelegate>(string hookName, string signature, TDelegate detour, Action<Hook<TDelegate>> setHook)
         where TDelegate : Delegate;
 }

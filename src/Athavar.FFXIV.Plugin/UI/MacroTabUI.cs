@@ -9,8 +9,8 @@ using System.Reflection;
 using Athavar.FFXIV.Plugin.Common.Exceptions;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
-using ImGuiNET;
 
 internal class MacroTabUi
 {
@@ -22,7 +22,7 @@ internal class MacroTabUi
     private string? error;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="MacroTabUi" /> class.
+    ///     Initializes a new instance of the <see cref="MacroTabUi"/> class.
     /// </summary>
     public MacroTabUi(IDalamudServices dalamudServices)
     {

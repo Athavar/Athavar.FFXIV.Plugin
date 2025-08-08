@@ -11,8 +11,8 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.OpcodeWizard.Models;
 using Athavar.FFXIV.Plugin.OpcodeWizard.PacketDetection;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
-using ImGuiNET;
 using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefinitionManager;
 
 internal sealed class OpcodeWizardTab : Tab
@@ -62,7 +62,7 @@ internal sealed class OpcodeWizardTab : Tab
 
         ImGui.Columns(3);
 
-        if (ImGui.BeginChild("##scanner", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##scanner", ImGui.GetContentRegionAvail()))
         {
             this.DrawScannerList();
             ImGui.EndChild();
@@ -73,7 +73,7 @@ internal sealed class OpcodeWizardTab : Tab
         ImGui.NextColumn();
         this.DrawResults();
 
-        ImGui.Columns(1);
+        ImGui.Columns();
     }
 
     private async Task<(string Parameter, bool SkipRequested)> RequestParameter(Scanner scanner, int index)

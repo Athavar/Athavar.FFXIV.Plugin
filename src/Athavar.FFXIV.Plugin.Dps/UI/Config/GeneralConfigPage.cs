@@ -9,8 +9,8 @@ using System.Numerics;
 using System.Text.Json.Serialization;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
-using ImGuiNET;
 
 internal sealed class GeneralConfigPage(MeterWindow window) : IConfigPage
 {

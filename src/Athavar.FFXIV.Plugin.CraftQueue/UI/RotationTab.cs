@@ -13,11 +13,11 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 
 internal sealed class RotationTab : Tab
 {
@@ -64,7 +64,7 @@ internal sealed class RotationTab : Tab
     {
         ImGui.Columns(2);
 
-        if (ImGui.BeginChild("##craftQueue-rotation-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##craftQueue-rotation-tree", ImGui.GetContentRegionAvail()))
         {
             this.DisplayRotationTree();
             ImGui.EndChild();
@@ -75,7 +75,7 @@ internal sealed class RotationTab : Tab
         this.DisplayRotationInfo();
         this.DisplayRotationEdit();
 
-        ImGui.Columns(1);
+        ImGui.Columns();
     }
 
     public void CalculateRotationErrorState()
@@ -398,7 +398,7 @@ internal sealed class RotationTab : Tab
             {
                 this.draggedNode = node;
                 ImGui.Text(node.Name);
-                ImGui.SetDragDropPayload("NodePayload", nint.Zero, 0);
+                ImGui.SetDragDropPayload("NodePayload", null, 0);
                 ImGui.EndDragDropSource();
             }
         }
@@ -407,11 +407,7 @@ internal sealed class RotationTab : Tab
         {
             var payload = ImGui.AcceptDragDropPayload("NodePayload");
 
-            bool nullPtr;
-            unsafe
-            {
-                nullPtr = payload.NativePtr == null;
-            }
+            var nullPtr = payload.IsNull;
 
             var targetNode = node;
             if (!nullPtr && payload.IsDelivery() && this.draggedNode != null)

@@ -13,10 +13,10 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Macro.Exceptions;
 using Athavar.FFXIV.Plugin.Macro.Managers;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 
 /// <summary>
 ///     UI Tab for macro execution.
@@ -64,7 +64,7 @@ internal sealed class MacroConfigTab : Tab
     {
         ImGui.Columns(2);
 
-        if (ImGui.BeginChild("##macro-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##macro-tree", ImGui.GetContentRegionAvail()))
         {
             this.DisplayNodeTree();
             ImGui.EndChild();
@@ -77,7 +77,7 @@ internal sealed class MacroConfigTab : Tab
 
         this.DisplayMacroEdit();
 
-        ImGui.Columns(1);
+        ImGui.Columns();
     }
 
     private void DisplayNodeTree() => this.DisplayNode(this.RootFolder);
@@ -448,7 +448,7 @@ internal sealed class MacroConfigTab : Tab
                 var v_min = -1;
                 var v_max = 999;
                 var loops = node.CraftLoopCount;
-                if (ImGui.InputInt("##CraftLoopCount", ref loops, 0) || this.MouseWheelInput(ref loops))
+                if (ImGui.InputInt("##CraftLoopCount", ref loops) || this.MouseWheelInput(ref loops))
                 {
                     if (loops < v_min)
                     {
@@ -523,7 +523,7 @@ internal sealed class MacroConfigTab : Tab
             {
                 this.draggedNode = node;
                 ImGui.Text(node.Name);
-                ImGui.SetDragDropPayload("NodePayload", nint.Zero, 0);
+                ImGui.SetDragDropPayload("NodePayload", null, 0);
                 ImGui.EndDragDropSource();
             }
         }
@@ -532,11 +532,7 @@ internal sealed class MacroConfigTab : Tab
         {
             var payload = ImGui.AcceptDragDropPayload("NodePayload");
 
-            bool nullPtr;
-            unsafe
-            {
-                nullPtr = payload.NativePtr == null;
-            }
+            var nullPtr = payload.IsNull;
 
             var targetNode = node;
             if (!nullPtr && payload.IsDelivery() && this.draggedNode != null)

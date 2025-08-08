@@ -10,10 +10,10 @@ using Athavar.FFXIV.Plugin.Click;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Macro.Grammar;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 
 /// <summary>
 ///     Help window for macro creation.
@@ -121,7 +121,7 @@ internal sealed class MacroHelpWindow : Window
             {
                 if (ImGui.BeginTabItem(title))
                 {
-                    ImGui.BeginChild("scrolling", new Vector2(0, -1), false);
+                    ImGui.BeginChild("scrolling", new Vector2(0, -1));
                     dele();
                     ImGui.EndChild();
                     ImGui.EndTabItem();
@@ -271,7 +271,7 @@ internal sealed class MacroHelpWindow : Window
 
                 ImGui.SetNextItemWidth(50);
                 var craftLoopMaxWait = this.Configuration.CraftLoopMaxWait;
-                if (ImGui.InputInt("CraftLoop maxwait", ref craftLoopMaxWait, 0))
+                if (ImGui.InputInt("CraftLoop maxwait", ref craftLoopMaxWait))
                 {
                     if (craftLoopMaxWait < 0)
                     {
@@ -302,7 +302,7 @@ internal sealed class MacroHelpWindow : Window
 
             ImGui.SetNextItemWidth(50f);
             var beepFrequency = this.Configuration.BeepFrequency;
-            if (ImGui.InputInt("Beep frequency", ref beepFrequency, 0))
+            if (ImGui.InputInt("Beep frequency", ref beepFrequency))
             {
                 this.Configuration.BeepFrequency = beepFrequency;
                 this.Configuration.Save();
@@ -310,7 +310,7 @@ internal sealed class MacroHelpWindow : Window
 
             ImGui.SetNextItemWidth(50f);
             var beepDuration = this.Configuration.BeepDuration;
-            if (ImGui.InputInt("Beep duration", ref beepDuration, 0))
+            if (ImGui.InputInt("Beep duration", ref beepDuration))
             {
                 this.Configuration.BeepDuration = beepDuration;
                 this.Configuration.Save();
@@ -318,7 +318,7 @@ internal sealed class MacroHelpWindow : Window
 
             ImGui.SetNextItemWidth(50f);
             var beepCount = this.Configuration.BeepCount;
-            if (ImGui.InputInt("Beep count", ref beepCount, 0))
+            if (ImGui.InputInt("Beep count", ref beepCount))
             {
                 this.Configuration.BeepCount = beepCount;
                 this.Configuration.Save();
@@ -326,14 +326,13 @@ internal sealed class MacroHelpWindow : Window
 
             if (ImGui.Button("Beep test"))
             {
-                Task.Run(
-                    () =>
+                Task.Run(() =>
+                {
+                    for (var i = 0; i < beepCount; i++)
                     {
-                        for (var i = 0; i < beepCount; i++)
-                        {
-                            Console.Beep(beepFrequency, beepDuration);
-                        }
-                    });
+                        Console.Beep(beepFrequency, beepDuration);
+                    }
+                });
             }
         }
 

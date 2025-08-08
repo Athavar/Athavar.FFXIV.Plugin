@@ -12,11 +12,11 @@ using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Data;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Athavar.FFXIV.Plugin.Models.Types;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Table;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 using Lumina.Excel.Sheets;
 
 public sealed class DutyHistoryTable : Table<ContentEncounter>, IDisposable

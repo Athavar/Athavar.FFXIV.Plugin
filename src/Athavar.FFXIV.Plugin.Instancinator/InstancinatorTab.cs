@@ -5,7 +5,7 @@
 namespace Athavar.FFXIV.Plugin.Instancinator;
 
 using Athavar.FFXIV.Plugin.Common.UI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class InstancinatorTab : Tab
 {
@@ -20,7 +20,7 @@ internal sealed class InstancinatorTab : Tab
     /// </summary>
     private InstancinatorConfiguration Configuration { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         ImGui.TextUnformatted("Require's the Yes Module enabled");

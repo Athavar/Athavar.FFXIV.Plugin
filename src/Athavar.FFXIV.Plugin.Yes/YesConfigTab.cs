@@ -12,10 +12,10 @@ using Athavar.FFXIV.Plugin.Click.Exceptions;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 
 /// <summary>
 ///     Yes Module configuration Tab.
@@ -134,7 +134,7 @@ internal sealed class YesConfigTab : Tab
 
         this.DisplayTextButtons();
 
-        if (ImGui.BeginChild("##yes-yesNo-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##yes-yesNo-tree", ImGui.GetContentRegionAvail()))
         {
             this.DisplayTextNodes();
             ImGui.EndChild();
@@ -155,7 +155,7 @@ internal sealed class YesConfigTab : Tab
         ImGui.PushID("ListOptions");
 
         this.DisplayListButtons();
-        if (ImGui.BeginChild("##yes-lists-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##yes-lists-tree", ImGui.GetContentRegionAvail()))
         {
             this.DisplayListNodes();
             ImGui.EndChild();
@@ -176,7 +176,7 @@ internal sealed class YesConfigTab : Tab
         ImGui.PushID("TalkOptions");
 
         this.DisplayTalkButtons();
-        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail()))
         {
             this.DisplayTalkNodes();
             ImGui.EndChild();
@@ -207,7 +207,7 @@ internal sealed class YesConfigTab : Tab
         ImGui.PushID("BotherOptions");
         var change = false;
 
-        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail(), false))
+        if (ImGui.BeginChild("##yes-talk-tree", ImGui.GetContentRegionAvail()))
         {
             // Disable hotkey
             if (!this.hotkeyValues.Contains(this.Configuration.DisableKey))
@@ -745,7 +745,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayTextEntryNode(TextEntryNode node)
     {
-        var validRegex = node is { IsTextRegex: true, TextRegex: not null } || !node.IsTextRegex;
+        var validRegex = node is { IsTextRegex : true, TextRegex: not null } || !node.IsTextRegex;
         var validZone = !node.ZoneRestricted || node is { ZoneIsRegex: true, ZoneRegex: not null } || !node.ZoneIsRegex;
 
         if (!node.Enabled && (!validRegex || !validZone))
@@ -815,7 +815,7 @@ internal sealed class YesConfigTab : Tab
 
     private void DisplayListEntryNode(ListEntryNode node)
     {
-        var validRegex = node is { IsTextRegex: true, TextRegex: not null } || !node.IsTextRegex;
+        var validRegex = node is { IsTextRegex : true, TextRegex : not null } || !node.IsTextRegex;
         var validTarget = !node.TargetRestricted || node is { TargetIsRegex: true, TargetRegex: not null } || !node.TargetIsRegex;
 
         if (!node.Enabled && (!validRegex || !validTarget))
@@ -1277,7 +1277,7 @@ internal sealed class YesConfigTab : Tab
             this.draggedNode = node;
 
             ImGui.Text(node.Name);
-            ImGui.SetDragDropPayload("TextNodePayload", nint.Zero, 0);
+            ImGui.SetDragDropPayload("TextNodePayload", null, 0);
             ImGui.EndDragDropSource();
         }
 
@@ -1285,11 +1285,7 @@ internal sealed class YesConfigTab : Tab
         {
             var payload = ImGui.AcceptDragDropPayload("TextNodePayload");
 
-            bool nullPtr;
-            unsafe
-            {
-                nullPtr = payload.NativePtr == null;
-            }
+            var nullPtr = payload.IsNull;
 
             var targetNode = node;
             if (!nullPtr && payload.IsDelivery() && this.draggedNode != null)

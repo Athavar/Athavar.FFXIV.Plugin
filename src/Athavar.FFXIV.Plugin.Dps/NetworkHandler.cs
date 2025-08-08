@@ -16,6 +16,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Machina.FFXIV.Headers;
 using Server_EffectResult = Athavar.FFXIV.Plugin.Dps.Data.Protocol.Server_EffectResult;
 
@@ -42,11 +43,11 @@ internal sealed partial class NetworkHandler : IDisposable
         this.eventCaptureManager = eventCaptureManager;
 
         eventCaptureManager.ActorControlEvent += this.EventCaptureManager;
-        dalamudServices.SafeEnableHookFromAddress<ProcessPacketActionEffectDelegate>("NetworkHandler:actionEffectHook", addressResolver.ActionEffectHandler, this.HandleActionEffect, h => this.actionEffectHook = h);
+        dalamudServices.SafeEnableHookFromSignature<ProcessPacketActionEffectDelegate>("NetworkHandler:actionEffectHook", ActionEffectHandler.Addresses.Receive.String, this.HandleActionEffect, h => this.actionEffectHook = h);
         dalamudServices.SafeEnableHookFromAddress<ProcessPacketEffectResultDelegate>("NetworkHandler:effectResultHook", addressResolver.EffectResultHandler, this.HandleEffectResultDetour, h => this.effectResultHook = h);
     }
 
-    private unsafe delegate void ProcessPacketActionEffectDelegate(uint sourceId, IntPtr sourceCharacter, IntPtr pos, ActionEffectHeader* effectHeader, ActionEffect* effectArray, ulong* effectTrail);
+    private unsafe delegate void ProcessPacketActionEffectDelegate(uint sourceId, Character* sourceCharacter, IntPtr pos, ActionEffectHeader* effectHeader, ActionEffect* effectArray, ulong* effectTrail);
 
     private unsafe delegate void ProcessPacketEffectResultDelegate(uint actor, Server_EffectResult* actionIntegrityData, bool isReplay);
 
@@ -63,7 +64,7 @@ internal sealed partial class NetworkHandler : IDisposable
         this.eventCaptureManager.ActorControlEvent -= this.EventCaptureManager;
     }
 
-    private unsafe void HandleActionEffect(uint sourceId, IntPtr sourceCharacter, IntPtr pos, ActionEffectHeader* header, ActionEffect* effects, ulong* targetIds)
+    private unsafe void HandleActionEffect(uint sourceId, Character* sourceCharacter, IntPtr pos, ActionEffectHeader* header, ActionEffect* effects, ulong* targetIds)
     {
         this.actionEffectHook!.OriginalDisposeSafe(sourceId, sourceCharacter, pos, header, effects, targetIds);
         var maxTargets = header->EffectCount;

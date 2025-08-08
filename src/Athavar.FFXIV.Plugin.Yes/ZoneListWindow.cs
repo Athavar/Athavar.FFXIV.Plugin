@@ -7,8 +7,8 @@ namespace Athavar.FFXIV.Plugin.Yes;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 
 /// <summary>
 ///     Zone list window.
@@ -21,10 +21,10 @@ internal sealed class ZoneListWindow : Window, IDisposable
     private bool sortZoneByName;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="ZoneListWindow" /> class.
+    ///     Initializes a new instance of the <see cref="ZoneListWindow"/> class.
     /// </summary>
-    /// <param name="dalamudServices"><see cref="IDalamudServices" /> added by DI.</param>
-    /// <param name="windowSystem"><see cref="WindowSystem" /> added by DI.</param>
+    /// <param name="dalamudServices"><see cref="IDalamudServices"/> added by DI.</param>
+    /// <param name="windowSystem"><see cref="WindowSystem"/> added by DI.</param>
     public ZoneListWindow(YesModule module, IDalamudServices dalamudServices, WindowSystem windowSystem)
         : base("Zone List")
     {
@@ -38,13 +38,13 @@ internal sealed class ZoneListWindow : Window, IDisposable
         this.windowSystem.AddWindow(this);
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void PreDraw() => ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void PostDraw() => ImGui.PopStyleColor();
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         ImGui.Text($"Current ID: {this.dalamudServices.ClientState.TerritoryType}");
@@ -82,10 +82,10 @@ internal sealed class ZoneListWindow : Window, IDisposable
             ImGui.NextColumn();
         }
 
-        ImGui.Columns(1);
+        ImGui.Columns();
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public void Dispose()
     {
         if (this.windowSystem.Windows.Contains(this))

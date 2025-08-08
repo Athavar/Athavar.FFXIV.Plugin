@@ -17,11 +17,11 @@ using Athavar.FFXIV.Plugin.CraftQueue.Resolver;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility;
 using Dalamud.Utility;
-using ImGuiNET;
 using Action = Action;
 using Recipe = Lumina.Excel.Sheets.Recipe;
 
@@ -116,7 +116,7 @@ internal sealed class QueueTab : BaseQueueTab
 
         this.DisplayQueueAndHistory();
 
-        ImGui.Columns(1);
+        ImGui.Columns();
     }
 
     private void PopulateData()
@@ -167,7 +167,7 @@ internal sealed class QueueTab : BaseQueueTab
         if (ImGui.BeginCombo("##recipe-list", this.recipeIdx > -1 ? this.craftQueueData.Recipes[this.recipeIdx].Recipe.ItemResult.ValueNullable?.Name.ToDalamudString().TextValue ?? "???" : "Select a recipe", ImGuiComboFlags.HeightLargest))
         {
             ImGui.SetNextItemWidth(-1f);
-            if (ImGui.InputTextWithHint("##recipe-search", "Search...", ref this.recipeSearch, 512U, ImGuiInputTextFlags.AutoSelectAll))
+            if (ImGui.InputTextWithHint("##recipe-search", "Search...", ref this.recipeSearch, 512, ImGuiInputTextFlags.AutoSelectAll))
             {
                 this.recipeSearch = this.recipeSearch.Trim();
                 this.FilterRecipes(this.recipeSearch);
@@ -357,7 +357,7 @@ internal sealed class QueueTab : BaseQueueTab
                     ImGui.TableNextRow();
                     if (ImGui.TableSetColumnIndex(0) && this.IconManager.TryGetIcon(ingredient.Icon, out var texture) && texture.TryGetWrap(out var textureWarp, out _))
                     {
-                        ImGuiEx.ScaledImageY(textureWarp.ImGuiHandle, textureWarp.Width, textureWarp.Height, ImGui.GetTextLineHeight());
+                        ImGuiEx.ScaledImageY(textureWarp.Handle, textureWarp.Width, textureWarp.Height, ImGui.GetTextLineHeight());
                         ImGuiEx.TextTooltip(this.itemsSheet.GetRowOrDefault(ingredient.ItemId)?.Name.ToDalamudString().TextValue ?? string.Empty);
                     }
 

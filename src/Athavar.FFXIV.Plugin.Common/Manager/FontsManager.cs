@@ -9,10 +9,10 @@ using System.Reflection;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Utility;
-using ImGuiNET;
 
 public class FontsManager : IDisposable, IFontsManager
 {
@@ -103,10 +103,9 @@ public class FontsManager : IDisposable, IFontsManager
         }
 
         return fonts
-           .Select(
-                f => f
-                   .Replace(path, string.Empty)
-                   .Replace(".ttf", string.Empty, StringComparison.OrdinalIgnoreCase))
+           .Select(f => f
+               .Replace(path, string.Empty)
+               .Replace(".ttf", string.Empty, StringComparison.OrdinalIgnoreCase))
            .ToArray();
     }
 
@@ -229,15 +228,13 @@ public class FontsManager : IDisposable, IFontsManager
 
             try
             {
-                var imFont = this.uiBuilder.FontAtlas.NewDelegateFontHandle(
-                    e => e.OnPreBuild(
-                        tk => tk.AddFontFromFile(
-                            fontPath,
-                            new SafeFontConfig
-                            {
-                                SizePx = font.Size,
-                                GlyphRanges = this.GetCharacterRanges(font, io),
-                            })));
+                var imFont = this.uiBuilder.FontAtlas.NewDelegateFontHandle(e => e.OnPreBuild(tk => tk.AddFontFromFile(
+                    fontPath,
+                    new SafeFontConfig
+                    {
+                        SizePx = font.Size,
+                        GlyphRanges = this.GetCharacterRanges(font, io),
+                    })));
 
                 this.imGuiFonts.Add(GetFontKey(font), imFont);
             }
@@ -260,7 +257,7 @@ public class FontsManager : IDisposable, IFontsManager
             return null;
         }
 
-        var builder = new ImFontGlyphRangesBuilderPtr(ImGuiNative.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder());
+        var builder = new ImFontGlyphRangesBuilderPtr(ImGuiNative.ImFontGlyphRangesBuilder());
 
         if (font.Chinese)
         {

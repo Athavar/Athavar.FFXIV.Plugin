@@ -8,8 +8,8 @@ using System.Globalization;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
-using ImGuiNET;
 
 internal sealed class HistoryPage : IConfigPage
 {

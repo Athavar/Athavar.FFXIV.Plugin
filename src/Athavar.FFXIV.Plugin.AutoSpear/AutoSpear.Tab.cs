@@ -4,7 +4,7 @@
 // </copyright>
 namespace Athavar.FFXIV.Plugin.AutoSpear;
 
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed partial class AutoSpear
 {

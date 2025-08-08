@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Dps.UI.Config;
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class SettingsConfigPage : IConfigPage
 {

@@ -6,11 +6,11 @@
 namespace Athavar.FFXIV.Plugin.Models.Types;
 
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Utility.Table;
-using ImGuiNET;
 
 public class ColumnBool<TItem> : Column<TItem>
 {

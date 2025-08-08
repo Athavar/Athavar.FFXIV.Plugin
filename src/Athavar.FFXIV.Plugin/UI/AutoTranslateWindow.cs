@@ -8,11 +8,11 @@ namespace Athavar.FFXIV.Plugin.UI;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
@@ -75,7 +75,7 @@ internal sealed class AutoTranslateWindow : Window
                 ImGuiListClipperPtr clipper;
                 unsafe
                 {
-                    clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper_ImGuiListClipper());
+                    clipper = new ImGuiListClipperPtr(ImGuiNative.ImGuiListClipper());
                 }
 
                 clipper.Begin(this.translations.Length, ImGui.CalcTextSize("Test").Y + ImGui.GetStyle().ItemSpacing.Y);

@@ -107,5 +107,5 @@ internal sealed class IpcManager : IIpcManager, IDisposable
         this.dalamudServices.PluginInterface.ActivePluginsChanged += this.OnActivePluginsChanged;
     }
 
-    private void OnActivePluginsChanged(PluginListInvalidationKind kind, bool affectedthisplugin) => this.UpdateActivePluginState();
+    private void OnActivePluginsChanged(IActivePluginsChangedEventArgs args) => this.UpdateActivePluginState();
 }

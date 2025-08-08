@@ -15,25 +15,24 @@ internal sealed partial class CommandInterface
     public unsafe bool IsAddonVisible(string addonName)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             return false;
         }
 
-        var addon = (AtkUnitBase*)ptr;
-        return addon->IsVisible;
+        return ptr.IsVisible;
     }
 
     /// <inheritdoc/>
     public unsafe bool IsAddonReady(string addonName)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             return false;
         }
 
-        var addon = (AtkUnitBase*)ptr;
+        var addon = (AtkUnitBase*)ptr.Address;
         return addon->UldManager.LoadedState == AtkLoadState.Loaded;
     }
 
@@ -46,7 +45,7 @@ internal sealed partial class CommandInterface
             return;
         }
 
-        var addon = (AtkUnitBase*)ptr;
+        var addon = (AtkUnitBase*)ptr.Address;
         if (addon->IsVisible)
         {
             addon->Close(true);
@@ -62,12 +61,12 @@ internal sealed partial class CommandInterface
         }
 
         var ptr = this.dalamudServices.GameGui.GetAddonByName(addonName);
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             throw new AthavarPluginException($"Could not find {addonName} addon");
         }
 
-        var addon = (AtkUnitBase*)ptr;
+        var addon = (AtkUnitBase*)ptr.Address;
         var uld = addon->UldManager;
 
         AtkResNode* node = null;
@@ -114,12 +113,12 @@ internal sealed partial class CommandInterface
     public unsafe string GetSelectStringText(int index)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString");
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             throw new AthavarPluginException("Could not find SelectString addon");
         }
 
-        var addon = (AddonSelectString*)ptr;
+        var addon = (AddonSelectString*)ptr.Address;
         var popup = &addon->PopupMenu.PopupMenu;
 
         var count = popup->EntryCount;
@@ -136,12 +135,12 @@ internal sealed partial class CommandInterface
     public unsafe int GetSelectStringEntryCount()
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectString");
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             throw new AthavarPluginException("Could not find SelectString addon");
         }
 
-        var addon = (AddonSelectString*)ptr;
+        var addon = (AddonSelectString*)ptr.Address;
         var popup = &addon->PopupMenu.PopupMenu;
 
         return popup->EntryCount;
@@ -151,12 +150,12 @@ internal sealed partial class CommandInterface
     public unsafe string GetSelectIconStringText(int index)
     {
         var ptr = this.dalamudServices.GameGui.GetAddonByName("SelectIconString");
-        if (ptr == nint.Zero)
+        if (ptr.IsNull)
         {
             throw new AthavarPluginException("Could not find SelectIconString addon");
         }
 
-        var addon = (AddonSelectIconString*)ptr;
+        var addon = (AddonSelectIconString*)ptr.Address;
         var popup = &addon->PopupMenu.PopupMenu;
 
         var count = popup->EntryCount;

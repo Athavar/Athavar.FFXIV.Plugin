@@ -11,7 +11,7 @@ using Athavar.FFXIV.Plugin.Common.Utils;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class VisibilityConfigPage : IConfigPage
 {

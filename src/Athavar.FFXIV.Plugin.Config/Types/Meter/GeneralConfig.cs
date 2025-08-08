@@ -7,7 +7,7 @@ namespace Athavar.FFXIV.Plugin.Config;
 
 using System.Numerics;
 using System.Text.Json.Serialization;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 public sealed class GeneralConfig : BaseConfig
 {

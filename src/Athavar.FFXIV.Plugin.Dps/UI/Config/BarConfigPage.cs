@@ -15,8 +15,8 @@ using Athavar.FFXIV.Plugin.Dps.Data.Encounter;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
-using ImGuiNET;
 
 internal sealed class BarConfigPage : IConfigPage
 {
@@ -453,7 +453,7 @@ internal sealed class BarConfigPage : IConfigPage
             return;
         }
 
-        drawList.AddImage(textureWrap.ImGuiHandle, position, position + size, Vector2.Zero, Vector2.One);
+        drawList.AddImage(textureWrap.Handle, position, position + size, Vector2.Zero, Vector2.One);
     }
 
     private sealed class Cache

@@ -11,8 +11,8 @@ using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
-using ImGuiNET;
 
 /// <summary>
 ///     The main <see cref="Window"/> of the plugin.

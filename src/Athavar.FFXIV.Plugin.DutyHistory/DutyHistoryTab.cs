@@ -6,8 +6,8 @@
 namespace Athavar.FFXIV.Plugin.DutyHistory;
 
 using Athavar.FFXIV.Plugin.Common.UI;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 
 public sealed class DutyHistoryTab : Tab
 {

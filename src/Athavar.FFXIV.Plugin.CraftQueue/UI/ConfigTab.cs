@@ -6,7 +6,7 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 
 using System.Numerics;
 using Athavar.FFXIV.Plugin.Common.UI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 internal sealed class ConfigTab : Tab
 {
@@ -14,15 +14,15 @@ internal sealed class ConfigTab : Tab
 
     public ConfigTab(CraftQueueConfiguration configuration) => this.Configuration = configuration;
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Name => "Config";
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override string Identifier => "config";
 
     private CraftQueueConfiguration Configuration { get; }
 
-    /// <inheritdoc />
+    /// <inheritdoc/>
     public override void Draw()
     {
         void DisplayOption(params string[] lines)

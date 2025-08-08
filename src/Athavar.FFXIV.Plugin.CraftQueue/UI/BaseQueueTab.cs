@@ -18,12 +18,12 @@ using Athavar.FFXIV.Plugin.CraftSimulator;
 using Athavar.FFXIV.Plugin.CraftSimulator.Models;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.ImGuiNotification;
 using Dalamud.Interface.Textures;
 using Dalamud.Interface.Utility;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
@@ -239,7 +239,7 @@ internal abstract class BaseQueueTab : Tab
 
                 var cursorBeforeImage = ImGui.GetCursorPos();
                 var iconSize = new Vector2(size, size);
-                ImGui.Image(texWarp.ImGuiHandle, iconSize);
+                ImGui.Image(texWarp.Handle, iconSize);
                 if (ImGui.IsItemHovered())
                 {
                     ImGui.BeginTooltip();
@@ -254,7 +254,7 @@ internal abstract class BaseQueueTab : Tab
                     {
                         ImGui.SameLine();
                         ImGui.SetCursorPos(cursorBeforeImage);
-                        ImGui.Image(texWarp.ImGuiHandle, iconSize);
+                        ImGui.Image(texWarp.Handle, iconSize);
                     }
                 }
 
@@ -502,9 +502,6 @@ internal abstract class BaseQueueTab : Tab
 #pragma warning disable SA1401
     protected readonly CraftQueue CraftQueue;
     protected readonly IIconManager IconManager;
-    private readonly ICraftDataManager craftDataManager;
-    private readonly IClientState clientState;
-    private readonly IGearsetManager gearsetManager;
 
     protected readonly ExcelSheet<ClassJob> classJobsSheet;
     protected readonly ExcelSheet<BaseParam> baseParamsSheet;
@@ -535,5 +532,9 @@ internal abstract class BaseQueueTab : Tab
     protected bool selectionChanged;
 
     protected ImGuiStylePtr style;
+
+    private readonly ICraftDataManager craftDataManager;
+    private readonly IClientState clientState;
+    private readonly IGearsetManager gearsetManager;
 #pragma warning restore SA1401
 }

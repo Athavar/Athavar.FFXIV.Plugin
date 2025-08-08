@@ -8,8 +8,8 @@ namespace Athavar.FFXIV.Plugin.CraftQueue.UI;
 using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Common.UI;
 using Athavar.FFXIV.Plugin.Common.Utils;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Plugin.Services;
-using ImGuiNET;
 using Lumina.Excel.Sheets;
 
 internal sealed class StatsTab : Tab
