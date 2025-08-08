@@ -171,7 +171,7 @@
           "targetindex": 0
         },
         {
-          "potency": 260
+          "potency": 293
         }
       ]
     },
@@ -183,7 +183,7 @@
           "targetindex": 0
         },
         {
-          "potency": 260
+          "potency": 293
         }
       ]
     },
@@ -203,7 +203,7 @@
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 338
         }
       ]
     },
@@ -239,7 +239,7 @@
           "targetindex": 0
         },
         {
-          "potency": 340
+          "potency": 383
         }
       ]
     },
@@ -247,11 +247,11 @@
       "908d": "vice of thorns",
       "damage": [
         {
-          "potency": 800,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 320
+          "potency": 405
         }
       ]
     },
@@ -263,7 +263,7 @@
           "targetindex": 0
         },
         {
-          "potency": 240
+          "potency": 270
         }
       ]
     },
@@ -271,11 +271,11 @@
       "908f": "prefulgence",
       "damage": [
         {
-          "potency": 1000,
+          "potency": 1200,
           "targetindex": 0
         },
         {
-          "potency": 400
+          "potency": 540
         }
       ]
     },
@@ -283,7 +283,7 @@
       "1D67": "enchanted riposte",
       "damage": [
         {
-          "potency": 300
+          "potency": 340
         }
       ]
     },
@@ -291,8 +291,8 @@
       "1D68": "enchanted zwerchhau",
       "damage": [
         {
-          "potency": 170,
-          "combo": 360
+          "potency": 190,
+          "combo": 380
         }
       ]
     },
@@ -300,8 +300,8 @@
       "1D69": "enchanted redoublement",
       "damage": [
         {
-          "potency": 170,
-          "combo": 540
+          "potency": 190,
+          "combo": 560
         }
       ]
     },

@@ -1,4 +1,4 @@
-{
+﻿{
   "142": {
     "E": "the Dragon\u0027s Neck",
     "G": "Das Drachenhals-Kolosseum",
@@ -103,7 +103,7 @@
   },
   "170": {
     "E": "Cutter\u0027s Cry",
-    "G": "Sägerschrei",
+    "G": "S\u00E4gerschrei",
     "F": "le Gouffre hurlant",
     "J": "\u6D41\u7802\u8FF7\u5BAE \u30AB\u30C3\u30BF\u30FC\u30BA\u30AF\u30E9\u30A4"
   },
@@ -145,7 +145,7 @@
   },
   "191": {
     "E": "Pulling Poison Posies",
-    "G": "Unkraut jäten",
+    "G": "Unkraut j\u00E4ten",
     "F": "Op\u00E9ration fleurs du mal",
     "J": "\u6709\u6BD2\u5996\u82B1\u3092\u99C6\u9664\u305B\u3088\uFF01"
   },
@@ -205,7 +205,7 @@
   },
   "214": {
     "E": "Basic Training: Enemy Parties",
-    "G": "Einer für alle, alle für einen",
+    "G": "Einer f\u00FCr alle, alle f\u00FCr einen",
     "F": "Entra\u00EEnement\u00A0: groupes d\u0027ennemis",
     "J": "\u96C6\u56E3\u6226\u8A13\u7DF4\u3092\u304F\u3050\u308A\u629C\u3051\u308D\uFF01"
   },
@@ -241,7 +241,7 @@
   },
   "221": {
     "E": "More than a Feeler",
-    "G": "Tödliches Rankenspiel",
+    "G": "T\u00F6dliches Rankenspiel",
     "F": "Sus au morbol pollueur",
     "J": "\u6C5A\u67D3\u6E90\u30E2\u30EB\u30DC\u30EB\u3092\u8A0E\u3066\uFF01"
   },
@@ -577,7 +577,7 @@
   },
   "281": {
     "E": "the Whorleater (Hard)",
-    "G": "Götterdämmerung - Leviathan",
+    "G": "G\u00F6tterd\u00E4mmerung - Leviathan",
     "F": "le Briseur de mar\u00E9es (brutal)",
     "J": "\u771F\u30EA\u30F4\u30A1\u30A4\u30A2\u30B5\u30F3\u8A0E\u6EC5\u6226"
   },
@@ -625,37 +625,37 @@
   },
   "292": {
     "E": "the Bowl of Embers (Hard)",
-    "G": "Götterdämmerung - Ifrit",
+    "G": "G\u00F6tterd\u00E4mmerung - Ifrit",
     "F": "le Crat\u00E8re des tisons (brutal)",
     "J": "\u771F\u30A4\u30D5\u30EA\u30FC\u30C8\u8A0E\u6EC5\u6226"
   },
   "293": {
     "E": "the Navel (Hard)",
-    "G": "Götterdämmerung - Titan",
+    "G": "G\u00F6tterd\u00E4mmerung - Titan",
     "F": "le Nombril (brutal)",
     "J": "\u771F\u30BF\u30A4\u30BF\u30F3\u8A0E\u6EC5\u6226"
   },
   "294": {
     "E": "the Howling Eye (Hard)",
-    "G": "Götterdämmerung - Garuda",
+    "G": "G\u00F6tterd\u00E4mmerung - Garuda",
     "F": "Hurl\u0153il (brutal)",
     "J": "\u771F\u30AC\u30EB\u30FC\u30C0\u8A0E\u6EC5\u6226"
   },
   "295": {
     "E": "the Bowl of Embers (Extreme)",
-    "G": "Zenit der Götter - Ifrit",
+    "G": "Zenit der G\u00F6tter - Ifrit",
     "F": "le Crat\u00E8re des tisons (extr\u00EAme)",
     "J": "\u6975\u30A4\u30D5\u30EA\u30FC\u30C8\u8A0E\u6EC5\u6226"
   },
   "296": {
     "E": "the Navel (Extreme)",
-    "G": "Zenit der Götter - Titan",
+    "G": "Zenit der G\u00F6tter - Titan",
     "F": "le Nombril (extr\u00EAme)",
     "J": "\u6975\u30BF\u30A4\u30BF\u30F3\u8A0E\u6EC5\u6226"
   },
   "297": {
     "E": "the Howling Eye (Extreme)",
-    "G": "Zenit der Götter - Garuda",
+    "G": "Zenit der G\u00F6tter - Garuda",
     "F": "Hurl\u0153il (extr\u00EAme)",
     "J": "\u6975\u30AC\u30EB\u30FC\u30C0\u8A0E\u6EC5\u6226"
   },
@@ -919,7 +919,7 @@
   },
   "359": {
     "E": "the Whorleater (Extreme)",
-    "G": "Zenit der Götter - Leviathan",
+    "G": "Zenit der G\u00F6tter - Leviathan",
     "F": "le Briseur de mar\u00E9es (extr\u00EAme)",
     "J": "\u6975\u30EA\u30F4\u30A1\u30A4\u30A2\u30B5\u30F3\u8A0E\u6EC5\u6226"
   },
@@ -937,7 +937,7 @@
   },
   "362": {
     "E": "Brayflox\u0027s Longstop (Hard)",
-    "G": "Brüllvolx\u0027 Langrast (schwer)",
+    "G": "Br\u00FCllvolx\u0027 Langrast (schwer)",
     "F": "le Bivouac de Brayflox (brutal)",
     "J": "\u76DF\u53CB\u652F\u63F4 \u30D6\u30EC\u30A4\u30D5\u30ED\u30AF\u30B9\u306E\u91CE\u55B6\u5730 (Hard)"
   },
@@ -949,7 +949,7 @@
   },
   "364": {
     "E": "Thornmarch (Extreme)",
-    "G": "Königliche Konfrontation (extrem)",
+    "G": "K\u00F6nigliche Konfrontation (extrem)",
     "F": "la Lisi\u00E8re de ronces (extr\u00EAme)",
     "J": "\u6975\u738B\u30E2\u30B0\u30EB\u30FB\u30E2\u30B0XII\u4E16\u8A0E\u6EC5\u6226"
   },
@@ -961,7 +961,7 @@
   },
   "366": {
     "E": "Battle on the Big Bridge",
-    "G": "Duell auf der gro\u00DFen Brücke",
+    "G": "Duell auf der gro\u00DFen Br\u00FCcke",
     "F": "Affrontement sur le grand pont",
     "J": "\u30AE\u30EB\u30AC\u30E1\u30C3\u30B7\u30E5\u8A0E\u4F10\u6226"
   },
@@ -973,7 +973,7 @@
   },
   "368": {
     "E": "A Relic Reborn: the Chimera",
-    "G": "Kampf gegen die Dhorme-Chimära",
+    "G": "Kampf gegen die Dhorme-Chim\u00E4ra",
     "F": "la chim\u00E8re dhorme du Coerthas",
     "J": "\u30C9\u30EB\u30E0\u30AD\u30DE\u30A4\u30E9\u8A0E\u4F10\u6226"
   },
@@ -1003,13 +1003,13 @@
   },
   "374": {
     "E": "the Striking Tree (Hard)",
-    "G": "Götterdämmerung - Ramuh",
+    "G": "G\u00F6tterd\u00E4mmerung - Ramuh",
     "F": "l\u0027Arbre du jugement (brutal)",
     "J": "\u771F\u30E9\u30E0\u30A6\u8A0E\u6EC5\u6226"
   },
   "375": {
     "E": "the Striking Tree (Extreme)",
-    "G": "Zenit der Götter - Ramuh",
+    "G": "Zenit der G\u00F6tter - Ramuh",
     "F": "l\u0027Arbre du jugement (extr\u00EAme)",
     "J": "\u6975\u30E9\u30E0\u30A6\u8A0E\u6EC5\u6226"
   },
@@ -1021,13 +1021,13 @@
   },
   "377": {
     "E": "the Akh Afah Amphitheatre (Hard)",
-    "G": "Götterdämmerung - Shiva",
+    "G": "G\u00F6tterd\u00E4mmerung - Shiva",
     "F": "l\u0027Amphith\u00E9\u00E2tre d\u0027Akh Afah (brutal)",
     "J": "\u771F\u30B7\u30F4\u30A1\u8A0E\u6EC5\u6226"
   },
   "378": {
     "E": "the Akh Afah Amphitheatre (Extreme)",
-    "G": "Zenit der Götter - Shiva",
+    "G": "Zenit der G\u00F6tter - Shiva",
     "F": "l\u0027Amphith\u00E9\u00E2tre d\u0027Akh Afah (extr\u00EAme)",
     "J": "\u6975\u30B7\u30F4\u30A1\u8A0E\u6EC5\u6226"
   },
@@ -1195,7 +1195,7 @@
   },
   "432": {
     "E": "Thok ast Thok (Hard)",
-    "G": "Götterdämmerung - Ravana",
+    "G": "G\u00F6tterd\u00E4mmerung - Ravana",
     "F": "Thok ast Thok (brutal)",
     "J": "\u771F\u30E9\u30FC\u30F4\u30A1\u30CA\u8A0E\u6EC5\u6226"
   },
@@ -1213,13 +1213,13 @@
   },
   "436": {
     "E": "the Limitless Blue (Hard)",
-    "G": "Götterdämmerung - Bismarck",
+    "G": "G\u00F6tterd\u00E4mmerung - Bismarck",
     "F": "L\u0027Immensit\u00E9 bleue (brutal)",
     "J": "\u771F\u30D3\u30B9\u30DE\u30EB\u30AF\u8A0E\u6EC5\u6226"
   },
   "437": {
     "E": "the Singularity Reactor",
-    "G": "Singularitäts-Reaktor",
+    "G": "Singularit\u00E4ts-Reaktor",
     "F": "le R\u00E9acteur de singularit\u00E9",
     "J": "\u30CA\u30A4\u30C4\u30FB\u30AA\u30D6\u30FB\u30E9\u30A6\u30F3\u30C9\u8A0E\u6EC5\u6226"
   },
@@ -1261,13 +1261,13 @@
   },
   "446": {
     "E": "Thok ast Thok (Extreme)",
-    "G": "Zenit der Götter - Ravana",
+    "G": "Zenit der G\u00F6tter - Ravana",
     "F": "Thok ast Thok (extr\u00EAme)",
     "J": "\u6975\u30E9\u30FC\u30F4\u30A1\u30CA\u8A0E\u6EC5\u6226"
   },
   "447": {
     "E": "the Limitless Blue (Extreme)",
-    "G": "Zenit der Götter - Bismarck",
+    "G": "Zenit der G\u00F6tter - Bismarck",
     "F": "L\u0027Immensit\u00E9 bleue (extr\u00EAme)",
     "J": "\u6975\u30D3\u30B9\u30DE\u30EB\u30AF\u8A0E\u6EC5\u6226"
   },
@@ -1645,7 +1645,7 @@
   },
   "517": {
     "E": "Containment Bay S1T7",
-    "G": "Götterdämmerung - Sephirot",
+    "G": "G\u00F6tterd\u00E4mmerung - Sephirot",
     "F": "Unit\u00E9 de contention S1P7",
     "J": "\u9B54\u795E\u30BB\u30D5\u30A3\u30ED\u30C8\u8A0E\u6EC5\u6226"
   },
@@ -1681,7 +1681,7 @@
   },
   "524": {
     "E": "Containment Bay S1T7 (Extreme)",
-    "G": "Zenit der Götter - Sephirot",
+    "G": "Zenit der G\u00F6tter - Sephirot",
     "F": "Unit\u00E9 de contention S1P7 (extr\u00EAme)",
     "J": "\u6975\u9B54\u795E\u30BB\u30D5\u30A3\u30ED\u30C8\u8A0E\u6EC5\u6226"
   },
@@ -1723,13 +1723,13 @@
   },
   "533": {
     "E": "a Spectacle for the Ages",
-    "G": "Truppenübung der Eorzäischen Allianz",
+    "G": "Truppen\u00FCbung der Eorz\u00E4ischen Allianz",
     "F": "La grande man\u0153uvre \u00E9orz\u00E9enne",
     "J": "\u56DB\u56FD\u5408\u540C\u6F14\u7FD2"
   },
   "537": {
     "E": "Avoid Area of Effect Attacks",
-    "G": "Flächenangriffen ausweichen",
+    "G": "Fl\u00E4chenangriffen ausweichen",
     "F": "\u00C9viter les attaques \u00E0 aire d\u0027effet",
     "J": "\u7BC4\u56F2\u653B\u6483\u3092\u907F\u3051\u3088\u3046\uFF01"
   },
@@ -1753,7 +1753,7 @@
   },
   "541": {
     "E": "Engage Multiple Targets",
-    "G": "Gegen mehrere Gegner auf einmal kämpfen",
+    "G": "Gegen mehrere Gegner auf einmal k\u00E4mpfen",
     "F": "Affronter plusieurs ennemis",
     "J": "\u5B9F\u6226\u3067\u8907\u6570\u306E\u6575\u3068\u6226\u3063\u3066\u307F\u3088\u3046\uFF01"
   },
@@ -1765,7 +1765,7 @@
   },
   "543": {
     "E": "Engage Enemy Reinforcements",
-    "G": "Feindliche Verstärkung aufhalten",
+    "G": "Feindliche Verst\u00E4rkung aufhalten",
     "F": "Faire face \u00E0 des renforts ennemis",
     "J": "\u6575\u306E\u5897\u63F4\u306B\u5BFE\u5FDC\u3057\u3088\u3046\uFF01"
   },
@@ -1777,7 +1777,7 @@
   },
   "545": {
     "E": "Defeat an Occupied Target",
-    "G": "Den Gegner eines Verbündeten besiegen",
+    "G": "Den Gegner eines Verb\u00FCndeten besiegen",
     "F": "Vaincre un ennemi occup\u00E9 par un alli\u00E9",
     "J": "\u5473\u65B9\u304C\u5F15\u304D\u3064\u3051\u3066\u3044\u308B\u6575\u3092\u5012\u305D\u3046\uFF01"
   },
@@ -1789,25 +1789,25 @@
   },
   "547": {
     "E": "Engage Enemy Reinforcements",
-    "G": "Feindliche Verstärkung aufhalten",
+    "G": "Feindliche Verst\u00E4rkung aufhalten",
     "F": "\u00C9liminer les renforts ennemis",
     "J": "\u6575\u306E\u5897\u63F4\u306B\u5BFE\u5FDC\u3057\u3088\u3046\uFF01"
   },
   "548": {
     "E": "Interact with the Battlefield",
-    "G": "Mit dem Gelände interagieren",
+    "G": "Mit dem Gel\u00E4nde interagieren",
     "F": "Interagir avec le d\u00E9cor en combat",
     "J": "\u30AE\u30DF\u30C3\u30AF\u3092\u6D3B\u7528\u3057\u3066\u6226\u304A\u3046\uFF01"
   },
   "549": {
     "E": "Heal an Ally",
-    "G": "Verbündete heilen",
+    "G": "Verb\u00FCndete heilen",
     "F": "Soigner un alli\u00E9",
     "J": "\u5473\u65B9\u3092\u56DE\u5FA9\u3057\u3088\u3046\uFF01"
   },
   "550": {
     "E": "Heal Multiple Allies",
-    "G": "Mehrere Verbündete heilen",
+    "G": "Mehrere Verb\u00FCndete heilen",
     "F": "Soigner plusieurs alli\u00E9s",
     "J": "\u8907\u6570\u306E\u5473\u65B9\u3092\u56DE\u5FA9\u3057\u3088\u3046\uFF01"
   },
@@ -1837,7 +1837,7 @@
   },
   "556": {
     "E": "the Weeping City of Mhach",
-    "G": "Die Stadt der Tränen",
+    "G": "Die Stadt der Tr\u00E4nen",
     "F": "la Cit\u00E9 d\u00E9fendue de Mhach",
     "J": "\u7981\u5FCC\u90FD\u5E02\u30DE\u30CF"
   },
@@ -1915,13 +1915,13 @@
   },
   "576": {
     "E": "Containment Bay P1T6",
-    "G": "Götterdämmerung - Sophia",
+    "G": "G\u00F6tterd\u00E4mmerung - Sophia",
     "F": "Unit\u00E9 de contention P1P6",
     "J": "\u5973\u795E\u30BD\u30D5\u30A3\u30A2\u8A0E\u6EC5\u6226"
   },
   "577": {
     "E": "Containment Bay P1T6 (Extreme)",
-    "G": "Zenit der Götter - Sophia",
+    "G": "Zenit der G\u00F6tter - Sophia",
     "F": "Unit\u00E9 de contention P1P6 (extr\u00EAme)",
     "J": "\u6975\u5973\u795E\u30BD\u30D5\u30A3\u30A2\u8A0E\u6EC5\u6226"
   },
@@ -1939,49 +1939,49 @@
   },
   "580": {
     "E": "Alexander - The Eyes of the Creator",
-    "G": "Alexander - Augen des Schöpfers",
+    "G": "Alexander - Augen des Sch\u00F6pfers",
     "F": "Alexander - Les Yeux du Cr\u00E9ateur",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE81"
   },
   "581": {
     "E": "Alexander - The Breath of the Creator",
-    "G": "Alexander - Atem des Schöpfers",
+    "G": "Alexander - Atem des Sch\u00F6pfers",
     "F": "Alexander - Le Souffle du Cr\u00E9ateur",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE82"
   },
   "582": {
     "E": "Alexander - The Heart of the Creator",
-    "G": "Alexander - Herz des Schöpfers",
+    "G": "Alexander - Herz des Sch\u00F6pfers",
     "F": "Alexander - Le C\u0153ur du Cr\u00E9ateur",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE83"
   },
   "583": {
     "E": "Alexander - The Soul of the Creator",
-    "G": "Alexander - Seele des Schöpfers",
+    "G": "Alexander - Seele des Sch\u00F6pfers",
     "F": "Alexander - L\u0027\u00C2me du Cr\u00E9ateur",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\uFF1A\u5929\u52D5\u7DE84"
   },
   "584": {
     "E": "Alexander - The Eyes of the Creator (Savage)",
-    "G": "Alexander - Augen des Schöpfers (episch)",
+    "G": "Alexander - Augen des Sch\u00F6pfers (episch)",
     "F": "Alexander - Les Yeux du Cr\u00E9ateur (sadique)",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE81"
   },
   "585": {
     "E": "Alexander - The Breath of the Creator (Savage)",
-    "G": "Alexander - Atem des Schöpfers (episch)",
+    "G": "Alexander - Atem des Sch\u00F6pfers (episch)",
     "F": "Alexander - Le Souffle du Cr\u00E9ateur (sadique)",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE82"
   },
   "586": {
     "E": "Alexander - The Heart of the Creator (Savage)",
-    "G": "Alexander - Herz des Schöpfers (episch)",
+    "G": "Alexander - Herz des Sch\u00F6pfers (episch)",
     "F": "Alexander - Le C\u0153ur du Cr\u00E9ateur (sadique)",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE83"
   },
   "587": {
     "E": "Alexander - The Soul of the Creator (Savage)",
-    "G": "Alexander - Seele des Schöpfers (episch)",
+    "G": "Alexander - Seele des Sch\u00F6pfers (episch)",
     "F": "Alexander - L\u0027\u00C2me du Cr\u00E9ateur (sadique)",
     "J": "\u6A5F\u5DE5\u57CE\u30A2\u30EC\u30AD\u30B5\u30F3\u30C0\u30FC\u96F6\u5F0F\uFF1A\u5929\u52D5\u7DE84"
   },
@@ -2005,7 +2005,7 @@
   },
   "592": {
     "E": "One Life for One World",
-    "G": "Weltenübergreifendes Schicksal",
+    "G": "Welten\u00FCbergreifendes Schicksal",
     "F": "Destins entrecrois\u00E9s",
     "J": "\u7D61\u307F\u5408\u3046\u5BBF\u547D"
   },
@@ -2131,13 +2131,13 @@
   },
   "624": {
     "E": "the Diadem Hunting Grounds (Easy)",
-    "G": "Das Diadem - Jagdgründe (leicht)",
+    "G": "Das Diadem - Jagdgr\u00FCnde (leicht)",
     "F": "Le Diad\u00E8me\u00A0: terrains de chasse (facile)",
     "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6\uFF1A\u72E9\u731F\u9650\u5B9A (Easy)"
   },
   "625": {
     "E": "the Diadem Hunting Grounds",
-    "G": "Das Diadem - Jagdgründe",
+    "G": "Das Diadem - Jagdgr\u00FCnde",
     "F": "Le Diad\u00E8me\u00A0: terrains de chasse",
     "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6\uFF1A\u72E9\u731F\u9650\u5B9A"
   },
@@ -2179,13 +2179,13 @@
   },
   "637": {
     "E": "Containment Bay Z1T9",
-    "G": "Götterdämmerung - Zurvan",
+    "G": "G\u00F6tterd\u00E4mmerung - Zurvan",
     "F": "Unit\u00E9 de contention Z1P9",
     "J": "\u9B3C\u795E\u30BA\u30EB\u30EF\u30FC\u30F3\u8A0E\u6EC5\u6226"
   },
   "638": {
     "E": "Containment Bay Z1T9 (Extreme)",
-    "G": "Zenit der Götter - Zurvan",
+    "G": "Zenit der G\u00F6tter - Zurvan",
     "F": "Unit\u00E9 de contention Z1P9 (extr\u00EAme)",
     "J": "\u6975\u9B3C\u795E\u30BA\u30EB\u30EF\u30FC\u30F3\u8A0E\u6EC5\u6226"
   },
@@ -2221,7 +2221,7 @@
   },
   "656": {
     "E": "the Diadem - Trials of the Matron",
-    "G": "Das Diadem - Nophicas Prüfung",
+    "G": "Das Diadem - Nophicas Pr\u00FCfung",
     "F": "Le Diad\u00E8me - \u00C9preuves de Nophica",
     "J": "\u96F2\u6D77\u63A2\u7D22 \u30C7\u30A3\u30A2\u30C7\u30E0\u8AF8\u5CF6 (\u63A1\u96C6)"
   },
@@ -2329,7 +2329,7 @@
   },
   "674": {
     "E": "the Pool of Tribute",
-    "G": "Götterdämmerung - Susano",
+    "G": "G\u00F6tterd\u00E4mmerung - Susano",
     "F": "la Crique aux tributs",
     "J": "\u30B9\u30B5\u30CE\u30AA\u8A0E\u6EC5\u6226"
   },
@@ -2347,7 +2347,7 @@
   },
   "677": {
     "E": "the Pool of Tribute (Extreme)",
-    "G": "Zenit der Götter - Susano",
+    "G": "Zenit der G\u00F6tter - Susano",
     "F": "la Crique aux tributs (extr\u00EAme)",
     "J": "\u6975\u30B9\u30B5\u30CE\u30AA\u8A0E\u6EC5\u6226"
   },
@@ -2359,7 +2359,7 @@
   },
   "679": {
     "E": "the Royal Menagerie",
-    "G": "Königliche Menagerie",
+    "G": "K\u00F6nigliche Menagerie",
     "F": "la M\u00E9nagerie royale",
     "J": "\u795E\u9F8D\u8A0E\u6EC5\u6226"
   },
@@ -2515,7 +2515,7 @@
   },
   "709": {
     "E": "The Face of True Evil",
-    "G": "Der Inbegriff des Bösen",
+    "G": "Der Inbegriff des B\u00F6sen",
     "F": "L\u0027abominable Kogarashi",
     "J": "\u6975\u60AA\u4EBA\u30B3\u30AC\u30E9\u30B7"
   },
@@ -2533,7 +2533,7 @@
   },
   "712": {
     "E": "the Lost Canals of Uznair",
-    "G": "Kanäle von Uznair",
+    "G": "Kan\u00E4le von Uznair",
     "F": "les Canaux perdus d\u0027Uznair",
     "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB"
   },
@@ -2575,13 +2575,13 @@
   },
   "719": {
     "E": "Emanation",
-    "G": "Götterdämmerung - Lakshmi",
+    "G": "G\u00F6tterd\u00E4mmerung - Lakshmi",
     "F": "\u00C9manation",
     "J": "\u30E9\u30AF\u30B7\u30E5\u30DF\u8A0E\u6EC5\u6226"
   },
   "720": {
     "E": "Emanation (Extreme)",
-    "G": "Zenit der Götter - Lakshmi",
+    "G": "Zenit der G\u00F6tter - Lakshmi",
     "F": "\u00C9manation (extr\u00EAme)",
     "J": "\u6975\u30E9\u30AF\u30B7\u30E5\u30DF\u8A0E\u6EC5\u6226"
   },
@@ -2605,7 +2605,7 @@
   },
   "725": {
     "E": "the Hidden Canals of Uznair",
-    "G": "Vergessene Kanäle von Uznair",
+    "G": "Vergessene Kan\u00E4le von Uznair",
     "F": "les Canaux cach\u00E9s d\u0027Uznair",
     "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB\u6DF1\u5C64"
   },
@@ -2659,7 +2659,7 @@
   },
   "742": {
     "E": "Hells\u0027 Lid",
-    "G": "Höllenspund",
+    "G": "H\u00F6llenspund",
     "F": "le Couvercle des enfers",
     "J": "\u7D05\u7389\u706B\u5C71 \u7344\u4E4B\u84CB"
   },
@@ -2791,7 +2791,7 @@
   },
   "769": {
     "E": "Emissary of the Dawn",
-    "G": "Der Knabe der Morgenröte",
+    "G": "Der Knabe der Morgenr\u00F6te",
     "F": "Voyage en terre hostile",
     "J": "\u300C\u6681\u300D\u306E\u5C11\u5E74"
   },
@@ -2809,13 +2809,13 @@
   },
   "778": {
     "E": "Castrum Fluminis",
-    "G": "Götterdämmerung - Tsukuyomi",
+    "G": "G\u00F6tterd\u00E4mmerung - Tsukuyomi",
     "F": "Castrum Fluminis",
     "J": "\u30C4\u30AF\u30E8\u30DF\u8A0E\u6EC5\u6226"
   },
   "779": {
     "E": "the Minstrel\u0027s Ballad: Tsukuyomi\u0027s Pain",
-    "G": "Zenit der Götter - Tsukuyomi",
+    "G": "Zenit der G\u00F6tter - Tsukuyomi",
     "F": "Castrum Fluminis (extr\u00EAme)",
     "J": "\u6975\u30C4\u30AF\u30E8\u30DF\u8A0E\u6EC5\u6226"
   },
@@ -2839,7 +2839,7 @@
   },
   "790": {
     "E": "the Calamity Retold",
-    "G": "Gedenkschlacht der Eorzäischen Allianz",
+    "G": "Gedenkschlacht der Eorz\u00E4ischen Allianz",
     "F": "les grandes man\u0153uvres comm\u00E9moratives",
     "J": "\u65B0\u751F\u796D\u8ECD\u4E8B\u6F14\u7FD2"
   },
@@ -2863,7 +2863,7 @@
   },
   "794": {
     "E": "the Shifting Altars of Uznair",
-    "G": "Glücksaltäre von Uznair",
+    "G": "Gl\u00FCcksalt\u00E4re von Uznair",
     "F": "le Temple sacr\u00E9 d\u0027Uznair",
     "J": "\u5B9D\u7269\u5EAB \u30A6\u30BA\u30CD\u30A2\u30AB\u30CA\u30EB\u796D\u6BBF"
   },
@@ -2875,13 +2875,13 @@
   },
   "796": {
     "E": "All\u0027s Well That Starts Well",
-    "G": "Debüt in der Himmlischen Arena",
+    "G": "Deb\u00FCt in der Himmlischen Arena",
     "F": "D\u00E9but du spectacle",
     "J": "\u30C7\u30D3\u30E5\u30FC\u30DE\u30C3\u30C1"
   },
   "797": {
     "E": "The Will of the Moon",
-    "G": "Der Wille der Mondgöttin",
+    "G": "Der Wille der Mondg\u00F6ttin",
     "F": "Ralliement dans la steppe",
     "J": "\u6954\u77F3\u306E\u865A"
   },
@@ -2935,7 +2935,7 @@
   },
   "806": {
     "E": "Kugane Ohashi",
-    "G": "Duell auf der Kugane-Brücke",
+    "G": "Duell auf der Kugane-Br\u00FCcke",
     "F": "le Pont Ohashi",
     "J": "\u771F\u30E8\u30A6\u30B8\u30F3\u30DC\u30A6\u8A0E\u6EC5\u6226"
   },
@@ -3001,7 +3001,7 @@
   },
   "834": {
     "E": "Messenger of the Winds",
-    "G": "Durch den Sturm und zurück",
+    "G": "Durch den Sturm und zur\u00FCck",
     "F": "La Messag\u00E8re du vent",
     "J": "\u6765\u8A2A\u305B\u3057\u98A8\u306E\u5FA1\u4F7F"
   },
@@ -3061,7 +3061,7 @@
   },
   "848": {
     "E": "the Crown of the Immaculate (Extreme)",
-    "G": "Letzte Läuterung - Innozenz",
+    "G": "Letzte L\u00E4uterung - Innozenz",
     "F": "La Couronne de l\u0027Immacul\u00E9 (extr\u00EAme)",
     "J": "\u6975\u30A4\u30CE\u30BB\u30F3\u30B9\u8A0E\u6EC5\u6226"
   },
@@ -3115,7 +3115,7 @@
   },
   "858": {
     "E": "the Dancing Plague (Extreme)",
-    "G": "Letzte Läuterung - Titania",
+    "G": "Letzte L\u00E4uterung - Titania",
     "F": "la Valse du Monarque (extr\u00EAme)",
     "J": "\u6975\u30C6\u30A3\u30BF\u30FC\u30CB\u30A2\u8A0E\u6EC5\u6226"
   },
@@ -3247,7 +3247,7 @@
   },
   "885": {
     "E": "the Minstrel\u0027s Ballad: Hades\u0027s Elegy",
-    "G": "Letzte Läuterung - Hades",
+    "G": "Letzte L\u00E4uterung - Hades",
     "F": "Le R\u00E2le de l\u0027Agonie (extr\u00EAme)",
     "J": "\u6975\u30CF\u30FC\u30C7\u30B9\u8A0E\u6EC5\u6226"
   },
@@ -3391,7 +3391,7 @@
   },
   "920": {
     "E": "the Bozjan Southern Front",
-    "G": "Bozja-Südfront",
+    "G": "Bozja-S\u00FCdfront",
     "F": "Front sud de Bozja",
     "J": "\u5357\u65B9\u30DC\u30BA\u30E4\u6226\u7DDA"
   },
@@ -3571,7 +3571,7 @@
   },
   "954": {
     "E": "The Great Ship Vylbrand",
-    "G": "Gute Winde für Vylbrand",
+    "G": "Gute Winde f\u00FCr Vylbrand",
     "F": "Un navire nomm\u00E9 Vylbrand",
     "J": "\u30D0\u30A4\u30EB\u30D6\u30E9\u30F3\u30C9\u306E\u8239\u51FA"
   },
@@ -3685,13 +3685,13 @@
   },
   "997": {
     "E": "the Final Day",
-    "G": "Prophetie - Endsängerin",
+    "G": "Prophetie - Ends\u00E4ngerin",
     "F": "le R\u00E9pons final",
     "J": "\u7D42\u7109\u306E\u6226\u3044"
   },
   "998": {
     "E": "the Minstrel\u0027s Ballad: Endsinger\u0027s Aria",
-    "G": "Eschatos - Endsängerin",
+    "G": "Eschatos - Ends\u00E4ngerin",
     "F": "le R\u00E9pons final (extr\u00EAme)",
     "J": "\u7D42\u6975\u306E\u6226\u3044"
   },
@@ -3781,7 +3781,7 @@
   },
   "1015": {
     "E": "A Path Unveiled",
-    "G": "Offen für neue Wege",
+    "G": "Offen f\u00FCr neue Wege",
     "F": "Des esprits et des hommes",
     "J": "\u958B\u304B\u308C\u305F\u9053\u306E\u5148\u3078"
   },
@@ -3793,7 +3793,7 @@
   },
   "1017": {
     "E": "Laid to Rest",
-    "G": "Domanisches Begräbnis",
+    "G": "Domanisches Begr\u00E4bnis",
     "F": "Des adieux domiens",
     "J": "\u30C9\u30DE\u306E\u5F14\u3044"
   },
@@ -3817,7 +3817,7 @@
   },
   "1021": {
     "E": "The Killing Art",
-    "G": "Die Kunst des Tötens",
+    "G": "Die Kunst des T\u00F6tens",
     "F": "La voie du n\u00E9ant",
     "J": "\u6697\u6BBA\u9053"
   },
@@ -3859,7 +3859,7 @@
   },
   "1039": {
     "E": "the Thousand Maws of Toto-Rak",
-    "G": "Tausend Löcher von Toto-Rak",
+    "G": "Tausend L\u00F6cher von Toto-Rak",
     "F": "les Mille Gueules de Toto-Rak",
     "J": "\u76E3\u7344\u5EC3\u589F \u30C8\u30C8\u30E9\u30AF\u306E\u5343\u7344"
   },
@@ -3871,7 +3871,7 @@
   },
   "1041": {
     "E": "Brayflox\u0027s Longstop",
-    "G": "Brüllvolx\u0027 Langrast",
+    "G": "Br\u00FCllvolx\u0027 Langrast",
     "F": "le Bivouac de Brayflox",
     "J": "\u596A\u9084\u652F\u63F4 \u30D6\u30EC\u30A4\u30D5\u30ED\u30AF\u30B9\u306E\u91CE\u55B6\u5730"
   },
@@ -3925,7 +3925,7 @@
   },
   "1050": {
     "E": "Alzadaal\u0027s Legacy",
-    "G": "Alzadaals Vermächtnis",
+    "G": "Alzadaals Verm\u00E4chtnis",
     "F": "Le legs d\u0027Alzadaal",
     "J": "\u8FD1\u6771\u79D8\u5B9D \u30A2\u30EB\u30B6\u30C0\u30FC\u30EB\u6D77\u5E95\u907A\u8DE1\u7FA4"
   },
@@ -3937,7 +3937,7 @@
   },
   "1052": {
     "E": "Devastation",
-    "G": "Das Antlitz der Kaltblütigkeit",
+    "G": "Das Antlitz der Kaltbl\u00FCtigkeit",
     "F": "le Praetorium en flammes",
     "J": "\u30A2\u30B7\u30A8\u30F3\u30FB\u30E9\u30CF\u30D6\u30EC\u30A2\u8A0E\u4F10\u6226"
   },
@@ -3955,7 +3955,7 @@
   },
   "1063": {
     "E": "the Keeper of the Lake",
-    "G": "Hüter des Sees",
+    "G": "H\u00FCter des Sees",
     "F": "le Gardien du lac",
     "J": "\u5E7B\u9F8D\u6B8B\u9AB8 \u9ED9\u7D04\u306E\u5854"
   },
@@ -3979,7 +3979,7 @@
   },
   "1067": {
     "E": "Thornmarch (Hard)",
-    "G": "Königliche Konfrontation (schwer)",
+    "G": "K\u00F6nigliche Konfrontation (schwer)",
     "F": "la Lisi\u00E8re de ronces (brutal)",
     "J": "\u5584\u738B\u30E2\u30B0\u30EB\u30FB\u30E2\u30B0XII\u4E16\u8A0E\u6EC5\u6226"
   },
@@ -4027,13 +4027,13 @@
   },
   "1081": {
     "E": "Abyssos: The Fifth Circle",
-    "G": "Abyssos - Fünfter Kreis",
+    "G": "Abyssos - F\u00FCnfter Kreis",
     "F": "Le Purgatoire du Pand\u00E6monium - Cages",
     "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u7149\u7344\u7DE81"
   },
   "1082": {
     "E": "Abyssos: The Fifth Circle (Savage)",
-    "G": "Abyssos - Fünfter Kreis (episch)",
+    "G": "Abyssos - F\u00FCnfter Kreis (episch)",
     "F": "Le Purgatoire du Pand\u00E6monium - Cages (sadique)",
     "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u7149\u7344\u7DE81"
   },
@@ -4207,7 +4207,7 @@
   },
   "1115": {
     "E": "Generational Bonding",
-    "G": "Väterliche Liebe",
+    "G": "V\u00E4terliche Liebe",
     "F": "Tel gentilhomme, tel gentilhomme",
     "J": "\u306F\u3064\u3089\u3064\u3068\u3057\u305F\u89AA\u5B50"
   },
@@ -4255,13 +4255,13 @@
   },
   "1128": {
     "E": "React to Floor Markers",
-    "G": "Achte auf Geländemarkierungen!",
+    "G": "Achte auf Gel\u00E4ndemarkierungen!",
     "F": "R\u00E9agir \u00E0 des indications au sol",
     "J": "\u5730\u9762\u306B\u4E88\u5146\u304C\u51FA\u308B\u653B\u6483\u306B\u5BFE\u51E6\u3057\u3088\u3046\uFF01"
   },
   "1129": {
     "E": "React to Advanced Visual Indicators",
-    "G": "Stelle dich allerlei Angriffsmanövern!",
+    "G": "Stelle dich allerlei Angriffsman\u00F6vern!",
     "F": "R\u00E9agir \u00E0 des m\u00E9caniques vari\u00E9es",
     "J": "\u3055\u307E\u3056\u307E\u306A\u653B\u6483\u306B\u5BFE\u51E6\u3057\u3088\u3046\uFF01"
   },
@@ -4357,13 +4357,13 @@
   },
   "1153": {
     "E": "Anabaseios: The Twelfth Circle",
-    "G": "Anabaseios - Zwölfter Kreis",
+    "G": "Anabaseios - Zw\u00F6lfter Kreis",
     "F": "Le Paradis du Pand\u00E6monium - Apoth\u00E9ose",
     "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\uFF1A\u5929\u7344\u7DE84"
   },
   "1154": {
     "E": "Anabaseios: The Twelfth Circle (Savage)",
-    "G": "Anabaseios - Zwölfter Kreis (episch)",
+    "G": "Anabaseios - Zw\u00F6lfter Kreis (episch)",
     "F": "Le Paradis du Pand\u00E6monium - Apoth\u00E9ose (sadique)",
     "J": "\u4E07\u9B54\u6BBF\u30D1\u30F3\u30C7\u30E2\u30CB\u30A6\u30E0\u96F6\u5F0F\uFF1A\u5929\u7344\u7DE84"
   },
@@ -4459,7 +4459,7 @@
   },
   "1177": {
     "E": "The Game Is Afoot",
-    "G": "Die Jagd ist eröffnet",
+    "G": "Die Jagd ist er\u00F6ffnet",
     "F": "Par-del\u00E0 l\u0027horizon",
     "J": "\u305D\u306E\u77B3\u304C\u898B\u636E\u3048\u308B\u3082\u306E"
   },
@@ -4531,7 +4531,7 @@
   },
   "1202": {
     "E": "The Interphos",
-    "G": "Zel Tajaal - Ewige Königin",
+    "G": "Zel Tajaal - Ewige K\u00F6nigin",
     "F": "Interphos",
     "J": "\u30A8\u30BF\u30FC\u30CA\u30EB\u30AF\u30A4\u30FC\u30F3\u8A0E\u6EC5\u6226"
   },
@@ -4567,19 +4567,19 @@
   },
   "1211": {
     "E": "Taking a Stand",
-    "G": "Mit scharfer Axt und leichtem Lächeln",
+    "G": "Mit scharfer Axt und leichtem L\u00E4cheln",
     "F": "Pr\u00E9server la paix",
     "J": "\u7B11\u9854\u3092\u8B77\u308B\u305F\u3081\u306E\u6226\u3044"
   },
   "1212": {
     "E": "The Feat of the Brotherhood",
-    "G": "Von Schuld und Sühne",
+    "G": "Von Schuld und S\u00FChne",
     "F": "L\u0027\u00E9preuve de l\u0027amiti\u00E9",
     "J": "\u53CB\u306E\u8A66\u7DF4"
   },
   "1213": {
     "E": "The Protector and the Destroyer",
-    "G": "Schützer des Volkes, Schlächter des Volkes",
+    "G": "Sch\u00FCtzer des Volkes, Schl\u00E4chter des Volkes",
     "F": "Protecteurs et destructeurs",
     "J": "\u8B77\u308B\u8005\u3001\u58CA\u3059\u8005"
   },
@@ -4597,19 +4597,19 @@
   },
   "1216": {
     "E": "A Hunter True",
-    "G": "Krönender Abschuss",
+    "G": "Kr\u00F6nender Abschuss",
     "F": "Chasseuse \u00E0 lunettes... chasseuse honn\u00EAte",
     "J": "\u4E00\u7AEF\u306E\u72E9\u4EBA"
   },
   "1217": {
     "E": "The Mightiest Shield",
-    "G": "Der mächtigste Schild",
+    "G": "Der m\u00E4chtigste Schild",
     "F": "Mauvais cru pour Chalteaufite",
     "J": "\u6253\u5012\uFF01 \u30B7\u30E3\u30EB\u30C8\u30D5\u30A3\u30C3\u30C8\u76D7\u8CCA\u56E3"
   },
   "1218": {
     "E": "Heroes and Pretenders",
-    "G": "Ein Mythos in Trümmern",
+    "G": "Ein Mythos in Tr\u00FCmmern",
     "F": "Le ch\u00E2teau de cartes s\u0027effondre",
     "J": "\u796D\u5668\u3068\u4F5C\u3089\u308C\u305F\u865A\u50CF"
   },
@@ -4663,7 +4663,7 @@
   },
   "1233": {
     "E": "Mind over Manor",
-    "G": "Nächtliche Ruhestörung",
+    "G": "N\u00E4chtliche Ruhest\u00F6rung",
     "F": "Tapage nocturne",
     "J": "\u65C5\u3059\u308B\u753B\u5BB6\u306F\u68EE\u90FD\u3092\u5F81\u304F"
   },
@@ -4675,7 +4675,7 @@
   },
   "1235": {
     "E": "Fangs of the Viper",
-    "G": "Einführung in die Viperologie",
+    "G": "Einf\u00FChrung in die Viperologie",
     "F": "Le devoir des r\u00F4deurs vip\u00E8re",
     "J": "\u30F4\u30A1\u30A4\u30D1\u30FC\u306E\u4F7F\u547D"
   },
@@ -4711,7 +4711,7 @@
   },
   "1243": {
     "E": "The Minstrel\u0027s Ballad: Sphene\u0027s Burden",
-    "G": "Gok Tajaal - Ewige Königin",
+    "G": "Gok Tajaal - Ewige K\u00F6nigin",
     "F": "Interphos (extr\u00EAme)",
     "J": "\u6975\u30A8\u30BF\u30FC\u30CA\u30EB\u30AF\u30A4\u30FC\u30F3\u8A0E\u6EC5\u6226"
   },
@@ -4738,6 +4738,12 @@
     "G": "Jeuno: Die erste Etappe",
     "F": "Jeuno - La premi\u00E8re perambulation",
     "J": "\u30B8\u30E5\u30CE\uFF1A\u30B6\u30FB\u30D5\u30A1\u30FC\u30B9\u30C8\u30A6\u30A9\u30FC\u30AF"
+  },
+  "1252": {
+    "E": "the Occult Crescent: South Horn",
+    "G": "Das s\u00FCdliche Kreszentia",
+    "F": "\u00CEle de Lunule m\u00E9ridionale",
+    "J": "\u8703\u6C17\u697C\u306E\u5CF6 \u30AF\u30EC\u30BB\u30F3\u30C8\u30A2\u30A4\u30EB\uFF1A\u5357\u5F81\u7DE8"
   },
   "1256": {
     "E": "AAC Cruiserweight M1",
@@ -4813,7 +4819,7 @@
   },
   "1272": {
     "E": "Hells\u0027 Kier (Unreal)",
-    "G": "Traumprüfung - Suzaku",
+    "G": "Traumpr\u00FCfung - Suzaku",
     "F": "Le Nid des Lamentations (irr\u00E9el)",
     "J": "\u5E7B\u6731\u96C0\u5F81\u9B42\u6226"
   },
@@ -4822,5 +4828,47 @@
     "G": "\u00C4u\u00DFere Ruinen (Sicherung)",
     "F": "les Ruines frontali\u00E8res (annexion)",
     "J": "\u5916\u7E01\u907A\u8DE1\u7FA4 (\u5236\u5727\u6226)"
+  },
+  "1279": {
+    "E": "Vault Oneiron",
+    "G": "Tresor Oneiron",
+    "F": "le coffre d\u0027Oneiron",
+    "J": "\u5B9D\u7269\u5EAB \u30DC\u30EB\u30C8\u30FB\u30AA\u30CD\u30A4\u30ED\u30F3"
+  },
+  "1292": {
+    "E": "the Meso Terminal",
+    "G": "Das Meso-System",
+    "F": "Le M\u00E9soterminal",
+    "J": "\u6C38\u4E45\u5E7D\u754C \u30E1\u30A4\u30F3\u30BF\u30FC\u30DF\u30CA\u30EB"
+  },
+  "1295": {
+    "E": "the Ageless Necropolis",
+    "G": "Zel Tajaal - Das Ewige Dunkel",
+    "F": "La N\u00E9cropole intemporelle",
+    "J": "\u6C38\u9060\u306E\u95C7\u8A0E\u6EC5\u6226"
+  },
+  "1296": {
+    "E": "the Minstrel\u0027s Ballad: Necron\u0027s Embrace",
+    "G": "Gok Tajaal - Das Ewige Dunkel",
+    "F": "La N\u00E9cropole intemporelle (extr\u00EAme)",
+    "J": "\u6975\u6C38\u9060\u306E\u95C7\u8A0E\u6EC5\u6226"
+  },
+  "1302": {
+    "E": "the Wreath of Snakes (Unreal)",
+    "G": "Traumpr\u00FCfung - Seiryu",
+    "F": "L\u0027\u00CElot des Amertumes (irr\u00E9el)",
+    "J": "\u5E7B\u9752\u9F8D\u5F81\u9B42\u6226"
+  },
+  "1303": {
+    "E": "Cutter\u0027s Cry",
+    "G": "S\u00E4gerschrei",
+    "F": "le Gouffre hurlant",
+    "J": "\u6D41\u7802\u8FF7\u5BAE \u30AB\u30C3\u30BF\u30FC\u30BA\u30AF\u30E9\u30A4"
+  },
+  "1304": {
+    "E": "San d\u0027Oria: The Second Walk",
+    "G": "San d\u0027Oria: Die zweite Etappe",
+    "F": "San d\u0027Oria - La deuxi\u00E8me perambulation",
+    "J": "\u30B5\u30F3\u30C9\u30EA\u30A2\uFF1A\u30B6\u30FB\u30BB\u30AB\u30F3\u30C9\u30A6\u30A9\u30FC\u30AF"
   }
 }

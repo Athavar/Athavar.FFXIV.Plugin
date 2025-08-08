@@ -67,7 +67,7 @@
           "targetindex": 0
         },
         {
-          "potency": 78
+          "potency": 91
         }
       ]
     },
@@ -75,7 +75,7 @@
       "4071": "auto crossbow",
       "damage": [
         {
-          "potency": 160
+          "potency": 180
         }
       ]
     },
@@ -91,7 +91,7 @@
       "4072": "drill",
       "damage": [
         {
-          "potency": 600
+          "potency": 620
         }
       ]
     },
@@ -125,7 +125,7 @@
       "4074": "air anchor",
       "damage": [
         {
-          "potency": 600
+          "potency": 620
         }
       ]
     },
@@ -181,11 +181,11 @@
       "64bc": "chain saw",
       "damage": [
         {
-          "potency": 600,
+          "potency": 620,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 465
         }
       ]
     },
@@ -233,11 +233,11 @@
       "9073": "double check",
       "damage": [
         {
-          "potency": 170,
+          "potency": 180,
           "targetindex": 0
         },
         {
-          "potency": 102
+          "potency": 126
         }
       ]
     },
@@ -245,11 +245,11 @@
       "9074": "checkmate",
       "damage": [
         {
-          "potency": 170,
+          "potency": 180,
           "targetindex": 0
         },
         {
-          "potency": 102
+          "potency": 126
         }
       ]
     },
@@ -257,11 +257,11 @@
       "9075": "excavator",
       "damage": [
         {
-          "potency": 600,
+          "potency": 620,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 465
         }
       ]
     },
@@ -273,7 +273,7 @@
           "targetindex": 0
         },
         {
-          "potency": 540
+          "potency": 675
         }
       ]
     }
@@ -305,7 +305,7 @@
       "4B5": "flamethrower",
       "timeproc": {
         "type": "grounddamage",
-        "potency": 100,
+        "potency": 120,
         "damagetype": "physical",
         "maxticks": 4
       }

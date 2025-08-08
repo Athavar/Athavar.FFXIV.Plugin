@@ -95,7 +95,7 @@
       "1CE9": "hellfrog medium",
       "damage": [
         {
-          "potency": 160
+          "potency": 250
         }
       ]
     },
@@ -111,11 +111,7 @@
       "64AE": "phantom kamaitachi",
       "damage": [
         {
-          "potency": 600,
-          "targetindex": 0
-        },
-        {
-          "potency": 450
+          "potency": 700
         }
       ]
     },
@@ -123,7 +119,7 @@
       "64B0": "hollow nozuchi",
       "damage": [
         {
-          "potency": 50
+          "potency": 70
         }
       ]
     },
@@ -211,7 +207,7 @@
       "905d": "dokumori",
       "damage": [
         {
-          "potency": 225
+          "potency": 400
         }
       ]
     },
@@ -219,11 +215,7 @@
       "905e": "kunai's bane",
       "damage": [
         {
-          "potency": 600,
-          "targetindex": 0
-        },
-        {
-          "potency": 450
+          "potency": 700
         }
       ]
     },
@@ -231,7 +223,7 @@
       "905f": "deathfrog medium",
       "damage": [
         {
-          "potency": 260
+          "potency": 400
         }
       ]
     },
@@ -247,11 +239,7 @@
       "9061": "tenri jindo",
       "damage": [
         {
-          "potency": 1100,
-          "targetindex": 0
-        },
-        {
-          "potency": 825
+          "potency": 1100
         }
       ]
     }
@@ -321,3 +309,4 @@
     }
   ]
 }
+

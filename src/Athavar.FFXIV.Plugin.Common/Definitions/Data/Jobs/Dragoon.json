@@ -170,7 +170,7 @@
           "targetindex": 0
         },
         {
-          "potency": 420
+          "potency": 504
         }
       ]
     },
@@ -257,7 +257,7 @@
           "targetindex": 0
         },
         {
-          "potency": 500
+          "potency": 600
         }
       ]
     }
@@ -361,3 +361,4 @@
     }
   ]
 }
+

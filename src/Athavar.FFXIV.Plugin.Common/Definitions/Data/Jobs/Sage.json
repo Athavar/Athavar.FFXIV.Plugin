@@ -183,7 +183,7 @@
       "5ef8": "dosis iii",
       "damage": [
         {
-          "potency": 370
+          "potency": 380
         }
       ],
       "heal": [
@@ -234,11 +234,11 @@
       "5efc": "toxikon ii",
       "damage": [
         {
-          "potency": 370,
+          "potency": 380,
           "targetindex": 0
         },
         {
-          "potency": 185
+          "potency": 190
         }
       ],
       "heal": [
@@ -251,11 +251,11 @@
       "5efe": "pneuma attack",
       "damage": [
         {
-          "potency": 370,
+          "potency": 380,
           "targetindex": 0
         },
         {
-          "potency": 222
+          "potency": 228
         }
       ],
       "heal": [
