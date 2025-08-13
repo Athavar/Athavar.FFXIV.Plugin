@@ -10,9 +10,9 @@ using System.Runtime.InteropServices;
 using Athavar.FFXIV.Plugin.Common;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Dalamud.Bindings.ImGui;
-using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.Utility;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 [Module(ModuleName, ModuleConfigurationType = typeof(SliceIsRightConfiguration))]
 public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDisposable
@@ -85,6 +85,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         this.IsInGoldSaucer = e == GoldSaucerTerritoryId;
         if (this.IsInGoldSaucer != oldState)
         {
+            this.objectsAndSpawnTime.Clear();
             if (this.IsInGoldSaucer)
             {
                 this.dalamudServices.PluginInterface.UiBuilder.Draw += this.DrawUi;
@@ -103,27 +104,22 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
             return;
         }
 
-        for (var index = 0; index < this.dalamudServices.ObjectTable.Length; ++index)
+        foreach (var gameObject in this.dalamudServices.ObjectTable.EventObjects)
         {
-            var gameObject = this.dalamudServices.ObjectTable[index];
-            if (!(gameObject == null) && this.DistanceToPlayer(gameObject.Position) <= 30.0)
+            if (this.DistanceToPlayer(gameObject.Position) <= MaxDistance)
             {
-                var model = Marshal.ReadInt32(gameObject.Address + 128);
-                if (gameObject.ObjectKind == ObjectKind.EventObj && model is >= 2010777 and <= 2010779)
+                // GameObject.BaseId
+                var obj = Marshal.PtrToStructure<GameObject>(gameObject.Address);
+                var model = obj.BaseId;
+                if (model is >= 2010777 and <= 2010779)
                 {
-                    this.RenderObject(index, gameObject, model);
-                }
-                else
-                {
-                    var objectId1 = this.dalamudServices.ClientState.LocalPlayer?.GameObjectId;
-                    var objectId2 = gameObject.GameObjectId;
-                    var num = (int)objectId1.GetValueOrDefault() == (int)objectId2 & objectId1.HasValue ? 1 : 0;
+                    this.RenderObject(gameObject, model);
                 }
             }
         }
     }
 
-    private void RenderObject(int index, IGameObject obj, int model, float? radius = null)
+    private void RenderObject(IGameObject obj, uint model, float? radius = null)
     {
         if (this.objectsAndSpawnTime.TryGetValue(obj.GameObjectId, out var dateTime))
         {
