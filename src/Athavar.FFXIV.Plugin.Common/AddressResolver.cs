@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Common;
 
 using Dalamud.Game;
+using Dalamud.Plugin.Services;
 
 public sealed class AddressResolver : BaseAddressResolver
 {

@@ -70,7 +70,7 @@ internal sealed class ConditionCheck
 
         var effectIDs = this.statusSheet.Where(row => row.Name.ExtractText().ToLower() == statusName).Select(row => row.RowId).ToList();
 
-        return this.dalamudServices.ClientState.LocalPlayer?.StatusList.Select(se => se.StatusId).ToList().Intersect(effectIDs).Any() ?? false;
+        return this.dalamudServices.ObjectTable.LocalPlayer?.StatusList.Select(se => se.StatusId).ToList().Intersect(effectIDs).Any() ?? false;
     }
 
     /// <summary>

@@ -324,7 +324,7 @@ internal sealed class ScannerRegistry
                     return false;
                 }
 
-                var world = this.dalamudServices.ClientState.LocalPlayer?.CurrentWorld.RowId;
+                var world = this.dalamudServices.ObjectTable.LocalPlayer?.CurrentWorld.RowId;
                 if (world is null)
                 {
                     return false;

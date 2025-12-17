@@ -9,10 +9,9 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 internal struct ActionId
 {
     public static ActionId Clemency = new(ActionType.Action, 3541);
+    public readonly uint Raw; // high byte is type, low 3 bytes is ID
     internal const uint ItemDelta = 0x2000000;
     internal const uint MountDelta = 0xD000000;
-
-    public readonly uint Raw; // high byte is type, low 3 bytes is ID
 
     public ActionId(uint raw = 0) => this.Raw = raw;
 

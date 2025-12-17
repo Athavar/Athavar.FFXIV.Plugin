@@ -17,6 +17,7 @@ public sealed class StateTracker : IDisposable
 {
     private readonly IPluginLogger pluginLogger;
     private readonly IClientState clientState;
+    private readonly IPlayerState playerState;
     private readonly IDefinitionManager definitionManager;
     private readonly IDutyManager dutyManager;
     private readonly IChatManager chatManager;
@@ -24,10 +25,11 @@ public sealed class StateTracker : IDisposable
 
     private uint? classJobId = 0;
 
-    public StateTracker(IPluginLogger pluginLogger, IClientState clientState, IDefinitionManager definitionManager, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
+    public StateTracker(IPluginLogger pluginLogger, IClientState clientState, IPlayerState playerState, IDefinitionManager definitionManager, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
     {
         this.pluginLogger = pluginLogger;
         this.clientState = clientState;
+        this.playerState = playerState;
         this.definitionManager = definitionManager;
         this.dutyManager = dutyManager;
         this.chatManager = chatManager;
@@ -58,8 +60,8 @@ public sealed class StateTracker : IDisposable
             TerritoryTypeId = args.DutyInfo.TerritoryType.RowId,
             TerritoryType = args.DutyInfo.TerritoryType,
             ContentFinderCondition = this.definitionManager.GetContentName(args.DutyInfo.TerritoryType.RowId),
-            PlayerContentId = this.clientState.LocalContentId,
-            ClassJobId = this.clientState.LocalPlayer?.ClassJob.RowId ?? this.classJobId ?? this.clientState.LocalPlayer?.ClassJob.RowId ?? 0,
+            PlayerContentId = this.playerState.ContentId,
+            ClassJobId = this.playerState.ClassJob.RowId != 0 ? this.playerState.ClassJob.RowId : this.classJobId ?? 0,
             Completed = args.Completed,
             StartDate = args.StartTime,
             EndDate = args.EndTime,
@@ -85,7 +87,7 @@ public sealed class StateTracker : IDisposable
 
     private void OnDutyStarted(DutyStartedEventArgs args)
     {
-        this.classJobId = this.clientState.LocalPlayer?.ClassJob.RowId;
+        this.classJobId = this.playerState.ClassJob.RowId;
 #if DEBUG
         this.chatManager.PrintChat($"[DT] Duty start: {args.DutyInfo.TerritoryType.RowId}|{args.DutyInfo.TerritoryType.TerritoryIntendedUse.RowId}");
 #endif

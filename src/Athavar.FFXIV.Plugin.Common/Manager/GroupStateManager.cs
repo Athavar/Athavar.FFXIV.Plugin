@@ -20,7 +20,7 @@ public class GroupStateManager : IDisposable
 {
     private static readonly uint[] AllianceTextSheetRows = [1115, 1116, 1118, 1160, 1161, 1162];
 
-    private static string[] allianceTexts;
+    private static string[] allianceTexts = [];
     private readonly IFrameworkManager frameworkManager;
 
     public GroupStateManager(IFrameworkManager frameworkManager, IDalamudServices dalamudServices)

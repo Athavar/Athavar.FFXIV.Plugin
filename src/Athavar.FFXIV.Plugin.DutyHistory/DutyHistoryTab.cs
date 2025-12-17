@@ -14,15 +14,17 @@ public sealed class DutyHistoryTab : Tab
     private const string TabIdentifier = "dutyhistory";
     private readonly DutyHistoryTable table;
     private readonly IClientState clientState;
+    private readonly IPlayerState playerState;
 
-    public DutyHistoryTab(DutyHistoryTable table, IClientState clientState)
+    public DutyHistoryTab(DutyHistoryTable table, IClientState clientState, IPlayerState playerState)
     {
         this.table = table;
         this.clientState = clientState;
+        this.playerState = playerState;
 
         if (this.clientState.IsLoggedIn)
         {
-            table.Update(this.clientState.LocalContentId);
+            table.Update(this.playerState.ContentId);
         }
 
         this.clientState.Login += this.OnLogin;
@@ -53,5 +55,5 @@ public sealed class DutyHistoryTab : Tab
         this.table.Draw(ImGui.GetTextLineHeightWithSpacing());
     }
 
-    private void OnLogin() => this.table.Update(this.clientState.LocalContentId);
+    private void OnLogin() => this.table.Update(this.playerState.ContentId);
 }

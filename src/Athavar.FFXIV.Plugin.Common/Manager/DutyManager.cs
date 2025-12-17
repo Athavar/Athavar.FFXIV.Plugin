@@ -25,6 +25,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
     private readonly IDataManager dataManager;
     private readonly IClientState clientState;
     private readonly IPartyList partyList;
+    private readonly IPlayerState playerState;
     private readonly IPluginLogger logger;
     private readonly EventCaptureManager eventCaptureManager;
     private readonly CommonConfiguration configuration;
@@ -45,6 +46,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         this.dataManager = dalamudServices.DataManager;
         this.clientState = dalamudServices.ClientState;
         this.partyList = dalamudServices.PartyList;
+        this.playerState = dalamudServices.PlayerState;
         this.logger = dalamudServices.PluginLogger;
         this.eventCaptureManager = eventCaptureManager;
         this.configuration = configuration;
@@ -243,14 +245,14 @@ internal sealed partial class DutyManager
 
         this.logger.Verbose("Check if configuration contains dutyInfo for restore");
 
-        if (this.configuration.SavedDutyInfos.TryGetValue(this.clientState.LocalContentId, out var savedDutyInfo))
+        if (this.configuration.SavedDutyInfos.TryGetValue(this.playerState.ContentId, out var savedDutyInfo))
         {
             // we have saved duty info. set duty to started.
             this.dutyStarted = true;
             this.dirtyTracking = true;
             this.currentDutyInfo = savedDutyInfo.GetDutyInfo(this.dataManager);
             this.dutyStartTime = savedDutyInfo.DutyStartTime;
-            this.logger.Verbose("Restore dutyInfo for localContentId {0}", this.clientState.LocalContentId);
+            this.logger.Verbose("Restore dutyInfo for localContentId {0}", this.playerState.ContentId);
 
             // check if player is currently in saved duty.
             if (this.currentDutyInfo is not null && this.clientState.TerritoryType != this.currentDutyInfo?.TerritoryType.RowId)
@@ -271,7 +273,7 @@ internal sealed partial class DutyManager
         else
         {
             // save current data.
-            this.configuration.SavedDutyInfos[this.clientState.LocalContentId] = new SavedDutyInfo(this.currentDutyInfo, this.dutyStartTime.Value);
+            this.configuration.SavedDutyInfos[this.playerState.ContentId] = new SavedDutyInfo(this.currentDutyInfo, this.dutyStartTime.Value);
             this.configuration.Save();
         }
     }
@@ -286,7 +288,7 @@ internal sealed partial class DutyManager
         this.playerDeathCount = 0;
         this.dirtyTracking = false;
 
-        if (this.configuration.SavedDutyInfos.Remove(this.clientState.LocalContentId))
+        if (this.configuration.SavedDutyInfos.Remove(this.playerState.ContentId))
         {
             this.configuration.Save();
         }

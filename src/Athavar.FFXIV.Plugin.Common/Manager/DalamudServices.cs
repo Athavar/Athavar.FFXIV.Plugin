@@ -191,6 +191,9 @@ internal sealed class DalamudServices : IDalamudServices, IDisposable
     [PluginService]
     public IPartyList PartyList { get; init; } = null!;
 
+    [PluginService]
+    public IPlayerState PlayerState { get; init; } = null!;
+
     /// <inheritdoc/>
     [PluginService]
     public ISigScanner SigScanner { get; init; } = null!;

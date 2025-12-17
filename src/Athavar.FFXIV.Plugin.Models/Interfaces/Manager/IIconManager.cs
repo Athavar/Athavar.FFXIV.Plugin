@@ -7,7 +7,6 @@ namespace Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 
 using System.Diagnostics.CodeAnalysis;
 using Dalamud.Interface.Textures;
-using ImGuiScene;
 
 /// <summary>
 ///     Cache for icons.

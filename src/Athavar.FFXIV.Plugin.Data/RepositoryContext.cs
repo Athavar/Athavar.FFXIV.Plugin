@@ -27,6 +27,8 @@ public sealed class RepositoryContext : IDisposable
     private readonly IDefinitionManager definitionManager;
     private IDbConnection? connection;
 
+    static RepositoryContext() => SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
+
     public RepositoryContext(IPluginLogger logger, IDataManager dataManager, IDefinitionManager definitionManager, IConnectionStringReader connectionStringReader, IMigrationRunner migrationRunner)
     {
         this.logger = logger;
@@ -38,9 +40,6 @@ public sealed class RepositoryContext : IDisposable
         SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
         this.Initialize();
     }
-
-    static RepositoryContext() => SqlMapper.AddTypeHandler(new DateTimeOffsetTypeHandler());
-
     public ContentEncounterRepository ContentEncounter { get; private set; }
 
     /// <inheritdoc/>

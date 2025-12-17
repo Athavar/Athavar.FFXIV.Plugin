@@ -85,7 +85,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
         }
         else if (gameObject is IBattleNpc battleNpc)
         {
-            combatant = this.Combatants.FirstOrDefault(c => c.DataId == battleNpc.DataId);
+            combatant = this.Combatants.FirstOrDefault(c => c.DataId == battleNpc.BaseId);
             if (combatant is not null)
             {
                 goto end;
@@ -110,7 +110,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
             }
 
             // create new battle npc
-            combatant = new Combatant(this, oid, battleNpc.DataId)
+            combatant = new Combatant(this, oid, battleNpc.BaseId)
             {
                 OwnerId = ownerId,
                 Name = name,
@@ -145,7 +145,7 @@ internal sealed class Encounter : BaseEncounter<Combatant>
     public unsafe void UpdateParty(IDalamudServices services)
     {
         var groupManager = GroupManager.Instance();
-        var player = services.ClientState.LocalPlayer?.GameObjectId;
+        var player = services.ObjectTable.LocalPlayer?.GameObjectId;
         var group = groupManager->MainGroup;
         var isInAlliance = group.AllianceFlags > 0;
 

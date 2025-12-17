@@ -6,6 +6,7 @@
 namespace Athavar.FFXIV.Plugin.Common.Manager;
 
 using Athavar.FFXIV.Plugin.Common.Exceptions;
+using Athavar.FFXIV.Plugin.Common.Extension;
 using Athavar.FFXIV.Plugin.Models;
 using Athavar.FFXIV.Plugin.Models.Constants;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
@@ -153,7 +154,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
         var instance = this.GetGearsetModule();
         var gearsetId = instance->CurrentGearsetIndex;
         var name = this.GetName(gearsetId >= 0 ? instance->GetGearset(gearsetId) : null);
-        var player = this.dalamudServices.ClientState.LocalPlayer;
+        var player = this.dalamudServices.ObjectTable.LocalPlayer;
         instance->GetGearset(gearsetId);
 
         return new Gearset(
@@ -277,7 +278,7 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
                 throw new AthavarPluginException($"Fail to find baseParam for statId {statId}");
             }
 
-            var ilvlBase = this.GetColum(this.itemLevelSheet.GetRow(item.LevelItem.RowId), (StatIds)statId);
+            var ilvlBase = this.itemLevelSheet.GetRow(item.LevelItem.RowId).GetColum((StatIds)statId);
             if (ilvlBase is null)
             {
                 throw new AthavarPluginException($"Fail to find ilvlBase for ilvl {item.LevelItem.RowId} and statId {statId}");
@@ -287,89 +288,6 @@ internal sealed class GearsetManager : IGearsetManager, IDisposable
 
             stats[statId] += Math.Min(maxStat, value);
         }
-    }
-
-    public ushort? GetColum(ItemLevel sheet, StatIds id)
-    {
-        return id switch
-        {
-            StatIds.None => null,
-            StatIds.Strength => sheet.Strength,
-            StatIds.Dexterity => sheet.Dexterity,
-            StatIds.Vitality => sheet.Vitality,
-            StatIds.Intelligence => sheet.Intelligence,
-            StatIds.Mind => sheet.Mind,
-            StatIds.Piety => sheet.Piety,
-            StatIds.HP => sheet.HP,
-            StatIds.MP => sheet.MP,
-            StatIds.TP => sheet.TP,
-            StatIds.GP => sheet.GP,
-            StatIds.CP => sheet.CP,
-            StatIds.PhysicalDamage => sheet.PhysicalDamage,
-            StatIds.MagicalDamage => sheet.MagicalDamage,
-            StatIds.Delay => sheet.Delay,
-            StatIds.AdditionalEffect => sheet.AdditionalEffect,
-            StatIds.AttackSpeed => sheet.AttackSpeed,
-            StatIds.BlockRate => sheet.BlockRate,
-            StatIds.BlockStrength => sheet.BlockStrength,
-            StatIds.Tenacity => sheet.Tenacity,
-            StatIds.AttackPower => sheet.AttackPower,
-            StatIds.Defense => sheet.Defense,
-            StatIds.DirectHitRate => sheet.DirectHitRate,
-            StatIds.Evasion => sheet.Evasion,
-            StatIds.MagicDefense => sheet.MagicDefense,
-            StatIds.CriticalHitPower => sheet.CriticalHitPower,
-            StatIds.CriticalHitResilience => sheet.CriticalHitResilience,
-            StatIds.CriticalHit => sheet.CriticalHit,
-            StatIds.CriticalHitEvasion => sheet.CriticalHitEvasion,
-            StatIds.SlashingResistance => sheet.SlashingResistance,
-            StatIds.PiercingResistance => sheet.PiercingResistance,
-            StatIds.BluntResistance => sheet.BluntResistance,
-            StatIds.ProjectileResistance => sheet.ProjectileResistance,
-            StatIds.AttackMagicPotency => sheet.AttackMagicPotency,
-            StatIds.HealingMagicPotency => sheet.HealingMagicPotency,
-            StatIds.EnhancementMagicPotency => sheet.EnhancementMagicPotency,
-            StatIds.EnfeeblingMagicPotency => sheet.EnfeeblingMagicPotency,
-            StatIds.FireResistance => sheet.FireResistance,
-            StatIds.IceResistance => sheet.IceResistance,
-            StatIds.WindResistance => sheet.WindResistance,
-            StatIds.EarthResistance => sheet.EarthResistance,
-            StatIds.LightningResistance => sheet.LightningResistance,
-            StatIds.WaterResistance => sheet.WaterResistance,
-            StatIds.MagicResistance => sheet.MagicResistance,
-            StatIds.Determination => sheet.Determination,
-            StatIds.SkillSpeed => sheet.SkillSpeed,
-            StatIds.SpellSpeed => sheet.SpellSpeed,
-            StatIds.Haste => sheet.Haste,
-            StatIds.Morale => sheet.Morale,
-            StatIds.Enmity => sheet.Enmity,
-            StatIds.EnmityReduction => sheet.EnmityReduction,
-            StatIds.CarefulDesynthesis => sheet.CarefulDesynthesis,
-            StatIds.EXPBonus => sheet.EXPBonus,
-            StatIds.Regen => sheet.Regen,
-            StatIds.Refresh => sheet.Refresh,
-            StatIds.MovementSpeed => sheet.MovementSpeed,
-            StatIds.Spikes => sheet.Spikes,
-            StatIds.SlowResistance => sheet.SlowResistance,
-            StatIds.PetrificationResistance => sheet.PetrificationResistance,
-            StatIds.ParalysisResistance => sheet.ParalysisResistance,
-            StatIds.SilenceResistance => sheet.SilenceResistance,
-            StatIds.BlindResistance => sheet.BlindResistance,
-            StatIds.PoisonResistance => sheet.PoisonResistance,
-            StatIds.StunResistance => sheet.StunResistance,
-            StatIds.SleepResistance => sheet.SleepResistance,
-            StatIds.BindResistance => sheet.BindResistance,
-            StatIds.HeavyResistance => sheet.HeavyResistance,
-            StatIds.DoomResistance => sheet.DoomResistance,
-            StatIds.ReducedDurabilityLoss => sheet.ReducedDurabilityLoss,
-            StatIds.IncreasedSpiritbondGain => sheet.IncreasedSpiritbondGain,
-            StatIds.Craftsmanship => sheet.Craftsmanship,
-            StatIds.Control => sheet.Control,
-            StatIds.Gathering => sheet.Gathering,
-            StatIds.Perception => sheet.Perception,
-            StatIds.Unknown73 => sheet.Unknown0,
-            _ => throw new ArgumentOutOfRangeException(nameof(id), id, null),
-        };
     }
 
     private uint GetMaxStat(BaseParam param, Item item, uint ilvlBase)

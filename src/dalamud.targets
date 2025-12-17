@@ -1,5 +1,5 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Sdk Name="Dalamud.NET.Sdk" Version="13.0.0"/>
+    <Sdk Name="Dalamud.NET.Sdk" Version="14.0.1"/>
     <Import Project="$(SolutionDir)\src\library.targets"/>
 
     <PropertyGroup>

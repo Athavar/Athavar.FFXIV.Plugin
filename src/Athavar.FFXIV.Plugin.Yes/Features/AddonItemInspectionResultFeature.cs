@@ -38,13 +38,13 @@ internal class AddonItemInspectionResultFeature : OnSetupFeature
     protected override unsafe void OnSetupImpl(IntPtr addon, AddonEvent addonEvent)
     {
         var addonPtr = (AddonItemInspectionResult*)addon;
-        if (addonPtr->AtkUnitBase.UldManager.NodeListCount < 64)
+        if (addonPtr->AddonItemDetailBase.UldManager.NodeListCount < 64)
         {
             return;
         }
 
-        var nameNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[64];
-        var descNode = (AtkTextNode*)addonPtr->AtkUnitBase.UldManager.NodeList[55];
+        var nameNode = (AtkTextNode*)addonPtr->AddonItemDetailBase.UldManager.NodeList[64];
+        var descNode = (AtkTextNode*)addonPtr->AddonItemDetailBase.UldManager.NodeList[55];
         if (!nameNode->AtkResNode.IsVisible() || !descNode->AtkResNode.IsVisible())
         {
             return;

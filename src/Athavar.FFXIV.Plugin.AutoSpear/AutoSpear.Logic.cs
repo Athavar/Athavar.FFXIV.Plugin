@@ -27,7 +27,7 @@ internal sealed partial class AutoSpear
             return null;
         }
 
-        var id = this.dalamudServices.TargetManager.Target.DataId;
+        var id = this.dalamudServices.TargetManager.Target.BaseId;
         return !this.spearfishingSpots.TryGetValue(id, out var spot) ? null : spot;
     }
 

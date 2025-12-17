@@ -97,7 +97,7 @@ internal sealed class EorzeaCollectionTab : Tab
                 ImGui.SameLine();
                 if (ImGui.Button("Apply to Yourself", Vector2.Zero))
                 {
-                    var localPlayer = this.dalamudServices.ClientState.LocalPlayer;
+                    var localPlayer = this.dalamudServices.ObjectTable.LocalPlayer;
                     if (localPlayer != null)
                     {
                         this.ApplyTo(localPlayer);

@@ -397,7 +397,7 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
 
     private int EnsureStats()
     {
-        var localPlayer = this.Queue.DalamudServices.ClientState.LocalPlayer;
+        var localPlayer = this.Queue.DalamudServices.ObjectTable.LocalPlayer;
         if (localPlayer == null)
         {
             return -1000;
@@ -612,7 +612,7 @@ internal abstract class BaseCraftingJob : IBaseCraftingJob
 
     private StatModifiers?[] CurrentStatModifier()
     {
-        var player = this.Queue.DalamudServices.ClientState.LocalPlayer;
+        var player = this.Queue.DalamudServices.ObjectTable.LocalPlayer;
         if (player is null)
         {
             return new StatModifiers?[2];

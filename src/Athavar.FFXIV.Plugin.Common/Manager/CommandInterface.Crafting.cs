@@ -130,14 +130,14 @@ internal sealed partial class CommandInterface
     /// <inheritdoc/>
     public int GetCp()
     {
-        var cp = this.dalamudServices.ClientState.LocalPlayer?.CurrentCp ?? 0;
+        var cp = this.dalamudServices.ObjectTable.LocalPlayer?.CurrentCp ?? 0;
         return (int)cp;
     }
 
     /// <inheritdoc/>
     public int GetMaxCp()
     {
-        var cp = this.dalamudServices.ClientState.LocalPlayer?.MaxCp ?? 0;
+        var cp = this.dalamudServices.ObjectTable.LocalPlayer?.MaxCp ?? 0;
         return (int)cp;
     }
 

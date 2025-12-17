@@ -246,5 +246,5 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         this.EndRender();
     }
 
-    private float DistanceToPlayer(Vector3 center) => Vector3.Distance(this.dalamudServices.ClientState.LocalPlayer?.Position ?? Vector3.Zero, center);
+    private float DistanceToPlayer(Vector3 center) => Vector3.Distance(this.dalamudServices.ObjectTable.LocalPlayer?.Position ?? Vector3.Zero, center);
 }

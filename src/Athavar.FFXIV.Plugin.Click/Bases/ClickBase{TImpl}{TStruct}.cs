@@ -26,7 +26,9 @@ internal unsafe delegate nint ReceiveEventDelegate(AtkEventListener* eventListen
 /// </summary>
 /// <typeparam name="TImpl">The implementing type.</typeparam>
 /// <typeparam name="TStruct">FFXIVClientStructs addon type.</typeparam>
+#pragma warning disable SA1649 File name should match first type name
 public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
+#pragma warning restore SA1649
     where TImpl : class
     where TStruct : unmanaged
 {

@@ -74,7 +74,7 @@ public sealed class ConfigColor
 
     private static uint ColorConvertFloat4ToU32(Vector4 data)
     {
-        uint ToByte(float f) => (uint)((f < 0.0f ? 0.0f : f > 1.0f ? 1.0f : f) * 255.0f + 0.5f);
+        uint ToByte(float f) => (uint)(((f < 0.0f ? 0.0f : f > 1.0f ? 1.0f : f) * 255.0f) + 0.5f);
 
         var result = ToByte(data.X) << 0;
         result |= ToByte(data.Y) << 8;

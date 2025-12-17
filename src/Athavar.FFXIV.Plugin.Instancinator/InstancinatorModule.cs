@@ -209,7 +209,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         }
 
         var config = this.ModuleConfig;
-        if (!config.Enabled || this.dalamudServices.ClientState.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
+        if (!config.Enabled || this.dalamudServices.ObjectTable.LocalPlayer == null || this.dalamudServices.Condition[ConditionFlag.BoundByDuty] || !this.IsInstanced())
         {
             if (this.window != null)
             {
@@ -289,7 +289,11 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
     public struct AetheryteString(ExcelPage page, uint offset, uint row)
         : IExcelRow<AetheryteString>
     {
+        public uint RowOffset => offset;
+
         public uint RowId => row;
+
+        public ExcelPage ExcelPage => page;
 
         public readonly ReadOnlySeString Identifier => page.ReadString(offset, offset);
 

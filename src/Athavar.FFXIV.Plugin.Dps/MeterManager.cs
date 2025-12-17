@@ -9,7 +9,6 @@ using System.Numerics;
 using Athavar.FFXIV.Plugin.Config;
 using Athavar.FFXIV.Plugin.Dps.UI;
 using Athavar.FFXIV.Plugin.Models.Interfaces;
-using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 
@@ -28,22 +27,19 @@ internal sealed class MeterManager : IDisposable
     private readonly DpsConfiguration configuration;
     private readonly IDalamudServices services;
     private readonly IPluginWindow pluginWindow;
-    private readonly IOpcodeManager opcodeManager;
 
-    private readonly Opcode[] requiredOpcodes = [Opcode.ActionEffect1, Opcode.ActionEffect8, Opcode.ActionEffect16, Opcode.ActionEffect24, Opcode.ActionEffect32, Opcode.EffectResult, Opcode.ActorControl];
     private Lazy<DpsTab>? tab;
 
     private DateTime nextCacheReset = DateTime.MinValue;
 
-    public MeterManager(DpsConfiguration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow, IOpcodeManager opcodeManager)
+    public MeterManager(DpsConfiguration configuration, IServiceProvider provider, IDalamudServices services, IPluginWindow pluginWindow)
     {
         this.configuration = configuration;
         this.provider = provider;
         this.services = services;
         this.pluginWindow = pluginWindow;
-        this.opcodeManager = opcodeManager;
 
-        this.MissingOpCodes = []; // this.requiredOpcodes;
+        this.MissingOpCodes = [];
         this.Load();
 
         this.services.PluginInterface.UiBuilder.Draw += this.Draw;
@@ -98,7 +94,7 @@ internal sealed class MeterManager : IDisposable
 
     private void Draw()
     {
-        if (!this.CheckRequiredOpcodes() || !this.services.ClientState.IsLoggedIn || this.services.ClientState.IsPvPExcludingDen)
+        if (!this.services.ClientState.IsLoggedIn || this.services.ClientState.IsPvPExcludingDen)
         {
             return;
         }
@@ -128,33 +124,5 @@ internal sealed class MeterManager : IDisposable
 
             ImGui.End();
         }
-    }
-
-    private bool CheckRequiredOpcodes()
-    {
-        return true;
-        if (this.MissingOpCodes.Length == 0)
-        {
-            return true;
-        }
-
-        List<Opcode> missing = [];
-        foreach (var requiredOpcode in this.requiredOpcodes)
-        {
-            var code = this.opcodeManager.GetOpcode(requiredOpcode);
-            if (code == default)
-            {
-                missing.Add(requiredOpcode);
-            }
-        }
-
-        this.MissingOpCodes = missing.ToArray();
-
-        if (this.MissingOpCodes.Length == 0)
-        {
-            return true;
-        }
-
-        return false;
     }
 }

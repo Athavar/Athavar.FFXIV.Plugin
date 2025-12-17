@@ -47,6 +47,8 @@ public interface IDalamudServices
 
     IPartyList PartyList { get; }
 
+    IPlayerState PlayerState { get; }
+
     IPluginLogger PluginLogger { get; }
 
     ISigScanner SigScanner { get; }

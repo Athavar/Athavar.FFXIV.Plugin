@@ -133,7 +133,7 @@ internal sealed partial class CommandInterface : ICommandInterface
 
     private bool IsObjectInReach(IGameObject gameObject, Vector3? playerPosition = null, float distance = 10f)
     {
-        playerPosition ??= this.dalamudServices.ClientState.LocalPlayer?.Position;
+        playerPosition ??= this.dalamudServices.ObjectTable.LocalPlayer?.Position;
         if (playerPosition is null)
         {
             return false;
@@ -144,7 +144,7 @@ internal sealed partial class CommandInterface : ICommandInterface
 
     private IGameObject? FindNearestGameObject(string targetName, ObjectKind? objectKind)
     {
-        if (!this.IsLoggedIn() || this.dalamudServices.ClientState.LocalPlayer is not { } player)
+        if (!this.IsLoggedIn() || this.dalamudServices.ObjectTable.LocalPlayer is not { } player)
         {
             return null;
         }

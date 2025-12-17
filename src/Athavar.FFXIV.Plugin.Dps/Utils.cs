@@ -81,7 +81,7 @@ internal sealed class Utils
             _ => false,
         };
 
-    public string ObjectString(IGameObject obj) => $"{obj.DataId:X} '{obj.Name}' <{obj.EntityId:X}>";
+    public string ObjectString(IGameObject obj) => $"{obj.BaseId:X} '{obj.Name}' <{obj.EntityId:X}>";
 
     public string ObjectString(ulong id)
     {

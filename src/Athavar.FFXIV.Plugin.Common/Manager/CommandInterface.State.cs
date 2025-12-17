@@ -18,7 +18,7 @@ internal sealed partial class CommandInterface
     public ushort GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
 
     /// <inheritdoc/>
-    public byte GetCurrentJob() => (byte?)this.dalamudServices.ClientState.LocalPlayer?.ClassJob.RowId ?? 0;
+    public byte GetCurrentJob() => (byte?)this.dalamudServices.ObjectTable.LocalPlayer?.ClassJob.RowId ?? 0;
 
     /// <inheritdoc/>
     public string? GetCurrentTarget() => this.dalamudServices.TargetManager.Target?.Name.ToString();
@@ -66,7 +66,7 @@ internal sealed partial class CommandInterface
     /// <inheritdoc/>
     public bool HasStatusId(params uint[] statusIDs)
     {
-        var statusId = this.dalamudServices.ClientState.LocalPlayer!.StatusList
+        var statusId = this.dalamudServices.ObjectTable.LocalPlayer!.StatusList
            .Select(se => se.StatusId)
            .ToList().Intersect(statusIDs)
            .FirstOrDefault();

@@ -50,7 +50,8 @@ public static class DependencyInjection
            .AddSingleton<EventCaptureManager>()
            .AddSingleton<IPluginLogger>(o => o.GetRequiredService<IDalamudServices>().PluginLogger)
            .AddSingleton<IDataManager>(o => o.GetRequiredService<IDalamudServices>().DataManager)
-           .AddSingleton<IClientState>(o => o.GetRequiredService<IDalamudServices>().ClientState);
+           .AddSingleton<IClientState>(o => o.GetRequiredService<IDalamudServices>().ClientState)
+           .AddSingleton<IPlayerState>(o => o.GetRequiredService<IDalamudServices>().PlayerState);
 
         return services;
     }

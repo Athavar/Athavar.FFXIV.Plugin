@@ -107,7 +107,7 @@ internal class RecipeCommand : MacroCommand
             case 1:
                 return founds.First().RowId;
             default:
-                var jobId = DalamudServices.ClientState.LocalPlayer?.ClassJob.RowId;
+                var jobId = DalamudServices.ObjectTable.LocalPlayer?.ClassJob.RowId;
 
                 Recipe? recipe = recipes.FirstOrDefault(r => this.GetClassJobId(r) == jobId);
                 if (recipe == null)
