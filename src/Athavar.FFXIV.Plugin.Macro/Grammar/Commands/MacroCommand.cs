@@ -190,13 +190,45 @@ internal abstract class MacroCommand
     /// <param name="action">Action to execute.</param>
     /// <param name="token">Cancellation token.</param>
     /// <returns>A value indicating whether the action succeeded.</returns>
-    /// <typeparam name="T">Result type.</typeparam>
     protected async Task<bool> LinearWait(int interval, int until, Func<bool> action, CancellationToken token)
     {
         var totalWait = 0;
         while (true)
         {
             var success = action();
+            if (success)
+            {
+                return true;
+            }
+
+            totalWait += interval;
+            if (totalWait > until)
+            {
+                return false;
+            }
+
+            await Task.Delay(interval, token);
+        }
+    }
+
+    /// <summary>
+    ///     Perform an action every <paramref name="interval"/> seconds until either the action succeeds or
+    ///     <paramref name="until"/> seconds elapse.
+    /// </summary>
+    /// <param name="interval">Action execution interval.</param>
+    /// <param name="until">Maximum time to wait.</param>
+    /// <param name="action">Action to execute.</param>
+    /// <param name="token">Cancellation token.</param>
+    /// <returns>A value indicating whether the action succeeded.</returns>
+    protected async Task<bool> LinearWait(int interval, int until, Func<CancellationToken, Task<bool>> action, CancellationToken token)
+    {
+        var totalWait = 0;
+        while (true)
+        {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            cts.CancelAfter(interval);
+
+            var success = await action(cts.Token);
             if (success)
             {
                 return true;

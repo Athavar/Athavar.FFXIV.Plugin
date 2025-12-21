@@ -91,5 +91,5 @@ internal class CheckCommand : MacroCommand
         await this.PerformWait(token);
     }
 
-    private bool IsConditionFulfilled() => conditionCheck!.Check(this.category, this.condition);
+    private Task<bool> IsConditionFulfilled(CancellationToken token) => conditionCheck!.Check(this.category, this.condition, token);
 }

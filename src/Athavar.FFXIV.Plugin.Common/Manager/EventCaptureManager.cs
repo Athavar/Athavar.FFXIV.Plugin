@@ -29,7 +29,7 @@ public sealed class EventCaptureManager : IDisposable
 
     public delegate void ActorControlEventDelegation(ActorControlCategory category, IGameObject actor, uint param1, uint param2, uint param3, uint param4);
 
-    private delegate void ActorControlSelfDelegate(uint entityId, uint type, uint a3, uint a4, uint a5, uint a6, uint a7, uint a8, ulong a9, byte flag);
+    private delegate void ActorControlSelfDelegate(uint entityId, uint type, uint a3, uint a4, uint a5, uint a6, uint a7, uint a8, uint a9, uint a10, ulong a11, byte flag);
 
     public event ActorControlEventDelegation? ActorControlEvent;
 
@@ -41,9 +41,9 @@ public sealed class EventCaptureManager : IDisposable
         this.actorControlSelfHook?.Dispose();
     }
 
-    private void OnActorControl(uint entityId, uint type, uint param1, uint param2, uint param3, uint param4, uint a7, uint a8, ulong a9, byte flag)
+    private void OnActorControl(uint entityId, uint type, uint param1, uint param2, uint param3, uint param4, uint a7, uint a8, uint a9, uint a10, ulong a11, byte flag)
     {
-        this.actorControlSelfHook!.OriginalDisposeSafe(entityId, type, param1, param2, param3, param4, a7, a8, a9, flag);
+        this.actorControlSelfHook!.OriginalDisposeSafe(entityId, type, param1, param2, param3, param4, a7, a8, a9, a10, a11, flag);
         var entity = this.objectTable.SearchById(entityId);
         if (entity is null)
         {

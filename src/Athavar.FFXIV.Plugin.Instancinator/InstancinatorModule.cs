@@ -132,7 +132,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
             case 1188: // Kozama'uka
                 return 6;*/
             default:
-                return 3;
+                return 2;
         }
     }
 
