@@ -93,7 +93,7 @@
       "8738": "hunter's bite",
       "damage": [
         {
-          "potency": 130
+          "potency": 180
         }
       ]
     },
@@ -101,7 +101,7 @@
       "8739": "swiftskin's bite",
       "damage": [
         {
-          "potency": 130
+          "potency": 180
         }
       ]
     },
@@ -109,7 +109,7 @@
       "873a": "jagged maw",
       "damage": [
         {
-          "potency": 140
+          "potency": 180
         }
       ]
     },
@@ -117,7 +117,7 @@
       "873b": "bloodied maw",
       "damage": [
         {
-          "potency": 140
+          "potency": 180
         }
       ]
     },
@@ -133,7 +133,7 @@
       "874b": "last lash",
       "damage": [
         {
-          "potency": 100
+          "potency": 120
         }
       ]
     },
@@ -165,7 +165,7 @@
       "873f": "vicepit",
       "damage": [
         {
-          "potency": 220
+          "potency": 250
         }
       ]
     },
@@ -173,7 +173,7 @@
       "8740": "hunter's den",
       "damage": [
         {
-          "potency": 280
+          "potency": 300
         }
       ]
     },
@@ -181,7 +181,7 @@
       "8741": "swiftskin's den",
       "damage": [
         {
-          "potency": 280
+          "potency": 300
         }
       ]
     },
@@ -225,7 +225,7 @@
           "targetindex": 0
         },
         {
-          "potency": 272
+          "potency": 170
         }
       ]
     },
@@ -237,7 +237,7 @@
           "targetindex": 0
         },
         {
-          "potency": 263
+          "potency": 150
         }
       ]
     },
@@ -297,7 +297,7 @@
           "targetindex": 0
         },
         {
-          "potency": 403
+          "potency": 230
         }
       ]
     },
@@ -309,7 +309,7 @@
           "targetindex": 0
         },
         {
-          "potency": 112
+          "potency": 64
         }
       ]
     },
@@ -321,7 +321,7 @@
           "targetindex": 0
         },
         {
-          "potency": 112
+          "potency": 64
         }
       ]
     },
@@ -333,7 +333,7 @@
           "targetindex": 0
         },
         {
-          "potency": 112
+          "potency": 64
         }
       ]
     },
@@ -345,7 +345,7 @@
           "targetindex": 0
         },
         {
-          "potency": 112
+          "potency": 64
         }
       ]
     }

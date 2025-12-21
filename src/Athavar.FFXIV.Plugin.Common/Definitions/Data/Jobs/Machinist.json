@@ -91,7 +91,7 @@
       "4072": "drill",
       "damage": [
         {
-          "potency": 620
+          "potency": 660
         }
       ]
     },
@@ -125,7 +125,7 @@
       "4074": "air anchor",
       "damage": [
         {
-          "potency": 620
+          "potency": 660
         }
       ]
     },
@@ -181,11 +181,11 @@
       "64bc": "chain saw",
       "damage": [
         {
-          "potency": 620,
+          "potency": 660,
           "targetindex": 0
         },
         {
-          "potency": 465
+          "potency": 495
         }
       ]
     },
@@ -257,11 +257,11 @@
       "9075": "excavator",
       "damage": [
         {
-          "potency": 620,
+          "potency": 660,
           "targetindex": 0
         },
         {
-          "potency": 465
+          "potency": 495
         }
       ]
     },

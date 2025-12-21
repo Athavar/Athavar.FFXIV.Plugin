@@ -247,11 +247,11 @@
       "908d": "vice of thorns",
       "damage": [
         {
-          "potency": 900,
+          "potency": 950,
           "targetindex": 0
         },
         {
-          "potency": 405
+          "potency": 427
         }
       ]
     },
@@ -344,7 +344,7 @@
       "potency": [
         {
           "type": "damagedonemultiplier",
-          "amount": 5,
+          "amount": 10,
           "limittodamagetype": "Magic"
         }
       ]

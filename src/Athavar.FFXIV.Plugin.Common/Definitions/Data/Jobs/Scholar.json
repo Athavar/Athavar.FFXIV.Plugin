@@ -247,7 +247,7 @@
       "767": "biolysis",
       "timeproc": {
         "type": "dot",
-        "potency": 80,
+        "potency": 85,
         "damagetype": "magic",
         "maxticks": 10
       }

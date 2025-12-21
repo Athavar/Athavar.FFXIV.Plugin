@@ -175,10 +175,10 @@
       "3E85": "saber dance",
       "damage": [
         {
-          "potency": 208
+          "potency": 216
         },
         {
-          "potency": 520,
+          "potency": 540,
           "targetindex": 0
         }
       ]
@@ -199,10 +199,10 @@
       "64bf": "fan dance iv",
       "damage": [
         {
-          "potency": 168
+          "potency": 184
         },
         {
-          "potency": 420,
+          "potency": 460,
           "targetindex": 0
         }
       ]
@@ -223,10 +223,10 @@
       "9077": "last dance",
       "damage": [
         {
-          "potency": 208
+          "potency": 216
         },
         {
-          "potency": 520,
+          "potency": 540,
           "targetindex": 0
         }
       ]

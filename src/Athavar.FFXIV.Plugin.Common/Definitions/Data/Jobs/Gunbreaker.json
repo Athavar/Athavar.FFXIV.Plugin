@@ -60,7 +60,7 @@
       "3F22": "burst strike",
       "damage": [
         {
-          "potency": 460
+          "potency": 420
         }
       ]
     },
@@ -77,7 +77,7 @@
       "3F19": "sonic break",
       "damage": [
         {
-          "potency": 300
+          "potency": 340
         }
       ]
     },
@@ -85,7 +85,7 @@
       "3F12": "gnashing fang",
       "damage": [
         {
-          "potency": 500
+          "potency": 440
         }
       ]
     },
@@ -93,7 +93,7 @@
       "3F13": "savage claw",
       "damage": [
         {
-          "potency": 560
+          "potency": 500
         }
       ]
     },
@@ -101,7 +101,7 @@
       "3F16": "wicked talon",
       "damage": [
         {
-          "potency": 620
+          "potency": 560
         }
       ]
     },
@@ -117,7 +117,7 @@
       "3F1C": "jugular rip",
       "damage": [
         {
-          "potency": 240
+          "potency": 220
         }
       ]
     },
@@ -125,7 +125,7 @@
       "3F1D": "abdomen tear",
       "damage": [
         {
-          "potency": 280
+          "potency": 260
         }
       ]
     },
@@ -133,7 +133,7 @@
       "3F1E": "eye gouge",
       "damage": [
         {
-          "potency": 320
+          "potency": 300
         }
       ]
     },
@@ -157,7 +157,7 @@
       "649F": "hypervelocity",
       "damage": [
         {
-          "potency": 200
+          "potency": 180
         }
       ]
     },
@@ -165,11 +165,11 @@
       "64a0": "double down",
       "damage": [
         {
-          "potency": 1200,
+          "potency": 1000,
           "targetindex": 0
         },
         {
-          "potency": 1020
+          "potency": 850
         }
       ]
     },
@@ -193,11 +193,11 @@
       "9049": "reign of beasts",
       "damage": [
         {
-          "potency": 1000,
+          "potency": 800,
           "targetindex": 0
         },
         {
-          "potency": 600
+          "potency": 320
         }
       ]
     },
@@ -205,11 +205,11 @@
       "904a": "noble blood",
       "damage": [
         {
-          "potency": 1100,
+          "potency": 900,
           "targetindex": 0
         },
         {
-          "potency": 660
+          "potency": 360
         }
       ]
     },
@@ -217,11 +217,11 @@
       "904b": "lion heart",
       "damage": [
         {
-          "potency": 1200,
+          "potency": 1000,
           "targetindex": 0
         },
         {
-          "potency": 480
+          "potency": 400
         }
       ]
     }
@@ -273,7 +273,7 @@
       "72D": "sonic break",
       "timeproc": {
         "type": "dot",
-        "potency": "60",
+        "potency": "120",
         "maxticks": 10
       }
     },

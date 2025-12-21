@@ -4835,6 +4835,66 @@
     "F": "le coffre d\u0027Oneiron",
     "J": "\u5B9D\u7269\u5EAB \u30DC\u30EB\u30C8\u30FB\u30AA\u30CD\u30A4\u30ED\u30F3"
   },
+  "1281": {
+    "E": "Pilgrim\u0027s Traverse (Stones 1-10)",
+    "G": "Pilgers Pfad (Ebenen 1-10)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 1-10)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C1\uFF5E10\u5DE1\u793C\u8DEF"
+  },
+  "1282": {
+    "E": "Pilgrim\u0027s Traverse (Stones 11-20)",
+    "G": "Pilgers Pfad (Ebenen 11-20)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 11-20)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C11\uFF5E20\u5DE1\u793C\u8DEF"
+  },
+  "1283": {
+    "E": "Pilgrim\u0027s Traverse (Stones 21-30)",
+    "G": "Pilgers Pfad (Ebenen 21-30)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 21-30)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C21\uFF5E30\u5DE1\u793C\u8DEF"
+  },
+  "1284": {
+    "E": "Pilgrim\u0027s Traverse (Stones 31-40)",
+    "G": "Pilgers Pfad (Ebenen 31-40)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 31-40)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C31\uFF5E40\u5DE1\u793C\u8DEF"
+  },
+  "1285": {
+    "E": "Pilgrim\u0027s Traverse (Stones 41-50)",
+    "G": "Pilgers Pfad (Ebenen 41-50)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 41-50)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C41\uFF5E50\u5DE1\u793C\u8DEF"
+  },
+  "1286": {
+    "E": "Pilgrim\u0027s Traverse (Stones 51-60)",
+    "G": "Pilgers Pfad (Ebenen 51-60)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 51-60)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C51\uFF5E60\u5DE1\u793C\u8DEF"
+  },
+  "1287": {
+    "E": "Pilgrim\u0027s Traverse (Stones 61-70)",
+    "G": "Pilgers Pfad (Ebenen 61-70)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 61-70)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C61\uFF5E70\u5DE1\u793C\u8DEF"
+  },
+  "1288": {
+    "E": "Pilgrim\u0027s Traverse (Stones 71-80)",
+    "G": "Pilgers Pfad (Ebenen 71-80)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 71-80)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C71\uFF5E80\u5DE1\u793C\u8DEF"
+  },
+  "1289": {
+    "E": "Pilgrim\u0027s Traverse (Stones 81-90)",
+    "G": "Pilgers Pfad (Ebenen 81-90)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 81-90)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C81\uFF5E90\u5DE1\u793C\u8DEF"
+  },
+  "1290": {
+    "E": "Pilgrim\u0027s Traverse (Stones 91-100)",
+    "G": "Pilgers Pfad (Ebenen 91-100)",
+    "F": "Le Sanctuaire des p\u00E8lerins (zones 91-100)",
+    "J": "\u30D4\u30EB\u30B0\u30EA\u30E0\u30FB\u30C8\u30E9\u30D0\u30FC\u30B9 \u7B2C91\uFF5E100\u5DE1\u793C\u8DEF"
+  },
   "1292": {
     "E": "the Meso Terminal",
     "G": "Das Meso-System",
@@ -4853,6 +4913,18 @@
     "F": "La N\u00E9cropole intemporelle (extr\u00EAme)",
     "J": "\u6975\u6C38\u9060\u306E\u95C7\u8A0E\u6EC5\u6226"
   },
+  "1298": {
+    "E": "the P\u00E2tisserie",
+    "G": "Die P\u00E2tisserie",
+    "F": "La P\u00E2tisserie de la Valention",
+    "J": "\u30F4\u30A1\u30EC\u30F3\u30C6\u30A3\u30AA\u30F3\u30D1\u30C6\u30A3\u30B9\u30EA\u30FC"
+  },
+  "1300": {
+    "E": "the Windward Wilds",
+    "G": "Jagd auf W\u00E4chter-Arkveld",
+    "F": "Chasse \u00E0 l\u0027Arkveld Gardien",
+    "J": "\u8B77\u7ADC\u30A2\u30EB\u30B7\u30E5\u30D9\u30EB\u30C9\u72E9\u731F\u6226"
+  },
   "1302": {
     "E": "the Wreath of Snakes (Unreal)",
     "G": "Traumpr\u00FCfung - Seiryu",
@@ -4870,5 +4942,119 @@
     "G": "San d\u0027Oria: Die zweite Etappe",
     "F": "San d\u0027Oria - La deuxi\u00E8me perambulation",
     "J": "\u30B5\u30F3\u30C9\u30EA\u30A2\uFF1A\u30B6\u30FB\u30BB\u30AB\u30F3\u30C9\u30A6\u30A9\u30FC\u30AF"
+  },
+  "1306": {
+    "E": "the Windward Wilds (Extreme)",
+    "G": "Jagd auf W\u00E4chter-Arkveld (schwer)",
+    "F": "Chasse \u00E0 l\u0027Arkveld Gardien (extr\u00EAme)",
+    "J": "\u6975\u8B77\u7ADC\u30A2\u30EB\u30B7\u30E5\u30D9\u30EB\u30C9\u72E9\u731F\u6226"
+  },
+  "1307": {
+    "E": "Hell on Rails",
+    "G": "Zel Tajaal - Doomtrain",
+    "F": "Le Convoi mal\u00E9fique",
+    "J": "\u30B0\u30E9\u30B7\u30E3\u30E9\u30DC\u30E9\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "1308": {
+    "E": "Hell on Rails (Extreme)",
+    "G": "Gok Tajaal - Doomtrain",
+    "F": "Le Convoi mal\u00E9fique (extr\u00EAme)",
+    "J": "\u6975\u30B0\u30E9\u30B7\u30E3\u30E9\u30DC\u30E9\u30B9\u8A0E\u6EC5\u6226"
+  },
+  "1311": {
+    "E": "the Final Verse (Quantum)",
+    "G": "Eminente Trauer (variabel)",
+    "F": "Le Verset final (quantique)",
+    "J": "\u8A69\u60F3\u30A8\u30DF\u30CD\u30F3\u30C8\u30B0\u30EA\u30FC\u30D5\u8A0E\u6EC5\u6226"
+  },
+  "1313": {
+    "E": "Worqor Chirteh (Triumph)",
+    "G": "Worqor Chirteh (Triumph)",
+    "F": "Worqor Chirteh (man\u0153uvre)",
+    "J": "\u30A6\u30A9\u30FC\u30B3\u30FC\u30FB\u30C1\u30FC\u30C6 (\u6F14\u7FD2\u6226)"
+  },
+  "1314": {
+    "E": "Mistwake",
+    "G": "Die Nebeltrift",
+    "F": "Le Sillage brumeux",
+    "J": "\u907A\u5FD8\u884C\u8DEF \u30DF\u30B9\u30C8\u30A6\u30A7\u30A4\u30AF"
+  },
+  "1318": {
+    "E": "Tsukuyomi\u0027s Pain (Unreal)",
+    "G": "Traumpr\u00FCfung - Tsukuyomi",
+    "F": "Castrum Fluminis (irr\u00E9el)",
+    "J": "\u5E7B\u30C4\u30AF\u30E8\u30DF\u8A0E\u6EC5\u6226"
+  },
+  "1320": {
+    "E": "AAC Heavyweight M1",
+    "G": "Arkadion - Superschwergewicht R1",
+    "F": "Poids lourds CCA - match 1",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30D8\u30D3\u30FC\u7D1A1"
+  },
+  "1321": {
+    "E": "AAC Heavyweight M1 (Savage)",
+    "G": "Arkadion - Superschwergewicht R1 (episch)",
+    "F": "Poids lourds CCA - match 1 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30D8\u30D3\u30FC\u7D1A1"
+  },
+  "1322": {
+    "E": "AAC Heavyweight M2",
+    "G": "Arkadion - Superschwergewicht R2",
+    "F": "Poids lourds CCA - match 2",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30D8\u30D3\u30FC\u7D1A2"
+  },
+  "1323": {
+    "E": "AAC Heavyweight M2 (Savage)",
+    "G": "Arkadion - Superschwergewicht R2 (episch)",
+    "F": "Poids lourds CCA - match 2 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30D8\u30D3\u30FC\u7D1A2"
+  },
+  "1324": {
+    "E": "AAC Heavyweight M3",
+    "G": "Arkadion - Superschwergewicht R3",
+    "F": "Poids lourds CCA - match 3",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30D8\u30D3\u30FC\u7D1A3"
+  },
+  "1325": {
+    "E": "AAC Heavyweight M3 (Savage)",
+    "G": "Arkadion - Superschwergewicht R3 (episch)",
+    "F": "Poids lourds CCA - match 3 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30D8\u30D3\u30FC\u7D1A3"
+  },
+  "1326": {
+    "E": "AAC Heavyweight M4",
+    "G": "Arkadion - Superschwergewicht R4",
+    "F": "Poids lourds CCA - match 4",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\uFF1A\u30D8\u30D3\u30FC\u7D1A4"
+  },
+  "1327": {
+    "E": "AAC Heavyweight M4 (Savage)",
+    "G": "Arkadion - Superschwergewicht R4 (episch)",
+    "F": "Poids lourds CCA - match 4 (sadique)",
+    "J": "\u81F3\u5929\u306E\u5EA7\u30A2\u30EB\u30AB\u30C7\u30A3\u30A2\u96F6\u5F0F\uFF1A\u30D8\u30D3\u30FC\u7D1A4"
+  },
+  "1328": {
+    "E": "Where We Call Home",
+    "G": "Die H\u00FCterin Trenos",
+    "F": "Solidarit\u00E9 entre voisins",
+    "J": "\u96A3\u4EBA\u3068\u624B\u3092\u53D6\u308A\u5408\u3044\u3066"
+  },
+  "1330": {
+    "E": "Dzemael Darkhold",
+    "G": "Die Feste Dzemael",
+    "F": "la Forteresse de Dzemael",
+    "J": "\u6383\u8A0E\u4F5C\u6226 \u30BC\u30FC\u30E1\u30EB\u8981\u585E"
+  },
+  "1331": {
+    "E": "the Aurum Vale",
+    "G": "Goldklamm",
+    "F": "le Val d\u0027Aurum",
+    "J": "\u9727\u4E2D\u884C\u8ECD \u30AA\u30FC\u30E9\u30E0\u30F4\u30A7\u30A4\u30EB"
+  },
+  "1333": {
+    "E": "the Final Verse",
+    "G": "Eminente Trauer",
+    "F": "Le Verset final",
+    "J": "\u30A8\u30DF\u30CD\u30F3\u30C8\u30B0\u30EA\u30FC\u30D5\u8A0E\u6EC5\u6226"
   }
 }
