@@ -8,6 +8,7 @@ namespace Athavar.FFXIV.Plugin.Click.Clicks;
 using Athavar.FFXIV.Plugin.Click.Attributes;
 using Athavar.FFXIV.Plugin.Click.Bases;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 /// <summary>
 ///     Adddon SalvageDialog.
@@ -23,6 +24,8 @@ public sealed unsafe class ClickSalvageDialog : ClickBase<ClickSalvageDialog, Ad
     {
     }
 
+    private AtkComponentButton* DesynthesizeButton => this.Addon->GetComponentButtonById(25);
+
     public static implicit operator ClickSalvageDialog(nint addon) => new(addon);
 
     /// <summary>
@@ -36,7 +39,11 @@ public sealed unsafe class ClickSalvageDialog : ClickBase<ClickSalvageDialog, Ad
     ///     Click the desynthesize button.
     /// </summary>
     [ClickName("desynthesize")]
-    public void Desynthesize() => this.ClickAddonButton(this.Addon->DesynthesizeButton, 1);
+    public void Desynthesize() => this.ClickAddonButton(this.DesynthesizeButton);
+    /*
+     * TODO: readd, when CS is fixed.
+     * public void Desynthesize() => this.ClickAddonButton(this.Addon->DesynthesizeButton, 1);
+     */
 
     /// <summary>
     ///     Click the desynthesize checkbox button.
@@ -45,6 +52,7 @@ public sealed unsafe class ClickSalvageDialog : ClickBase<ClickSalvageDialog, Ad
     [ClickName("desynthesize_checkbox")]
     public void CheckBox(bool select = true)
     {
-        this.FireCallback(13, select);
+        // TODO: readd, when CS is fixed.
+        // this.FireCallback(13, select);
     }
 }

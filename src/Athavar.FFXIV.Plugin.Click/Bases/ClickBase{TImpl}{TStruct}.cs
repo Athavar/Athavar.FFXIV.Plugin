@@ -51,9 +51,15 @@ public abstract unsafe class ClickBase<TImpl, TStruct> : ClickBase<TImpl>
     ///     Send a click.
     /// </summary>
     /// <param name="target">Target node.</param>
-    /// <param name="type">Event type.</param>
-    protected void ClickAddonButton(AtkComponentButton* target, AtkEventType type = AtkEventType.ButtonClick)
+    protected void ClickAddonButton(AtkComponentButton* target)
     {
+        /*
+        if (!target->IsEnabled || !target->AtkResNode->IsVisible())
+        {
+            return;
+        }
+        */
+
         var btnRes = target->AtkComponentBase.OwnerNode->AtkResNode;
         var evt = btnRes.AtkEventManager.Event;
 
