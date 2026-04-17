@@ -66,7 +66,25 @@ internal sealed partial class AutoSpear
 
         this.fishData[index] = $"Line {index}: {(int)center}, x1={(int)posStart}, x2={(int)posEnd}, Speed={info.Speed}, Size={info.Size}, Name: {text}";
 
-        if (this.configuration.FishMatchText is null || !Regex.IsMatch(text, this.configuration.FishMatchText))
+        if (string.IsNullOrWhiteSpace(this.configuration.FishMatchText))
+        {
+            return;
+        }
+
+        var patterns = this.configuration.FishMatchText
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        bool matches = false;
+        foreach (var pattern in patterns)
+        {
+            if (Regex.IsMatch(text, pattern))
+            {
+                matches = true;
+                break;
+            }
+        }
+
+        if (!matches)
         {
             return;
         }
