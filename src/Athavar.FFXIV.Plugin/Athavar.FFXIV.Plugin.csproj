@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="$(SolutionDir)\src\dalamud.targets"/>
+    <Import Project="$(SolutionDir)\src\dalamud.targets" />
 
     <PropertyGroup>
         <Use_DalamudPackager>true</Use_DalamudPackager>
@@ -35,21 +35,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.AutoSpear\Athavar.FFXIV.Plugin.AutoSpear.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Cheat\Athavar.FFXIV.Plugin.Cheat.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Click\Athavar.FFXIV.Plugin.Click.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftQueue\Athavar.FFXIV.Plugin.CraftQueue.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Data\Athavar.FFXIV.Plugin.Data.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Dps\Athavar.FFXIV.Plugin.Dps.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.DutyHistory\Athavar.FFXIV.Plugin.DutyHistory.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Importer\Athavar.FFXIV.Plugin.Importer.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.OpcodeWizard\Athavar.FFXIV.Plugin.OpcodeWizard.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.SliceIsRight\Athavar.FFXIV.Plugin.SliceIsRight.csproj"/>
-        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Yes\Athavar.FFXIV.Plugin.Yes.csproj"/>
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.AutoSpear\Athavar.FFXIV.Plugin.AutoSpear.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Cheat\Athavar.FFXIV.Plugin.Cheat.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Click\Athavar.FFXIV.Plugin.Click.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Common\Athavar.FFXIV.Plugin.Common.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftQueue\Athavar.FFXIV.Plugin.CraftQueue.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.CraftSimulator\Athavar.FFXIV.Plugin.CraftSimulator.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Data\Athavar.FFXIV.Plugin.Data.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Dps\Athavar.FFXIV.Plugin.Dps.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.DutyHistory\Athavar.FFXIV.Plugin.DutyHistory.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Importer\Athavar.FFXIV.Plugin.Importer.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Instancinator\Athavar.FFXIV.Plugin.Instancinator.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Macro\Athavar.FFXIV.Plugin.Macro.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.OpcodeWizard\Athavar.FFXIV.Plugin.OpcodeWizard.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.SliceIsRight\Athavar.FFXIV.Plugin.SliceIsRight.csproj" />
+        <ProjectReference Include="..\Athavar.FFXIV.Plugin.Yes\Athavar.FFXIV.Plugin.Yes.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -59,6 +59,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Update="DalamudPackager" Version="14.0.1"/>
+        <PackageReference Update="DalamudPackager" Version="14.0.1" />
     </ItemGroup>
 </Project>
