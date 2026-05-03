@@ -61,7 +61,7 @@ internal sealed class InstancinatorModule : Module<InstancinatorTab, Instancinat
         this.frameworkManager = frameworkManager;
 
         var aetheryteSheet = this.dalamudServices.DataManager.Excel.GetSheet<AetheryteString>() ?? throw new Exception("Sheet transport/Aetheryte missing");
-        var text = aetheryteSheet.GetRow(12).String.ExtractText();
+        var text = aetheryteSheet.GetRow(14).String.ExtractText();
         this.travelToInstancedArea = text.Trim();
         this.aetheryteTarget = this.dalamudServices.DataManager.Excel.GetSheet<Aetheryte>().GetRow(0).Singular.ExtractText();
 
