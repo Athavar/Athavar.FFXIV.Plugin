@@ -42,7 +42,7 @@ public sealed class Plugin : IDalamudPlugin
     private readonly IDalamudPluginInterface pluginInterface;
 
     private readonly ServiceProvider provider;
-    private readonly PluginService servive;
+    private readonly PluginService service;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="Plugin"/> class.
@@ -53,14 +53,14 @@ public sealed class Plugin : IDalamudPlugin
         this.pluginInterface = pluginInterface;
 
         this.provider = this.BuildProvider();
-        this.servive = this.provider.GetRequiredService<PluginService>();
-        this.servive.Start();
+        this.service = this.provider.GetRequiredService<PluginService>();
+        this.service.Start();
     }
 
     /// <inheritdoc/>
     public void Dispose()
     {
-        this.servive.Stop();
+        this.service.Stop();
         this.provider.DisposeAsync().GetAwaiter().GetResult();
     }
 

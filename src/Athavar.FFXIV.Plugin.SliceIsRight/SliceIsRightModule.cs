@@ -79,7 +79,7 @@ public sealed class SliceIsRightModule : Module<SliceIsRightConfiguration>, IDis
         }
     }
 
-    private void TerritoryChanged(ushort e)
+    private void TerritoryChanged(uint e)
     {
         var oldState = this.IsInGoldSaucer;
         this.IsInGoldSaucer = e == GoldSaucerTerritoryId;

@@ -96,7 +96,7 @@ internal sealed class CraftQueueTab : Tab
         base.Dispose();
     }
 
-    private void OnTerritoryChanged(ushort obj)
+    private void OnTerritoryChanged(uint obj)
     {
 #if DEBUG
         this.tabBarHandler.SetEnableState(CosmicTab.Id, this.commandInterface.IsInCosmicExploration());

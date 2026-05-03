@@ -11,7 +11,7 @@ public partial interface ICommandInterface
     ///     Gets the Id of the current territory.
     /// </summary>
     /// <returns>returns the territory row id.</returns>
-    ushort GetCurrentTerritory();
+    uint GetCurrentTerritory();
 
     /// <summary>
     ///     Get the name of the current selected target.

@@ -26,7 +26,7 @@ internal abstract class Cheat
     /// </summary>
     public abstract void OnDisabled();
 
-    public virtual void OnTerritoryChange(ushort e)
+    public virtual void OnTerritoryChange(uint e)
     {
     }
 }

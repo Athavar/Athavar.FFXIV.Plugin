@@ -91,7 +91,7 @@ internal abstract class AddonInclusionShopFeature : OnSetupFeature, IDisposable
         }
 
         var atkValue0 = values[0];
-        if (atkValue0.Type != ValueType.Int)
+        if (atkValue0.Type != AtkValueType.Int)
         {
             return result;
         }

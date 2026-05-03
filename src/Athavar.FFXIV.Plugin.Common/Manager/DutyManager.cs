@@ -13,6 +13,7 @@ using Athavar.FFXIV.Plugin.Models.Interfaces;
 using Athavar.FFXIV.Plugin.Models.Interfaces.Manager;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.DutyState;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using Lumina.Excel.Sheets;
@@ -105,7 +106,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         return result;
     }
 
-    private void OnDutyCompleted(object? sender, ushort territory)
+    private void OnDutyCompleted(IDutyStateEventArgs args)
     {
         if (this.dutyStarted && this.dutyState.IsDutyStarted == false)
         {
@@ -113,32 +114,32 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
         }
     }
 
-    private void OnDutyWiped(object? sender, ushort territory)
+    private void OnDutyWiped(IDutyStateEventArgs args)
     {
         this.wipeCount++;
         this.DutyWiped?.Invoke();
     }
 
-    private void OnDutyRecommenced(object? o, ushort territory) => this.DutyRecommenced?.Invoke();
+    private void OnDutyRecommenced(IDutyStateEventArgs args) => this.DutyRecommenced?.Invoke();
 
-    private void OnDutyStarted(object? sender, ushort territory) => this.StartDuty(territory, true);
+    private void OnDutyStarted(IDutyStateEventArgs args) => this.StartDuty(args.TerritoryType.ValueNullable, true);
 
     // This gets called before DutyState.DutyCompleted, so we can intercept in case the duty is abandoned instead of completed.
-    private void OnTerritoryChanged(ushort territoryTypeId)
+    private void OnTerritoryChanged(uint territoryTypeId)
     {
         if (this.dutyStarted && this.dutyState.IsDutyStarted == false)
         {
             this.EndDuty(false);
         }
 
+        var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>().GetRowOrDefault(territoryTypeId);
         if (this.lastCfPopData is { JoinInProgress: true })
         {
-            this.StartDuty(territoryTypeId);
+            this.StartDuty(territoryType);
         }
 
         if (this.lastCfPopData is not null)
         {
-            var territoryType = this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId);
             if (territoryType?.GetTerritoryIntendedUse().IsDuty() == false)
             {
                 // clear data. Territory is no duty.
@@ -155,7 +156,7 @@ internal sealed partial class DutyManager : IDisposable, IDutyManager
 /// </summary>
 internal sealed partial class DutyManager
 {
-    private void StartDuty(ushort territory, bool startOverride = false)
+    private void StartDuty(TerritoryType? territory, bool startOverride = false)
     {
         if (!startOverride && this.dutyStarted)
         {
@@ -178,9 +179,9 @@ internal sealed partial class DutyManager
         this.DutyStarted?.Invoke(eventArgs);
     }
 
-    private DutyInfo? CreateDutyInfo(ushort territoryTypeId, CfPopData? cfPopData)
+    private DutyInfo? CreateDutyInfo(TerritoryType? territoryTypeParm, CfPopData? cfPopData)
     {
-        if (this.dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryTypeId) is not { } territoryType)
+        if (territoryTypeParm is not { } territoryType)
         {
             return null;
         }

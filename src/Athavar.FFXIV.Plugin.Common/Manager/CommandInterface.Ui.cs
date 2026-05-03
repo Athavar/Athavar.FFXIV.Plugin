@@ -128,7 +128,7 @@ internal sealed partial class CommandInterface
             throw new AthavarPluginException("Index out of range");
         }
 
-        return popup->EntryNames[index];
+        return popup->EntryNames[index].ToString();
     }
 
     /// <inheritdoc/>
@@ -164,6 +164,6 @@ internal sealed partial class CommandInterface
             throw new AthavarPluginException("Index out of range");
         }
 
-        return popup->EntryNames[index];
+        return popup->EntryNames[index].ToString();
     }
 }

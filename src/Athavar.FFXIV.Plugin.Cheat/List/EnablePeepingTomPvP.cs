@@ -74,7 +74,7 @@ internal class EnablePeepingTomPvP : Cheat, IDisposable
     }
 
     /// <inheritdoc/>
-    public override void OnTerritoryChange(ushort e)
+    public override void OnTerritoryChange(uint e)
         => Task.Run(
             () =>
             {

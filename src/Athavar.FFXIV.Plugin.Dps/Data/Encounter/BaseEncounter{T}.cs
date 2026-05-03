@@ -13,7 +13,7 @@ internal abstract class BaseEncounter<T> : BaseEncounter
     {
     }
 
-    public BaseEncounter(string territoryName, ushort territory, DateTime start)
+    public BaseEncounter(string territoryName, uint territory, DateTime start)
         : base(territoryName, territory, start)
     {
     }

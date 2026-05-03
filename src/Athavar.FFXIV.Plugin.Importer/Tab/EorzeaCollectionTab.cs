@@ -157,7 +157,7 @@ internal sealed class EorzeaCollectionTab : Tab
 
                         if (equipmentSlot.StrainId is not null && equipmentSlot.RgbaColor is not null)
                         {
-                            using (var c = new ImRaii.Color())
+                            using (var c = new ImRaii.ColorDisposable())
                             {
                                 c.Push(ImGuiCol.Button, equipmentSlot.RgbaColor.Value);
                                 ImGui.BeginDisabled();

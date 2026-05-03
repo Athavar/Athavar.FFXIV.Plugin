@@ -15,7 +15,7 @@ internal sealed class TerritoryEncounter : BaseEncounter<CombatantCollected>
     {
     }
 
-    public TerritoryEncounter(string territoryName, ushort territory, DateTime start)
+    public TerritoryEncounter(string territoryName, uint territory, DateTime start)
         : base(territoryName, territory, start)
     {
     }

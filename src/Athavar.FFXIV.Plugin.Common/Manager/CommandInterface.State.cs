@@ -15,7 +15,7 @@ internal sealed partial class CommandInterface
     private readonly uint logOutId;
 
     /// <inheritdoc/>
-    public ushort GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
+    public uint GetCurrentTerritory() => this.dalamudServices.ClientState.TerritoryType;
 
     /// <inheritdoc/>
     public byte GetCurrentJob() => (byte?)this.dalamudServices.ObjectTable.LocalPlayer?.ClassJob.RowId ?? 0;

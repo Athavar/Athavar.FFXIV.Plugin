@@ -21,7 +21,7 @@ internal abstract class BaseEncounter
     {
     }
 
-    public BaseEncounter(string territoryName, ushort territory, DateTime start)
+    public BaseEncounter(string territoryName, uint territory, DateTime start)
     {
         this.TerritoryName = territoryName;
         this.Territory = territory;
@@ -34,7 +34,7 @@ internal abstract class BaseEncounter
 
     public abstract string Name { get; }
 
-    public ushort Territory { get; }
+    public uint Territory { get; }
 
     public string TerritoryName { get; }
 

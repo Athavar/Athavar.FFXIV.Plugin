@@ -55,7 +55,7 @@ public sealed unsafe class AtkValueArray : IDisposable
     {
         for (var i = 0; i < this.Length; i++)
         {
-            if (this.Pointer[i].Type == ValueType.String)
+            if (this.Pointer[i].Type == AtkValueType.String)
             {
                 Marshal.FreeHGlobal(new nint(this.Pointer[i].String));
             }
@@ -69,19 +69,19 @@ public sealed unsafe class AtkValueArray : IDisposable
         switch (value)
         {
             case uint uintValue:
-                this.Pointer[index].Type = ValueType.UInt;
+                this.Pointer[index].Type = AtkValueType.UInt;
                 this.Pointer[index].UInt = uintValue;
                 break;
             case int intValue:
-                this.Pointer[index].Type = ValueType.Int;
+                this.Pointer[index].Type = AtkValueType.Int;
                 this.Pointer[index].Int = intValue;
                 break;
             case float floatValue:
-                this.Pointer[index].Type = ValueType.Float;
+                this.Pointer[index].Type = AtkValueType.Float;
                 this.Pointer[index].Float = floatValue;
                 break;
             case bool boolValue:
-                this.Pointer[index].Type = ValueType.Bool;
+                this.Pointer[index].Type = AtkValueType.Bool;
                 this.Pointer[index].Byte = Convert.ToByte(boolValue);
                 break;
             case string stringValue:
@@ -89,7 +89,7 @@ public sealed unsafe class AtkValueArray : IDisposable
                 var stringAlloc = Marshal.AllocHGlobal(stringBytes.Length + 1);
                 Marshal.Copy(stringBytes, 0, stringAlloc, stringBytes.Length + 1);
 
-                this.Pointer[index].Type = ValueType.String;
+                this.Pointer[index].Type = AtkValueType.String;
                 this.Pointer[index].String = (byte*)stringAlloc;
                 break;
             default:

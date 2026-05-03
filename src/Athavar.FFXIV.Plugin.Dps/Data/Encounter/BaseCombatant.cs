@@ -134,7 +134,7 @@ internal abstract class BaseCombatant
 
     public abstract void PostCalcStats();
 
-    public bool IsEnemy() => this.Kind is BattleNpcSubKind.Enemy or BattleNpcSubKind.BattleNpcPart or (BattleNpcSubKind)11;
+    public bool IsEnemy() => this.Kind is BattleNpcSubKind.Combatant or BattleNpcSubKind.BNpcPart or (BattleNpcSubKind)11;
 
     public bool IsAlly(PartyType filter) => this.PartyType <= filter;
 

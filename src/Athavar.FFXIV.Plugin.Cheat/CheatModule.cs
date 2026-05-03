@@ -105,7 +105,7 @@ internal sealed class CheatModule : Module, IDisposable
         }
     }
 
-    private void OnTerritoryChange(ushort e)
+    private void OnTerritoryChange(uint e)
     {
         foreach (var cheat in this.cheats.Where(c => c.Value))
         {
