@@ -196,11 +196,11 @@
       "5ef9": "phlegma iii",
       "damage": [
         {
-          "potency": 600,
+          "potency": 690,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 345
         }
       ],
       "heal": [
@@ -284,11 +284,11 @@
       "90a9": "psyche",
       "damage": [
         {
-          "potency": 600,
+          "potency": 690,
           "targetindex": 0
         },
         {
-          "potency": 300
+          "potency": 345
         }
       ]
     },
@@ -436,7 +436,7 @@
       "a38": "eukrasian dosis iii",
       "timeproc": {
         "type": "dot",
-        "potency": 85,
+        "potency": 90,
         "maxticks": 10
       }
     },

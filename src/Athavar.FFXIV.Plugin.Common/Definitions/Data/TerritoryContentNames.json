@@ -5074,5 +5074,47 @@
     "G": "Eminente Trauer",
     "F": "Le Verset final",
     "J": "\u30A8\u30DF\u30CD\u30F3\u30C8\u30B0\u30EA\u30FC\u30D5\u8A0E\u6EC5\u6226"
+  },
+  "1345": {
+    "E": "the Clyteum",
+    "G": "Das Klyteum",
+    "F": "Le Clyteum",
+    "J": "\u5996\u7570\u4FB5\u653B \u30AF\u30EB\u30C6\u30A3\u30A6\u30B9\u9B54\u5C0E\u5DE5\u5EE0"
+  },
+  "1361": {
+    "E": "the Unmaking",
+    "G": "Zel Tajaal - Enuo",
+    "F": "L\u0027Anticr\u00E9ation",
+    "J": "\u30A8\u30CC\u30AA\u30FC\u8A0E\u6EC5\u6226"
+  },
+  "1362": {
+    "E": "the Unmaking (Extreme)",
+    "G": "Gok Tajaal - Enuo",
+    "F": "L\u0027Anticr\u00E9ation (extr\u00EAme)",
+    "J": "\u6975\u30A8\u30CC\u30AA\u30FC\u8A0E\u6EC5\u6226"
+  },
+  "1366": {
+    "E": "the Dusk Vigil",
+    "G": "Abendrot-Wacht",
+    "F": "le Vigile du Cr\u00E9puscule",
+    "J": "\u5EC3\u7826\u635C\u7D22 \u30C0\u30B9\u30AF\u30F4\u30A3\u30B8\u30EB"
+  },
+  "1367": {
+    "E": "Shisui of the Violet Tides",
+    "G": "Shisui",
+    "F": "le Palais aux Mar\u00E9es violettes",
+    "J": "\u6D77\u5E95\u5BAE\u6BBF \u7D2B\u6C34\u5BAE"
+  },
+  "1368": {
+    "E": "Windurst: The Third Walk",
+    "G": "Windurst: Die dritte Etappe",
+    "F": "Windurst - La troisi\u00E8me perambulation",
+    "J": "\u30A6\u30A3\u30F3\u30C0\u30B9\uFF1A\u30B6\u30FB\u30B5\u30FC\u30C9\u30A6\u30A9\u30FC\u30AF"
+  },
+  "1372": {
+    "E": "Shinryu\u0027s Domain (Unreal)",
+    "G": "Traumpr\u00FCfung - Heldenlied von Shinryu",
+    "F": "Le domaine de Shinryu (irr\u00E9el)",
+    "J": "\u5E7B\u795E\u9F8D\u8A0E\u6EC5\u6226"
   }
 }

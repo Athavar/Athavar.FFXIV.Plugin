@@ -165,7 +165,7 @@
       "DFA": "painflare",
       "damage": [
         {
-          "potency": 150
+          "potency": 220
         }
       ]
     },
@@ -313,7 +313,7 @@
       "64df": "ruby rite",
       "damage": [
         {
-          "potency": 580
+          "potency": 620
         }
       ]
     },
@@ -437,11 +437,11 @@
       "64EB": "crimson cyclone",
       "damage": [
         {
-          "potency": 520,
+          "potency": 560,
           "targetindex": 0
         },
         {
-          "potency": 208
+          "potency": 224
         }
       ]
     },
@@ -449,11 +449,11 @@
       "651D": "crimson strike",
       "damage": [
         {
-          "potency": 520,
+          "potency": 560,
           "targetindex": 0
         },
         {
-          "potency": 208
+          "potency": 224
         }
       ]
     },
@@ -521,7 +521,7 @@
       "907e": "necrotize",
       "damage": [
         {
-          "potency": 460
+          "potency": 500
         }
       ]
     },

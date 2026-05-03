@@ -141,7 +141,7 @@
       "873c": "vicewinder",
       "damage": [
         {
-          "potency": 500
+          "potency": 540
         }
       ]
     },
@@ -237,7 +237,7 @@
           "targetindex": 0
         },
         {
-          "potency": 150
+          "potency": 187
         }
       ]
     },
@@ -297,7 +297,7 @@
           "targetindex": 0
         },
         {
-          "potency": 230
+          "potency": 287
         }
       ]
     },
@@ -309,7 +309,7 @@
           "targetindex": 0
         },
         {
-          "potency": 64
+          "potency": 80
         }
       ]
     },
@@ -321,7 +321,7 @@
           "targetindex": 0
         },
         {
-          "potency": 64
+          "potency": 80
         }
       ]
     },
@@ -333,7 +333,7 @@
           "targetindex": 0
         },
         {
-          "potency": 64
+          "potency": 80
         }
       ]
     },
@@ -345,7 +345,7 @@
           "targetindex": 0
         },
         {
-          "potency": 64
+          "potency": 80
         }
       ]
     }

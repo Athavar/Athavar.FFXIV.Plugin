@@ -144,11 +144,11 @@
       "5f49": "gluttony",
       "damage": [
         {
-          "potency": 520,
+          "potency": 560,
           "targetindex": 0
         },
         {
-          "potency": 390
+          "potency": 420
         }
       ]
     },
