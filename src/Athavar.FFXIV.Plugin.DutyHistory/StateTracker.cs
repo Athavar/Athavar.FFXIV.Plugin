@@ -16,7 +16,7 @@ using IDefinitionManager = Athavar.FFXIV.Plugin.Common.Manager.Interface.IDefini
 public sealed class StateTracker : IDisposable
 {
     private readonly IPluginLogger pluginLogger;
-    private readonly IClientState clientState;
+    private readonly IDalamudServices dalamudService;
     private readonly IPlayerState playerState;
     private readonly IDefinitionManager definitionManager;
     private readonly IDutyManager dutyManager;
@@ -24,11 +24,12 @@ public sealed class StateTracker : IDisposable
     private readonly RepositoryContext repositoryContext;
 
     private uint? classJobId = 0;
+    private bool isReplay;
 
-    public StateTracker(IPluginLogger pluginLogger, IClientState clientState, IPlayerState playerState, IDefinitionManager definitionManager, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
+    public StateTracker(IPluginLogger pluginLogger, IDalamudServices dalamudService, IPlayerState playerState, IDefinitionManager definitionManager, IDutyManager dutyManager, IChatManager chatManager, RepositoryContext repositoryContext)
     {
         this.pluginLogger = pluginLogger;
-        this.clientState = clientState;
+        this.dalamudService = dalamudService;
         this.playerState = playerState;
         this.definitionManager = definitionManager;
         this.dutyManager = dutyManager;
@@ -50,6 +51,11 @@ public sealed class StateTracker : IDisposable
 
     private void OnDutyCompleted(DutyEndedEventArgs args)
     {
+        if (this.isReplay)
+        {
+            return;
+        }
+
 #if DEBUG
         this.chatManager.PrintChat($"[DT] Duty end: Complete:{args.Completed}, {args.Duration:g}");
 #endif
@@ -88,8 +94,9 @@ public sealed class StateTracker : IDisposable
     private void OnDutyStarted(DutyStartedEventArgs args)
     {
         this.classJobId = this.playerState.ClassJob.RowId;
+        this.isReplay = !this.dalamudService.GameGui.GetAddonByName("ContentsReplayPlayer").IsNull;
 #if DEBUG
-        this.chatManager.PrintChat($"[DT] Duty start: {args.DutyInfo.TerritoryType.RowId}|{args.DutyInfo.TerritoryType.TerritoryIntendedUse.RowId}");
+        this.chatManager.PrintChat($"[DT] Duty start: {args.DutyInfo.TerritoryType.RowId}|{args.DutyInfo.TerritoryType.TerritoryIntendedUse.RowId}|{this.isReplay}");
 #endif
     }
 }
