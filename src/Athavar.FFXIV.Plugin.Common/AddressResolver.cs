@@ -7,6 +7,7 @@ namespace Athavar.FFXIV.Plugin.Common;
 
 using Dalamud.Game;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Network;
 
 public sealed class AddressResolver : BaseAddressResolver
 {
@@ -32,7 +33,7 @@ public sealed class AddressResolver : BaseAddressResolver
 
     protected override void Setup64Bit(ISigScanner scanner)
     {
-        this.CfPopPacketHandler = scanner.ScanText("40 53 57 48 83 EC 78 48 8B D9 48 8D 0D");
+        this.CfPopPacketHandler = PacketDispatcher.Addresses.HandleContentsFinderNotificationPacket.Value; // scanner.ScanText("40 53 57 48 83 EC 78 48 8B D9 48 8D 0D");
 
         // this.AgentReceiveEvent = scanner.ScanText("48 89 5C 24 ?? 57 48 83 EC 20 48 8B DA 4D 8B D0 32 D2");
 

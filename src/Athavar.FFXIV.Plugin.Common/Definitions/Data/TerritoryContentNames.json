@@ -5057,6 +5057,12 @@
     "F": "Solidarit\u00E9 entre voisins",
     "J": "\u96A3\u4EBA\u3068\u624B\u3092\u53D6\u308A\u5408\u3044\u3066"
   },
+  "1329": {
+    "E": "Clotted Crime",
+    "G": "Hartgesotten",
+    "F": "Les deux durs \u00E0 cuire",
+    "J": "\u3064\u308F\u3082\u306E\u3075\u305F\u308A"
+  },
   "1330": {
     "E": "Dzemael Darkhold",
     "G": "Die Feste Dzemael",
@@ -5081,6 +5087,12 @@
     "F": "Le Clyteum",
     "J": "\u5996\u7570\u4FB5\u653B \u30AF\u30EB\u30C6\u30A3\u30A6\u30B9\u9B54\u5C0E\u5DE5\u5EE0"
   },
+  "1346": {
+    "E": "the Occult Crescent: North Horn",
+    "G": "Das n\u00F6rdliche Kreszentia",
+    "F": "\u00CEle de Lunule septentrionale",
+    "J": "\u8703\u6C17\u697C\u306E\u5CF6 \u30AF\u30EC\u30BB\u30F3\u30C8\u30A2\u30A4\u30EB\uFF1A\u5317\u5F81\u7DE8"
+  },
   "1361": {
     "E": "the Unmaking",
     "G": "Zel Tajaal - Enuo",
@@ -5092,6 +5104,12 @@
     "G": "Gok Tajaal - Enuo",
     "F": "L\u0027Anticr\u00E9ation (extr\u00EAme)",
     "J": "\u6975\u30A8\u30CC\u30AA\u30FC\u8A0E\u6EC5\u6226"
+  },
+  "1363": {
+    "E": "Dancing Mad (Ultimate)",
+    "G": "Tanzender Wahn (fatal)",
+    "F": "Danse d\u00E9mente (fatal)",
+    "J": "\u7D76\u5996\u661F\u4E71\u821E"
   },
   "1366": {
     "E": "the Dusk Vigil",
@@ -5110,6 +5128,12 @@
     "G": "Windurst: Die dritte Etappe",
     "F": "Windurst - La troisi\u00E8me perambulation",
     "J": "\u30A6\u30A3\u30F3\u30C0\u30B9\uFF1A\u30B6\u30FB\u30B5\u30FC\u30C9\u30A6\u30A9\u30FC\u30AF"
+  },
+  "1371": {
+    "E": "A Rush of Cold Wind",
+    "G": "Wo die kalten Winde wehen",
+    "F": "L\u0027heure de briser la glace",
+    "J": "\u5BD2\u98A8\u306E\u5439\u304F\u3068\u304D"
   },
   "1372": {
     "E": "Shinryu\u0027s Domain (Unreal)",

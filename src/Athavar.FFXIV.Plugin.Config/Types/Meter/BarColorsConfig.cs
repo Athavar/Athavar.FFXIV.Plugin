@@ -128,6 +128,10 @@ public sealed class BarColorsConfig : BaseConfig
     public ConfigColor BLUColor { get; set; } = new(0f / 255f, 185f / 255f, 247f / 255f, 1f);
 
     [JsonInclude]
+    [JsonPropertyName("BSTColor")]
+    public ConfigColor BSTColor { get; set; } = new(0f / 255f, 185f / 255f, 247f / 255f, 1f);
+
+    [JsonInclude]
     [JsonPropertyName("THMColor")]
     public ConfigColor THMColor { get; set; } = new(165f / 255f, 121f / 255f, 214f / 255f, 1f);
 

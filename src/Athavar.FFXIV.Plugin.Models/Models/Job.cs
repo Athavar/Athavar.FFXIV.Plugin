@@ -50,6 +50,7 @@ public enum Job : uint
     Sage = 40,
     Viper = 41,
     Pictomancer = 42,
+    Beastmaster = 43,
 
     // non existing Jobs.
     Pets = 89,

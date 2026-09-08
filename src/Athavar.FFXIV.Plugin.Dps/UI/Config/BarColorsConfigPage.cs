@@ -59,6 +59,8 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
             Job.BlueMage => this.Config.BLUColor,
             Job.Pictomancer => this.Config.PCTColor,
 
+            Job.Beastmaster => this.Config.BSTColor,
+
             _ => this.Config.UKNColor,
         };
 
@@ -180,7 +182,14 @@ internal sealed class BarColorsConfigPage(MeterWindow window) : IConfigPage
                 change = true;
             }
 
+            ImGui.NewLine();
+
             if (this.ColorPick("BLU", this.Config.BLUColor.Vector, x => this.Config.BLUColor.Vector = x))
+            {
+                change = true;
+            }
+
+            if (this.ColorPick("BST", this.Config.BSTColor.Vector, x => this.Config.BSTColor.Vector = x))
             {
                 change = true;
             }

@@ -52,8 +52,8 @@ internal sealed partial class IconManager
         uint NormalJobOrder(Job j)
             => j switch
             {
-                Job.Chocobo => 43,
-                Job.Pets => 44,
+                Job.Chocobo => 44,
+                Job.Pets => 45,
                 _ => (uint)j,
             };
 
@@ -103,6 +103,7 @@ internal sealed partial class IconManager
                 Job.Sage => 120,
                 Job.Viper => 121,
                 Job.Pictomancer => 122,
+                Job.Beastmaster => 123,
 
                 Job.Pets => 0,
                 Job.Chocobo => 0,
@@ -156,6 +157,7 @@ internal sealed partial class IconManager
                 Job.Sage => 133,
                 Job.Viper => 134,
                 Job.Pictomancer => 135,
+                Job.Beastmaster => 136,
 
                 // TODO: chocobo may be wrong (92341)
                 Job.Chocobo => 42,
